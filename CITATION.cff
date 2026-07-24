@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use or adapt this knowledge repository, please cite it as below."
+title: "Principle to System: Learn how foundational science becomes technology"
+type: dataset
+authors:
+  - name: "Principle to System contributors"
+repository-code: "https://github.com/Rhodan-lab/principle-to-system"
+url: "https://github.com/Rhodan-lab/principle-to-system"
+license: CC-BY-4.0
+keywords:
+  - science education
+  - technology
+  - open educational resources
+  - physics
+  - chemistry
+  - biology
+  - engineering
+  - independent learning
+abstract: >
+  An open-source collection of connected Markdown learning materials that trace
+  how observations become scientific concepts, mechanisms, mathematical models,
+  engineered components, and technological systems, including their limitations
+  and trade-offs. Code and scripts are licensed under Apache-2.0; educational
+  content is licensed under CC BY 4.0.
