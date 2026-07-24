@@ -1,6 +1,6 @@
 ---
 title: "Oscillations, Waves, Sound, Optics, and Signals"
-slug: "11-waves-signals"
+slug: "11-waves-signals"-explore
 module: "Module 11: Oscillations, waves, sound, optics, and signals"
 domain: "science"
 status: draft

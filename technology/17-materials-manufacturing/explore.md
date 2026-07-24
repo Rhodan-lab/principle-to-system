@@ -1,6 +1,6 @@
 ---
 title: "Materials Science, Fabrication, and Manufacturing"
-slug: "17-materials-manufacturing"
+slug: "17-materials-manufacturing"-explore
 module: "Module 17: Materials science, fabrication, and manufacturing"
 domain: "technology"
 status: draft

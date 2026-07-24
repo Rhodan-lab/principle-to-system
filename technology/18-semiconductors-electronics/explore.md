@@ -1,6 +1,6 @@
 ---
 title: "Semiconductors, electronics, and computer hardware"
-slug: "18-semiconductors-electronics"
+slug: "18-semiconductors-electronics"-explore
 module: "Module 18: Semiconductors, electronics, and computer hardware"
 domain: "technology"
 status: draft

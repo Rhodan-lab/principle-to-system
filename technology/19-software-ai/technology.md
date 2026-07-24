@@ -1,6 +1,6 @@
 ---
 title: "Software, Information, Networks, and AI Foundations"
-slug: "19-software-ai"
+slug: "19-software-ai"-technology
 module: "Module 19: Software, information, networks, and AI foundations"
 domain: "technology"
 status: draft

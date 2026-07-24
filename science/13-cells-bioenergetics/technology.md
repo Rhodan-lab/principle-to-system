@@ -1,6 +1,6 @@
 ---
 title: "Cells, membranes, enzymes, metabolism, and bioenergetics"
-slug: "13-cells-bioenergetics"
+slug: "13-cells-bioenergetics"-technology
 module: "Module 13: Cells, membranes, enzymes, metabolism, and bioenergetics"
 domain: "technology"
 status: draft

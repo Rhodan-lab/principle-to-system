@@ -1,6 +1,6 @@
 ---
 title: "DNA, Gene Expression, Inheritance, and Evolution"
-slug: "14-dna-evolution"
+slug: "14-dna-evolution"-explore
 module: "Module 14: DNA, gene expression, inheritance, and evolution"
 domain: "science"
 status: draft

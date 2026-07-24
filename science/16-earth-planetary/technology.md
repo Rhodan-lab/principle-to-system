@@ -1,6 +1,6 @@
 ---
 title: "Earth, Atmosphere, Oceans, Climate, and Planetary Systems"
-slug: "16-earth-planetary"
+slug: "16-earth-planetary"-technology
 module: "Module 16: Earth, atmosphere, oceans, climate, and planetary systems"
 domain: "technology"
 status: draft
