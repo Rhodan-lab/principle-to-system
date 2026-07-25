@@ -21,10 +21,10 @@ Status meanings:
 | 10 | [Electricity and Magnetism](science/10-electricity-magnetism/) | Science | 03, 06 | Fields, charge, circuits, induction | Motors, generators, electronics | Reviewed |
 | 11 | [Waves and Signals](science/11-waves-signals/) | Science | 03, 09 | Oscillations, sound, light, modulation | Communication, imaging | Reviewed |
 | 12 | [Fluids and Materials](science/12-fluids-materials/) | Science | 03, 08, 09 | Pressure, viscosity, stress, strain | Hydraulics, structures | Reviewed |
-| 13 | [Cells and Bioenergetics](science/13-cells-bioenergetics/) | Science | 07, 08 | Membranes, enzymes, metabolism, ATP | Biotech, medicine | Draft |
-| 14 | [DNA and Evolution](science/14-dna-evolution/) | Science | 07, 13 | Gene expression, inheritance, selection | Genetic engineering | Draft |
-| 15 | [Ecosystems and Complex Systems](science/15-ecosystems-complex-systems/) | Science | 04, 13, 14 | Feedback, networks, emergence | Environmental engineering | Draft |
-| 16 | [Earth and Planetary Systems](science/16-earth-planetary/) | Science | 08, 09, 12, 15 | Atmosphere, oceans, climate, geology | Climate monitoring, resources | Draft |
+| 13 | [Cells and Bioenergetics](science/13-cells-bioenergetics/) | Science | 07, 08 | Membranes, enzymes, metabolism, ATP | Biotech, medicine | Reviewed |
+| 14 | [DNA and Evolution](science/14-dna-evolution/) | Science | 07, 13 | Gene expression, inheritance, selection | Genetic engineering | Reviewed |
+| 15 | [Ecosystems and Complex Systems](science/15-ecosystems-complex-systems/) | Science | 04, 13, 14 | Feedback, networks, emergence | Environmental engineering | Reviewed |
+| 16 | [Earth and Planetary Systems](science/16-earth-planetary/) | Science | 08, 09, 12, 15 | Atmosphere, oceans, climate, geology | Climate monitoring, resources | Reviewed |
 | 17 | [Materials Science and Manufacturing](technology/17-materials-manufacturing/) | Technology | 06, 07, 12 | Crystallography, alloys, polymers, fabrication | All physical technology | Draft |
 | 18 | [Semiconductors and Electronics](technology/18-semiconductors-electronics/) | Technology | 06, 10, 17 | Transistors, logic, ICs, processors | Computing, communication | Draft |
 | 19 | [Software and AI Foundations](technology/19-software-ai/) | Technology | 04, 05, 18 | Information, algorithms, networks, learning | Digital infrastructure | Draft |

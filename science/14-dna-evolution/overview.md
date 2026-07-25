@@ -3,10 +3,10 @@ title: "DNA, Gene Expression, Inheritance, and Evolution"
 slug: 14-dna-evolution
 module: "Module 14"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [07-chemical-bonding, 13-cells-bioenergetics]
 connections: [15-ecosystems-complex-systems]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -16,7 +16,7 @@ How is the information required to build and maintain a living organism stored, 
 
 ## 2. Observable phenomena
 
-The macroscopic diversity of life is underpinned by microscopic molecular processes. Offspring resemble their parents, yet exhibit variation. This inheritance of traits follows predictable patterns, first observed by Gregor Mendel in pea plants. At the cellular level, cells divide and replicate, requiring the exact duplication of their genetic material. When cells differentiate, they express different traits despite containing identical genetic instructions, a phenomenon driven by gene regulation. Over longer timescales, populations of organisms adapt to their environments, and new species emerge, phenomena observable in the fossil record and in the genomic sequences of extant organisms.
+The macroscopic diversity of life is underpinned by microscopic molecular processes. Offspring resemble their parents, yet exhibit variation. This inheritance of traits follows predictable patterns, first observed by Gregor Mendel in pea plants. Before cell division, genetic material is copied with high fidelity, while proofreading and repair reduce—but do not eliminate—replication errors. When cells differentiate, they express different traits despite containing identical genetic instructions, a phenomenon driven by gene regulation. Over longer timescales, populations of organisms adapt to their environments, and new species emerge, phenomena observable in the fossil record and in the genomic sequences of extant organisms.
 
 ## 3. Essential concepts
 
@@ -24,15 +24,15 @@ The macroscopic diversity of life is underpinned by microscopic molecular proces
 
 **Gene:** A specific sequence of DNA nucleotides that encodes the instructions for synthesizing a functional product, typically a protein or an RNA molecule.
 
-**Gene Expression:** The process by which the information encoded in a gene is used to direct the assembly of a protein molecule. It involves two main stages: transcription and translation.
+**Gene expression:** The regulated use of gene information to produce coding or non-coding RNA; protein-coding RNA can then be translated into protein. Expression includes transcription, RNA processing and turnover, translation where applicable, and multiple layers of regulation.
 
 **Allele:** A variant form of a gene. Different alleles can result in different observable traits (phenotypes).
 
 **Genotype and Phenotype:** The genotype is the specific set of alleles an organism possesses. The phenotype is the observable physical or biochemical characteristics of the organism, determined by the interaction of its genotype and the environment.
 
-**Mutation:** A change in the nucleotide sequence of an organism's DNA. Mutations are the ultimate source of genetic variation.
+**Mutation:** A heritable change in genetic sequence or structure. Mutation creates new variants, while recombination, segregation, drift, selection, and gene flow redistribute or filter variation.
 
-**Natural Selection:** The differential survival and reproduction of individuals due to differences in phenotype. It is a key mechanism of evolution.
+**Natural selection:** Differential reproductive contribution associated with heritable phenotypic differences in a particular environment; survival matters only insofar as it affects reproduction or inclusive fitness.
 
 **Genetic Drift:** The change in the frequency of an existing gene variant (allele) in a population due to random chance.
 
@@ -42,7 +42,7 @@ The macroscopic diversity of life is underpinned by microscopic molecular proces
 
 DNA replication is semi-conservative, meaning each new double helix consists of one original (template) strand and one newly synthesized strand. The process begins at specific locations called origins of replication. The enzyme helicase unwinds the double helix, breaking the hydrogen bonds between complementary base pairs. Single-strand binding proteins stabilize the unwound strands. Topoisomerase relieves the torsional strain ahead of the replication fork [2].
 
-Because DNA polymerase can only add nucleotides to an existing 3'-OH group, an RNA primase synthesizes a short RNA primer. DNA polymerase III then adds deoxyribonucleotides to the 3' end of the primer, synthesizing the new strand in the 5' to 3' direction. On the leading strand, synthesis is continuous. On the lagging strand, synthesis is discontinuous, occurring in short segments called Okazaki fragments. DNA polymerase I later replaces the RNA primers with DNA, and DNA ligase seals the nicks between the fragments [2].
+Because DNA polymerase can only add nucleotides to an existing 3'-OH group, an RNA primase synthesizes a short RNA primer. Replicative DNA polymerases extend primers in the 5' to 3' direction. Leading-strand synthesis is largely continuous and lagging-strand synthesis forms Okazaki fragments; primer removal, gap filling, proofreading, repair, and ligation involve different protein systems in bacteria, archaea, and eukaryotes, so bacterial polymerase names are not universal [2].
 
 ### Transcription and Translation
 
@@ -64,9 +64,9 @@ Evolution is defined as a change in allele frequencies in a population over time
 | Quantity | Description | Typical Value/Range |
 | :--- | :--- | :--- |
 | Genome Size | Total amount of DNA contained within one copy of a single genome. | $4.6 \times 10^6$ bp (E. coli), $3.2 \times 10^9$ bp (Human) |
-| Mutation Rate | The frequency of new mutations in a single gene or organism over time. | $\sim 10^{-8}$ per base pair per generation (Human) |
+| Mutation Rate | Frequency of new variants per site, genome, cell division, or generation; estimates depend on organism, genomic region, and method. | Context-dependent |
 | Allele Frequency | The relative frequency of an allele at a particular locus in a population. | $0 \le p \le 1$ |
-| Translation Rate | The speed at which a ribosome synthesizes a polypeptide. | $\sim 10-20$ amino acids per second (Prokaryotes) |
+| Translation Rate | Polypeptide elongation rate, dependent on organism, cell state, transcript, codon context, and measurement method. | Context-dependent |
 
 ## 6. Mathematical models and equations
 
@@ -103,9 +103,9 @@ $$\Delta p = p' - p = \frac{pq[p(w_{11} - w_{12}) + q(w_{12} - w_{22})]}{\bar{w}
 
 ## 7. Definitions of symbols and units
 
-*   $p$: Frequency of the dominant allele (dimensionless).
+*   $p$: Frequency of allele $A$ (dimensionless); dominance is a phenotype relationship, not a frequency label.
 *   $q$: Frequency of the recessive allele (dimensionless).
-*   $w$: Relative fitness, a measure of reproductive success (dimensionless, $0 \le w \le 1$).
+*   $w$: Relative fitness on a chosen non-negative scale; it is often normalised, but the symbols are not inherently restricted to $0$–$1$.
 *   $\bar{w}$: Mean fitness of the population (dimensionless).
 *   bp: Base pairs, a unit of length for double-stranded nucleic acids.
 
@@ -131,14 +131,15 @@ $$\Delta p = p' - p = \frac{pq[p(w_{11} - w_{12}) + q(w_{12} - w_{22})]}{\bar{w}
 
 *   **07-chemical-bonding:** Understanding hydrogen bonding is crucial for comprehending the specific base-pairing in DNA and the secondary structures of RNA and proteins.
 *   **13-cells-bioenergetics:** The processes of DNA replication, transcription, and translation are highly energy-dependent, relying on ATP generated through cellular respiration.
-*   **15-ecology-systems:** Population genetics and evolutionary mechanisms are foundational for understanding ecological dynamics, species interactions, and biodiversity.
+*   **15-ecosystems-complex-systems:** Population genetics and evolutionary mechanisms are foundational for understanding ecological dynamics, species interactions, and biodiversity.
 *   **16-biotechnology:** The principles of DNA structure and gene expression are applied in genetic engineering, PCR, and sequencing technologies.
 
 ## 12. Sources
 
-[1] Pray, L. (2008). Discovery of DNA structure and function: Watson and Crick. *Nature Education*, 1(1), 100. http://www.nature.com/scitable/topicpage/discovery-of-dna-structure-and-function-watson-397
-[2] Pray, L. (2008). Major molecular events of DNA replication. *Nature Education*, 1(1), 99. http://www.nature.com/scitable/topicpage/major-molecular-events-of-dna-replication-413
-[3] Clancy, S. (2008). DNA transcription. *Nature Education*, 1(1), 41. https://www.nature.com/scitable/topicpage/dna-transcription-426/
-[4] Clancy, S., & Brown, W. (2008). Translation: DNA to mRNA to Protein. *Nature Education*, 1(1), 101. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
-[5] Fowler, S., Roush, R., & Wise, J. (2013). 11.2 Mechanisms of Evolution. In *Concepts of Biology*. OpenStax. https://openstax.org/books/concepts-biology/pages/11-2-mechanisms-of-evolution
-[6] OpenStax. (2018). 19.2 Population Genetics. In *Biology for AP® Courses*. OpenStax. https://openstax.org/books/biology-ap-courses/pages/19-2-population-genetics
+1. NCBI Bookshelf. *DNA Replication Mechanisms*. https://www.ncbi.nlm.nih.gov/books/NBK26850/
+2. Nature Education. *DNA Transcription*. https://www.nature.com/scitable/topicpage/dna-transcription-426/
+3. Nature Education. *Translation: DNA to mRNA to Protein*. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
+4. OpenStax. *Mechanisms of Evolution*. https://openstax.org/books/concepts-biology/pages/11-2-mechanisms-of-evolution
+5. National Human Genome Research Institute. *DNA Replication*. https://www.genome.gov/genetics-glossary/DNA-Replication
+6. National Human Genome Research Institute. *Gene Expression*. https://www.genome.gov/genetics-glossary/Gene-Expression
+7. National Human Genome Research Institute. *Evolution*. https://www.genome.gov/genetics-glossary/Evolution

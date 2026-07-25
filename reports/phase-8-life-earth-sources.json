@@ -1,0 +1,20 @@
+{
+  "generated": "2026-07-26",
+  "registry_records": 10,
+  "ledger_records_before": 121,
+  "records_added": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK9911/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK9928/",
+    "https://www.genome.gov/genetics-glossary/DNA-Replication",
+    "https://www.genome.gov/genetics-glossary/Gene-Expression",
+    "https://www.genome.gov/genetics-glossary/Evolution",
+    "https://www.epa.gov/wetlands/guiding-principles-constructed-treatment-wetlands-providing-water-quality-and-wildlife",
+    "https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Life_Support_and_Physical_Sciences/Research_and_development",
+    "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/",
+    "https://www.aoml.noaa.gov/argo/",
+    "https://pubs.usgs.gov/gip/dynamic/dynamic.html"
+  ],
+  "already_present": [],
+  "ledger_records_after": 131,
+  "errors": []
+}

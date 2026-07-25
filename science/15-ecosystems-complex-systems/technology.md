@@ -3,10 +3,10 @@ title: "Engineering with Ecosystems: Bioremediation and Closed Ecological System
 slug: 15-ecosystems-complex-systems-technology
 module: "Module 15"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]
 connections: [16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,11 +14,11 @@ content_license: CC-BY-4.0
 
 ## 1. Scientific principles used
 
-The engineering of ecological systems relies on the principles of biogeochemical cycling, trophic dynamics, and network resilience. By understanding how matter (such as carbon, nitrogen, and phosphorus) flows through food webs and is transformed by microbial metabolism, engineers can design systems that harness these natural processes. The principle of competitive exclusion is used to manage microbial populations, while the concept of carrying capacity dictates the sizing and loading rates of biological reactors. Furthermore, the principles of self-organisation and feedback loops are leveraged to create systems that can autonomously adjust to varying inputs and maintain stability without constant human intervention.
+The engineering of ecological systems relies on the principles of biogeochemical cycling, trophic dynamics, and network resilience. By understanding how matter (such as carbon, nitrogen, and phosphorus) flows through food webs and is transformed by microbial metabolism, engineers can design systems that harness these natural processes. Competition, facilitation, predation, metabolic complementarity, residence time, and substrate loading all shape microbial communities. Reactor sizing uses kinetic, hydraulic, stoichiometric, mass-transfer, and reliability models rather than a single fixed carrying capacity. Furthermore, the principles of self-organisation and feedback loops are leveraged to create systems that can autonomously adjust to varying inputs and maintain stability without constant human intervention.
 
 ## 2. The engineering problem
 
-Human activities generate vast quantities of organic waste, toxic pollutants, and excess nutrients that overwhelm natural ecosystems, leading to eutrophication and habitat destruction. The engineering problem is twofold: first, how to design controlled environments (such as wastewater treatment plants or constructed wetlands) that accelerate the natural degradation of these pollutants; and second, how to design entirely closed ecological life support systems (CELSS) for space exploration, where every atom of carbon, oxygen, and water must be continuously recycled to sustain human life indefinitely.
+Human activities generate vast quantities of organic waste, toxic pollutants, and excess nutrients that overwhelm natural ecosystems, leading to eutrophication and habitat destruction. The engineering problem is twofold: first, how to design controlled environments (such as wastewater treatment plants or constructed wetlands) that accelerate the natural degradation of these pollutants; and second, how to design entirely closed ecological life support systems (CELSS) for space exploration, where material loops must be regenerated for long missions while leakage, accumulation, trace contaminants, component ageing, and backup requirements are explicitly managed; indefinite closure is not assumed.
 
 ## 3. Main components
 
@@ -34,7 +34,7 @@ The interaction between components is highly synergistic. Wastewater enters the 
 
 ## 5. Matter, energy, force, or information flow
 
-**Matter Flow:** The system is fundamentally a matter-transformation engine. Complex organic molecules (measured as Biological Oxygen Demand, or BOD) are broken down into simpler compounds ($CO_2$, $H_2O$, $CH_4$). Nitrogen compounds are cycled from ammonia to nitrate to nitrogen gas. Phosphorus is largely removed through chemical precipitation and adsorption onto the substrate.
+**Matter Flow:** The system is fundamentally a matter-transformation engine. Biodegradable organic loading, partly characterised by biochemical oxygen demand (BOD), is transformed into simpler compounds ($CO_2$, $H_2O$, $CH_4$). Nitrogen compounds are cycled from ammonia to nitrate to nitrogen gas. Phosphorus is largely removed through chemical precipitation and adsorption onto the substrate.
 
 **Energy Flow:** In constructed wetlands, the primary energy input is solar radiation, which drives plant photosynthesis and evapotranspiration. The chemical energy stored in the wastewater's organic bonds is released by microbial respiration, generating heat. In intensive bioreactors (like activated sludge systems), significant electrical energy is required to mechanically aerate the water and pump the sludge.
 
@@ -55,11 +55,11 @@ Engineered ecosystems can be classified by their architectural openness:
 
 ## 8. Performance and efficiency
 
-Performance is typically measured by the removal efficiency of specific pollutants. A well-designed constructed wetland can achieve >90% removal of BOD and suspended solids, and 70-90% removal of nitrogen. Efficiency is often evaluated in terms of energy consumed per kilogram of pollutant removed. Natural systems like wetlands are highly energy-efficient but have low volumetric efficiency (they require a lot of space). Mechanical systems have high volumetric efficiency but poor energy efficiency.
+Performance is typically measured by the removal efficiency of specific pollutants. Removal performance varies widely with influent, wetland type, climate, hydraulic loading, residence time, media, vegetation, season, maintenance, and the chosen statistical boundary; design must use site-specific evidence rather than universal percentages. Efficiency is often evaluated in terms of energy consumed per kilogram of pollutant removed. Natural systems like wetlands are highly energy-efficient but have low volumetric efficiency (they require a lot of space). Mechanical systems have high volumetric efficiency but poor energy efficiency.
 
 ## 9. Reliability and failure modes
 
-Engineered ecosystems are generally highly reliable due to their internal redundancy; if one microbial species fails, another often fills its niche. However, they are susceptible to specific failure modes:
+Functional diversity can provide redundancy, but engineered ecosystems can also fail through correlated stress, missing functions, slow recovery, hidden dependencies, or loss of key populations; reliability must be demonstrated rather than assumed. However, they are susceptible to specific failure modes:
 - **Clogging:** The accumulation of non-degradable solids and excessive microbial biomass can clog the porous substrate, causing surface pooling and short-circuiting of the hydraulic flow.
 - **Regime Shifts:** A sudden change in pH or temperature can cause a rapid shift in the microbial community, such as a transition from beneficial floc-forming bacteria to filamentous bacteria, which causes "sludge bulking" and prevents the separation of clean water from the biomass.
 - **Atmospheric Imbalance:** In closed systems like Biosphere 2, unexpected sinks (such as concrete absorbing $CO_2$) or overactive soil microbes can rapidly deplete atmospheric oxygen, threatening the survival of the human crew and requiring emergency intervention [1].
@@ -74,13 +74,15 @@ Constructed wetlands offer significant secondary environmental benefits, includi
 
 ## 12. Connections to other technologies
 
-- **18-agricultural-engineering:** Aquaponics and precision agriculture utilise similar principles of nutrient cycling and controlled microbial environments.
-- **22-environmental-control-systems:** HVAC systems and chemical scrubbers are often integrated with biological systems to provide hybrid life support in aerospace engineering.
+- **20-sensors-control-infrastructure:** Aquaponics and precision agriculture utilise similar principles of nutrient cycling and controlled microbial environments.
+- **20-sensors-control-infrastructure:** HVAC systems and chemical scrubbers are often integrated with biological systems to provide hybrid life support in aerospace engineering.
 - **Synthetic Biology:** The future of engineered ecosystems involves designing synthetic microbial consortia with engineered metabolic pathways to degrade novel plastics or produce specific biofuels.
 
 ## 13. Sources
 
-[1] Cohen, J. E., & Tilman, D. (1996). Biosphere 2 and biodiversity: the lessons so far. *Science*, 274(5290), 1150-1151.
-[2] Kadlec, R. H., & Wallace, S. (2008). *Treatment Wetlands* (2nd ed.). CRC Press.
-[3] Lasseur, C., et al. (2010). MELiSSA: the European project of closed life support system. *Gravitational and Space Research*, 23(2).
-[4] Odum, H. T. (1983). *Systems Ecology: An Introduction*. John Wiley & Sons.
+1. Holling, C. S. *Resilience and Stability of Ecological Systems*. https://www.annualreviews.org/doi/abs/10.1146/annurev.es.04.110173.000245
+2. May, R. M. *Will a Large Complex System Be Stable?* https://www.nature.com/articles/238413a0
+3. Scheffer, M., et al. *Catastrophic Shifts in Ecosystems*. https://www.nature.com/articles/35098000
+4. Dunne, J. A., et al. *Food-web Structure and Network Theory*. https://www.pnas.org/doi/abs/10.1073/pnas.192407699
+5. U.S. Environmental Protection Agency. *Guiding Principles for Constructed Treatment Wetlands*. https://www.epa.gov/wetlands/guiding-principles-constructed-treatment-wetlands-providing-water-quality-and-wildlife
+6. European Space Agency. *MELiSSA Environmental Control and Life Support Research*. https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Life_Support_and_Physical_Sciences/Research_and_development

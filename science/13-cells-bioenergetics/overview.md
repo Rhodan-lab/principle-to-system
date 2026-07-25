@@ -3,16 +3,16 @@ title: "Cells, membranes, enzymes, metabolism, and bioenergetics"
 slug: 13-cells-bioenergetics
 module: "Module 13"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [07-chemical-bonding, 08-energy-thermodynamics]
 connections: [14-dna-evolution, 15-ecosystems-complex-systems]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 ## 1. The central questions
 
-How do living systems extract, transform, and utilize energy to maintain order in a universe that tends toward entropy? How do physical boundaries and specialized catalysts enable the complex, non-equilibrium chemical reactions required for life? Bioenergetics and cellular metabolism address these questions by examining the flow of energy through biological systems, the role of membranes in compartmentalizing these processes, and the kinetic control exerted by enzymes.
+How do living systems acquire and transform energy while exporting entropy and matter to maintain organised, non-equilibrium states? How do physical boundaries and specialized catalysts enable the complex, non-equilibrium chemical reactions required for life? Bioenergetics and cellular metabolism address these questions by examining the flow of energy through biological systems, the role of membranes in compartmentalizing these processes, and the kinetic control exerted by enzymes.
 
 ## 2. Observable phenomena
 
@@ -22,9 +22,9 @@ The macroscopic manifestations of cellular bioenergetics are ubiquitous. The hea
 
 **Bioenergetics** is the study of energy transformation in living organisms. It applies the laws of thermodynamics to biological systems, focusing on how cells couple exergonic (energy-releasing) reactions to endergonic (energy-consuming) processes.
 
-**Adenosine Triphosphate (ATP)** serves as the primary energy currency of the cell. The hydrolysis of its terminal phosphoanhydride bond releases a significant amount of free energy, which is used to drive unfavorable reactions, transport molecules, and perform mechanical work.
+**Adenosine triphosphate (ATP)** is a widely used intermediate in cellular energy coupling. ATP hydrolysis is favourable under many cellular conditions because the products have lower Gibbs free energy; coupling mechanisms, rather than bond breaking alone, allow that free-energy change to drive synthesis, transport, and mechanical work.
 
-**Enzymes** are biological catalysts, predominantly proteins, that accelerate chemical reactions by lowering the activation energy barrier. They do not alter the thermodynamic equilibrium of a reaction but dictate the rate at which equilibrium is approached.
+**Enzymes** are biological catalysts, usually proteins but sometimes RNA, that accelerate reactions by stabilising transition-state pathways and organising reacting groups. They change kinetics, not the equilibrium constant or overall reaction Gibbs free energy.
 
 **Biological Membranes** are selectively permeable lipid bilayers embedded with proteins. They compartmentalize cellular functions, maintain concentration gradients, and host the machinery for energy transduction.
 
@@ -36,23 +36,23 @@ The macroscopic manifestations of cellular bioenergetics are ubiquitous. The hea
 Enzymes function by binding substrates at their active sites, forming an enzyme-substrate complex. This interaction stabilizes the transition state of the reaction, effectively lowering the activation energy. The Michaelis-Menten model describes the kinetics of many enzymes, where the reaction rate increases linearly with substrate concentration at low levels but approaches a maximum velocity ($V_{\max}$) as the enzyme active sites become saturated.
 
 ### Membrane Transport
-The lipid bilayer is inherently impermeable to ions and large polar molecules. Transport across this barrier is mediated by specific proteins. Passive transport (facilitated diffusion) allows molecules to move down their electrochemical gradients without energy input. Active transport requires energy (often from ATP hydrolysis) to move molecules against their gradients. Secondary active transport couples the energetically favorable movement of one ion down its gradient to the unfavorable movement of another molecule against its gradient.
+The lipid bilayer is inherently impermeable to ions and large polar molecules. Transport across this barrier is mediated by specific proteins. Facilitated diffusion moves solutes down electrochemical-potential gradients without direct coupling to metabolic energy, although the gradients themselves may have been established by energy-consuming processes. Active transport requires energy (often from ATP hydrolysis) to move molecules against their gradients. Secondary active transport couples the energetically favorable movement of one ion down its gradient to the unfavorable movement of another molecule against its gradient.
 
 ### Cellular Respiration and ATP Synthesis
 The extraction of energy from glucose involves a sequence of metabolic pathways:
 1. **Glycolysis:** Occurs in the cytosol, breaking down one glucose molecule into two molecules of pyruvate, yielding a net of 2 ATP and 2 NADH.
-2. **Citric Acid Cycle (Krebs Cycle):** Pyruvate is transported into the mitochondrial matrix, oxidized to acetyl-CoA, and fully degraded to $CO_2$. This cycle generates high-energy electron carriers (NADH and $FADH_2$) and a small amount of ATP/GTP.
+2. **Citric Acid Cycle (Krebs Cycle):** Pyruvate oxidation produces acetyl-CoA before the cycle; the acetyl groups entering the cycle are oxidised, while carbon accounting across individual turns is more subtle than a one-turn ‘complete degradation’ picture. This cycle generates high-energy electron carriers (NADH and $FADH_2$) and a small amount of ATP/GTP.
 3. **Oxidative Phosphorylation:** The electron carriers donate electrons to the electron transport chain (ETC) embedded in the inner mitochondrial membrane. As electrons flow through the ETC to the terminal acceptor (oxygen), protons are pumped from the matrix into the intermembrane space, creating an electrochemical gradient (proton motive force). ATP synthase utilizes this gradient, allowing protons to flow back into the matrix to drive the phosphorylation of ADP to ATP.
 
 ### Photosynthesis
-In autotrophs, photosynthesis captures light energy to synthesize carbohydrates. Light-dependent reactions in the thylakoid membranes of chloroplasts use photon energy to extract electrons from water (releasing oxygen), drive an electron transport chain to pump protons, and produce ATP and NADPH. The light-independent reactions (Calvin cycle) in the stroma use this ATP and NADPH to fix $CO_2$ into organic molecules.
+In autotrophs, photosynthesis captures light energy to synthesize carbohydrates. Light-dependent reactions in the thylakoid membranes of chloroplasts use photon energy to extract electrons from water (releasing oxygen), drive an electron transport chain to pump protons, and produce ATP and NADPH. Carbon-fixation reactions in the stroma use ATP and reducing power from the light reactions; they are not directly photon-driven, but they are not independent of light-supplied products and regulation.
 
 ## 5. Important quantities
 
-- **Gibbs Free Energy Change ($\Delta G$):** Determines the spontaneity of a reaction. $\Delta G < 0$ indicates an exergonic, spontaneous process.
-- **Michaelis Constant ($K_M$):** The substrate concentration at which the reaction rate is half of $V_{\max}$. It is an inverse measure of the enzyme's affinity for its substrate.
+- **Gibbs free-energy change ($\Delta G$):** Under stated temperature, pressure, composition, and work constraints, its sign indicates thermodynamic direction relative to equilibrium; it does not determine reaction rate.
+- **Michaelis constant ($K_M$):** For the simple Michaelis–Menten mechanism, the substrate concentration giving half of $V_{\max}$. It is a compound kinetic parameter and equals a dissociation constant only under additional conditions.
 - **Proton Motive Force ($\Delta p$):** The electrochemical potential difference of protons across a membrane, comprising both a concentration gradient ($\Delta pH$) and an electrical potential ($\Delta \psi$).
-- **ATP Yield:** The theoretical maximum yield of ATP from the complete oxidation of one glucose molecule is approximately 30-32 ATP in eukaryotes, though the actual yield is often lower due to proton leakage and transport costs.
+- **ATP yield:** A model-dependent accounting quantity. Textbook estimates for aerobic glucose oxidation depend on shuttle use, proton-to-ATP stoichiometry, transport costs, substrate, tissue, and coupling efficiency; cells do not realise one universal integer yield.
 
 ## 6. Mathematical models and equations
 
@@ -69,7 +69,7 @@ Where $V_{\max}$ is the maximum reaction velocity, $[S]$ is the substrate concen
 ### Electrochemical Potential (Nernst Equation)
 The free energy change for transporting an ion across a membrane is:
 $$ \Delta G = RT \ln \left( \frac{C_{in}}{C_{out}} \right) + zF\Delta \psi $$
-Where $C_{in}$ and $C_{out}$ are the concentrations of the ion inside and outside the cell, $z$ is the charge of the ion, $F$ is Faraday's constant, and $\Delta \psi$ is the membrane potential.
+For transport from outside to inside, $C_{in}/C_{out}$ is an ideal dilute-solution approximation to the activity ratio, $z$ is ionic charge number, and $\Delta\psi=\psi_{in}-\psi_{out}$; reversing direction reverses the free-energy change.
 
 ## 7. Definitions of symbols and units
 
@@ -111,12 +111,14 @@ Where $C_{in}$ and $C_{out}$ are the concentrations of the ion inside and outsid
 
 - **07-chemical-bonding:** Understanding covalent and non-covalent interactions is essential for grasping enzyme-substrate binding and membrane structure.
 - **08-energy-thermodynamics:** The principles of enthalpy, entropy, and free energy are the foundation of bioenergetics.
-- **14-genetics-molecular-biology:** The synthesis of enzymes and membrane proteins is directed by genetic information.
-- **15-physiology-systems:** Cellular metabolism scales up to determine the energy demands and physiological functions of entire organisms.
+- **14-dna-evolution:** The synthesis of enzymes and membrane proteins is directed by genetic information.
+- **15-ecosystems-complex-systems:** Cellular metabolism scales up to determine the energy demands and physiological functions of entire organisms.
 
 ## 12. Sources
 
-1. Wikipedia contributors. (2024). Cellular respiration. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Cellular_respiration
-2. Wikipedia contributors. (2024). Bioenergetics. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Bioenergetics
-3. Wikipedia contributors. (2024). Enzyme kinetics. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Enzyme_kinetics
-4. Wikipedia contributors. (2024). Membrane transport. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Membrane_transport
+1. NCBI Bookshelf. *Electron-Transport Chains and Their Proton Pumps*. https://www.ncbi.nlm.nih.gov/books/NBK26904/
+2. NCBI Bookshelf. *Principles of Membrane Transport*. https://www.ncbi.nlm.nih.gov/books/NBK26815/
+3. NCBI Bookshelf. *Protein Function*. https://www.ncbi.nlm.nih.gov/books/NBK26911/
+4. OpenStax. *Regulation of Cellular Respiration*. https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration
+5. NCBI Bookshelf. *Bioenergetics and Metabolism*. https://www.ncbi.nlm.nih.gov/books/NBK9911/
+6. NCBI Bookshelf. *Cell Membranes*. https://www.ncbi.nlm.nih.gov/books/NBK9928/

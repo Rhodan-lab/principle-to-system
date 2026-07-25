@@ -3,10 +3,10 @@ title: "Explore: Ecosystems, Feedback, Networks, and Complex Systems"
 slug: 15-ecosystems-complex-systems-explore
 module: "Module 15"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]
 connections: [16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,9 +14,9 @@ content_license: CC-BY-4.0
 
 ## 1. Observation prompts
 
-- **The Micro-Ecosystem:** Find a small, undisturbed puddle, a birdbath, or a patch of moss. Observe it over several days. Can you identify the primary producers (green algae or moss) and the consumers (insects, larvae)? How does the system change after a heavy rain or a period of drought?
-- **Urban Food Webs:** In a city park or garden, trace a simple food chain. Observe a plant, the insects feeding on it, and the birds feeding on the insects. What happens to the dead leaves on the ground? Try to map out the network of interactions you can physically see.
-- **Feedback in Action:** Observe the condensation on a cold glass of water on a humid day. As water droplets form, they release latent heat, slightly warming the glass, which in turn affects the rate of further condensation. Consider how this micro-physical feedback loop mirrors larger ecological feedback mechanisms.
+- Observe a puddle, birdbath, moss patch, or leaf-litter area from a safe distance without touching standing water, larvae, fungi, or unknown organisms. Record light, moisture, visible producers, consumers, and disturbance, while recognising that many interactions are not directly observable.
+- In a city park or garden, map a provisional interaction network from repeated observations. Distinguish direct evidence of feeding from co-occurrence, and include decomposers and non-feeding interactions where evidence exists.
+- Compare time-series photographs or public sensor data before and after rainfall, drought, mowing, fire, or nutrient change. Which feedbacks are plausible, and what additional measurements would distinguish them?
 
 ## 2. Prediction questions
 
@@ -26,18 +26,18 @@ content_license: CC-BY-4.0
 
 ## 3. Worked reasoning examples
 
-**Question:** Why do most food chains rarely extend beyond four or five trophic levels?
+**Question:** Why are very long food chains uncommon, and why is one fixed trophic-transfer percentage inadequate?
 
 **Reasoning:**
-1. **Identify the core principle:** The flow of energy through an ecosystem is governed by the laws of thermodynamics.
-2. **Apply the mechanism:** At each trophic level, organisms consume energy. However, a large portion of this energy is used for metabolic processes (respiration, movement) and is ultimately lost as heat. Furthermore, not all biomass from the lower level is consumed or digestible.
-3. **Quantify the effect:** On average, only about 10% of the energy stored as biomass in one trophic level is converted to biomass in the next level (the 10% rule).
-4. **Synthesise the conclusion:** If a primary producer captures 10,000 units of solar energy, the primary consumer stores 1,000 units, the secondary consumer stores 100 units, the tertiary consumer stores 10 units, and a quaternary consumer would only receive 1 unit. Beyond four or five levels, there is simply not enough residual energy to sustain a viable population of apex predators.
+1. Define the measured quantity: ingestion, assimilation, production, biomass, or energy flow give different efficiencies.
+2. At each transfer, some production is not consumed, some ingested material is not assimilated, and organisms use assimilated energy for maintenance, movement, reproduction, and respiration.
+3. Transfer efficiency varies with temperature, body size, food quality, metabolic strategy, ecosystem, and timescale.
+4. Build a sensitivity table using several plausible efficiencies rather than one fixed percentage. Repeated multiplication still reduces energy or production available to higher levels, but chain length also depends on habitat size, productivity, omnivory, subsidies, and population viability.
 
 ## 4. Thought experiments
 
-- **The Closed Jar:** Imagine you have a large, hermetically sealed glass jar. You place soil, water, a small plant, and a few herbivorous insects inside, then seal it and place it in sunlight. Trace the path of a single carbon atom over a month. What must happen for the system to survive indefinitely? What is the most likely cause of failure?
-- **The Trophic Cascade:** Imagine a forest where wolves are the apex predators, hunting deer, which in turn eat tree saplings. If the wolves are entirely removed, trace the causal chain of events over the next fifty years. How might the physical geography of the forest (e.g., the path of a river) change as a result of altering the biological network?
+- **Closed-system accounting model:** Draw a sealed-material but open-energy system containing producers, consumers, decomposers, water, gases, and mineral nutrients. Track carbon, nitrogen, oxygen, water, heat, and stored chemical energy. Which reservoirs or trace compounds accumulate, and why does material recycling not imply unlimited stability?
+- **Trophic-cascade uncertainty:** Model predator removal as a set of competing causal pathways involving herbivore behaviour, abundance, vegetation, climate, hunting, disease, and spatial movement. Which observations would be needed before claiming downstream geomorphic change?
 
 ## 5. Household and browser-based explorations
 
@@ -65,8 +65,17 @@ content_license: CC-BY-4.0
 
 - **To deepen mathematical understanding:** Study non-linear dynamics and chaos theory, focusing on bifurcation diagrams and strange attractors.
 - **To explore applications:** Investigate the field of ecological engineering and permaculture, looking at how human agricultural systems can be designed to mimic natural ecosystems.
-- **To understand global impacts:** Move on to Module 16: Climate and Earth Systems, to see how these ecological principles scale up to govern the entire biosphere and interact with the atmosphere and oceans.
+- **To understand global impacts:** Move on to Module 16: Earth and Planetary Systems, to see how these ecological principles scale up to govern the entire biosphere and interact with the atmosphere and oceans.
 
 ## 10. Reasoning notes
 
 When analysing complex systems, resist the urge to look for single, linear causes for observed events. In highly connected networks with multiple feedback loops, causality is often circular and distributed. A sudden collapse is rarely the result of the final, proximate trigger (the "straw that broke the camel's back"), but rather the culmination of a long-term erosion of resilience. Always ask: "What are the hidden feedback loops?" and "At what scale is this phenomenon occurring?"
+
+## 11. Sources
+
+1. Holling, C. S. *Resilience and Stability of Ecological Systems*. https://www.annualreviews.org/doi/abs/10.1146/annurev.es.04.110173.000245
+2. May, R. M. *Will a Large Complex System Be Stable?* https://www.nature.com/articles/238413a0
+3. Scheffer, M., et al. *Catastrophic Shifts in Ecosystems*. https://www.nature.com/articles/35098000
+4. Dunne, J. A., et al. *Food-web Structure and Network Theory*. https://www.pnas.org/doi/abs/10.1073/pnas.192407699
+5. U.S. Environmental Protection Agency. *Guiding Principles for Constructed Treatment Wetlands*. https://www.epa.gov/wetlands/guiding-principles-constructed-treatment-wetlands-providing-water-quality-and-wildlife
+6. European Space Agency. *MELiSSA Environmental Control and Life Support Research*. https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Life_Support_and_Physical_Sciences/Research_and_development
