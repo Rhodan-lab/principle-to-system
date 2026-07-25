@@ -33,7 +33,7 @@ phase8.EXACT["science/14-dna-evolution/overview.md"].update(
     }
 )
 
-phase8.EXACT["science/15-ecosystems-complex-systems/explore.md"].update(
+phase8.EXACT.setdefault("science/15-ecosystems-complex-systems/explore.md", {}).update(
     {
         "- If a highly connected, central species (a \"keystone species\") is removed from a food web, what is the likely cascade of effects compared to removing a species with only one or two connections?":
             "- If a species with strong measured effects on ecosystem structure is removed, how might outcomes differ from removing a highly connected species? Why are keystone effect, network degree, biomass, and functional uniqueness different quantities?",
