@@ -13,7 +13,7 @@ VALIDATOR = ROOT / "scripts" / "validate_phase10_synthesis.py"
 OLD_LITERAL = '        ("A single hardware design that can execute any algorithm expressed in its instruction set",'
 NEW_LITERAL = '        ("a single hardware design that can execute any algorithm expressed in its instruction set",'
 
-OLD_STATUS = '''## Repository status on the Phase 10 branch
+LEGACY_STATUS = '''## Repository status on the Phase 10 branch
 
 - Modules 01–20: **Reviewed**;
 - 6 pathways: **Reviewed**;
@@ -22,7 +22,7 @@ OLD_STATUS = '''## Repository status on the Phase 10 branch
 - source ledger: **143 records**;
 - no core or synthesis artifact is Complete.
 '''
-NEW_STATUS = '''## Repository status on the Phase 10 branch
+CURRENT_STATUS = '''## Repository status on the Phase 10 branch
 
 ### Phase 8 — Life and Earth Systems Modules 13–16
 
@@ -41,6 +41,41 @@ NEW_STATUS = '''## Repository status on the Phase 10 branch
 - source ledger: **143 records**;
 - no core or synthesis artifact is Complete.
 '''
+FULL_STATUS = '''## Repository status on the Phase 10 branch
+
+### Foundations Modules 01–05
+
+- Modules 01–05: **Reviewed**;
+
+### Physical Science Modules 06–12
+
+- Modules 06–12: **Reviewed**;
+
+### Phase 8 — Life and Earth Systems Modules 13–16
+
+- Modules 13–16: **Reviewed**;
+
+### Phase 9 Technology review implemented and merged through PR #10
+
+- Modules 17–20: **Reviewed**;
+- Modules 01–20: **Reviewed**;
+
+### Reconciled synthesis layer
+
+- 6 pathways: **Reviewed**;
+- 7 crosscutting concepts: **Reviewed**;
+- 3 knowledge maps: **Reviewed**;
+- source ledger: **143 records**;
+- no core or synthesis artifact is Complete.
+
+## Historical continuity record
+
+- Phase 9 Technology review implemented and validated on draft PR #10 before that pull request was merged.
+- Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
+- The Phase 9 central-ledger transition was 131 → 143 records.
+- Permanent CI is read-only.
+- No core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
+'''
 
 OLD_LEDGER_HEADER = 'cells[0].lower() in {"module", "---"}'
 NEW_LEDGER_HEADER = 'cells[0].lower() in {"module", "title", "---"}'
@@ -48,8 +83,10 @@ NEW_LEDGER_HEADER = 'cells[0].lower() in {"module", "title", "---"}'
 
 def normalized_reconciler(text: str) -> str:
     fixed = text.replace(OLD_LITERAL, NEW_LITERAL)
-    if NEW_STATUS not in fixed:
-        fixed = fixed.replace(OLD_STATUS, NEW_STATUS)
+    if FULL_STATUS not in fixed:
+        fixed = fixed.replace(CURRENT_STATUS, FULL_STATUS)
+    if FULL_STATUS not in fixed:
+        fixed = fixed.replace(LEGACY_STATUS, FULL_STATUS)
     return fixed
 
 
@@ -72,15 +109,21 @@ def main() -> int:
     errors: list[str] = []
     if OLD_LITERAL in source_fixed or NEW_LITERAL not in source_fixed:
         errors.append("Phase 10 pathway literal is not normalized")
-    if NEW_STATUS not in source_fixed:
-        errors.append("Phase 8–9 continuity markers are not preserved in generated project state")
+    if FULL_STATUS not in source_fixed:
+        errors.append("historical Phase 6–9 continuity markers are not preserved in generated project state")
     for marker in (
+        "Modules 01–05: **Reviewed**",
+        "Modules 06–12: **Reviewed**",
         "Phase 8 — Life and Earth Systems Modules 13–16",
         "Modules 13–16: **Reviewed**",
-        "Phase 9 Technology review implemented",
+        "Phase 9 Technology review implemented and validated on draft PR #10",
+        "Technology review | Implemented and validated on PR #10; awaiting merge",
         "Modules 17–20: **Reviewed**",
         "Modules 01–20: **Reviewed**",
+        "131 → 143 records",
         "**143 records**",
+        "Permanent CI is read-only",
+        "no core module is Complete",
     ):
         if marker not in source_fixed:
             errors.append(f"generated project state marker missing: {marker}")
