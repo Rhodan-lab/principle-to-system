@@ -3,7 +3,8 @@
 > Review date: 2026-07-26  
 > Scope: 6 pathways, 7 crosscutting concepts, 3 knowledge maps  
 > Transition: legacy Complete claims → Reviewed synthesis  
-> Source-ledger transition: none; preserve 143 records
+> Source-ledger transition: none; preserve 143 records  
+> Validation status: implemented and validated on draft PR #11
 
 ## Purpose
 
@@ -16,6 +17,7 @@ Phase 10 reconciles the repository’s synthesis layer against the scientificall
 3. Several pathways retained claims superseded by Modules 06–20, including hard transistor thresholds, universal material classes, unconstrained genome editing, simplified AI scaling, instantaneous grid balance, and channel-capacity shortcuts.
 4. Several concepts retained claims superseded by Modules 01–16, including deterministic causal definitions, energy stored in bonds, universal scale-free networks, fixed nanoscale thresholds, and one-to-one structure–function reasoning.
 5. Terminology for `requires`, `enables`, `constrains`, `measures`, `models`, and `controls` was not consistently separated.
+6. Initial machine substitutions left several grammatically joined or scientifically overgeneralised passages; the final editorial-scientific pass corrected those passages across all pathways and concepts.
 
 ## Canonical synthesis contract
 
@@ -43,13 +45,29 @@ A synthesis file is Reviewed only when:
 - concepts distinguish observation, model, mechanism, intervention, interpretation, and design;
 - no synthesis file is marked Complete before Phase 12 release validation.
 
-## Expected artifacts
+## Validation artifacts
 
 - `synthesis/phase-10-canonical-graph.json`
 - `scripts/apply_phase10_synthesis.py`
+- `scripts/finalize_phase10_synthesis.py`
+- `scripts/normalize_phase10_reconciler.py`
 - `scripts/validate_phase10_synthesis.py`
+- `scripts/validate_phase10_audit.py`
 - `reports/phase-10-synthesis-reconciliation.md`
 - `.github/workflows/validate-phase-10-synthesis.yml`
+
+The temporary branch-writing workflow was removed after the coordinated transaction. The permanent workflow uses `contents: read` and verifies metadata, sources, Phases 6–9 continuity, the final synthesis state, canonical edges, links, audit history, repository structure, and strict applied-material validation.
+
+## Validation result
+
+- all 20 core modules remain Reviewed;
+- all 16 synthesis files are Reviewed;
+- the complete dependency map contains the canonical direct prerequisite edges;
+- relationship labels distinguish prerequisites from enabling, constraining, measuring, modelling, and controlling relations;
+- final-state editorial reconciliation is idempotent;
+- source ledger remains exactly 143 records;
+- no core or synthesis artifact is Complete;
+- independent review and merge remain pending.
 
 ## Status after Phase 10
 
