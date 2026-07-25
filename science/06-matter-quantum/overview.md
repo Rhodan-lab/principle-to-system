@@ -138,3 +138,5 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 2. OpenStax. *Chemistry 2e: Development of Quantum Theory*. https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory
 3. National Institute of Standards and Technology. *Atomic Spectroscopy Databases*. https://www.nist.gov/pml/atomic-spectroscopy-databases
 4. LibreTexts Chemistry. *Quantum Mechanics and Atomic Structure*. https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure
+5. National Institute of Biomedical Imaging and Bioengineering. *Magnetic Resonance Imaging (MRI)*. https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri
+6. National Institute of Standards and Technology. *Designing Advanced Scanning Probe Microscopy Instruments*. https://www.nist.gov/programs-projects/designing-advanced-scanning-probe-microscopy-instruments

@@ -33,15 +33,13 @@ Using the impulse-momentum theorem, the impulse $J$ equals the change in momentu
 $$ J = F_{\text{avg}} \cdot t = \Delta p $$
 $$ F_{\text{avg}} = \frac{\Delta p}{t} = \frac{-3.0 \, \text{kg}\cdot\text{m/s}}{0.20 \, \text{s}} = -15 \, \text{N} $$
 
-The negative sign indicates the force is directed opposite to the car's initial motion. The result illustrates that increasing stopping time reduces the magnitude of average force for the same momentum change. Real forces vary during contact, so a force sensor would reveal a time-dependent profile.
+The negative sign indicates the force is directed opposite to the cart's initial motion. The result illustrates that increasing stopping time reduces the magnitude of average force for the same momentum change. Real forces vary during contact, so a force sensor would reveal a time-dependent profile.
 
 # 4. Thought experiments
 
-**Newton's Cannonball**
+**Orbital free-fall simulation**
 
-Imagine a very tall mountain on Earth, reaching above the atmosphere so there is no air resistance. Place a powerful cannon at the peak, aimed perfectly horizontally. If you fire a cannonball at a low speed, it will follow a parabolic path and hit the ground. If you fire it faster, it will travel further before hitting the ground, because the Earth curves away beneath it. 
-
-Now, imagine firing the cannonball at a specific, very high speed. The ball falls toward the Earth due to gravity, but the Earth's surface curves away at the exact same rate that the ball falls. The cannonball is now in continuous free-fall, never hitting the ground. It has achieved orbit. This thought experiment, originally proposed by Isaac Newton, elegantly unifies the physics of falling apples with the orbits of planets.
+Imagine a small test object already above the atmosphere in a simulation. Give it a modest horizontal velocity: gravity curves its path downward until it intersects Earth. Increase the horizontal velocity and the intersection occurs farther away. At the appropriate speed, the object continuously falls toward Earth while the surface curves away beneath it, producing an orbit. How do initial altitude, horizontal speed, and Earth's curvature determine whether the trajectory intersects the surface, forms an ellipse, or escapes?
 
 # 5. Household and browser-based explorations
 

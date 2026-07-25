@@ -140,3 +140,4 @@ Electromagnetism operates across an enormous range of scales. Spatially, it gove
 2. OpenStax. *University Physics Volume 2*. https://openstax.org/books/university-physics-volume-2/pages/1-introduction
 3. OpenStax. *Maxwell's Equations and Electromagnetic Waves*. https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves
 4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume II*. https://www.feynmanlectures.caltech.edu/II_toc.html
+5. Bureau International des Poids et Mesures. *The International System of Units (SI), 9th edition*. https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf

@@ -105,3 +105,4 @@ The extraction and processing of metals and the manufacturing of carbon fibre co
 2. University of Central Florida. *University Physics Volume 1: Bernoulli's Equation*. https://pressbooks.online.ucf.edu/osuniversityphysics/chapter/14-6-bernoullis-equation/
 3. Massachusetts Institute of Technology. *Mechanical Behavior of Materials: Linear Elastic Behavior*. https://mitxonline.mit.edu/courses/course-v1:MITxT+3.032.1x/
 4. Nairn, J. A. (2000). Fracture mechanics of composites with residual stresses. https://www.cof.orst.edu/cof/wse/faculty/Nairn/papers/Damage.pdf
+5. NASA Glenn Research Center. *Bernoulli and Newton*. https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/bernoulli-and-newton/
