@@ -1,0 +1,89 @@
+name: Validate Phase 9 Technology
+
+on:
+  push:
+    branches:
+      - agent/phase-9-technology-review
+    paths:
+      - 'technology/17-materials-manufacturing/**'
+      - 'technology/18-semiconductors-electronics/**'
+      - 'technology/19-software-ai/**'
+      - 'technology/20-sensors-control-infrastructure/**'
+      - 'sources/**'
+      - 'reports/phase-9-*'
+      - 'scripts/**'
+      - 'INDEX.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-9-technology.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-9-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed review
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate canonical metadata
+        run: python3 scripts/normalize_module_metadata.py
+
+      - name: Validate normalized source foundation
+        run: |
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Validate Foundations continuity through Phase 9
+        run: |
+          python3 scripts/apply_foundations_review_sources.py --check
+          python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
+
+      - name: Validate Physical Science continuity
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/finalize_phase7_review.py --check
+
+      - name: Validate Life and Earth continuity through Phase 9
+        run: |
+          python3 scripts/apply_phase8_review_sources.py --check
+          python3 scripts/finalize_phase8_review.py --check
+          python3 scripts/validate_phase8_continuity_phase9.py
+
+      - name: Validate Phase 9 source and content contracts
+        run: |
+          python3 scripts/normalize_phase9_transformer_literals.py --check
+          python3 scripts/normalize_phase9_finalizer.py --check
+          python3 scripts/apply_phase9_review_sources.py --check
+          python3 scripts/finalize_phase9_review.py --check
+          python3 scripts/validate_phase9_technology_review.py
+
+      - name: Verify Phase 9 deterministic idempotence
+        shell: bash
+        run: |
+          python3 scripts/finalize_phase9_review.py --write
+          git diff --exit-code -- \
+            technology/17-materials-manufacturing \
+            technology/18-semiconductors-electronics \
+            technology/19-software-ai \
+            technology/20-sensors-control-infrastructure \
+            INDEX.md
+
+      - name: Run repository structural validator
+        run: python3 scripts/validate_repo.py
+
+      - name: Validate Phase 9 audit and read-only state
+        run: python3 scripts/validate_phase9_audit.py
