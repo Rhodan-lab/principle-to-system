@@ -2,10 +2,10 @@
 title: "Cause and Effect"
 slug: concept-cause-and-effect
 domain: crosscutting
-status: complete
+status: reviewed
 prerequisites: []
 connections: [01-scientific-reasoning, 07-chemical-bonding, 09-motion-forces, 10-electricity-magnetism, 15-ecosystems-complex-systems, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -13,17 +13,17 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-**Cause and effect** is the relationship in which one event (the cause) produces another event (the effect) through a specific mechanism. In science, establishing causality requires demonstrating that the cause precedes the effect, that a plausible mechanism connects them, and that the relationship holds under controlled variation. In engineering, designing for causality means ensuring that intended inputs reliably produce intended outputs while unintended causes are excluded or mitigated.
+**Cause and effect** describes how changing one factor would change an outcome under a stated causal model, intervention, population, timescale, and set of background conditions. In science, causal identification requires assumptions and evidence that distinguish intervention effects from confounding, selection, reverse direction, measurement error, and chance; temporal order and mechanism alone are not sufficient. In engineering, designing for causality means ensuring that intended inputs reliably produce intended outputs while unintended causes are excluded or mitigated.
 
 ## Why scientists and engineers use it
 
-All scientific explanation is ultimately causal: we explain *why* something happens by identifying the chain of mechanisms that produces it. Engineers invert this reasoning — they select causes (inputs, forces, signals) that will produce desired effects (motion, computation, structural integrity) within acceptable tolerances. Without causal reasoning, science reduces to description and engineering reduces to trial and error.
+Many scientific explanations are causal, while others classify, describe, unify, constrain, or derive patterns without identifying a manipulable cause: we explain *why* something happens by identifying the chain of mechanisms that produces it. Engineers invert this reasoning — they select causes (inputs, forces, signals) that will produce desired effects (motion, computation, structural integrity) within acceptable tolerances. Without causal reasoning, science reduces to description and engineering reduces to trial and error.
 
 ## Demonstrations across modules
 
 ### Newton's second law and mechanical causation (Module 09)
 
-A net force $\vec{F}$ applied to a mass $m$ causes an acceleration $\vec{a} = \vec{F}/m$. The causal chain is explicit: force is the cause, acceleration is the effect, and mass is the mediating property. Removing the force removes the acceleration (in an inertial frame). This directness makes Newtonian mechanics the archetype of causal physical explanation.
+A net force $\vec{F}$ applied to a mass $m$ causes an acceleration $\vec{a} = \vec{F}/m$. The causal chain is explicit: the equation relates net force and acceleration within a Newtonian model and inertial frame; causal interpretation depends on the chosen intervention, system boundary, and constraints, and mass is the mediating property. Removing the force removes the acceleration (in an inertial frame). This directness makes Newtonian mechanics the archetype of causal physical explanation.
 
 ### Electromagnetic induction (Module 10)
 
@@ -35,11 +35,11 @@ Increasing temperature causes faster molecular collisions with sufficient activa
 
 ### Feedback loops in ecosystems (Module 15)
 
-In predator–prey dynamics, an increase in prey population causes an increase in predator population (more food), which in turn causes a decrease in prey population (more predation). This circular causality produces oscillations (Lotka–Volterra cycles). Misidentifying the direction of causation — confusing correlation in time series with mechanism — is a common error in ecology.
+In predator–prey dynamics, an increase in prey population causes an increase in predator population (more food), which in turn causes a decrease in prey population (more predation). The classical Lotka–Volterra model has idealised neutrally stable closed orbits; real predator–prey dynamics can damp, grow, shift, or behave differently when additional mechanisms are included. Misidentifying the direction of causation — confusing correlation in time series with mechanism — is a common error in ecology.
 
 ### Control systems and engineered causation (Module 20)
 
-A PID controller measures the effect (process variable), computes the error relative to a setpoint, and adjusts the cause (actuator output) to minimise that error. The entire architecture is a designed causal loop: sensor → controller → actuator → process → sensor. Engineering reliability depends on ensuring that no unmodelled cause (disturbance) overwhelms the designed causal pathway.
+A PID controller measures the effect (process variable), computes the error relative to a setpoint, and computes an actuator command from error and other signals subject to dynamics, delay, saturation, safety, and objective definitions. The entire architecture is a designed causal loop: sensor → controller → actuator → process → sensor. Engineering reliability depends on ensuring that no unmodelled cause (disturbance) overwhelms the designed causal pathway.
 
 ## Common misunderstandings
 
@@ -56,3 +56,10 @@ A PID controller measures the effect (process variable), computes the error rela
 - [Module 10: Electricity and Magnetism](../science/10-electricity-magnetism/overview.md) — induction as electromagnetic causation.
 - [Module 15: Ecosystems and Complex Systems](../science/15-ecosystems-complex-systems/overview.md) — feedback and circular causation.
 - [Module 20: Sensors, Control, and Infrastructure](../technology/20-sensors-control-infrastructure/overview.md) — engineered causal loops.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

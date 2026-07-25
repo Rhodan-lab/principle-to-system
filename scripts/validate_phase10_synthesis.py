@@ -62,7 +62,7 @@ def ledger_count(result: Result) -> int:
         cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
         if len(cells) != 8:
             continue
-        if cells[0].lower() in {"module", "---"} or all(set(cell) <= {"-", ":"} for cell in cells):
+        if cells[0].lower() in {"module", "title", "---"} or all(set(cell) <= {"-", ":"} for cell in cells):
             continue
         count += 1
     if count != 143:

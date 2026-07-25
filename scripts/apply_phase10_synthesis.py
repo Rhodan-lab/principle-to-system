@@ -53,7 +53,7 @@ REPLACEMENTS: dict[str, tuple[tuple[str, str], ...]] = {
         ("Forward voltage drop ($\\sim 0.6$ V for silicon) wastes energy.", "Forward voltage depends on current, area, temperature, material, structure, and series resistance, so conduction loss must be evaluated at a specified operating point."),
         ("Above the threshold voltage $V_{th}$, an inversion layer forms and current flows; below it, the channel is off.", "Gate bias changes surface potential and channel charge continuously. Threshold voltage is an extraction and compact-model parameter; subthreshold current, leakage, contacts, capacitance, and short-channel effects prevent a perfectly hard on/off boundary."),
         ("The *binary switch* — the transistor is treated as either fully on (logic 1) or fully off (logic 0), ignoring the analogue transition region.", "The *binary abstraction* — circuits assign voltage ranges and timing windows to logical states while device current remains analogue and continuous. Noise margins, delay, leakage, and metastability bound the abstraction."),
-        ("A single hardware design that can execute any algorithm expressed in its instruction set", "A programmable architecture that executes instruction sequences within its ISA, memory, timing, numerical, and computability limits"),
+        ("a single hardware design that can execute any algorithm expressed in its instruction set", "A programmable architecture that executes instruction sequences within its ISA, memory, timing, numerical, and computability limits"),
         ("each running program behaves as if it has exclusive access to a complete computer", "process, virtual-memory, container, or virtual-machine abstractions provide selected resource and isolation views whose guarantees depend on hardware, kernel, configuration, and implementation"),
     ),
     "pathways/biology-to-biotechnology.md": (
@@ -399,7 +399,17 @@ The repository remains a material-first educational foundation. Software is inte
 
 ## Repository status on the Phase 10 branch
 
+### Phase 8 — Life and Earth Systems Modules 13–16
+
+- Modules 13–16: **Reviewed**;
+
+### Phase 9 Technology review implemented and merged through PR #10
+
+- Modules 17–20: **Reviewed**;
 - Modules 01–20: **Reviewed**;
+
+### Reconciled synthesis layer
+
 - 6 pathways: **Reviewed**;
 - 7 crosscutting concepts: **Reviewed**;
 - 3 knowledge maps: **Reviewed**;

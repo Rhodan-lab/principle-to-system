@@ -2,16 +2,16 @@
 title: "Foundations Map"
 slug: map-foundations
 domain: map
-status: complete
+status: reviewed
 prerequisites: []
 connections: []
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 # Foundations Map
 
-This map shows the dependency relationships among the five foundational modules — the intellectual tools that all science and technology modules require.
+This map shows the canonical prerequisite direction among Modules 01–05. Every prerequisite arrow points from the knowledge assumed first to the module that depends on it.
 
 ```mermaid
 graph TD
@@ -21,32 +21,31 @@ graph TD
     M04["04 Probability & Statistics"]
     M05["05 Computation & Algorithms"]
 
-    M01 -->|requires| M02
-    M01 -->|requires| M03
-    M03 -->|requires| M04
-    M01 -->|requires| M04
-    M03 -->|requires| M05
-    M04 -->|requires| M05
-
-    M02 -->|measures| M03
-    M04 -->|is modelled by| M03
-    M05 -->|is implemented by| M03
+    M01 -->|prerequisite for| M02
+    M01 -->|prerequisite for| M03
+    M01 -->|prerequisite for| M04
+    M03 -->|prerequisite for| M04
+    M03 -->|prerequisite for| M05
+    M04 -->|prerequisite for| M05
 ```
 
-## Relationship key
+## Canonical direct prerequisites
 
-| From | To | Label | Meaning |
-| --- | --- | --- | --- |
-| 01 | 02 | requires | Measurement depends on reasoning about evidence and error |
-| 01 | 03 | requires | Mathematical modelling depends on understanding what models explain |
-| 01 | 04 | requires | Statistical inference depends on reasoning about hypotheses |
-| 03 | 04 | requires | Probability theory uses mathematical formalism |
-| 03 | 05 | requires | Numerical methods implement mathematical models |
-| 04 | 05 | requires | Simulation uses statistical sampling (Monte Carlo) |
-| 02 | 03 | measures | Measurement provides the data that models describe |
-| 04 | 03 | is modelled by | Statistical distributions are mathematical objects |
-| 05 | 03 | is implemented by | Algorithms execute mathematical procedures |
+| Module | Direct prerequisites |
+| --- | --- |
+| 01 Scientific Reasoning | None |
+| 02 Measurement & Uncertainty | 01 |
+| 03 Mathematical Models | 01 |
+| 04 Probability & Statistics | 01, 03 |
+| 05 Computation & Algorithms | 03, 04 |
 
-## Reading this map
+## Reading rule
 
-Arrows point from prerequisite to dependent module. A learner entering the repository should begin at Module 01 (no incoming arrows) and follow the arrows outward. Modules 04 and 05 have the most prerequisites and are best approached after the others.
+`A -->|prerequisite for| B` means learners should normally understand A before B. Measurement data can inform models and algorithms can implement models, but those are non-prerequisite relations and are intentionally omitted from this prerequisite-only map.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

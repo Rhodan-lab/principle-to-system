@@ -2,10 +2,10 @@
 title: "Waves to Global Communication"
 slug: pathway-waves-to-global-communication
 domain: pathway
-status: complete
+status: reviewed
 prerequisites: [10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]
 connections: [05-computation-algorithms, 17-materials-manufacturing]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -23,7 +23,7 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 **Engineering problem solved:** Transmitting information without physical wires, at the speed of light, through free space or guided media.
 
-**Trade-off:** Lower frequencies propagate farther (less atmospheric absorption, better diffraction around obstacles) but carry less information (bandwidth is proportional to frequency). Higher frequencies offer more bandwidth but require line-of-sight paths and are attenuated by rain, foliage, and buildings.
+**Trade-off:** Propagation and available bandwidth depend on allocation, antenna size, environment, absorption, diffraction, scattering, regulation, coding, power, and geometry. Frequency alone does not set information capacity or guarantee line of sight and are attenuated by rain, foliage, and buildings.
 
 **Prerequisite knowledge:** [Module 10 — Electricity and Magnetism](../science/10-electricity-magnetism/overview.md), [Module 11 — Waves and Signals](../science/11-waves-signals/overview.md)
 
@@ -33,7 +33,7 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 **Mechanism used:** A carrier wave at frequency $f_c$ is modified (modulated) so that its amplitude, frequency, or phase varies in proportion to the information signal. The modulated wave occupies a bandwidth around $f_c$ determined by the information rate (Shannon–Hartley theorem: $C = B \log_2(1 + \text{SNR})$).
 
-**Abstraction introduced:** The *channel* — a defined frequency band carrying a defined data rate, independent of the physical medium. Multiple channels can coexist via frequency-division, time-division, or code-division multiplexing.
+**Abstraction introduced:** The *channel model* — a stated probabilistic or deterministic relation between transmitted and received signals, including bandwidth, noise, interference, fading, memory, feedback, and decoding assumptions. Multiple channels can coexist via frequency-division, time-division, or code-division multiplexing.
 
 **Engineering problem solved:** Sharing the electromagnetic spectrum among many simultaneous users without mutual interference, and maximising the information carried per hertz of bandwidth.
 
@@ -45,11 +45,11 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 ## Stage 3: Optical fibre — guiding light
 
-**Mechanism used:** Total internal reflection confines light within a glass fibre whose core has a higher refractive index than its cladding. Signals propagate as guided modes with extremely low attenuation ($\sim 0.2$ dB/km at 1550 nm wavelength in silica).
+**Mechanism used:** Refractive-index structure supports guided electromagnetic modes within a glass fibre; ray total-internal-reflection language is a useful geometric approximation in some regimes whose core has a higher refractive index than its cladding. Signals propagate as guided modes with extremely low attenuation ($\sim 0.2$ dB/km at 1550 nm wavelength in silica).
 
 **Abstraction introduced:** The *optical link* — a point-to-point connection characterised by bandwidth, distance, and bit-error rate, abstracting away the wave optics of mode propagation and dispersion.
 
-**Engineering problem solved:** Transmitting terabits per second over thousands of kilometres (submarine cables spanning oceans) with regeneration only every 50–80 km (erbium-doped fibre amplifiers).
+**Engineering problem solved:** Transmitting high aggregate rates over long terrestrial or submarine routes using wavelength multiplexing, amplification, coherent detection, coding, dispersion management, repeaters, and route-specific engineering (erbium-doped fibre amplifiers).
 
 **Trade-off:** Fibre offers enormous bandwidth but requires physical installation (trenching, submarine laying) — high capital cost and long deployment time. Chromatic and polarisation-mode dispersion limit reach without compensation, requiring digital signal processing at each end.
 
@@ -59,11 +59,11 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 ## Stage 4: Digital signal processing and error correction
 
-**Mechanism used:** Analogue signals are sampled (Nyquist theorem: sample at $\geq 2f_{max}$), quantised, and represented as binary data. Forward error correction (FEC) codes add redundancy so that the receiver can detect and correct bit errors without retransmission.
+**Mechanism used:** Band-limited signals can be sampled without aliasing above the relevant Nyquist rate only with the stated spectral assumptions and practical anti-alias filtering, quantised, and represented as binary data. Forward error correction (FEC) codes add redundancy so that the receiver can detect and correct bit errors without retransmission.
 
 **Abstraction introduced:** The *bit stream* — information reduced to a sequence of 0s and 1s, independent of the physical representation (voltage, light intensity, phase). This enables universal processing by digital logic.
 
-**Engineering problem solved:** Reliable communication over noisy channels. Turbo codes and LDPC codes approach the Shannon limit — transmitting near the theoretical maximum rate with arbitrarily low error probability.
+**Engineering problem solved:** Reliable communication over noisy channels. Turbo codes and LDPC codes can approach information-theoretic bounds for stated channel models as block length and complexity grow, while finite systems trade error probability, latency, energy, rate, and implementation cost.
 
 **Trade-off:** Stronger error correction requires more redundancy (lower effective data rate) and more computational power for decoding. Latency-sensitive applications (voice, gaming) must balance error resilience against processing delay.
 
@@ -73,11 +73,11 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 ## Stage 5: Packet switching and the Internet Protocol
 
-**Mechanism used:** Data is divided into packets, each labelled with source and destination addresses. Routers forward packets independently along available paths, and the destination reassembles them in order. This statistical multiplexing shares link capacity efficiently among bursty users.
+**Mechanism used:** Data is divided into packets, each labelled with source and destination addresses. Routers forward IP datagrams using routing and forwarding state. Ordering, retransmission, congestion control, security, and application semantics are handled by other layers or protocols when required. This statistical multiplexing shares link capacity efficiently among bursty users.
 
-**Abstraction introduced:** The *network layer* (IP) — a uniform addressing and routing scheme that makes the physical medium (fibre, copper, radio) invisible to applications. Any device with an IP address can communicate with any other, regardless of the underlying link technology.
+**Abstraction introduced:** The *network layer* (IP) — a uniform addressing and routing scheme that makes the physical medium (fibre, copper, radio) invisible to applications. IP supplies a common network-layer addressing and forwarding model, while reachability still depends on routing, policy, translation, firewalls, naming, identity, and application protocols, regardless of the underlying link technology.
 
-**Engineering problem solved:** Scalable, resilient, heterogeneous interconnection of billions of devices. The internet's layered architecture (physical → link → network → transport → application) allows each layer to evolve independently.
+**Engineering problem solved:** Scalable, resilient, heterogeneous interconnection of billions of devices. The internet's layered architecture (physical → link → network → transport → application) reduces coupling but does not eliminate cross-layer dependencies, ossification, shared failure modes, or coordinated change.
 
 **Trade-off:** Packet switching introduces variable latency (jitter) and potential packet loss during congestion. Real-time applications require quality-of-service mechanisms or over-provisioning. The end-to-end principle places intelligence at endpoints, making the network simple but pushing complexity to applications.
 
@@ -91,7 +91,7 @@ This pathway traces how the physics of electromagnetic waves becomes the global 
 
 **Abstraction introduced:** The *wireless channel model* — a statistical description of signal fading, interference, and capacity that allows network planning without deterministic ray-tracing of every environment.
 
-**Engineering problem solved:** Connecting mobile users to the fibre backbone at broadband speeds, anywhere within coverage. 5G NR achieves multi-gigabit peak rates using millimetre-wave spectrum and massive MIMO.
+**Engineering problem solved:** Connecting mobile users to the fibre backbone at broadband speeds, anywhere within coverage. Modern cellular systems combine licensed spectrum, coding, scheduling, antenna arrays, handover, power control, backhaul, and deployment density; realised rate and coverage are environment- and load-dependent.
 
 **Trade-off:** Spectrum is finite and regulated. More users in a cell require either more spectrum (expensive, scarce), smaller cells (more infrastructure), or more sophisticated interference management (more computation). Coverage vs capacity is the permanent tension in wireless network design.
 
@@ -112,3 +112,10 @@ Maxwell's equations (electromagnetic wave propagation)
 ```
 
 Each stage converts a physical phenomenon into an engineering abstraction, solves a specific connectivity problem, and introduces a constraint (bandwidth, noise, latency, spectrum scarcity) that the next stage must manage.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

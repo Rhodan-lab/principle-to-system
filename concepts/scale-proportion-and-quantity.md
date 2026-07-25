@@ -2,10 +2,10 @@
 title: "Scale, Proportion, and Quantity"
 slug: concept-scale-proportion-quantity
 domain: crosscutting
-status: complete
+status: reviewed
 prerequisites: []
 connections: [02-measurement-uncertainty, 03-mathematical-models, 06-matter-quantum, 09-motion-forces, 16-earth-planetary, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -17,7 +17,7 @@ content_license: CC-BY-4.0
 
 ## Why scientists and engineers use it
 
-Physical laws do not change with scale, but their *relative importance* does. Surface tension dominates at millimetre scales; gravity dominates at kilometre scales. Engineers must identify the relevant scale of a problem to select the correct model, the right materials, and the appropriate tolerances. Proportional reasoning — understanding that doubling a dimension cubes the volume — prevents catastrophic design errors and enables dimensional analysis as a powerful checking tool.
+Fundamental descriptions and effective models apply over stated regimes; as scale changes, new degrees of freedom, approximations, fluctuations, interfaces, and dominant dimensionless ratios can become relevant. Surface tension dominates at millimetre scales; gravity dominates at kilometre scales. Engineers must identify the relevant scale of a problem to select the correct model, the right materials, and the appropriate tolerances. Proportional reasoning — understanding that doubling a dimension cubes the volume — prevents catastrophic design errors and enables dimensional analysis as a powerful checking tool.
 
 ## Demonstrations across modules
 
@@ -27,7 +27,7 @@ Any physically meaningful equation must be dimensionally consistent. The Bucking
 
 ### Quantum vs classical regimes (Module 06)
 
-Quantum effects become significant when the de Broglie wavelength $\lambda = h/p$ is comparable to the system's characteristic length. For macroscopic objects, $\lambda \sim 10^{-35}$ m — negligible. For electrons in atoms, $\lambda \sim 10^{-10}$ m — comparable to atomic radii. The *scale* of the system determines whether quantum mechanics or classical mechanics is the appropriate model.
+Quantum effects become significant when the de Broglie wavelength $\lambda = h/p$ is comparable to the system's characteristic length. For ordinary macroscopic centre-of-mass motion the de Broglie wavelength is generally far below experimental resolution, whereas microscopic systems can require quantum descriptions — negligible. For electrons in atoms, $\lambda \sim 10^{-10}$ m — comparable to atomic radii. The *scale* of the system determines whether quantum mechanics or classical mechanics is the appropriate model.
 
 ### Gravitational scaling (Module 09)
 
@@ -35,7 +35,7 @@ Gravitational force scales as $F \propto m_1 m_2 / r^2$. For objects on Earth's 
 
 ### Transistor scaling and Moore's law (Module 18)
 
-Reducing transistor gate length from micrometres to nanometres changes the dominant physics: at scales below ~5 nm, quantum tunnelling through the gate oxide becomes significant, and classical MOSFET models break down. The proportional reduction in switching energy ($\propto CV^2$, where $C$ scales with area) enabled decades of exponential performance growth, but the approach to atomic scales imposes fundamental limits.
+Reducing transistor gate length from micrometres to nanometres changes the dominant physics: as dimensions, fields, barriers, and carrier numbers change, tunnelling, confinement, variability, contacts, electrostatics, and heat can require quantum-aware and nanoscale compact models; no one node label defines the transition. The proportional reduction in switching energy ($\propto CV^2$, where $C$ scales with area) enabled decades of exponential performance growth, but the approach to atomic scales imposes fundamental limits.
 
 ### Planetary energy balance (Module 16)
 
@@ -43,7 +43,7 @@ Earth's climate is governed by the proportion between incoming solar radiation (
 
 ### Measurement uncertainty and significant figures (Module 02)
 
-Every measured quantity has a scale of uncertainty. Reporting a length as $1.5000 \pm 0.0001$ m claims a relative uncertainty of $7 \times 10^{-5}$. Propagating uncertainties through calculations requires understanding how proportional errors combine — linearly for sums, quadratically for products — ensuring that final results honestly reflect the scale of what is actually known.
+Every measured quantity has a scale of uncertainty. Reporting a length as $1.5000 \pm 0.0001$ m claims a relative uncertainty of $7 \times 10^{-5}$. Uncertainty propagation depends on the measurement model, derivatives or simulation, covariance, distributions, nonlinearity, and reporting convention; simple independent-error formulas are special cases — ensuring that final results honestly reflect the scale of what is actually known.
 
 ## Common misunderstandings
 
@@ -59,3 +59,10 @@ Every measured quantity has a scale of uncertainty. Reporting a length as $1.500
 - [Module 09: Motion and Forces](../science/09-motion-forces/overview.md) — gravitational and inertial scaling.
 - [Module 16: Earth and Planetary Systems](../science/16-earth-planetary/overview.md) — planetary-scale energy balance.
 - [Module 18: Semiconductors and Electronics](../technology/18-semiconductors-electronics/overview.md) — nanoscale device physics.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

@@ -2,10 +2,10 @@
 title: "Fields to Electric Power"
 slug: pathway-fields-to-electric-power
 domain: pathway
-status: complete
+status: reviewed
 prerequisites: [09-motion-forces, 10-electricity-magnetism, 08-energy-thermodynamics, 17-materials-manufacturing, 20-sensors-control-infrastructure]
 connections: [12-fluids-materials, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -31,7 +31,7 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 ## Stage 2: Electromagnetic induction
 
-**Mechanism used:** Faraday's law — a time-varying magnetic flux through a conducting loop induces an electromotive force (EMF): $\mathcal{E} = -d\Phi_B/dt$. The Lorentz force on charge carriers in the conductor is the microscopic mechanism.
+**Mechanism used:** Faraday's law — a time-varying magnetic flux through a conducting loop induces an electromotive force (EMF): $\mathcal{E} = -d\Phi_B/dt$. Induction is described by the Maxwell–Faraday relation and, for moving conductors, the magnetic part of the Lorentz force; the appropriate description depends on geometry and reference frame.
 
 **Abstraction introduced:** The *generator principle* — mechanical rotation of a coil in a magnetic field (or rotation of a magnet past a coil) converts kinetic energy to electrical energy continuously.
 
@@ -51,7 +51,7 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 **Engineering problem solved:** Efficient, smooth power delivery. Three-phase systems use less conductor material than equivalent single-phase systems and naturally produce rotating magnetic fields for motors.
 
-**Trade-off:** Synchronous generators must maintain precise rotational speed (tied to grid frequency: 50 or 60 Hz). Any mismatch causes destructive currents. Governors and automatic voltage regulators add complexity to maintain synchronism.
+**Trade-off:** Synchronous generators must maintain precise rotational speed (tied to grid frequency: 50 or 60 Hz). Loss of synchronism, excessive angle or frequency deviation, faults, and protection interactions can produce damaging currents or instability; acceptable operating regions depend on machine and grid models. Governors and automatic voltage regulators add complexity to maintain synchronism.
 
 **Prerequisite knowledge:** [Module 10](../science/10-electricity-magnetism/overview.md), [Module 17 — Materials Science](../technology/17-materials-manufacturing/overview.md)
 
@@ -63,7 +63,7 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 **Abstraction introduced:** The *heat rate* — the amount of thermal energy input required per unit of electrical energy output (kJ/kWh), a single metric for power plant efficiency.
 
-**Engineering problem solved:** Providing the mechanical torque to spin generators at thousands of MW scale. Combined-cycle gas turbines achieve ~60% thermal efficiency by cascading a gas turbine (high $T_H$) with a steam turbine (recovering exhaust heat).
+**Engineering problem solved:** Providing mechanical work over application-dependent power scales. Combined cycles can improve efficiency by using exhaust heat, but performance depends on ambient conditions, load, equipment, fuel, cooling, and accounting boundary by cascading a gas turbine (high $T_H$) with a steam turbine (recovering exhaust heat).
 
 **Trade-off:** Higher efficiency requires higher turbine inlet temperatures, which demand expensive superalloys and thermal barrier coatings. Material limits set the practical ceiling on $T_H$.
 
@@ -77,7 +77,7 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 **Abstraction introduced:** The *transmission voltage level* — a standardised operating voltage (e.g., 400 kV, 765 kV) that defines the design of towers, insulators, and conductors for a given power capacity and distance.
 
-**Engineering problem solved:** Transmitting gigawatts of power over hundreds of kilometres with losses below 5%. Without high-voltage transmission, power plants would need to be adjacent to every load centre.
+**Engineering problem solved:** Transmitting large power flows over distance while managing resistive, dielectric, corona, reactive, conversion, stability, congestion, protection, and right-of-way constraints. Without high-voltage transmission, power plants would need to be adjacent to every load centre.
 
 **Trade-off:** Higher voltages require larger clearances (taller towers, wider rights-of-way) and more expensive insulation. Corona discharge at very high voltages causes energy loss and radio interference. HVDC transmission eliminates reactive power losses over very long distances but requires expensive converter stations.
 
@@ -87,13 +87,13 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 ## Stage 6: Grid control and power balancing
 
-**Mechanism used:** In an AC grid, supply must instantaneously equal demand (plus losses) at all times, because electrical energy cannot be stored in the grid itself. Frequency is the real-time indicator of balance: excess generation causes frequency to rise; excess demand causes it to fall.
+**Mechanism used:** In an AC grid, active-power imbalance changes energy stored in rotating masses, fields, converters, storage, and responsive demand while frequency, voltage, flows, and controls evolve across timescales; operation requires balance within dynamic and protection limits. Frequency is an important indicator of active-power dynamics but not a complete description of network state: excess generation causes frequency to rise; excess demand causes it to fall.
 
 **Abstraction introduced:** *Automatic generation control (AGC)* — a hierarchical control system that dispatches generators to maintain frequency at the nominal value (50 or 60 Hz ± tight tolerance).
 
 **Engineering problem solved:** Coordinating thousands of generators and millions of loads across continental-scale grids in real time, maintaining voltage, frequency, and power flow within safe limits.
 
-**Trade-off:** Faster response requires spinning reserves (generators running below capacity, ready to ramp), which wastes fuel. Battery storage and demand response offer alternatives but add capital cost. Renewable intermittency (solar, wind) increases the need for flexibility, challenging grid stability.
+**Trade-off:** Faster response requires reserves and headroom that carry opportunity, efficiency, wear, emissions, and cost trade-offs. Battery storage and demand response offer alternatives but add capital cost. Renewable intermittency (solar, wind) increases the need for flexibility, challenging grid stability.
 
 **Prerequisite knowledge:** [Module 20 — Sensors, Control, and Infrastructure](../technology/20-sensors-control-infrastructure/overview.md)
 
@@ -113,3 +113,10 @@ electric and magnetic fields (Maxwell's equations)
 ```
 
 Each stage introduces an abstraction that hides the complexity below it, solves a specific engineering problem, and creates a new constraint that the next stage must address.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

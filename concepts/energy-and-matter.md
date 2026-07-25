@@ -2,10 +2,10 @@
 title: "Energy and Matter"
 slug: concept-energy-and-matter
 domain: crosscutting
-status: complete
+status: reviewed
 prerequisites: []
 connections: [06-matter-quantum, 07-chemical-bonding, 08-energy-thermodynamics, 13-cells-bioenergetics, 16-earth-planetary, 17-materials-manufacturing]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -13,17 +13,17 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-**Matter** is anything that has mass and occupies space — atoms, molecules, and their assemblies. **Energy** is the capacity to do work or transfer heat — a conserved quantity that can change form (kinetic, potential, thermal, chemical, electromagnetic, nuclear) but cannot be created or destroyed within a closed system. The interplay between energy and matter — how energy is stored in matter, transferred between material systems, and transformed from one form to another — underlies all physical, chemical, and biological processes.
+**Matter** refers to physical constituents such as atoms, molecules, condensed phases, plasmas, and particles whose properties are described by the applicable physical theory — atoms, molecules, and their assemblies. **Energy** is a conserved state quantity associated with time-translation symmetry in closed physical descriptions; work and heat are transfer modes, not substances stored in a container — a conserved quantity that can change form (kinetic, potential, thermal, chemical, electromagnetic, nuclear) but cannot be created or destroyed within a closed system. The interplay between energy and matter — how energy is stored in matter, transferred between material systems, and transformed from one form to another — underlies all physical, chemical, and biological processes.
 
 ## Why scientists and engineers use it
 
-Conservation of energy and conservation of mass (or mass-energy in relativistic contexts) are the most powerful constraints in science. They allow prediction without knowing every microscopic detail: if you know the energy input and the system boundary, you know the energy output regardless of the internal pathway. Engineers use energy and mass balances to design power plants, chemical reactors, biological processes, and electronic systems. Violations of these balances indicate measurement error, missing pathways, or new physics.
+Conservation of energy and conservation of mass (or mass-energy in relativistic contexts) are the most powerful constraints in science. They allow prediction without knowing every microscopic detail: balances constrain totals, but prediction also requires storage, accumulation, transfer modes, losses, sign conventions, state, and measurement uncertainty. Engineers use energy and mass balances to design power plants, chemical reactors, biological processes, and electronic systems. Violations of these balances indicate measurement error, missing pathways, or new physics.
 
 ## Demonstrations across modules
 
 ### Atomic structure and binding energy (Module 06)
 
-Electrons in atoms occupy quantised energy levels. The binding energy of an electron — the energy required to remove it from the atom — determines chemical reactivity. Nuclear binding energy (the mass defect, $\Delta E = \Delta m \cdot c^2$) explains why fusion of light nuclei and fission of heavy nuclei both release energy: both move toward the iron-56 peak of binding energy per nucleon.
+Electrons in atoms occupy quantised energy levels. The binding energy of an electron — the energy required to remove it from the atom — determines chemical reactivity. Nuclear binding energy (the mass defect, $\Delta E = \Delta m \cdot c^2$) explains why fusion of light nuclei and fission of heavy nuclei both release energy: many energy-releasing nuclear reactions move nuclei toward the high-binding-energy region near iron and nickel, subject to reaction pathways and conservation laws of binding energy per nucleon.
 
 ### Chemical energy and bond enthalpies (Module 07)
 
@@ -35,15 +35,15 @@ The first law of thermodynamics ($\Delta U = Q - W$) states that the internal en
 
 ### Biological energy coupling (Module 13)
 
-Living cells couple exergonic reactions (ATP hydrolysis, $\Delta G \approx -30.5$ kJ/mol) to endergonic processes (protein synthesis, ion pumping, muscle contraction). The matter (ATP molecule) carries energy in its phosphoanhydride bonds, and enzymes ensure that the energy is transferred to the correct acceptor rather than dissipated as heat. Photosynthesis captures electromagnetic energy and stores it in the chemical bonds of glucose — a matter-based energy reservoir.
+Living cells couple exergonic reactions (ATP hydrolysis, $\Delta G \approx -30.5$ kJ/mol) to endergonic processes (protein synthesis, ion pumping, muscle contraction). ATP hydrolysis can drive coupled processes because the complete reaction has a favourable Gibbs free-energy change under cellular conditions; no isolated bond contains a packet of usable energy, and enzymes ensure that the energy is transferred to the correct acceptor rather than dissipated as heat. Photosynthesis captures electromagnetic energy and stores it in the chemical bonds of glucose — a matter-based energy reservoir.
 
 ### Planetary energy balance (Module 16)
 
-Earth receives $\sim 1361$ W/m² of solar radiation and re-emits an equal amount as infrared radiation at steady state. Greenhouse gases absorb and re-emit some of this outgoing radiation, reducing the effective emissivity and raising surface temperature until a new balance is reached. The entire climate system is an energy-flow problem: solar input → absorption → redistribution by atmosphere and ocean → re-emission to space.
+Earth's top-of-atmosphere energy budget depends on solar input, albedo, spectral absorption and emission, clouds, circulation, storage, and effective emission temperature. Greenhouse gases alter wavelength-dependent optical depth and emission levels rather than acting as a simple reduced-emissivity blanket and raising surface temperature until a new balance is reached. The entire climate system is an energy-flow problem: solar input → absorption → redistribution by atmosphere and ocean → re-emission to space.
 
 ### Materials processing and embodied energy (Module 17)
 
-Manufacturing transforms raw matter into useful forms, and every transformation requires energy. Smelting aluminium from bauxite requires $\sim 13$ kWh/kg because the Al–O bond is strong. The embodied energy of a material — the total energy consumed from extraction through fabrication — is a critical engineering quantity for lifecycle assessment and sustainable design.
+Manufacturing transforms raw matter into useful forms, and every transformation requires energy. Primary aluminium production is electricity- and process-intensive, with values depending on technology, feedstock, electricity, boundaries, yield, and allocation because the Al–O bond is strong. The embodied energy of a material — the total energy consumed from extraction through fabrication — is a critical engineering quantity for lifecycle assessment and sustainable design.
 
 ## Common misunderstandings
 
@@ -60,3 +60,10 @@ Manufacturing transforms raw matter into useful forms, and every transformation 
 - [Module 13: Cells and Bioenergetics](../science/13-cells-bioenergetics/overview.md) — biological energy coupling.
 - [Module 16: Earth and Planetary Systems](../science/16-earth-planetary/overview.md) — planetary energy balance.
 - [Module 17: Materials Science and Manufacturing](../technology/17-materials-manufacturing/overview.md) — embodied energy in materials.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.
