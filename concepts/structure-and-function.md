@@ -13,21 +13,21 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-**Structure** is the arrangement of components — spatial, temporal, or logical — within a system. **Function** is what the system does: the behaviour or capability that emerges from that arrangement. The relationship between structure and function is one of the most powerful generalisations in science and engineering: structure constrains possible behaviour, but function also depends on material state, environment, history, dynamics, interfaces, control, and definition of the task, and if you need it to do something specific, you must build it accordingly.
+**Structure** is an arrangement of components, states, or relations across spatial, temporal, logical, or organisational scales. **Function** is a behaviour, role, or service defined relative to a context and observer. Structure constrains possible behaviour, but function also depends on material state, environment, history, dynamics, interfaces, control, and the task definition.
 
 ## Why scientists and engineers use it
 
-Identifying the structure–function relationship allows prediction without exhaustive testing. A biologist who knows the three-dimensional fold of a protein can generate hypotheses about catalytic activity that still require thermodynamic, kinetic, environmental, and experimental validation. An engineer who knows the crystal structure of a metal can predict its mechanical properties. Conversely, when a desired function is specified, the structure–function principle guides the design of structures that will achieve it. This bidirectional reasoning — from structure to function and from function to required structure — is the core of both scientific explanation and engineering design.
+Structure can narrow hypotheses and guide measurement without uniquely determining outcome. A protein fold or crystal structure supports mechanistic hypotheses, but catalytic or mechanical performance still requires composition, defects, state, environment, loading, kinetics, and test evidence. Inverse design is generally many-to-many: several structures may realise a function, and one structure may support several functions.
 
 ## Demonstrations across modules
 
 ### Electron configuration and chemical behaviour (Module 06)
 
-Electronic states, occupancy, interactions, molecular environment, and symmetry help explain how an atom bonds, what ions it forms, and what spectra it emits. Carbon's four valence electrons in $sp^3$ hybridised orbitals create a tetrahedral bonding geometry that enables the structural diversity of organic chemistry. Silicon's similar but larger orbitals enable semiconductor behaviour. Structure (electron arrangement) determines function (chemical and electronic properties).
+Electronic states, occupancy, interactions, molecular environment, and symmetry help explain bonding, ions, spectra, and transport. Carbon supports many hybridisation and bonding environments; silicon's solid-state behaviour depends on periodic structure, defects, dopants, interfaces, and temperature. Electronic structure constrains chemistry and transport without uniquely fixing them.
 
 ### Molecular shape and reactivity (Module 07)
 
-Enzyme active sites have precise three-dimensional shapes that complement their substrates (the lock-and-key or induced-fit model). A single amino acid substitution can alter the shape enough to destroy catalytic function — as in sickle-cell haemoglobin, where a valine-for-glutamate swap changes the protein's surface, causing aggregation. Oxygen transport depends on molecular structure together with concentration, binding equilibria, allostery, cellular environment, flow, and physiology (quaternary fold and surface chemistry).
+Enzyme function depends on dynamic conformational ensembles, electrostatics, solvent, cofactors, substrate access, and reaction pathways; lock-and-key and induced-fit are limited models. A substitution can change stability, dynamics, binding, assembly, expression, or have little measurable effect. Haemoglobin oxygen transport combines molecular structure with binding equilibria, allostery, concentration, cells, flow, and physiology.
 
 ### Cell membrane architecture (Module 13)
 
@@ -35,11 +35,11 @@ The phospholipid bilayer — hydrophilic heads facing water, hydrophobic tails f
 
 ### DNA double helix and information storage (Module 14)
 
-The double-helical structure of DNA — antiparallel sugar-phosphate backbones with hydrogen-bonded base pairs (A–T, G–C) — enables three functions simultaneously: information storage (base sequence), faithful replication (complementary base pairing), and regulated expression (accessibility of promoter regions). The structure is not merely correlated with these functions; it mechanistically enables them.
+DNA's base sequence and complementary duplex structure support storage and template-directed copying, while fidelity also depends on polymerases, proofreading, repair, chromatin, cell state, and damage. Regulated expression involves promoters, enhancers, RNA processing, accessibility, transcription machinery, and many other structures; the double helix alone does not provide all three functions.
 
 ### Crystal structure and material properties (Module 17)
 
-The arrangement of atoms in a crystal lattice determines hardness, conductivity, optical properties, and failure modes. Crystal structure affects available deformation mechanisms, but ductility, strength, and fracture also depend on composition, temperature, rate, texture, grain structure, defects, processing, and environment. Diamond and graphite are both pure carbon, but their radically different structures (3D tetrahedral vs 2D layered) produce radically different functions (hardest natural material vs lubricant).
+Atomic arrangement and electronic structure influence mechanics, transport, optics, and failure, while composition, defects, phases, texture, grain structure, environment, processing, geometry, and test method also matter. Diamond and graphite illustrate strong structural effects, but labels such as 'hardest' or 'lubricant' remain property- and condition-specific.
 
 ### Transistor geometry and switching speed (Module 18)
 

@@ -17,21 +17,21 @@ content_license: CC-BY-4.0
 
 ## Why scientists and engineers use it
 
-Many scientific explanations are causal, while others classify, describe, unify, constrain, or derive patterns without identifying a manipulable cause: we explain *why* something happens by identifying the chain of mechanisms that produces it. Engineers invert this reasoning — they select causes (inputs, forces, signals) that will produce desired effects (motion, computation, structural integrity) within acceptable tolerances. Without causal reasoning, science reduces to description and engineering reduces to trial and error.
+Many scientific explanations are causal, while others classify, describe, unify, constrain, or derive patterns without identifying a manipulable cause. Causal explanations connect interventions, mechanisms, counterfactual contrasts, and outcomes under explicit assumptions. Engineers use causal models to select inputs and safeguards, but they also rely on descriptive, predictive, and empirical evidence when mechanisms are incomplete.
 
 ## Demonstrations across modules
 
 ### Newton's second law and mechanical causation (Module 09)
 
-A net force $\vec{F}$ applied to a mass $m$ causes an acceleration $\vec{a} = \vec{F}/m$. The causal chain is explicit: the equation relates net force and acceleration within a Newtonian model and inertial frame; causal interpretation depends on the chosen intervention, system boundary, and constraints, and mass is the mediating property. Removing the force removes the acceleration (in an inertial frame). This directness makes Newtonian mechanics the archetype of causal physical explanation.
+Within a Newtonian point-particle model in an inertial frame, net force and acceleration satisfy $\sum\vec F=m\vec a$. Interpreting a force change as an intervention requires the system boundary, constraints, mass model, and other forces to remain specified. The equation is a powerful dynamical relation, not by itself a complete causal identification argument.
 
 ### Electromagnetic induction (Module 10)
 
-A changing magnetic flux $\Phi_B$ through a conducting loop causes an electromotive force $\mathcal{E} = -d\Phi_B/dt$ (Faraday's law). The mechanism is the Lorentz force on charge carriers in the conductor. This causal relationship is the operating principle of generators, transformers, and induction sensors — the cause (mechanical rotation or varying current) reliably produces the effect (electrical energy or signal).
+Faraday's law relates circulation of electric field to changing magnetic flux, while moving-conductor problems can also involve the magnetic Lorentz force. Generator, transformer, and sensor behaviour depends on geometry, material response, circuit loading, motion, losses, and reference frame; one scalar flux derivative is not the whole mechanism.
 
 ### Reaction kinetics and catalysis (Module 07)
 
-Increasing temperature causes faster molecular collisions with sufficient activation energy, which causes higher reaction rates (Arrhenius equation). A catalyst provides an alternative pathway with lower activation energy, causing the same products to form faster without being consumed. The causal chain — temperature → collision energy → reaction probability — is quantitatively predictable.
+Temperature can change rate constants, populations, transport, phases, and mechanisms. The Arrhenius form is an empirical or model relation over a stated range. A catalyst participates in a reaction network and is regenerated in the net cycle; it changes kinetics without changing the equilibrium constant for the overall reaction under fixed conditions.
 
 ### Feedback loops in ecosystems (Module 15)
 
@@ -43,7 +43,7 @@ A PID controller measures the effect (process variable), computes the error rela
 
 ## Common misunderstandings
 
-- **Temporal sequence does not prove causation.** Event A preceding event B is necessary but not sufficient for A causing B. Confounders, coincidences, and reverse causation are alternatives that must be ruled out by mechanism and controlled experiment.
+- **Temporal sequence does not prove causation.** A cause cannot occur after its effect under the chosen causal ordering, but measurement timing may be coarse or delayed. Confounding, selection, reverse direction, measurement error, and chance require design assumptions and evidence; a controlled experiment is powerful but not always possible or sufficient by itself.
 - **Causation can be non-linear.** Small causes can produce large effects (bifurcations, tipping points) and large causes can produce small effects (saturation, buffering). Proportionality is a special case, not a universal rule.
 - **Circular causation is real but not paradoxical.** Feedback loops create situations where A causes B and B causes A, but at different times or through different mechanisms. Identifying the timescale and the entry point resolves apparent paradoxes.
 - **Statistical causation is not deterministic.** In quantum mechanics and in complex systems, causes increase the probability of effects without guaranteeing them in individual instances. Causality still holds at the level of mechanism and ensemble.

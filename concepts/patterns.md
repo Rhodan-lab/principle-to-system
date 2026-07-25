@@ -35,7 +35,7 @@ The mapping from 64 codons to 20 amino acids follows a degenerate but structured
 
 ### Fractal and scale-free network topology (Module 15)
 
-Some biological, ecological, technological, and social networks show heavy-tailed or approximately power-law features over limited ranges, while others do not; model choice and sampling strongly affect the conclusion — a pattern indicating preferential attachment or optimisation under resource constraints. Recognising this pattern allows prediction of network robustness: robustness depends on topology, weights, direction, dynamics, dependency, repair, common-cause failure, and the attack or failure model; degree distribution alone is insufficient.
+Some biological, ecological, technological, and social networks show heavy-tailed or approximately power-law features over limited ranges, while others do not. Sampling, thresholding, dependence, finite size, and model comparison strongly affect the conclusion. Preferential attachment is one possible mechanism among many; robustness requires topology, weights, direction, dynamics, dependency, repair, and a specified failure model.
 
 ### Repeating logic structures in digital circuits (Module 18)
 
@@ -43,7 +43,7 @@ Processor architectures are built from repeated patterns of logic gates (AND, OR
 
 ## Common misunderstandings
 
-- **Correlation is not pattern.** A pattern implies reproducibility under stated conditions; a single correlation in noisy data may be coincidence. Genuine patterns survive replication and have mechanistic explanations.
+- **A correlation can be a pattern without being causal.** Reproducibility, effect size, uncertainty, measurement quality, and out-of-sample performance determine whether a regularity is credible. A mechanistic explanation strengthens understanding but is not part of the definition of every empirical pattern.
 - **Patterns are not always simple.** Chaotic systems produce patterns (strange attractors) that are deterministic but aperiodic. Complexity does not negate regularity; it changes the mathematical tools needed to describe it.
 - **Human perception over-detects patterns.** Apophenia — seeing structure in randomness — is a cognitive bias. Scientific method exists partly to distinguish real patterns from perceived ones via controlled experiments and statistical tests.
 

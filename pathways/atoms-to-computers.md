@@ -21,9 +21,9 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Abstraction introduced:** The concept of *electron configuration* — a compact description of which energy levels are occupied — replaces the full quantum-mechanical wavefunction for practical purposes.
 
-**Engineering problem solved:** Identifying which elements have the right electronic properties (four valence electrons, moderate band gap) to serve as controllable conductors. Silicon and germanium emerge as candidates.
+**Engineering problem solved:** Identifying material systems whose electronic states, defects, interfaces, thermal behaviour, manufacturability, and supply constraints can support controllable devices. Silicon became dominant through a combination of suitable oxide chemistry, process maturity, abundance, and device performance rather than one valence-electron rule.
 
-**Trade-off:** Quantum mechanics is exact but computationally intractable for many-electron atoms. Approximations (Hartree–Fock, density functional theory) trade accuracy for tractability.
+**Trade-off:** Many-electron calculations require approximations and numerical choices. Hartree–Fock, density-functional methods, empirical models, and experiments offer different balances of accuracy, interpretation, computational cost, and domain of validity.
 
 **Prerequisite knowledge:** [Module 06 — Matter and Quantum Foundations](../science/06-matter-quantum/overview.md)
 
@@ -37,7 +37,7 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Engineering problem solved:** Controlling conductivity. By adding impurity atoms (doping) — phosphorus for n-type (extra electrons) or boron for p-type (extra holes) — engineers tune the carrier concentration over many orders of magnitude.
 
-**Trade-off:** Narrower band gaps increase intrinsic carrier concentration (more leakage current at high temperature). Wider band gaps require higher voltages to switch. Silicon's moderate gap is a compromise between switching voltage and thermal stability.
+**Trade-off:** Band gap, carrier statistics, mobility, breakdown field, contacts, defects, thermal conductivity, dielectric interfaces, and fabrication jointly shape leakage, voltage, speed, temperature range, and reliability. No single band-gap ordering determines the best device material.
 
 **Prerequisite knowledge:** [Module 06](../science/06-matter-quantum/overview.md), [Module 17 — Materials Science](../technology/17-materials-manufacturing/overview.md)
 
@@ -63,9 +63,9 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Abstraction introduced:** The *binary abstraction* — circuits assign voltage ranges and timing windows to logical states while device current remains analogue and continuous. Noise margins, delay, leakage, and metastability bound the abstraction. This digital abstraction enables Boolean logic.
 
-**Engineering problem solved:** Amplification and switching with no moving parts, at speeds determined by carrier transit time across the channel (picoseconds for nanometre gates).
+**Engineering problem solved:** Amplification and switching in compact solid-state devices. Device and circuit delay depend on capacitance, resistance, carrier transport, contacts, interconnect, load, supply, geometry, and the chosen timing definition.
 
-**Trade-off:** Smaller transistors switch faster and use less energy per switch, but suffer increased leakage current (quantum tunnelling through thin gate oxides) and greater variability in threshold voltage. This is the fundamental tension driving Moore's law and its eventual slowdown.
+**Trade-off:** Scaling can reduce some capacitances and increase density, but leakage, variability, electrostatics, interconnect, memory movement, heat, reliability, lithography, packaging, and cost can offset or reverse expected gains. Moore's observation is an economic and historical trend, not a device law.
 
 **Prerequisite knowledge:** [Module 18 — Semiconductors and Electronics](../technology/18-semiconductors-electronics/overview.md)
 
@@ -79,7 +79,7 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Engineering problem solved:** Composability — complex logic from simple, verified building blocks. Standard cell libraries provide pre-characterised gates with known timing, power, and area.
 
-**Trade-off:** CMOS draws significant power only during switching (dynamic power $P = \alpha C V^2 f$), but static leakage grows as transistors shrink. Power density, not transistor count, is now the primary design constraint.
+**Trade-off:** The approximation $P_{dyn}=\alpha C V^2 f$ describes selected switching losses at a stated boundary. Leakage, short-circuit current, clocks, memory, interconnect, I/O, data movement, workload, packaging, and cooling also matter; the dominant constraint depends on the system and operating point.
 
 **Prerequisite knowledge:** [Module 18](../technology/18-semiconductors-electronics/overview.md), [Module 05 — Computation](../foundations/05-computation-algorithms/overview.md)
 
@@ -89,11 +89,11 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Mechanism used:** Logic gates are composed into functional units — arithmetic logic units (ALUs), register files, control units, caches — connected by buses. A clock signal synchronises operations, and an instruction set architecture (ISA) defines the interface between hardware and software.
 
-**Abstraction introduced:** The *stored-program computer* (von Neumann architecture) — instructions and data share the same memory, and the processor fetches, decodes, and executes instructions sequentially (with pipelining and parallelism for performance).
+**Abstraction introduced:** The *stored-program architecture* — instructions are represented as data and executed through an instruction-set interface. Implementations may use caches, pipelines, speculation, parallel units, accelerators, separate memory paths, or other organisations while preserving selected architectural behaviour.
 
 **Engineering problem solved:** General-purpose computation — A programmable architecture that executes instruction sequences within its ISA, memory, timing, numerical, and computability limits, from word processing to climate simulation.
 
-**Trade-off:** The von Neumann bottleneck — memory bandwidth limits throughput because instructions and data compete for the same bus. Caches, out-of-order execution, and multi-core designs mitigate but do not eliminate this fundamental constraint.
+**Trade-off:** Computation, memory capacity, latency, bandwidth, coherence, communication, control flow, energy, and software locality interact. A shared instruction/data path is one possible bottleneck, not the only universal limit.
 
 **Prerequisite knowledge:** [Module 18](../technology/18-semiconductors-electronics/overview.md), [Module 05](../foundations/05-computation-algorithms/overview.md)
 
@@ -105,7 +105,7 @@ This pathway traces one defensible dependency route from atomic physics to progr
 
 **Abstraction introduced:** The *virtual machine* — process, virtual-memory, container, or virtual-machine abstractions provide selected resource and isolation views whose guarantees depend on hardware, kernel, configuration, and implementation, even though physical resources are shared. This enables multitasking, security isolation, and hardware independence.
 
-**Engineering problem solved:** Programmability and portability — software written once runs on any hardware that supports the same OS interface, and multiple programs coexist without interference.
+**Engineering problem solved:** Programmability, resource sharing, and conditional portability through specified language, ABI, runtime, operating-system, and hardware interfaces. Isolation and coexistence are engineered properties that can fail through defects, configuration, shared resources, or hostile inputs.
 
 **Trade-off:** Abstraction layers add overhead (context switches, memory management, system calls). Real-time and embedded systems sometimes bypass the OS for deterministic timing, sacrificing generality for predictability.
 

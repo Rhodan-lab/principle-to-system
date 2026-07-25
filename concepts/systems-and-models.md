@@ -13,17 +13,17 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-A **system** is a chosen set of entities, states, interactions, and boundaries used to answer a question or deliver a service; its boundary is an analytical and engineering decision, where the interactions produce behaviour that the components alone do not exhibit. A **model** is a simplified representation of a system — mathematical, computational, or conceptual — that captures the relationships relevant to a specific question while deliberately omitting irrelevant detail. Scientific and engineering reasoning uses multiple representations, measurements, theories, experiments, and models; none should be confused with the full physical or social reality.
+A **system** is a chosen set of entities, states, interactions, environments, and boundaries used for a question or service. Its boundary is an analytical and engineering choice. A **model** is a mathematical, computational, physical, statistical, or conceptual representation designed for a purpose; omitted detail is not necessarily irrelevant for another purpose. Measurements, theories, experiments, simulations, and models provide different evidence and should not be confused with the full physical or social reality.
 
 ## Why scientists and engineers use it
 
-No real system can be understood in its full complexity simultaneously. Models allow scientists to isolate mechanisms, make quantitative predictions, and test hypotheses against observation. Engineers use models to simulate performance before building, to identify failure modes, and to optimise designs within constraints. The discipline of defining system boundaries, inputs, outputs, and internal states is the foundation of both scientific analysis and engineering design.
+Models help isolate mechanisms, organise data, estimate unobserved quantities, compare alternatives, predict conditionally, and test assumptions. Engineers use them before and during operation, but high-consequence decisions also require measurements, verification, validation, margins, monitoring, and human judgement. Boundaries, inputs, outputs, states, disturbances, and stakeholders must match the question.
 
 ## Demonstrations across modules
 
 ### Thermodynamic systems and state functions (Module 08)
 
-Thermodynamics defines three system types: isolated (no exchange of energy or matter), closed (energy exchange only), and open (both). The choice of system boundary determines which conservation laws apply and which quantities are state functions. The ideal gas model $PV = nRT$ captures the essential behaviour of dilute gases by modelling molecules as non-interacting point particles — a deliberate simplification that fails at high pressure (van der Waals corrections) but is useful over a stated dilute-gas regime and fails when interactions, phase change, chemistry, or high density matter.
+Thermodynamic analyses commonly distinguish isolated, closed, and open control masses or volumes according to allowed transfers. Conservation laws remain fundamental, but their balance terms depend on the boundary. The ideal-gas equation is useful for suitable dilute gas states; real-gas interactions, phase change, chemistry, high density, and non-equilibrium conditions require other models.
 
 ### Computational simulation as model execution (Module 05)
 
@@ -35,18 +35,18 @@ An ecosystem can be modelled as a network of energy and nutrient flows between t
 
 ### Control system block diagrams (Module 20)
 
-Engineers represent control systems as block diagrams: each block is a transfer function (a model of a subsystem), and arrows represent signal flow. The entire system's behaviour emerges from the interconnection of these blocks. This abstraction allows analysis of stability, bandwidth, and robustness without knowing the physical details inside each block — input–output models can support analysis, but hidden state, nonlinearities, saturation, uncertainty, safety, and implementation may also matter.
+Block diagrams represent selected signal and subsystem relations; a block may be a transfer function, nonlinear operator, state-space model, estimator, controller, delay, or logic element. Interconnection supports analysis, but hidden state, sampling, saturation, uncertainty, physical energy flow, safety, cybersecurity, and implementation remain relevant.
 
 ### Software architecture as system design (Module 19)
 
-A software system is decomposed into modules with defined interfaces (APIs). Each module is a model of a responsibility: the database module models data persistence, the network module models communication. The system's emergent behaviour (user-facing functionality) arises from the interaction of these modules, and failures often occur at interfaces — exactly where system boundaries are drawn.
+Software can be decomposed into components and interfaces, but architecture varies across processes, services, libraries, data stores, queues, devices, users, and organisations. Interfaces encode contracts and failure semantics; failures can occur within components, across dependencies, through shared infrastructure, or from incorrect system boundaries.
 
 ## Common misunderstandings
 
 - **The map is not the territory.** A model is always a simplification. Treating model predictions as exact truths — rather than as approximations valid within stated assumptions — leads to overconfidence and engineering failures.
 - **System boundaries are choices, not discoveries.** Where you draw the boundary determines what counts as internal dynamics and what counts as external forcing. Different questions about the same physical reality may require different system definitions.
 - **More complex models are not always better.** A model should be as simple as possible for the question being asked (parsimony). Overfitting — adding parameters until the model matches noise — reduces predictive power. Model choice balances purpose, adequacy, identifiability, uncertainty, interpretability, cost, and consequence; simplicity is valuable but not an automatic optimum.
-- **Emergent properties are not magic.** When a system exhibits behaviour that its components individually do not, this is emergence. It arises from interactions, not from mysterious holistic forces. A good model of the interactions predicts the emergent behaviour.
+- **Emergence does not guarantee predictability.** Collective behaviour can arise from interactions, constraints, heterogeneity, adaptation, and environment. Even known local rules may be computationally difficult, sensitive, stochastic, or insufficient for reliable macro-level prediction.
 
 ## Connections to repository content
 

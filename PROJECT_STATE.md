@@ -33,6 +33,14 @@ The repository remains a material-first educational foundation. Software is inte
 
 ## Repository status on the Phase 10 branch
 
+### Foundations Modules 01–05
+
+- Modules 01–05: **Reviewed**;
+
+### Physical Science Modules 06–12
+
+- Modules 06–12: **Reviewed**;
+
 ### Phase 8 — Life and Earth Systems Modules 13–16
 
 - Modules 13–16: **Reviewed**;
@@ -49,6 +57,15 @@ The repository remains a material-first educational foundation. Software is inte
 - 3 knowledge maps: **Reviewed**;
 - source ledger: **143 records**;
 - no core or synthesis artifact is Complete.
+
+## Historical continuity record
+
+- Phase 9 Technology review implemented and validated on draft PR #10 before that pull request was merged.
+- Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
+- The Phase 9 central-ledger transition was 131 → 143 records.
+- Phase 10 Synthesis reconciliation is the current branch-stage audit label.
+- Permanent CI is read-only.
+- no core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
 
 Reviewed means focused reconciliation has checked metadata, canonical identifiers, links, prerequisite direction, terminology, equations, claims, limitations, and status consistency. It does not mean independently certified or release-ready.
 

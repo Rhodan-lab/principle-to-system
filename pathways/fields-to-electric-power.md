@@ -17,11 +17,11 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 ## Stage 1: Electric and magnetic fields
 
-**Mechanism used:** Charged particles create electric fields; moving charges (currents) create magnetic fields. These fields exert forces on other charges and currents, described by Coulomb's law and the Biot–Savart law. Maxwell's equations unify these phenomena and predict electromagnetic waves.
+**Mechanism used:** Charge and current distributions, together with changing fields and material response, are related by Maxwell's equations. Coulomb and Biot–Savart expressions are useful under restricted electrostatic or magnetostatic assumptions; forces on charges are described by the Lorentz law.
 
-**Abstraction introduced:** The *field* — a quantity defined at every point in space that encodes the force a test charge would experience, without requiring action at a distance.
+**Abstraction introduced:** The *field* — a spatial and temporal quantity used to represent electromagnetic state and interactions locally. Electric and magnetic fields have operational definitions, units, source relations, and measurement limits; neither is merely a hidden force table.
 
-**Engineering problem solved:** Predicting forces between conductors, the behaviour of capacitors and inductors, and the propagation of signals — all from the field description alone.
+**Engineering problem solved:** Analysing forces, energy storage, induction, circuits, waves, insulation, compatibility, and signal propagation using field models combined with material, geometry, boundary, and circuit descriptions.
 
 **Trade-off:** Fields are continuous mathematical objects; real measurements sample them at discrete points. Numerical field solvers (finite element methods) approximate the continuous solution on a mesh, trading resolution for computational cost.
 
@@ -33,11 +33,11 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 **Mechanism used:** Faraday's law — a time-varying magnetic flux through a conducting loop induces an electromotive force (EMF): $\mathcal{E} = -d\Phi_B/dt$. Induction is described by the Maxwell–Faraday relation and, for moving conductors, the magnetic part of the Lorentz force; the appropriate description depends on geometry and reference frame.
 
-**Abstraction introduced:** The *generator principle* — mechanical rotation of a coil in a magnetic field (or rotation of a magnet past a coil) converts kinetic energy to electrical energy continuously.
+**Abstraction introduced:** The *electromechanical generator* — relative motion, magnetic flux, conductors, and a connected circuit form a system that transfers mechanical work to electrical output, with losses and transient behaviour determined by the machine and load.
 
-**Engineering problem solved:** Converting any source of mechanical motion (steam turbine, water turbine, wind turbine) into electrical current.
+**Engineering problem solved:** Converting controlled shaft work from selected prime movers into electrical power with specified voltage, frequency, quality, efficiency, and protection requirements.
 
-**Trade-off:** The induced voltage is proportional to the rate of flux change, so higher voltages require faster rotation or stronger magnets. But faster rotation increases mechanical stress, and stronger magnets require expensive rare-earth materials or superconducting coils.
+**Trade-off:** Voltage and power depend on turns, geometry, flux, speed, excitation, saturation, cooling, insulation, frequency, and load. Increasing one design variable can raise mechanical, thermal, dielectric, material, control, or cost burdens; permanent magnets are only one excitation option.
 
 **Prerequisite knowledge:** [Module 10](../science/10-electricity-magnetism/overview.md), [Module 09 — Motion and Forces](../science/09-motion-forces/overview.md)
 
@@ -59,13 +59,13 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 ## Stage 4: The heat engine as prime mover
 
-**Mechanism used:** Thermodynamic cycles (Rankine for steam, Brayton for gas turbines) convert thermal energy from fuel combustion or nuclear fission into mechanical work. The second law limits efficiency to the Carnot bound $\eta \leq 1 - T_C/T_H$.
+**Mechanism used:** Heat-engine cycles transfer energy from a high-temperature source, produce work, and reject heat. The Carnot expression bounds ideal reversible operation between two reservoirs; real Rankine, Brayton, combined, nuclear, geothermal, and other plants require cycle-specific state, component, and boundary models.
 
-**Abstraction introduced:** The *heat rate* — the amount of thermal energy input required per unit of electrical energy output (kJ/kWh), a single metric for power plant efficiency.
+**Abstraction introduced:** *Heat rate* — thermal input per electrical output over a stated fuel, load, time, and accounting boundary. It supports comparison but does not capture start-up, part-load operation, auxiliaries, emissions, water, reliability, or lifecycle performance by itself.
 
-**Engineering problem solved:** Providing mechanical work over application-dependent power scales. Combined cycles can improve efficiency by using exhaust heat, but performance depends on ambient conditions, load, equipment, fuel, cooling, and accounting boundary by cascading a gas turbine (high $T_H$) with a steam turbine (recovering exhaust heat).
+**Engineering problem solved:** Supplying controlled shaft work over application-dependent power scales. Combined cycles can recover part of a gas turbine's exhaust energy in a steam cycle, while realised performance depends on ambient conditions, load, equipment, fuel, cooling, degradation, and the accounting boundary.
 
-**Trade-off:** Higher efficiency requires higher turbine inlet temperatures, which demand expensive superalloys and thermal barrier coatings. Material limits set the practical ceiling on $T_H$.
+**Trade-off:** Higher source temperature can improve an ideal cycle, but real optimisation also involves pressure ratio, cooling flow, blade aerodynamics, materials, coatings, emissions, lifetime, maintenance, cost, and off-design operation.
 
 **Prerequisite knowledge:** [Module 08 — Energy and Thermodynamics](../science/08-energy-thermodynamics/overview.md), [Module 12 — Fluids and Materials](../science/12-fluids-materials/overview.md)
 
@@ -73,13 +73,13 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 ## Stage 5: Transformers and high-voltage transmission
 
-**Mechanism used:** A transformer uses mutual induction between two coils sharing a magnetic core to step voltage up or down while conserving power ($V_1 I_1 \approx V_2 I_2$). Stepping voltage up reduces current, which reduces resistive losses ($P_{loss} = I^2 R$) in long transmission lines.
+**Mechanism used:** A transformer couples windings through time-varying magnetic flux. In an ideal sinusoidal model, voltage ratio follows turns ratio and input and output apparent power are related; real units include magnetising current, winding and core loss, leakage impedance, harmonics, insulation, temperature, and regulation. For a specified real-power transfer, higher voltage can reduce current-related conductor loss.
 
 **Abstraction introduced:** The *transmission voltage level* — a standardised operating voltage (e.g., 400 kV, 765 kV) that defines the design of towers, insulators, and conductors for a given power capacity and distance.
 
 **Engineering problem solved:** Transmitting large power flows over distance while managing resistive, dielectric, corona, reactive, conversion, stability, congestion, protection, and right-of-way constraints. Without high-voltage transmission, power plants would need to be adjacent to every load centre.
 
-**Trade-off:** Higher voltages require larger clearances (taller towers, wider rights-of-way) and more expensive insulation. Corona discharge at very high voltages causes energy loss and radio interference. HVDC transmission eliminates reactive power losses over very long distances but requires expensive converter stations.
+**Trade-off:** Voltage choice changes clearance, insulation, corona, conductor, tower, converter, protection, land, reliability, and environmental requirements. HVDC lines do not carry AC reactive power, but converter stations, controls, harmonics, losses, fault handling, and economics remain.
 
 **Prerequisite knowledge:** [Module 10](../science/10-electricity-magnetism/overview.md), [Module 17](../technology/17-materials-manufacturing/overview.md)
 
@@ -89,11 +89,11 @@ This pathway traces how the physics of electric and magnetic fields is transform
 
 **Mechanism used:** In an AC grid, active-power imbalance changes energy stored in rotating masses, fields, converters, storage, and responsive demand while frequency, voltage, flows, and controls evolve across timescales; operation requires balance within dynamic and protection limits. Frequency is an important indicator of active-power dynamics but not a complete description of network state: excess generation causes frequency to rise; excess demand causes it to fall.
 
-**Abstraction introduced:** *Automatic generation control (AGC)* — a hierarchical control system that dispatches generators to maintain frequency at the nominal value (50 or 60 Hz ± tight tolerance).
+**Abstraction introduced:** *Automatic generation control* — one supervisory layer that adjusts participating resources using frequency and interchange objectives over defined timescales. Primary response, local controls, dispatch, protection, markets, operators, and restoration remain distinct layers.
 
 **Engineering problem solved:** Coordinating thousands of generators and millions of loads across continental-scale grids in real time, maintaining voltage, frequency, and power flow within safe limits.
 
-**Trade-off:** Faster response requires reserves and headroom that carry opportunity, efficiency, wear, emissions, and cost trade-offs. Battery storage and demand response offer alternatives but add capital cost. Renewable intermittency (solar, wind) increases the need for flexibility, challenging grid stability.
+**Trade-off:** Flexibility can come from generation, storage, demand, networks, forecasting, controls, reserves, and operating rules. Needs depend on resource mix, location, correlation, network strength, contingencies, protection, and service criteria; variable renewable generation is neither automatically destabilising nor automatically sufficient.
 
 **Prerequisite knowledge:** [Module 20 — Sensors, Control, and Infrastructure](../technology/20-sensors-control-infrastructure/overview.md)
 

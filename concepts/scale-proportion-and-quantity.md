@@ -17,17 +17,17 @@ content_license: CC-BY-4.0
 
 ## Why scientists and engineers use it
 
-Fundamental descriptions and effective models apply over stated regimes; as scale changes, new degrees of freedom, approximations, fluctuations, interfaces, and dominant dimensionless ratios can become relevant. Surface tension dominates at millimetre scales; gravity dominates at kilometre scales. Engineers must identify the relevant scale of a problem to select the correct model, the right materials, and the appropriate tolerances. Proportional reasoning — understanding that doubling a dimension cubes the volume — prevents catastrophic design errors and enables dimensional analysis as a powerful checking tool.
+Fundamental descriptions and effective models apply over stated regimes. As scale changes, degrees of freedom, averaging, interfaces, fluctuations, transport lengths, and dimensionless ratios can change importance. Surface and body forces must be compared for a specified geometry and material. Under geometric similarity, doubling every length multiplies volume by eight; other scaling paths give different results.
 
 ## Demonstrations across modules
 
 ### Dimensional analysis and the Buckingham Pi theorem (Module 03)
 
-Any physically meaningful equation must be dimensionally consistent. The Buckingham Pi theorem shows that a system described by $n$ variables involving $k$ fundamental dimensions can be characterised by $n - k$ dimensionless groups. These groups (Reynolds number, Mach number, etc.) encode the proportional relationships that determine which regime a system occupies — laminar vs turbulent, subsonic vs supersonic.
+A valid physical equation must be dimensionally consistent, though consistency alone does not make it correct. Under the rank and completeness assumptions of dimensional analysis, $n$ dimensional variables with a dimension matrix of rank $k$ can be expressed through $n-k$ independent dimensionless groups. Regime boundaries still require equations or data; one dimensionless number rarely determines all behaviour.
 
 ### Quantum vs classical regimes (Module 06)
 
-Quantum effects become significant when the de Broglie wavelength $\lambda = h/p$ is comparable to the system's characteristic length. For ordinary macroscopic centre-of-mass motion the de Broglie wavelength is generally far below experimental resolution, whereas microscopic systems can require quantum descriptions — negligible. For electrons in atoms, $\lambda \sim 10^{-10}$ m — comparable to atomic radii. The *scale* of the system determines whether quantum mechanics or classical mechanics is the appropriate model.
+The de Broglie wavelength $\lambda=h/p$ is one scale relevant to wave behaviour, but coherence, action, temperature, coupling, measurement resolution, and environment also matter. Macroscopic centre-of-mass interference is usually unobservable under ordinary conditions, while microscopic systems can require quantum descriptions. Classical models can emerge as controlled approximations rather than replacing quantum theory at one sharp size.
 
 ### Gravitational scaling (Module 09)
 
@@ -35,21 +35,21 @@ Gravitational force scales as $F \propto m_1 m_2 / r^2$. For objects on Earth's 
 
 ### Transistor scaling and Moore's law (Module 18)
 
-Reducing transistor gate length from micrometres to nanometres changes the dominant physics: as dimensions, fields, barriers, and carrier numbers change, tunnelling, confinement, variability, contacts, electrostatics, and heat can require quantum-aware and nanoscale compact models; no one node label defines the transition. The proportional reduction in switching energy ($\propto CV^2$, where $C$ scales with area) enabled decades of exponential performance growth, but the approach to atomic scales imposes fundamental limits.
+As device dimensions, fields, barriers, and carrier populations change, tunnelling, confinement, discrete variability, contacts, electrostatics, interconnect, and self-heating require revised models. The switching approximation $E\sim CV^2$ is boundary- and activity-dependent, and capacitance does not simply scale with area across changing architectures. Historical performance gains combined device, circuit, architecture, memory, packaging, software, and manufacturing changes.
 
 ### Planetary energy balance (Module 16)
 
-Earth's climate is governed by the proportion between incoming solar radiation ($\sim 1361$ W/m² at the top of the atmosphere) and outgoing longwave radiation. A change of a few watts per square metre in radiative forcing — a tiny proportion of the total flux — shifts global mean temperature by degrees, because the system operates near a sensitive equilibrium. Scale awareness prevents dismissing small forcings as insignificant.
+Climate response depends on top-of-atmosphere imbalance, effective radiative forcing, feedbacks, heat uptake, internal variability, spatial pattern, and timescale. A forcing can be small relative to gross incoming and outgoing fluxes yet persistent enough to alter stored energy. Its temperature consequence must be estimated with a stated model and uncertainty rather than a fixed degrees-per-flux rule.
 
 ### Measurement uncertainty and significant figures (Module 02)
 
-Every measured quantity has a scale of uncertainty. Reporting a length as $1.5000 \pm 0.0001$ m claims a relative uncertainty of $7 \times 10^{-5}$. Uncertainty propagation depends on the measurement model, derivatives or simulation, covariance, distributions, nonlinearity, and reporting convention; simple independent-error formulas are special cases — ensuring that final results honestly reflect the scale of what is actually known.
+Every reported measurement result requires a quantity value, unit, uncertainty or resolution context, and a measurement model. For $1.5000\pm0.0001$ m, the relative standard uncertainty would be about $6.7\times10^{-5}$ only if the stated interval is a standard uncertainty. Propagation depends on covariance, distributions, nonlinearity, and reporting convention.
 
 ## Common misunderstandings
 
 - **Linear extrapolation across scales.** Many relationships are linear only within a limited range. Extrapolating a linear trend from laboratory to planetary scale (or from macro to nano) often fails because different mechanisms dominate at different scales.
 - **Confusing intensive and extensive quantities.** Temperature (intensive) does not double when you double the amount of material; energy (extensive) does. Failing to distinguish these leads to incorrect proportional reasoning.
-- **Neglecting dimensionless ratios.** Two systems can have the same dimensionless numbers (and therefore the same physics) despite vastly different absolute sizes. This is the basis of wind-tunnel testing and scale models, but it requires matching *all* relevant dimensionless groups, not just geometric similarity.
+- **Neglecting dimensionless ratios.** Matching a sufficient set of relevant dimensionless groups can produce dynamic similarity for the modelled mechanisms. Exact similarity may be impossible when several groups, roughness, chemistry, elasticity, or scale-dependent effects cannot all be matched.
 
 ## Connections to repository content
 

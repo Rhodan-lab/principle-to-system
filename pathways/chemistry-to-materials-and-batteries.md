@@ -17,13 +17,13 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 1: Chemical bonding and intermolecular forces
 
-**Mechanism used:** Atoms lower their total energy by sharing (covalent), transferring (ionic), or delocalising (metallic) valence electrons. Bonding, composition, structure, defects, phase, microstructure, temperature, environment, and measurement jointly influence melting, mechanics, transport, and solubility. Weaker intermolecular forces (van der Waals, hydrogen bonds) govern the behaviour of molecular solids, liquids, and polymers.
+**Mechanism used:** Electronic structure and interactions produce bonding continua that are described with covalent, ionic, metallic, coordination, and intermolecular models. Composition, phase, defects, microstructure, temperature, environment, and measurement jointly determine material behaviour; class labels do not impose fixed properties.
 
-**Abstraction introduced:** *Bond energy* — the energy required to break a specific bond, allowing prediction of reaction energetics and material stability from tabulated values rather than full quantum calculations.
+**Abstraction introduced:** *Bond-dissociation or bond-enthalpy data* — process- and state-specific quantities that can support approximate thermochemical accounting. They do not alone predict condensed-phase stability, kinetics, structure, or reaction pathways.
 
 **Engineering problem solved:** Selecting materials with desired properties by choosing appropriate bonding types. Material classes contain broad internal variation; selection requires measured properties, processing history, geometry, environment, reliability, and lifecycle constraints rather than class labels alone.
 
-**Trade-off:** Strong bonds (covalent, ionic) give high melting points and hardness but make processing difficult (high-temperature sintering, brittle fracture). Weak bonds (van der Waals) enable easy processing but limit thermal and mechanical performance.
+**Trade-off:** Bonding tendencies influence stiffness, phase stability, transport, and processing, but hardness, toughness, melting, formability, and durability also depend on structure, defects, microstructure, geometry, rate, and environment. Stronger bonding does not imply universally better performance.
 
 **Prerequisite knowledge:** [Module 06 — Matter and Quantum Foundations](../science/06-matter-quantum/overview.md), [Module 07 — Chemical Bonding](../science/07-chemical-bonding/overview.md)
 
@@ -31,11 +31,11 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 2: Crystal structure and phase diagrams
 
-**Mechanism used:** Atoms in solids arrange into periodic lattices that minimise free energy. The equilibrium structure depends on temperature, pressure, and composition — captured by phase diagrams. Phase transformations (solidification, precipitation, martensitic transformation) alter microstructure and properties.
+**Mechanism used:** Solids can be crystalline, amorphous, semicrystalline, multiphase, or defective. Equilibrium and constrained-equilibrium states depend on variables such as temperature, pressure, and composition; finite transformations also depend on nucleation, diffusion, interfaces, stress, and thermal history.
 
 **Abstraction introduced:** The *phase diagram* — a map of stable phases as a function of thermodynamic variables, enabling prediction of what structures form under given processing conditions without solving the full statistical mechanics.
 
-**Engineering problem solved:** Designing heat treatments (annealing, quenching, tempering) to produce desired microstructures. Steel's versatility — from soft and ductile to hard and wear-resistant — comes from controlling the iron–carbon phase diagram.
+**Engineering problem solved:** Designing processing paths that create measured microstructures and properties. For steels, composition, prior state, heating, cooling, transformation kinetics, tempering, geometry, atmosphere, and residual stress all matter in addition to equilibrium diagrams.
 
 **Trade-off:** Equilibrium phase diagrams describe stable or constrained-equilibrium states under stated variables; finite-rate paths require kinetic, nucleation, transport, and metastability models. Real processing occurs at finite rates, producing metastable structures (amorphous metals, supersaturated solid solutions) that may be desirable but are thermodynamically unstable.
 
@@ -45,9 +45,9 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 3: Electrochemistry — converting chemical energy to electrical energy
 
-**Mechanism used:** In an electrochemical cell, a spontaneous redox reaction is separated into two half-reactions at different electrodes, forcing electron transfer through an external circuit (producing current) while ions migrate through an electrolyte to maintain charge neutrality. The cell voltage is determined by the Nernst equation: $E = E^0 - (RT/nF)\ln Q$.
+**Mechanism used:** Electrochemical cells couple electrode reactions, electron transport, ion transport, interfaces, and an external circuit. The Nernst equation relates equilibrium potential to activities under stated temperature and reaction conventions; operating voltage also reflects kinetics, resistance, concentration gradients, and history.
 
-**Abstraction introduced:** *Standard electrode potential* $E^0$ — a single number for each half-reaction that predicts cell voltage, reaction spontaneity, and the direction of electron flow when half-cells are combined.
+**Abstraction introduced:** *Standard electrode potential* — an equilibrium potential relative to a reference under specified standard-state conventions. Combining half-cell data can estimate standard cell potential, but spontaneity and operating direction require a balanced reaction, activities, temperature, and non-equilibrium conditions.
 
 **Engineering problem solved:** Electrochemical devices are not heat engines, so the Carnot expression is not their direct efficiency limit. Their reversible work is constrained by Gibbs free energy, while kinetics, transport, resistance, auxiliary systems, and operating strategy reduce realised efficiency.
 
@@ -59,13 +59,13 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 4: The lithium-ion battery — intercalation chemistry
 
-**Mechanism used:** Lithium ions reversibly intercalate (insert) into layered crystal structures at both electrodes. During discharge, Li⁺ deintercalates from the graphite anode, migrates through a non-aqueous electrolyte, and intercalates into the cathode (e.g., LiCoO₂, LiFePO₄, NMC). Electrons flow through the external circuit, doing work.
+**Mechanism used:** Many lithium-ion cells shuttle lithium between host materials through an electrolyte while electrons travel through the external circuit. Electrode mechanisms, structures, phase changes, interfaces, and degradation vary by chemistry; not every lithium-based electrode is a simple layered intercalation host.
 
-**Abstraction introduced:** *Specific energy* (Wh/kg) and *energy density* (Wh/L) — figures of merit that allow comparison across chemistries without detailed knowledge of the intercalation mechanism. These determine whether a battery is suitable for a phone, a car, or a grid.
+**Abstraction introduced:** *Specific energy* and *volumetric energy density* — energy delivered per stated mass or volume at specified rate, temperature, voltage limits, age, and cell or pack boundary. Suitability also depends on power, lifetime, safety, cost, reliability, controls, and service requirements.
 
 **Engineering problem solved:** Rechargeable, high-energy-density, portable energy storage. Lithium's low atomic mass and high reduction potential ($E^0 = -3.04$ V vs SHE) make lithium-based systems attractive for high specific energy, while usable performance depends on the complete cell chemistry, inactive materials, voltage window, safety, and cycling constraints.
 
-**Trade-off:** High energy density means high stored energy in a small volume — a safety risk if thermal runaway occurs (exothermic decomposition of electrolyte). Cathode capacity, cycle life, charging speed, cost, and safety form a multi-dimensional trade-off space. No single chemistry optimises all simultaneously.
+**Trade-off:** Greater stored energy can increase consequence when faults propagate, but safety depends on chemistry, state, defects, abuse, heat transfer, venting, spacing, sensing, control, protection, enclosure, and emergency response. Energy, power, life, fast charge, cost, temperature range, and safety form a multi-objective design space.
 
 **Prerequisite knowledge:** [Module 07](../science/07-chemical-bonding/overview.md), [Module 17](../technology/17-materials-manufacturing/overview.md)
 
@@ -73,13 +73,13 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 5: Cell engineering and pack design
 
-**Mechanism used:** Individual cells with chemistry- and state-dependent voltage and capacity are connected in series (for voltage) and parallel (for capacity) to form modules and packs. A battery management system (BMS) monitors voltage, temperature, and state of charge of each cell, balancing charge distribution and preventing operation outside safe limits.
+**Mechanism used:** Cells can be arranged in series and parallel and integrated with sensing, estimation, balancing, contactors, fuses, thermal management, mechanical containment, communication, and supervisory control. A BMS can reduce risk but cannot guarantee safe operation or directly observe every internal state.
 
 **Abstraction introduced:** *State of charge (SOC)* and *state of health (SOH)* — estimated quantities that abstract the complex internal electrochemistry into actionable metrics for the control system.
 
 **Engineering problem solved:** Scaling from a single cell to modules, packs, and stationary storage systems while maintaining safety, longevity, and performance uniformity across thousands of cells.
 
-**Trade-off:** Series connection means the weakest cell limits the pack. Cell-to-cell variation (manufacturing tolerance) reduces usable capacity unless active balancing is employed, adding cost and complexity. Thermal management (liquid cooling, phase-change materials) is essential but adds mass and volume.
+**Trade-off:** Cell variation, ageing, topology, estimation error, thermal gradients, balancing, isolation, fault propagation, serviceability, mass, volume, and cost interact. The limiting element can change with state and duty, and passive or active balancing cannot remove every mismatch or failure mode.
 
 **Prerequisite knowledge:** [Module 20 — Sensors, Control, and Infrastructure](../technology/20-sensors-control-infrastructure/overview.md), [Module 17](../technology/17-materials-manufacturing/overview.md)
 
@@ -87,13 +87,13 @@ This pathway traces how chemical bonding theory becomes engineered materials and
 
 ## Stage 6: Materials for next-generation storage
 
-**Mechanism used:** Research targets higher energy density through solid-state electrolytes (eliminating flammable liquid), silicon or lithium-metal anodes (higher capacity than graphite), and high-nickel cathodes (more energy per formula unit). Each requires solving materials-science challenges: ionic conductivity in solids, volume expansion in silicon, dendrite growth on lithium metal.
+**Mechanism used:** Research explores solid and hybrid electrolytes, silicon-rich or lithium-metal negative electrodes, diverse positive electrodes, sodium and other carriers, structural designs, manufacturing methods, and control strategies. Each route changes transport, interfaces, mechanics, safety, supply, cost, and degradation rather than providing one monotonic energy upgrade.
 
 **Abstraction introduced:** *Technology readiness level (TRL)* — a scale from laboratory discovery (TRL 1) to commercial deployment (TRL 9) that tracks how far a material innovation has progressed toward engineering reality.
 
 **Engineering problem solved (in progress):** Improving usable energy, power, lifetime, safety, manufacturability, cost, temperature range, and recyclability together; application thresholds differ and must be stated explicitly.
 
-**Trade-off:** Every gain in energy density tends to reduce cycle life or increase manufacturing complexity. Solid-state batteries eliminate liquid electrolyte fires but introduce brittle ceramic interfaces that crack under cycling strain. The path from laboratory result to qualified production is uncertain and depends on reproducibility, scale-up, supply chain, standards, safety, economics, and application requirements.
+**Trade-off:** Energy-density gains do not impose one universal penalty, but they often create new interface, transport, safety, manufacturing, qualification, or cost constraints. Solid electrolytes may reduce some flammable-liquid hazards while introducing contact, fracture, processing, pressure, and short-circuit challenges. Translation to production requires reproducibility and application-specific evidence.
 
 **Prerequisite knowledge:** [Module 06](../science/06-matter-quantum/overview.md), [Module 07](../science/07-chemical-bonding/overview.md), [Module 17](../technology/17-materials-manufacturing/overview.md)
 
