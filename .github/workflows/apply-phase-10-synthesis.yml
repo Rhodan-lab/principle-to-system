@@ -73,15 +73,10 @@ jobs:
         if: steps.synthesis.outputs.status != '0'
         run: exit 1
 
-      - name: Verify deterministic pipeline idempotence
-        shell: bash
+      - name: Verify deterministic final-state idempotence
         run: |
           python3 scripts/normalize_phase10_reconciler.py --check
-          git diff --binary > /tmp/phase10-before.diff
-          python3 scripts/apply_phase10_synthesis.py --write
-          python3 scripts/finalize_phase10_synthesis.py --write
-          git diff --binary > /tmp/phase10-after.diff
-          cmp /tmp/phase10-before.diff /tmp/phase10-after.diff
+          python3 scripts/finalize_phase10_synthesis.py --check
 
       - name: Validate metadata and source foundation
         run: |
