@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 4 core metadata normalization implemented; Phase 5 legacy source repair is next.**
+**Phase 5 legacy source repair implemented; Phase 6 foundations scientific review is next.**
 
 The repository contains two coordinated layers:
 
@@ -21,9 +21,9 @@ The project remains material-first Markdown. Software is intentionally deferred 
 | 1 | Core knowledge inventory | First-draft inventory complete |
 | 2 | Repository audit and hardening | Complete |
 | 3 | Applied-material foundation | Implemented and validated |
-| 4 | Core metadata normalization | Implemented on PR #4; awaiting merge |
-| 5 | Legacy source-ledger repair | Next |
-| 6 | Foundations scientific review | Not started systematically |
+| 4 | Core metadata normalization | Merged and validated |
+| 5 | Legacy source-ledger repair | Implemented on PR #5; awaiting merge |
+| 6 | Foundations scientific review | Next |
 | 7 | Physical-science review | Not started systematically |
 | 8 | Life and Earth systems review | Not started systematically |
 | 9 | Technology review | Not started systematically |
@@ -40,10 +40,10 @@ The project remains material-first Markdown. Software is intentionally deferred 
 - 7 crosscutting concepts
 - 6 end-to-end pathways
 - 3 Mermaid knowledge maps
-- legacy source ledger
+- normalized core source ledger
 - repository validator
 
-All 20 modules remain **Draft** pending scientific and editorial review. Metadata normalization does not change scientific review status.
+All 20 modules remain **Draft** pending scientific and editorial review. Metadata and source normalization do not change scientific review status.
 
 ### Applied-material layer
 
@@ -57,24 +57,69 @@ All 20 modules remain **Draft** pending scientific and editorial review. Metadat
 
 ## Phase 4 result
 
-Phase 4 normalizes the frontmatter of all 60 original learner files.
+Phase 4 normalized the frontmatter of all 60 original learner files:
 
-Implemented changes:
-
-- unique canonical slugs for `overview.md`, `technology.md`, and `explore.md`;
-- a consistent `module` identifier for each module;
-- subject domains normalized to `foundations`, `science`, or `technology`;
-- prerequisite lists replaced with the canonical dependency graph;
+- unique canonical slugs by file role;
+- consistent module identifiers and subject domains;
+- canonical prerequisite lists;
 - self-references and unknown connection identifiers removed;
-- recoverable legacy references remapped to canonical module IDs;
+- recoverable legacy references remapped;
 - direct downstream modules added as canonical connections;
-- a generated audit record saved at `reports/phase-4-metadata-normalization.json`;
-- deterministic normalization implemented in `scripts/normalize_module_metadata.py`;
-- a focused GitHub Actions gate added for Phase 4 changes.
+- deterministic normalizer and generated audit report;
+- focused idempotence gate in GitHub Actions.
 
-The generated audit processed all 60 expected learner files, changed all 60, and reported no processing errors.
+Phase 4 was merged through PR #4.
 
-Phase 4 CI checks that normalization is idempotent: running the normalizer again must produce no further changes.
+## Phase 5 result
+
+Phase 5 repairs the original source infrastructure without changing educational prose.
+
+### Ledger normalization
+
+- recovered 109 historical logical source records from concatenated Markdown rows;
+- rewrote the ledger to exactly one eight-column row per source;
+- normalized DOI locators and canonical module identifiers;
+- preserved source-to-module provenance;
+- removed no records merely because they were weak without providing an inspected replacement;
+- made normalization deterministic and idempotent.
+
+### Verified replacement baseline
+
+The inspected replacement registry:
+
+- removed 22 weak or invalid legacy records;
+- added 23 institutional, publisher, standards, textbook, or primary-literature records;
+- matched all 22 declared replacement locators;
+- repaired all five previously invalid book or publisher locators;
+- strengthened the former coverage gaps in mathematical models, quantum foundations, cells and bioenergetics, and semiconductors.
+
+### Final source audit
+
+The normalized ledger now contains 110 records:
+
+- 36 tier-1 primary-literature or review records;
+- 57 tier-2 standards, agencies, institutions, universities, or textbooks;
+- 17 other traceable publications;
+- 0 weak or incomplete records under the Phase 5 classifier;
+- 0 malformed rows;
+- 0 invalid access dates;
+- 0 invalid locators;
+- 0 unmapped module fields.
+
+Every one of the 20 core modules now has:
+
+- at least 4 recorded sources;
+- at least 2 policy-tier sources.
+
+Audit files:
+
+- `reports/phase-5-source-audit.json`
+- `reports/phase-5-source-replacements.json`
+
+Reusable tools:
+
+- `scripts/normalize_source_ledger.py`
+- `scripts/apply_verified_source_baseline.py`
 
 ## Status meanings
 
@@ -91,13 +136,20 @@ Phase 4 CI checks that normalization is idempotent: running the normalizer again
 python3 scripts/normalize_module_metadata.py
 ```
 
-The command exits successfully only when all 60 learner files already match the canonical metadata contract.
-
-To regenerate metadata and its audit report:
+### Phase 5 source gate
 
 ```bash
-python3 scripts/normalize_module_metadata.py --write
+python3 scripts/normalize_source_ledger.py --check --strict
+python3 scripts/apply_verified_source_baseline.py --check
 ```
+
+The Phase 5 GitHub Actions workflow is read-only. It checks the exact committed ledger and fails when:
+
+- the table is not normalized;
+- a locator, access date, or module field is malformed;
+- any module has fewer than four total sources;
+- any module has fewer than two policy-tier sources;
+- an inspected replacement has not been applied.
 
 ### Core repository audit
 
@@ -106,7 +158,7 @@ python3 scripts/validate_repo.py
 python3 scripts/validate_repo.py --strict
 ```
 
-The repository-wide validator still reports legacy source-ledger and later-phase review findings. Those do not invalidate the focused Phase 4 metadata result.
+A clean metadata and source foundation does not certify scientific claims. Repository-wide strict release readiness still depends on Phases 6–10.
 
 ### Applied materials
 
@@ -115,30 +167,38 @@ python3 scripts/validate_experiences.py
 python3 scripts/validate_experiences.py --strict
 ```
 
-## Source state and Phase 5
+## Next phase: foundations scientific review
 
-The legacy [`sources/source-ledger.md`](sources/source-ledger.md) remains the next blocking area. It contains concatenated entries and lower-tier sources that prevent repository-wide release readiness.
+Phase 6 reviews Modules 01–05 in dependency order:
 
-Phase 5 must:
+1. Scientific Reasoning
+2. Measurement and Uncertainty
+3. Mathematical Models
+4. Probability and Statistics
+5. Computation and Algorithms
 
-1. split every concatenated entry into one source per row;
-2. enforce exactly eight columns per row;
-3. preserve source-to-module provenance;
-4. verify URLs and DOI records;
-5. replace weak sources with standards, agencies, institutions, strong textbooks, reviews, or primary literature;
-6. rerun the repository-wide validator and record the remaining scientific-review backlog.
+Each module review must check:
 
-New applied materials remain recorded separately in [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md).
+- factual and conceptual accuracy;
+- definitions and scope conditions;
+- equations, symbols, units, and sign conventions;
+- assumptions, approximations, and model limits;
+- misconceptions and counterexamples;
+- alignment between local citations and the central ledger;
+- safety and age-appropriateness of explorations;
+- consistency across `overview.md`, `technology.md`, and `explore.md`.
+
+No module may move from Draft to Reviewed until all three learner-facing files complete that focused review.
 
 ## Remaining core work
 
-1. Merge and independently review Phase 4 metadata normalization.
-2. Complete Phase 5 legacy source repair.
-3. Review Modules 01–05 scientifically and editorially.
-4. Continue through Modules 06–20 in dependency order.
-5. Reconcile pathways, concepts, maps, links, and terminology.
-6. Pass repository-wide strict validation.
+1. Merge and independently review Phase 5 source repair.
+2. Complete Phase 6 review of Modules 01–05.
+3. Continue through Modules 06–20 in dependency order.
+4. Reconcile pathways, concepts, maps, links, and terminology.
+5. Pass repository-wide strict validation.
+6. Consider software only after the material and review system is mature.
 
 ## Continuation instructions
 
-Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, and this file. Keep metadata repair, source repair, scientific review, and applied-material expansion in separate focused pull requests. Never change scientific review status solely because metadata or structural validation passes.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, and this file. Keep metadata repair, source repair, scientific review, and applied-material expansion in separate focused pull requests. Never change scientific review status solely because metadata or source validation passes.
