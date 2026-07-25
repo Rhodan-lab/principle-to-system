@@ -3,10 +3,10 @@ title: "Oscillations, Waves, Sound, Optics, and Signals"
 slug: 11-waves-signals
 module: "Module 11"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 09-motion-forces]
 connections: [20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -28,11 +28,11 @@ The physical world is replete with oscillatory and wave phenomena. A pendulum sw
 
 **Superposition and Interference** describe what happens when two or more waves overlap in space. The resultant displacement is the vector sum of the individual displacements. This can lead to constructive interference (amplification) or destructive interference (cancellation).
 
-**Diffraction** is the bending and spreading of waves when they encounter an obstacle or pass through an aperture that is comparable in size to their wavelength.
+**Diffraction** is the spreading and interference of waves when they encounter an obstacle or pass through an aperture that is comparable in size to their wavelength.
 
 **Signals and Modulation** involve the deliberate modification of a wave (the carrier) to encode information. This can be achieved by varying the wave's amplitude, frequency, or phase.
 
-**Fourier Analysis** is the mathematical principle that any complex periodic wave can be decomposed into a sum of simple sine and cosine waves of different frequencies and amplitudes.
+**Fourier Analysis** represents suitably behaved periodic signals with Fourier series and non-periodic signals with Fourier transforms, decomposing them into a sum of simple sine and cosine waves of different frequencies and amplitudes.
 
 ## 4. Mechanisms and causal chains
 
@@ -40,7 +40,7 @@ The propagation of a mechanical wave relies on the interplay between inertia and
 
 For sound waves in air, a vibrating source compresses adjacent air molecules, creating a region of high pressure (compression). This pressure pushes against neighbouring molecules, transferring the disturbance. The original molecules then rebound, creating a region of low pressure (rarefaction). The alternating compressions and rarefactions propagate outward at the speed of sound.
 
-In optics, the mechanism of refraction (bending of light) occurs because light travels at different speeds in different media. When a wavefront enters a denser medium at an angle, the part of the wave that enters first slows down before the rest of the wave, causing the direction of propagation to bend toward the normal.
+In optics, the mechanism of refraction (bending of light) occurs because phase velocity and wavelength change across media while boundary conditions preserve frequency. When a wavefront enters a medium with a different refractive index at an angle, the part of the wave that enters first slows down before the rest of the wave, causing the direction of propagation to bend toward the normal.
 
 ## 5. Important quantities
 
@@ -126,13 +126,22 @@ Wave phenomena span an enormous range of scales.
 
 - **03-mathematical-models:** Provides the calculus and differential equations necessary to formulate the wave equation and Fourier analysis.
 - **09-motion-forces:** The foundation of kinematics and dynamics required to understand restoring forces and simple harmonic motion.
-- **12-electromagnetism:** Explains the nature of light and radio waves as oscillating electric and magnetic fields.
-- **14-quantum-mechanics:** Extends wave concepts to matter (wave-particle duality) and probability amplitudes.
-- **16-communication-systems:** Applies the principles of signals, modulation, and Fourier analysis to modern data transmission.
+- **10-electricity-magnetism:** Explains the nature of light and radio waves as oscillating electric and magnetic fields.
+- **06-matter-quantum:** Extends wave concepts to matter (wave-particle duality) and probability amplitudes.
+- **20-sensors-control-infrastructure:** Applies the principles of signals, modulation, and Fourier analysis to modern data transmission.
+
+## Phase 7 review boundaries and validity limits
+
+- A wave transports energy and momentum, while material elements in a mechanical medium usually oscillate around equilibrium; some waves and nonlinear flows can also produce net transport.
+- Refraction follows phase matching and a change in phase velocity or refractive index, not a vague distinction between “optically dense” and “less dense” matter.
+- Fourier series apply to suitably behaved periodic signals; Fourier transforms generalise the idea to non-periodic signals. Real measurements also involve finite windows, sampling, leakage, and noise.
+- Destructive interference means local cancellation of the chosen field variable. Energy conservation must be evaluated from flux and boundary conditions; energy may be redistributed, reflected, or stored rather than always appearing at a nearby bright fringe.
+- Fiber guidance is described by electromagnetic modes. Total internal reflection is a useful ray approximation, but evanescent fields, bending loss, scattering, absorption, and dispersion remain.
 
 ## 12. Sources
 
-- [1] OpenStax. (2022). *College Physics 2e*. Chapter 16: Oscillatory Motion and Waves.
-- [2] MIT OpenCourseWare. (2016). *8.03SC Physics III: Vibrations and Waves*.
-- [3] Feynman, R. P., Leighton, R. B., & Sands, M. (1963). *The Feynman Lectures on Physics, Vol. I*. Chapter 47: Sound. The wave equation; Chapter 51: Waves.
-- [4] MIT OpenCourseWare. (2011). *6.003 Signals and Systems*.
+
+1. MIT OpenCourseWare. *8.03SC Physics III: Vibrations and Waves*. https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/
+2. MIT OpenCourseWare. *6.003 Signals and Systems*. https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/
+3. OpenStax. *College Physics 2e: Oscillatory Motion and Waves*. https://openstax.org/books/college-physics-2e/pages/16-introduction-to-oscillatory-motion-and-waves
+4. Agrawal, G. P. *Fiber-Optic Communication Systems*. https://doi.org/10.1002/9780470918524

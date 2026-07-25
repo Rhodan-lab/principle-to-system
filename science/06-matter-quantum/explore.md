@@ -3,10 +3,10 @@ title: "Exploring Quantum Foundations"
 slug: 06-matter-quantum-explore
 module: "Module 06"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]
 connections: [07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -36,13 +36,13 @@ content_license: CC-BY-4.0
 
 ## 4. Thought experiments
 
-- **Schrödinger's Cat:** Imagine a cat in a sealed box with a radioactive atom, a Geiger counter, and a vial of poison gas. If the atom decays, the counter triggers the release of the gas, killing the cat. If it doesn't decay, the cat lives. According to the Copenhagen interpretation of quantum mechanics, until the box is opened and observed, the atom is in a superposition of decayed and undecayed states. Does this mean the macroscopic cat is simultaneously alive and dead? This thought experiment highlights the conceptual difficulties of applying quantum superposition to macroscopic objects and the problem of measurement.
+- **Two-path interferometer:** Imagine a single photon entering an interferometer with two paths. With both paths coherent, the output probabilities depend on their relative phase. If path information becomes recorded in the environment, interference visibility decreases. What does this show about coherence, information, and measurement without requiring a conscious observer?
 - **The Double-Slit Experiment with Single Electrons:** Imagine firing electrons one by one at a barrier with two narrow slits, with a detector screen behind it. Even though the electrons are fired individually (as particles), over time, an interference pattern builds up on the screen, characteristic of waves. If you place a detector at the slits to see *which* slit the electron goes through, the interference pattern disappears, and you get a simple particle pattern. How does the act of measurement destroy the wave-like behaviour?
 
 ## 5. Household and browser-based explorations
 
 - **Browser Exploration (PhET Interactive Simulations):** Search for the "Models of the Hydrogen Atom" simulation by PhET. Switch between the classical solar system model, the Bohr model, and the Schrödinger model. Observe how the Schrödinger model represents the electron not as a dot, but as a probability density cloud.
-- **Household Exploration (Spectroscopy):** If you have a diffraction grating (often sold cheaply online or found in some educational kits), look at different light sources through it: an incandescent bulb, a fluorescent tube, an LED, and a neon sign. Compare the continuous spectrum of the hot filament with the discrete emission lines of the gases.
+- **Safe spectroscopy:** Use a commercially enclosed classroom spectroscope or a reputable spectrum database to compare incandescent, fluorescent, and LED sources. Never view the Sun, lasers, welding arcs, or other intense sources through an optical device.
 
 ## 6. Model-building prompts
 
@@ -63,9 +63,24 @@ content_license: CC-BY-4.0
 ## 9. Suggested learning paths
 
 - **To understand chemical bonding:** Proceed to Module 07 (Chemical Bonds), which builds directly on electron configurations and orbital overlap.
-- **To understand solid-state physics:** Proceed to Module 12 (Semiconductors), which applies quantum mechanics to massive lattices of atoms, explaining conductivity.
+- **To understand solid-state physics:** Proceed to Module 18 (Semiconductors and Electronics), which applies quantum mechanics to massive lattices of atoms, explaining conductivity.
 - **To explore the fundamental forces further:** Investigate advanced resources on the Standard Model and particle physics to understand the quarks and bosons that make up the nucleus.
 
 ## 10. Reasoning notes
 
-When reasoning about quantum systems, it is crucial to abandon classical intuition. Do not try to picture an electron as a tiny billiard ball. Instead, rely on the mathematical models and the principles of probability. Remember that in the quantum realm, properties like position and momentum are not definite until they are measured, and the act of measurement inherently disturbs the system. Always ask: "What is the quantised property here?" and "What are the allowed states?"
+When reasoning about quantum systems, it is crucial to abandon classical intuition. Do not try to picture an electron as a tiny billiard ball. Instead, rely on the mathematical models and the principles of probability. Remember that in the quantum realm, a quantum state assigns probability distributions to possible outcomes, and measurement interactions can change the state; the uncertainty relation is not explained solely by disturbance. Always ask: "What is the quantised property here?" and "What are the allowed states?"
+
+## Phase 7 review boundaries and validity limits
+
+- Quantisation means that particular observables have discrete spectra in particular systems; it does not mean every physical quantity is universally restricted to discrete values.
+- A wavefunction is a state representation and probability amplitude. The Born rule relates its squared magnitude to probabilities for measurement outcomes; an orbital is not a material cloud or a classical trajectory.
+- The uncertainty relation concerns statistical spreads for identically prepared states. It is not merely instrument disturbance and does not imply that every property lacks a state-dependent value in the same way.
+- Quantum field theory describes the vacuum as a lowest-energy state with measurable correlations and fluctuations. “Virtual particles popping in and out” is a calculation metaphor, not a literal movie of detectable particles.
+- Nonrelativistic equations, independent-particle orbitals, and the Born–Oppenheimer approximation have explicit validity domains. Relativistic, many-body, nuclear, or quantum-field models are needed outside them.
+
+## 11. Sources
+
+1. CERN. *The Standard Model*. https://home.cern/science/physics/standard-model/
+2. OpenStax. *Chemistry 2e: Development of Quantum Theory*. https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory
+3. National Institute of Standards and Technology. *Atomic Spectroscopy Databases*. https://www.nist.gov/pml/atomic-spectroscopy-databases
+4. LibreTexts Chemistry. *Quantum Mechanics and Atomic Structure*. https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure

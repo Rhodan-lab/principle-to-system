@@ -3,10 +3,10 @@ title: "Engineering Chemical Reactions: Batteries and Catalytic Converters"
 slug: 07-chemical-bonding-technology
 module: "Module 07"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum]
 connections: [13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -17,7 +17,7 @@ The engineering of chemical systems relies heavily on the principles of electroc
 
 ## 2. The engineering problem
 Engineers face two distinct but related challenges in chemical technology: energy storage and emission control. 
-For energy storage, the problem is how to design a portable, reversible system that can store electrical energy in chemical bonds and release it on demand with high efficiency and energy density. This is the domain of battery engineering.
+For energy storage, the problem is how to design a portable, reversible system that can store recoverable electrochemical free energy in composition and electrode states and release it on demand with high efficiency and energy density. This is the domain of battery engineering.
 For emission control, the problem is how to rapidly and efficiently convert toxic byproducts of combustion (such as carbon monoxide, nitrogen oxides, and unburned hydrocarbons) into harmless gases before they are released into the atmosphere, operating within the constraints of a moving vehicle's exhaust system. This is the domain of catalytic converter engineering.
 
 ## 3. Main components
@@ -40,7 +40,7 @@ In a catalytic converter, hot exhaust gases flow through the honeycomb structure
 ## 5. Matter, energy, force, or information flow
 **Battery:** The primary flow is energy (electrical to chemical during charging, chemical to electrical during discharging) and matter (lithium ions moving internally, electrons moving externally). The driving force is the electrochemical potential difference between the anode and cathode materials.
 
-**Catalytic Converter:** The primary flow is matter (exhaust gases entering, reacting, and exiting) and energy (heat from the exhaust gases and the exothermic oxidation reactions). The driving force is the thermodynamic instability of the toxic gases, which is kinetically unlocked by the catalyst.
+**Catalytic Converter:** The primary flow is matter (exhaust gases entering, reacting, and exiting) and energy (heat from the exhaust gases and the exothermic oxidation reactions). The driving force is the Gibbs-energy driving force for the permitted reactions under exhaust conditions, which is kinetically unlocked by the catalyst.
 
 ## 6. System architecture
 **Principle-to-System Chain: Electrochemistry to Battery**
@@ -56,7 +56,7 @@ In a catalytic converter, hot exhaust gases flow through the honeycomb structure
 
 ## 8. Performance and efficiency
 Battery performance is measured by specific energy ($\text{Wh/kg}$), specific power ($\text{W/kg}$), and cycle life (number of charge/discharge cycles before significant degradation). Efficiency is typically high (over 90%) but is reduced by internal resistance (joule heating).
-Catalytic converter performance is measured by conversion efficiency (percentage of toxic gases neutralized). Modern converters achieve over 90% efficiency once they reach their operating temperature ("light-off" temperature, typically around $300^\circ\text{C}$).
+Catalytic converter performance is measured by conversion efficiency (percentage of toxic gases neutralized). Well-controlled modern converters can achieve high conversion after light-off, but performance depends on temperature, air–fuel ratio, ageing, and pollutant species once they reach their operating temperature ("light-off" temperature, typically around $300^\circ\text{C}$).
 
 ## 9. Reliability and failure modes
 - **Batteries:** Failure modes include capacity fade (due to loss of active lithium or structural degradation of electrodes), internal short circuits (often caused by lithium dendrite growth piercing the separator), and thermal runaway (a self-sustaining exothermic reaction leading to fire or explosion).
@@ -75,7 +75,17 @@ Catalytic converters significantly reduce urban air pollution but require the mi
 - **Renewable Energy Grids:** Use large-scale battery storage to smooth out the intermittent generation from solar and wind sources.
 - **Chemical Manufacturing:** Industrial catalysis is the backbone of producing fertilizers, plastics, and pharmaceuticals, utilizing similar principles to catalytic converters but on a massive scale.
 
+## Phase 7 review boundaries and validity limits
+
+- Ionic, covalent, and metallic bonding are useful limiting descriptions of electron density and many-body interactions, not perfectly separate boxes. “Full shells” are a heuristic rather than a universal cause of bonding.
+- VSEPR predicts many main-group molecular shapes qualitatively but does not replace quantum chemistry and is unreliable for several transition-metal, delocalised, or hypervalent systems.
+- Equilibrium constants are dimensionless when written using activities relative to standard states. Concentrations and partial pressures are approximations whose validity depends on non-ideality.
+- A catalyst changes the reaction mechanism and rate constants but not the equilibrium constant or thermodynamic state difference. It may change chemical form during a catalytic cycle and is regenerated overall rather than literally remaining unchanged at every instant.
+- Bond breaking requires energy, while the net energy of a reaction depends on all bonds and interactions broken and formed plus environmental conditions.
+
 ## 13. Sources
-[1] OpenStax. (2019). *Chemistry 2e*. OpenStax CNX. https://openstax.org/books/chemistry-2e/pages/1-introduction
-[2] Whittingham, M. S. (2004). Introduction: Batteries and Fuel Cells. *Chemical Reviews*.
-[3] ScienceDirect. (n.d.). *Catalysis - an overview*. ScienceDirect Topics. https://www.sciencedirect.com/topics/materials-science/catalysis
+
+1. OpenStax. *Chemistry 2e*. https://openstax.org/books/chemistry-2e/pages/1-introduction
+2. Whittingham, M. S. (2004). Introduction: Batteries and Fuel Cells. *Chemical Reviews*. https://pubs.acs.org/doi/10.1021/cr020705e
+3. Zhang, J., et al. (2021). Intermolecular and Surface Interactions in Engineering. https://www.sciencedirect.com/science/article/pii/S209580992030360X
+4. LibreTexts Chemistry. *Chemistry resources*. https://chem.libretexts.org/

@@ -3,10 +3,10 @@ title: "Engineering Motion: From Principles to Systems"
 slug: 09-motion-forces-technology
 module: "Module 09"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models]
 connections: [11-waves-signals, 12-fluids-materials, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -38,11 +38,11 @@ The scientific principle underlying gyroscopic stabilization is the conservation
 
 # 7. Design constraints
 
-Engineers face several critical design constraints. Mass and volume are especially critical in aerospace applications, where every kilogram of payload requires exponentially more propellant to launch. Material strength is paramount, as components must withstand maximum expected forces and torques without yielding or fracturing. Friction and wear present ongoing challenges; moving parts experience friction, which dissipates energy and reduces efficiency, while causing material wear that reduces lifespan. Thermal limits must also be managed, as energy dissipation in brakes or during atmospheric reentry generates significant heat, requiring thermal management systems to prevent material failure.
+Engineers face several critical design constraints. Mass and volume are especially critical in aerospace applications, where the rocket equation makes required mass ratio grow exponentially with mission delta-v, making added payload costly in propellant and structure. Material strength is paramount, as components must withstand maximum expected forces and torques without yielding or fracturing. Friction and wear present ongoing challenges; moving parts experience friction, which dissipates energy and reduces efficiency, while causing material wear that reduces lifespan. Thermal limits must also be managed, as energy dissipation in brakes or during atmospheric reentry generates significant heat, requiring thermal management systems to prevent material failure.
 
 # 8. Performance and efficiency
 
-Mechanical efficiency is defined as the ratio of useful work output to total energy input. Losses occur primarily through mechanical friction and aerodynamic or hydrodynamic drag. Performance is often characterized by specific metrics. The power-to-weight ratio determines acceleration capability. Specific impulse ($I_{sp}$) is a measure of rocket engine efficiency, representing the change in momentum per unit mass of propellant consumed. Mechanical advantage is the ratio of output force to input force in a mechanism, such as a lever or gear train.
+Mechanical efficiency is defined as the ratio of useful work output to total energy input. Losses occur primarily through mechanical friction and aerodynamic or hydrodynamic drag. Performance is often characterized by specific metrics. The power-to-weight ratio determines acceleration capability. Specific impulse ($I_{sp}$) is thrust divided by propellant weight-flow rate, measured in seconds; equivalently, effective exhaust velocity is $g_0 I_{sp}$. Mechanical advantage is the ratio of output force to input force in a mechanism, such as a lever or gear train.
 
 # 9. Reliability and failure modes
 
@@ -50,7 +50,7 @@ Mechanical systems can fail in several ways. Fatigue failure occurs when repeate
 
 # 10. Safety principles
 
-Safety is integrated into mechanical design through several principles. Factors of safety involve designing components to withstand loads significantly higher than the maximum expected operational loads. For example, a bridge designed with a factor of safety of three can theoretically hold three times its maximum rated capacity. Fail-safe design ensures that if a component fails, the system defaults to a safe state, such as air brakes on trains that automatically apply if air pressure is lost. Redundancy incorporates multiple independent systems to perform critical functions, seen in dual braking circuits in cars or multiple flight computers in spacecraft. Energy management involves designing structures to predictably deform and absorb kinetic energy during accidents, utilizing crumple zones and crash barriers.
+Safety is integrated into mechanical design through several principles. Factors of safety involve designing components to withstand loads significantly higher than the maximum expected operational loads. For example, a factor of safety compares a defined failure measure with an allowable design measure; it does not guarantee that a complete structure can safely carry that multiple of its posted load. Fail-safe design ensures that if a component fails, the system defaults to a safe state, such as air brakes on trains that automatically apply if air pressure is lost. Redundancy incorporates multiple independent systems to perform critical functions, seen in dual braking circuits in cars or multiple flight computers in spacecraft. Energy management involves designing structures to predictably deform and absorb kinetic energy during accidents, utilizing crumple zones and crash barriers.
 
 # 11. Environmental and lifecycle considerations
 
@@ -60,9 +60,18 @@ The lifecycle of mechanical systems has significant environmental impacts. The p
 
 Mechanical engineering is deeply interconnected with other technological domains. Materials science directly enables advanced mechanical systems through the development of lighter, stronger, and more heat-resistant materials. Electronics and computing are integral to modern mechanical systems, which rely heavily on embedded microprocessors for control, diagnostics, and optimization—a field known as mechatronics. Furthermore, the transition to electric vehicles is fundamentally constrained by advancements in energy storage, specifically the energy density and charge/discharge rates of battery technologies.
 
+## Phase 7 review boundaries and validity limits
+
+- Newton's second law is fundamentally ΣF_ext = dp/dt. The familiar ma form requires constant mass in an inertial frame.
+- Mass is an invariant measure in modern relativity; relativistic momentum and energy, not “relativistic mass,” replace the low-speed formulas as speed approaches c.
+- Moment of inertia is generally a tensor. Treating it as a scalar is valid only for rotation about a specified principal or fixed axis.
+- Third-law force pairs act on different bodies. Momentum conservation follows from the external-force balance for the chosen system; internal-force cancellation must be justified for the model used.
+- Newtonian gravity is an accurate weak-field, low-speed approximation. General relativity is required for strong fields, high precision, or relativistic motion.
+
 # 13. Sources
 
-- [1] OpenStax. (2016). *University Physics Volume 1*. OpenStax. https://openstax.org/details/books/university-physics-volume-1
-- [2] MIT OpenCourseWare. (2016). *8.01SC Classical Mechanics*. Massachusetts Institute of Technology. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
-- [3] NASA. (2025). *Basics of Space Flight: Chapter 3: Gravity & Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
-- [4] Feynman, R. P., Leighton, R. B., & Sands, M. (1963). *The Feynman Lectures on Physics, Vol. I: Mainly Mechanics, Radiation, and Heat*. Addison-Wesley. https://www.feynmanlectures.caltech.edu/
+
+1. OpenStax. *University Physics Volume 1*. https://openstax.org/details/books/university-physics-volume-1
+2. MIT OpenCourseWare. *8.01SC Classical Mechanics*. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
+3. NASA. *Basics of Space Flight: Gravity and Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
+4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume I*. https://www.feynmanlectures.caltech.edu/

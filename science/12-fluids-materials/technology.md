@@ -3,10 +3,10 @@ title: "Engineering with Fluids and Materials"
 slug: 12-fluids-materials-technology
 module: "Module 12"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]
 connections: [16-earth-planetary, 17-materials-manufacturing]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -30,7 +30,7 @@ Engineers must design systems that transport fluids efficiently, withstand exter
 A typical fluid-structural system, such as a high-pressure hydraulic actuator or an aircraft wing, consists of:
 - **Pressure Vessels/Pipes:** Contain fluids and resist hoop and longitudinal stresses.
 - **Pumps/Compressors:** Add mechanical energy to fluids to overcome viscous friction and elevation changes.
-- **Valves/Constrictions:** Control fluid flow by intentionally introducing pressure drops (utilising Bernoulli's principle and viscous losses).
+- **Valves/Constrictions:** Control fluid flow by intentionally introducing pressure drops (through geometry, control elements, and deliberately introduced irreversible losses).
 - **Load-Bearing Members (Beams, Struts, Ties):** Solid components designed to resist bending, compression, and tension.
 - **Composite Panels:** Lightweight, high-strength surfaces (e.g., carbon fibre reinforced polymers) used in aerospace and automotive applications.
 
@@ -47,7 +47,7 @@ In a hydraulic system, a pump increases the pressure energy of a fluid. This flu
 ## 6. System architecture
 
 ### Principle-to-System Chain: The Aircraft Wing
-1. **Scientific Principle:** Bernoulli's principle and Newton's third law dictate that a fluid moving over a curved surface creates a pressure differential.
+1. **Scientific Principle:** Conservation of momentum, circulation, viscosity, and boundary conditions establish a pressure and shear distribution that deflects airflow and produces lift.
 2. **Component Design:** The wing is shaped as an aerofoil to manipulate the airflow, creating lower pressure above and higher pressure below, generating lift.
 3. **Material Selection:** The lift force creates massive bending moments at the wing root. The upper surface is in compression, the lower in tension.
 4. **Structural Architecture:** The wing is built with a central spar (to resist bending) and ribs (to maintain the aerofoil shape). 
@@ -74,7 +74,7 @@ Efficiency in fluid systems is often dictated by minimising viscous losses. Smoo
 
 ## 10. Safety principles
 
-- **Factors of Safety:** Components are designed to withstand loads significantly higher than their expected maximum operating loads (e.g., a factor of safety of 1.5 means the structure can hold 150% of its rated load before yielding).
+- **Factors of Safety:** Components are designed to withstand loads significantly higher than their expected maximum operating loads (the factor compares a selected failure criterion with an allowable design value; it is not a universal multiplier for whole-system rated load).
 - **Fail-Safe Design:** If one component fails, the load is redistributed to other components, preventing total system collapse.
 - **Leak-Before-Break:** Pressure vessels are designed so that a growing crack will penetrate the wall and cause a detectable leak before it reaches the critical length required for catastrophic brittle fracture.
 
@@ -84,12 +84,23 @@ The extraction and processing of metals and the manufacturing of carbon fibre co
 
 ## 12. Connections to other technologies
 
-- **16-manufacturing-processes:** Determines how materials can be shaped and how manufacturing flaws (which initiate fractures) are introduced.
-- **17-structural-engineering:** Applies these material and fluid principles to the design of buildings, bridges, and dams.
-- **18-aerospace-systems:** Heavily relies on advanced composites and fluid dynamics for vehicle design.
+- **17-materials-manufacturing:** Determines how materials can be shaped and how manufacturing flaws (which initiate fractures) are introduced.
+- **17-materials-manufacturing:** Applies these material and fluid principles to the design of buildings, bridges, and dams.
+- **20-sensors-control-infrastructure:** Heavily relies on advanced composites and fluid dynamics for vehicle design.
+
+## Phase 7 review boundaries and validity limits
+
+- Bernoulli's equation is an energy relation for specified steady-flow assumptions; a constriction does not universally cause a pressure drop without considering elevation, losses, pumps, compressibility, and boundary conditions.
+- Aerodynamic lift comes from the complete pressure and shear distribution associated with circulation and momentum deflection. Bernoulli and Newton descriptions are consistent views of the same flow, not competing one-line causes.
+- Viscosity relates stress to rate of deformation for a constitutive model. Newtonian behavior is not universal; many polymers, suspensions, and biological fluids are non-Newtonian.
+- Stress and strain are tensor quantities in three dimensions. Scalar Hooke-law forms apply to simple uniaxial or shear cases in a linear elastic regime.
+- Griffith's ideal brittle-fracture equation is geometry- and assumption-dependent. Engineering fracture assessment normally uses stress-intensity factors, energy-release rates, toughness data, and flaw geometry.
+- Polycrystalline metals can be approximately isotropic only when texture and processing support that approximation; single crystals, wood, laminates, and many composites are anisotropic.
 
 ## 13. Sources
 
-[1] J. G. Leishman, *Introduction to Aerospace Flight Vehicles*, Embry-Riddle Aeronautical University, 2023. [Online]. Available: https://eaglepubs.erau.edu/introductiontoaerospaceflightvehicles/chapter/energy-equation/
-[3] Massachusetts Institute of Technology, *Mechanical Behavior of Materials, Part 1: Linear Elastic Behavior*, MITx. [Online]. Available: https://mitxonline.mit.edu/courses/course-v1:MITxT+3.032.1x/
-[4] J. A. Nairn, "Fracture mechanics of composites with residual stresses," in *Comprehensive Composite Materials*, 2000. [Online]. Available: https://www.cof.orst.edu/cof/wse/faculty/Nairn/papers/Damage.pdf
+
+1. Leishman, J. G. *Introduction to Aerospace Flight Vehicles: Energy and Bernoulli Equations*. https://eaglepubs.erau.edu/introductiontoaerospaceflightvehicles/chapter/energy-equation/
+2. University of Central Florida. *University Physics Volume 1: Bernoulli's Equation*. https://pressbooks.online.ucf.edu/osuniversityphysics/chapter/14-6-bernoullis-equation/
+3. Massachusetts Institute of Technology. *Mechanical Behavior of Materials: Linear Elastic Behavior*. https://mitxonline.mit.edu/courses/course-v1:MITxT+3.032.1x/
+4. Nairn, J. A. (2000). Fracture mechanics of composites with residual stresses. https://www.cof.orst.edu/cof/wse/faculty/Nairn/papers/Damage.pdf

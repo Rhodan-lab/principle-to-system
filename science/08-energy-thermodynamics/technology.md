@@ -3,10 +3,10 @@ title: "Thermodynamic Systems and Heat Engines"
 slug: 08-energy-thermodynamics-technology
 module: "Module 08"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 06-matter-quantum]
 connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -53,7 +53,7 @@ In a thermodynamic system, the primary flows are matter (the working fluid) and 
 
 ### Principle-to-System Chain: The Gas Turbine (Jet Engine)
 1.  **Principle:** The First Law of Thermodynamics (energy conservation) and the ideal gas law ($pV = nRT$).
-2.  **Mechanism:** Compressing a gas increases its temperature and pressure. Adding heat at constant pressure further increases its volume and enthalpy. Expanding this hot, high-pressure gas through a turbine extracts work.
+2.  **Mechanism:** In an ideal Brayton-cycle model, near-adiabatic compression raises pressure and temperature, approximately constant-pressure heat addition raises enthalpy, and expansion through a turbine extracts work. Expanding this hot, high-pressure gas through a turbine extracts work.
 3.  **Component:** The compressor (rotating blades) forces air into a smaller volume. The combustion chamber injects fuel and ignites it, adding heat. The turbine extracts work from the expanding exhaust.
 4.  **System:** The Brayton cycle architecture links these components on a single shaft. The turbine extracts just enough work to drive the compressor, while the remaining high-velocity exhaust provides thrust (in a jet engine) or drives a secondary power turbine (in a power plant).
 
@@ -73,7 +73,7 @@ Real systems always operate below the theoretical Carnot efficiency due to irrev
 *   **Heat Leaks:** Heat escapes through imperfect insulation.
 *   **Finite Temperature Differences:** Heat transfer requires a temperature gradient. Transferring heat across a finite difference is an irreversible process that generates entropy and destroys the potential to do work.
 
-Modern combined-cycle gas turbine (CCGT) power plants, which use the hot exhaust from a gas turbine to boil water for a steam turbine, can achieve thermal efficiencies exceeding $60\%$.
+Combined-cycle plants recover gas-turbine exhaust heat in a steam bottoming cycle, raising efficiency above either simple cycle; actual performance depends on load, ambient conditions, fuel, cooling, and plant design.
 
 ## 9. Reliability and failure modes
 
@@ -100,9 +100,18 @@ Modern combined-cycle gas turbine (CCGT) power plants, which use the hot exhaust
 *   **HVAC Systems:** Heating, ventilation, and air conditioning rely entirely on refrigeration cycles and heat exchangers.
 *   **Thermal Energy Storage:** Using phase change materials (PCMs) or molten salts to store excess thermal energy for later use, crucial for balancing intermittent renewable energy sources like concentrated solar power.
 
+## Phase 7 review boundaries and validity limits
+
+- Temperature is a thermodynamic state variable defined through equilibrium and an equation of state; it is not generally identical to average translational kinetic energy.
+- Entropy is a state function with thermodynamic and statistical definitions. “Disorder” is an unreliable shortcut; spontaneous change depends on the entropy balance of system plus surroundings.
+- Heat and work are modes of energy transfer across a boundary, not stored substances. Sign conventions must be stated before using the First Law.
+- Gibbs free-energy criteria apply to specified constraints, commonly constant temperature and pressure with only pressure–volume work. Negative ΔG predicts thermodynamic direction, not reaction speed.
+- Stefan–Boltzmann emission is not the same as net radiative heat transfer; exchange with surroundings requires a difference such as εσA(T⁴ − T_sur⁴) under simplified view-factor conditions.
+
 ## 13. Sources
 
-1.  Cengel, Y. A., & Boles, M. A. (2015). *Thermodynamics: An Engineering Approach* (8th ed.). McGraw-Hill Education. [1]
-2.  Moran, M. J., Shapiro, H. N., Boettner, D. D., & Bailey, M. B. (2014). *Fundamentals of Engineering Thermodynamics* (8th ed.). Wiley. [2]
-3.  Bejan, A. (2016). *Advanced Engineering Thermodynamics* (4th ed.). Wiley. [3]
-4.  Dincer, I., & Rosen, M. A. (2012). *Exergy: Energy, Environment and Sustainable Development* (2nd ed.). Elsevier. [4]
+
+1. Moran, M. J., et al. *Fundamentals of Engineering Thermodynamics*. https://books.google.com/books?id=y9suEQAAQBAJ
+2. Kaviany, M. *Heat Transfer Physics*. https://assets.cambridge.org/97811070/41783/frontmatter/9781107041783_frontmatter.pdf
+3. Frenkel, D. (1999). Entropy-driven phase transitions. https://www.sciencedirect.com/science/article/pii/S0378437198005019
+4. Bejan, A. *Advanced Engineering Thermodynamics*. https://books.google.com/books?id=j0zSDAAAQBAJ

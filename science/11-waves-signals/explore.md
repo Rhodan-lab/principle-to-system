@@ -3,16 +3,16 @@ title: "Oscillations, Waves, Sound, Optics, and Signals"
 slug: 11-waves-signals-explore
 module: "Module 11"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 09-motion-forces]
 connections: [20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 ## 1. Observation prompts
 
-- **The Doppler Effect:** Stand near a road and listen to the pitch of a car engine or siren as it approaches and then passes you. How does the pitch change? Does the volume change in the same way?
+- **The Doppler effect:** Use a reputable recorded demonstration or simulation of a moving source. Compare observed frequency and amplitude without standing near traffic or emergency vehicles.
 - **Water Waves:** Drop a single pebble into a still pond or a large basin of water. Observe the expanding circular ripples. What happens when the ripples hit the edge of the basin? Now drop two pebbles simultaneously a short distance apart. Observe the pattern where the two sets of ripples intersect.
 - **Optical Refraction:** Place a straight pencil halfway into a glass of water. Look at it from the side, at the level of the water surface. Why does the pencil appear broken or bent?
 
@@ -35,17 +35,17 @@ content_license: CC-BY-4.0
 
 ## 4. Thought experiments
 
-- **The Silent Bell:** Imagine a bell ringing inside a sealed glass jar. If you use a vacuum pump to slowly remove all the air from the jar, what will happen to the sound of the bell? What will happen to your ability to see the bell? What does this tell you about the nature of sound waves versus light waves?
+- **Sound and vacuum simulation:** In a virtual model, reduce gas density around a vibrating source while keeping the optical path unchanged. Which coupling carries sound, and why can light still propagate?
 - **The Infinite String:** Imagine plucking a perfectly elastic string that extends infinitely in one direction. Will the wave pulse ever reflect back to you? If there is no boundary, how does the energy dissipate?
 
 ## 5. Household and browser-based explorations
 
-- **Resonance with Wine Glasses:** Wet your finger and rub it gently but firmly around the rim of a thin crystal wine glass. You should hear a clear, sustained tone. This is the resonant frequency of the glass. Add some water to the glass and repeat. Does the pitch go up or down? Why? (The water adds mass to the oscillating system without significantly changing its stiffness).
-- **Browser Audio Oscillator:** Search online for a "browser tone generator" or "online oscillator". Play a pure sine wave at 440 Hz (Standard pitch A). Open a second tab with the same generator and set it to 442 Hz. Play both simultaneously. You will hear a distinct "wobbling" sound. These are "beats," caused by the alternating constructive and destructive interference of the two slightly different frequencies. The beat frequency is the difference between the two frequencies (2 Hz, or two wobbles per second).
+- **Resonance simulation:** Use a virtual driven oscillator or recorded spectrum to vary mass, stiffness, and damping. Avoid fragile glass and high sound levels.
+- **Browser Audio Oscillator:** Search online for a "browser tone generator" or "online oscillator". Play a pure sine wave at 440 Hz (Standard pitch A). Open a second tab with the same generator and set it to 442 Hz. At a low, comfortable volume, compare or plot both signals. Their sum shows a distinct "wobbling" sound. These are "beats," caused by the alternating constructive and destructive interference of the two slightly different frequencies. The beat frequency is the difference between the two frequencies (2 Hz, or two wobbles per second).
 
 ## 6. Model-building prompts
 
-- **Coupled Oscillators:** Tie a string horizontally between two chairs. Hang two identical simple pendulums from this horizontal string. Start one pendulum swinging while the other is at rest. Observe how the energy transfers back and forth between the two pendulums. How would you modify the differential equations of simple harmonic motion to account for this coupling?
+- **Coupled-oscillator model:** Use a simulation or two coupled equations to transfer energy between oscillators. Vary coupling strength and damping, then plot both amplitudes versus time.
 - **Fourier Synthesis:** Using a spreadsheet or a programming language (like Python), create a graph of $y = \sin(x)$. Then add a second harmonic: $y = \sin(x) + \frac{1}{3}\sin(3x)$. Then add a third: $y = \sin(x) + \frac{1}{3}\sin(3x) + \frac{1}{5}\sin(5x)$. Observe how the sum of these smooth sine waves begins to approximate a sharp-edged square wave.
 
 ## 7. Self-explanation questions
@@ -68,3 +68,18 @@ content_license: CC-BY-4.0
 ## 10. Reasoning notes
 
 When analysing wave phenomena, always identify the medium (if any), the restoring force, and the source of the disturbance. Remember that waves transport energy, not matter. When dealing with interference, pay close attention to the phase difference between the waves; it is the phase, not just the amplitude, that determines whether they will add together or cancel out.
+
+## Phase 7 review boundaries and validity limits
+
+- A wave transports energy and momentum, while material elements in a mechanical medium usually oscillate around equilibrium; some waves and nonlinear flows can also produce net transport.
+- Refraction follows phase matching and a change in phase velocity or refractive index, not a vague distinction between “optically dense” and “less dense” matter.
+- Fourier series apply to suitably behaved periodic signals; Fourier transforms generalise the idea to non-periodic signals. Real measurements also involve finite windows, sampling, leakage, and noise.
+- Destructive interference means local cancellation of the chosen field variable. Energy conservation must be evaluated from flux and boundary conditions; energy may be redistributed, reflected, or stored rather than always appearing at a nearby bright fringe.
+- Fiber guidance is described by electromagnetic modes. Total internal reflection is a useful ray approximation, but evanescent fields, bending loss, scattering, absorption, and dispersion remain.
+
+## 11. Sources
+
+1. MIT OpenCourseWare. *8.03SC Physics III: Vibrations and Waves*. https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/
+2. MIT OpenCourseWare. *6.003 Signals and Systems*. https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/
+3. OpenStax. *College Physics 2e: Oscillatory Motion and Waves*. https://openstax.org/books/college-physics-2e/pages/16-introduction-to-oscillatory-motion-and-waves
+4. Agrawal, G. P. *Fiber-Optic Communication Systems*. https://doi.org/10.1002/9780470918524

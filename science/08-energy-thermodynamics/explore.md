@@ -3,10 +3,10 @@ title: "Exploring Thermodynamics"
 slug: 08-energy-thermodynamics-explore
 module: "Module 08"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 06-matter-quantum]
 connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -32,7 +32,7 @@ content_license: CC-BY-4.0
 1.  **Identify the mechanisms:** The soup cools primarily through two mechanisms: convection (heat transfer to the air) and evaporation (a phase transition).
 2.  **Analyze evaporation:** Evaporation requires latent heat. When the most energetic water molecules escape the liquid surface into the air, they take thermal energy with them, lowering the average kinetic energy (and thus the temperature) of the remaining liquid.
 3.  **Analyze the boundary layer:** Normally, a layer of warm, highly humid air forms immediately above the soup. As the air becomes saturated with water vapor, the rate of evaporation slows down.
-4.  **Synthesize the effect of blowing:** Blowing on the soup sweeps away this warm, humid boundary layer, replacing it with drier air. Even if your breath is $37^\circ\text{C}$, it is much drier than the saturated air above the soup. This maintains a steep concentration gradient for water vapor, drastically increasing the rate of evaporation and thus the rate of cooling.
+4.  **Synthesize the effect of blowing:** Blowing on the soup sweeps away this warm, humid boundary layer, replacing it with drier air. Exhaled air is humid, but moving air still disrupts the warm saturated boundary layer and increases forced convection; evaporation increases when the replacement air is below saturation at the surface temperature. This maintains a steep concentration gradient for water vapor, drastically increasing the rate of evaporation and thus the rate of cooling.
 
 ## 4. Thought experiments
 
@@ -41,7 +41,7 @@ content_license: CC-BY-4.0
 
 ## 5. Household and browser-based explorations
 
-*   **The Rubber Band Refrigerator:** Take a thick rubber band. Hold it loosely against your upper lip (which is very sensitive to temperature). Now, rapidly stretch the rubber band and hold it stretched against your lip. It should feel warm. Wait a few seconds for it to cool to room temperature while still stretched. Then, rapidly let it contract and touch it to your lip again. It should feel cool. You have just demonstrated the elastocaloric effect, a thermodynamic cycle driven by the entropy changes of aligning and misaligning polymer chains.
+*   **Elastocaloric model:** Use published temperature–extension data or a classroom simulation for a rubber elastomer. Plot the qualitative temperature response during rapid extension, thermal equilibration, and release. Do not snap stretched bands near the face or skin.
 *   **Online Simulation:** Search for the "PhET Gas Properties" simulation. Explore how changing the volume of the container affects the pressure and temperature of the gas. Try adding heat and observing the microscopic kinetic energy of the particles.
 
 ## 6. Model-building prompts
@@ -64,10 +64,25 @@ content_license: CC-BY-4.0
 
 ## 9. Suggested learning paths
 
-*   **Next step:** Module 09: Fluid dynamics. Understanding how fluids move is essential for analyzing convection and the behavior of working fluids in engines.
-*   **Deepening:** Module 12: Chemical kinetics. Explore how thermodynamics determines the equilibrium states of chemical reactions.
-*   **Broadening:** Module 11: Materials science. Investigate how the thermodynamic properties of materials (like heat capacity and thermal conductivity) arise from their microscopic structure.
+*   **Next step:** Module 12: Fluids and Materials. Understanding how fluids move is essential for analyzing convection and the behavior of working fluids in engines.
+*   **Deepening:** Module 07: Chemical Bonding. Explore how thermodynamics determines the equilibrium states of chemical reactions.
+*   **Broadening:** Module 17: Materials Science and Manufacturing. Investigate how the thermodynamic properties of materials (like heat capacity and thermal conductivity) arise from their microscopic structure.
 
 ## 10. Reasoning notes
 
 When analyzing thermodynamic systems, always begin by clearly defining the **system boundary**. Is the system open (mass can cross the boundary), closed (only energy can cross), or isolated (neither mass nor energy can cross)? The form of the First and Second Laws you use depends entirely on this choice. Next, identify all energy interactions (heat and work) crossing the boundary. Finally, remember that while energy is always conserved, the *quality* of that energy (its ability to do work) is constantly degrading due to the generation of entropy.
+
+## Phase 7 review boundaries and validity limits
+
+- Temperature is a thermodynamic state variable defined through equilibrium and an equation of state; it is not generally identical to average translational kinetic energy.
+- Entropy is a state function with thermodynamic and statistical definitions. “Disorder” is an unreliable shortcut; spontaneous change depends on the entropy balance of system plus surroundings.
+- Heat and work are modes of energy transfer across a boundary, not stored substances. Sign conventions must be stated before using the First Law.
+- Gibbs free-energy criteria apply to specified constraints, commonly constant temperature and pressure with only pressure–volume work. Negative ΔG predicts thermodynamic direction, not reaction speed.
+- Stefan–Boltzmann emission is not the same as net radiative heat transfer; exchange with surroundings requires a difference such as εσA(T⁴ − T_sur⁴) under simplified view-factor conditions.
+
+## 11. Sources
+
+1. Moran, M. J., et al. *Fundamentals of Engineering Thermodynamics*. https://books.google.com/books?id=y9suEQAAQBAJ
+2. Kaviany, M. *Heat Transfer Physics*. https://assets.cambridge.org/97811070/41783/frontmatter/9781107041783_frontmatter.pdf
+3. Frenkel, D. (1999). Entropy-driven phase transitions. https://www.sciencedirect.com/science/article/pii/S0378437198005019
+4. Bejan, A. *Advanced Engineering Thermodynamics*. https://books.google.com/books?id=j0zSDAAAQBAJ

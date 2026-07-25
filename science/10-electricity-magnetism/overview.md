@@ -3,10 +3,10 @@ title: "Electricity, Magnetism, Fields, and Circuits"
 slug: 10-electricity-magnetism
 module: "Module 10"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 06-matter-quantum]
 connections: [18-semiconductors-electronics, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -76,7 +76,7 @@ $$ \mathbf{F} = q(\mathbf{E} + \mathbf{v} \times \mathbf{B}) $$
    $$ \oint \mathbf{B} \cdot d\mathbf{l} = \mu_0 I_{enc} + \mu_0 \epsilon_0 \frac{d\Phi_E}{dt} $$
    where $\mu_0$ is the vacuum permeability.
 
-**Ohm's Law:** Relates voltage $V$, current $I$, and resistance $R$ in a conductor:
+**Ohm's Law for an ohmic element:** Relates voltage $V$, current $I$, and resistance $R$ when the element is approximately linear under specified conditions:
 $$ V = IR $$
 
 ## 7. Definitions of symbols and units
@@ -92,7 +92,7 @@ $$ V = IR $$
 - $d\mathbf{l}$: Differential length vector, measured in meters (m).
 - $\Phi_B$: Magnetic flux, measured in Webers (Wb).
 - $\Phi_E$: Electric flux, measured in Volt-meters (V$\cdot$m).
-- $\mu_0$: Vacuum permeability, $4\pi \times 10^{-7}$ T$\cdot$m/A.
+- $\mu_0$: Vacuum permeability, experimentally determined in the revised SI (approximately $1.25663706\times10^{-6}\,\text{H/m}$).
 - $I$: Electric current, measured in Amperes (A).
 - $V$: Electric potential or voltage, measured in Volts (V).
 - $R$: Resistance, measured in Ohms ($\Omega$).
@@ -121,12 +121,21 @@ Electromagnetism operates across an enormous range of scales. Spatially, it gove
 
 - **03-mathematical-models:** Provides the vector calculus framework necessary for Maxwell's equations.
 - **06-matter-quantum:** Explains the microscopic origin of charge and magnetism in atoms and materials.
-- **11-thermodynamics:** Connects electrical resistance to heat dissipation (Joule heating).
-- **12-optics:** Builds on the fact that light is an electromagnetic wave, governed by Maxwell's equations.
+- **08-energy-thermodynamics:** Connects electrical resistance to heat dissipation (Joule heating).
+- **11-waves-signals:** Builds on the fact that light is an electromagnetic wave, governed by Maxwell's equations.
+
+## Phase 7 review boundaries and validity limits
+
+- Electric and magnetic fields are components of one electromagnetic field whose decomposition depends on reference frame. They are not two unrelated substances.
+- Ohm's law V = IR is a constitutive relation for approximately ohmic components under specified temperature and operating conditions, not a universal law for every device.
+- Current divides among available branches according to circuit impedances and Kirchhoff's laws; it does not choose only a single “path of least resistance.”
+- In the 2019 SI, c and e are exact defining constants, while μ₀ and ε₀ are experimentally determined quantities related through c² = 1/(μ₀ε₀).
+- Lumped-circuit models are valid when propagation delays and distributed fields are negligible. At high frequency or large physical size, transmission-line and full-field models are required.
 
 ## 12. Sources
 
-1. OpenStax. (2016). *University Physics Volume 2*. OpenStax. https://openstax.org/books/university-physics-volume-2/pages/1-introduction
-2. Feynman, R. P., Leighton, R. B., & Sands, M. (1964). *The Feynman Lectures on Physics, Vol. II: Mainly Electromagnetism and Matter*. Addison-Wesley. https://www.feynmanlectures.caltech.edu/II_toc.html
-3. Nave, R. (n.d.). *HyperPhysics: Electricity and Magnetism*. Georgia State University. http://hyperphysics.phy-astr.gsu.edu/hbase/emcon.html
-4. OpenStax. (2022). *College Physics 2e*. OpenStax. https://openstax.org/books/college-physics-2e/pages/18-introduction-to-electric-charge-and-electric-field
+
+1. MIT OpenCourseWare. *8.02 Physics II: Electricity and Magnetism*. https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/
+2. OpenStax. *University Physics Volume 2*. https://openstax.org/books/university-physics-volume-2/pages/1-introduction
+3. OpenStax. *Maxwell's Equations and Electromagnetic Waves*. https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves
+4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume II*. https://www.feynmanlectures.caltech.edu/II_toc.html

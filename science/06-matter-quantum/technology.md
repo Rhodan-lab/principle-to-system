@@ -3,10 +3,10 @@ title: "Quantum Technologies and Atomic Engineering"
 slug: 06-matter-quantum-technology
 module: "Module 06"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]
 connections: [07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,7 +14,7 @@ content_license: CC-BY-4.0
 
 The technologies discussed in this module rely on the fundamental principles of quantum mechanics and atomic structure:
 - **Quantised Energy Levels:** Electrons in atoms and molecules can only occupy specific, discrete energy states.
-- **Stimulated Emission:** An incoming photon can induce an excited electron to drop to a lower energy state, emitting a second photon identical in phase, frequency, and direction to the first.
+- **Stimulated Emission:** An incoming photon can induce an excited electron to drop to a lower energy state, increasing occupation of the same optical mode, producing radiation matched in frequency and phase relation under the device's mode conditions.
 - **Quantum Tunnelling:** A quantum particle has a non-zero probability of passing through a potential energy barrier that it classically should not have enough energy to surmount.
 - **Nuclear Magnetic Resonance (NMR):** Atomic nuclei with non-zero spin possess a magnetic moment. In a strong external magnetic field, these nuclei align and can absorb and re-emit electromagnetic radiation at specific resonant frequencies.
 
@@ -45,9 +45,9 @@ To illustrate these concepts, we examine three distinct technologies: the Laser,
 
 **Laser:** The pump source injects energy into the gain medium, exciting a large number of electrons to a higher energy state, creating a "population inversion" (more electrons in the excited state than the ground state). When an electron spontaneously drops to a lower state, it emits a photon. If this photon strikes another excited atom, it triggers stimulated emission, producing a second identical photon. The optical resonator reflects these photons back and forth through the gain medium, causing an avalanche of stimulated emission. A fraction of this coherent light escapes through the partially reflective mirror as the laser beam.
 
-**MRI:** The main magnet aligns the quantum spins of hydrogen protons in the patient's body. The RF coils transmit a pulse of radio waves at the specific resonant frequency (Larmor frequency) of the protons, flipping their spins. When the RF pulse is turned off, the protons gradually realign with the main magnetic field, emitting their own RF signal. The gradient coils slightly alter the magnetic field strength across the body, causing protons in different locations to resonate at slightly different frequencies. By analysing these frequencies, a computer reconstructs a 3D image of the tissue.
+**MRI:** The main magnet creates a small net nuclear magnetisation from hydrogen nuclei in the patient's body. The RF coils transmit a pulse of radio waves at the specific resonant frequency (Larmor frequency) of the protons, rotating the net magnetisation away from equilibrium. When the RF pulse is turned off, the protons gradually realign with the main magnetic field, inducing a measurable voltage in the receive coil as transverse magnetisation precesses and relaxes. The gradient coils slightly alter the magnetic field strength across the body, causing protons in different locations to resonate at slightly different frequencies. By analysing these frequencies, a computer reconstructs a 3D image of the tissue.
 
-**STM:** The conducting tip is brought extremely close (within a few nanometres) to a conductive sample surface. A small voltage is applied between the tip and the sample. Due to quantum tunnelling, electrons can cross the vacuum gap between the tip and the surface, creating a measurable tunnelling current. Because the tunnelling probability depends exponentially on the distance, the current is highly sensitive to the gap width. As the piezoelectric scanner moves the tip across the surface, the feedback loop adjusts the tip's height to keep the current constant. The recorded height adjustments map the atomic topography of the surface.
+**STM:** The conducting tip is brought extremely close (within a sub-nanometre tunnelling distance) to a conductive sample surface. A small voltage is applied between the tip and the sample. Due to quantum tunnelling, electrons can cross the vacuum gap between the tip and the surface, creating a measurable tunnelling current. Because the tunnelling probability depends exponentially on the distance, the current is highly sensitive to the gap width. As the piezoelectric scanner moves the tip across the surface, the feedback loop adjusts the tip's height to keep the current constant. The recorded height adjustments map a signal that depends on tip–sample distance and local electronic density of states of the surface.
 
 ## 5. Matter, energy, force, or information flow
 
@@ -79,7 +79,7 @@ To illustrate these concepts, we examine three distinct technologies: the Laser,
 ## 9. Reliability and failure modes
 
 - **Laser:** Optical degradation is a primary failure mode. High-intensity light can damage the mirrors or the gain medium itself. In gas lasers, the gas mixture can degrade over time.
-- **MRI:** A "quench" is a catastrophic failure mode where the superconducting magnet suddenly loses its superconductivity, rapidly boiling off the liquid helium coolant and destroying the magnetic field.
+- **MRI:** A "quench" is a catastrophic failure mode where the superconducting magnet suddenly loses its superconductivity, causing rapid loss of superconductivity and helium venting; engineered quench protection and ventilation are essential.
 - **STM:** Tip degradation is the most common failure. The atomically sharp tip can pick up stray atoms from the surface or blunt itself by accidentally touching the sample, instantly ruining the atomic resolution.
 
 ## 10. Safety principles
@@ -100,14 +100,18 @@ To illustrate these concepts, we examine three distinct technologies: the Laser,
 - **Telecommunications:** Fibre optic networks rely entirely on semiconductor lasers to transmit data across the globe.
 - **Materials Science:** STMs and related atomic force microscopes (AFMs) are the foundational tools of nanotechnology, allowing scientists to manipulate matter atom by atom.
 
+## Phase 7 review boundaries and validity limits
+
+- Quantisation means that particular observables have discrete spectra in particular systems; it does not mean every physical quantity is universally restricted to discrete values.
+- A wavefunction is a state representation and probability amplitude. The Born rule relates its squared magnitude to probabilities for measurement outcomes; an orbital is not a material cloud or a classical trajectory.
+- The uncertainty relation concerns statistical spreads for identically prepared states. It is not merely instrument disturbance and does not imply that every property lacks a state-dependent value in the same way.
+- Quantum field theory describes the vacuum as a lowest-energy state with measurable correlations and fluctuations. “Virtual particles popping in and out” is a calculation metaphor, not a literal movie of detectable particles.
+- Nonrelativistic equations, independent-particle orbitals, and the Born–Oppenheimer approximation have explicit validity domains. Relativistic, many-body, nuclear, or quantum-field models are needed outside them.
+
 ## 13. Sources
 
-- LibreTexts Chemistry. (2025). *11: Quantum Mechanics and Atomic Structure*. [1]
-- Wikipedia. (n.d.). *Standard Model*. [2]
-- Khan Academy. (n.d.). *The quantum mechanical model of the atom*. [3]
-- Wikipedia. (n.d.). *Schrödinger equation*. [4]
 
-[1]: https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure
-[2]: https://en.wikipedia.org/wiki/Standard_Model
-[3]: https://www.khanacademy.org/science/physics/quantum-physics/quantum-numbers-and-orbitals/a/the-quantum-mechanical-model-of-the-atom
-[4]: https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation
+1. CERN. *The Standard Model*. https://home.cern/science/physics/standard-model/
+2. OpenStax. *Chemistry 2e: Development of Quantum Theory*. https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory
+3. National Institute of Standards and Technology. *Atomic Spectroscopy Databases*. https://www.nist.gov/pml/atomic-spectroscopy-databases
+4. LibreTexts Chemistry. *Quantum Mechanics and Atomic Structure*. https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure

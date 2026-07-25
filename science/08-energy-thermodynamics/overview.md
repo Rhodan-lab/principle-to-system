@@ -3,10 +3,10 @@ title: "Energy, Heat, Entropy, and Thermodynamics"
 slug: 08-energy-thermodynamics
 module: "Module 08"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 06-matter-quantum]
 connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -28,9 +28,9 @@ The principles of thermodynamics manifest in everyday phenomena. When ice melts 
 
 **Work** is the transfer of energy by any mechanism other than a temperature difference, typically involving a macroscopic force acting over a distance (such as a piston compressing a gas).
 
-**Temperature** is a measure of the average translational kinetic energy of the microscopic particles in a system. It determines the direction of spontaneous heat flow.
+**Temperature** is a thermodynamic state variable that establishes thermal equilibrium and the direction of spontaneous heat transfer. For an ideal monatomic gas it is proportional to mean translational kinetic energy, but that identity is not general.
 
-**Entropy** is a measure of the number of specific microscopic configurations (microstates) that correspond to a macroscopic state (macrostate). It is often conceptualised as a measure of disorder or the unavailability of a system's thermal energy for conversion into mechanical work.
+**Entropy** is a state function defined macroscopically through reversible heat transfer and statistically through probability distributions over microstates. It is related to energy dispersal and multiplicity, but is not simply visual disorder.
 
 **Free Energy** (such as Gibbs or Helmholtz free energy) is the portion of a system's internal energy that is available to perform thermodynamic work at a constant temperature. It determines whether a process will occur spontaneously.
 
@@ -42,14 +42,14 @@ The principles of thermodynamics manifest in everyday phenomena. When ice melts 
 Thermal energy moves through three primary mechanisms:
 1.  **Conduction:** The transfer of heat through a stationary medium by the microscopic collisions of particles and movement of electrons. When one end of a metal rod is heated, the energetic particles vibrate more vigorously, colliding with adjacent particles and passing the kinetic energy along the rod.
 2.  **Convection:** The transfer of heat by the macroscopic movement of a fluid (liquid or gas). When a fluid is heated from below, it expands, becomes less dense, and rises, while cooler, denser fluid sinks to replace it, creating a circulating convection current.
-3.  **Radiation:** The transfer of energy via electromagnetic waves. Unlike conduction and convection, radiation does not require a medium and can travel through a vacuum. All objects emit thermal radiation proportional to the fourth power of their absolute temperature.
+3.  **Radiation:** The transfer of energy via electromagnetic waves. Unlike conduction and convection, radiation does not require a medium and can travel through a vacuum. All bodies emit thermal radiation; the idealised Stefan–Boltzmann surface-emission model scales with the fourth power of absolute temperature, while net exchange also depends on surroundings and geometry.
 
 ### The Laws of Thermodynamics
 The causal chains of energy transformation are governed by four fundamental laws:
 *   **Zeroth Law:** If system A is in thermal equilibrium with system B, and system B is in thermal equilibrium with system C, then A is in thermal equilibrium with C. This establishes temperature as a measurable, fundamental property.
 *   **First Law (Conservation of Energy):** Energy cannot be created or destroyed, only transformed from one form to another. The change in a system's internal energy is equal to the heat added to the system minus the work done by the system.
 *   **Second Law:** The total entropy of an isolated system can never decrease over time. Heat flows spontaneously from hot to cold, and no process is possible whose sole result is the complete conversion of heat into work. This law establishes the "arrow of time" and the fundamental limits on engine efficiency.
-*   **Third Law:** As the temperature of a system approaches absolute zero ($0\text{ K}$), the entropy of the system approaches a constant minimum value.
+*   **Third Law:** As the temperature of a system approaches absolute zero ($0\text{ K}$), the entropy approaches a constant as temperature approaches zero; for a perfect crystal with a unique ground state, that constant is conventionally zero.
 
 ## 5. Important quantities
 
@@ -88,7 +88,7 @@ $$ \dot{Q}_{\text{cond}} = -k A \frac{dT}{dx} $$
 Where $\dot{Q}_{\text{cond}}$ is the rate of heat transfer ($\text{W}$), $k$ is the thermal conductivity, $A$ is the cross-sectional area, and $dT/dx$ is the temperature gradient.
 
 **Stefan-Boltzmann Law of Thermal Radiation:**
-$$ \dot{Q}_{\text{rad}} = \varepsilon \sigma A T^4 $$
+$$ \dot{Q}_{\text{net}} \approx \varepsilon \sigma A (T^4-T_{\text{sur}}^4) $$
 Where $\dot{Q}_{\text{rad}}$ is the radiated power, $\varepsilon$ is the emissivity of the surface ($0 \le \varepsilon \le 1$), $\sigma$ is the Stefan-Boltzmann constant, $A$ is the surface area, and $T$ is the absolute temperature.
 
 ### Free Energy and Phase Transitions
@@ -149,9 +149,18 @@ Thermodynamics bridges the microscopic and macroscopic worlds.
 *   **09-fluid-dynamics:** Essential for understanding convection, the behavior of working fluids in engines, and atmospheric thermodynamics.
 *   **12-chemical-kinetics:** Relies on thermodynamics (specifically free energy) to determine whether chemical reactions will occur spontaneously and where equilibrium lies.
 
+## Phase 7 review boundaries and validity limits
+
+- Temperature is a thermodynamic state variable defined through equilibrium and an equation of state; it is not generally identical to average translational kinetic energy.
+- Entropy is a state function with thermodynamic and statistical definitions. “Disorder” is an unreliable shortcut; spontaneous change depends on the entropy balance of system plus surroundings.
+- Heat and work are modes of energy transfer across a boundary, not stored substances. Sign conventions must be stated before using the First Law.
+- Gibbs free-energy criteria apply to specified constraints, commonly constant temperature and pressure with only pressure–volume work. Negative ΔG predicts thermodynamic direction, not reaction speed.
+- Stefan–Boltzmann emission is not the same as net radiative heat transfer; exchange with surroundings requires a difference such as εσA(T⁴ − T_sur⁴) under simplified view-factor conditions.
+
 ## 12. Sources
 
-1.  Kaviany, M. (2014). *Heat Transfer Physics* (2nd ed.). Cambridge University Press. [1]
-2.  Cengel, Y. A., & Boles, M. A. (2015). *Thermodynamics: An Engineering Approach* (8th ed.). McGraw-Hill Education. [2]
-3.  Frenkel, D. (1999). Entropy-driven phase transitions. *Physica A: Statistical Mechanics and its Applications*, 263(1-4), 26-38. [3]
-4.  Baus, M., & Tejero, C. F. (2008). *Equilibrium Statistical Physics: Phases of Matter and Phase Transitions*. Springer. [4]
+
+1. Moran, M. J., et al. *Fundamentals of Engineering Thermodynamics*. https://books.google.com/books?id=y9suEQAAQBAJ
+2. Kaviany, M. *Heat Transfer Physics*. https://assets.cambridge.org/97811070/41783/frontmatter/9781107041783_frontmatter.pdf
+3. Frenkel, D. (1999). Entropy-driven phase transitions. https://www.sciencedirect.com/science/article/pii/S0378437198005019
+4. Bejan, A. *Advanced Engineering Thermodynamics*. https://books.google.com/books?id=j0zSDAAAQBAJ

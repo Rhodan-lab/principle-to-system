@@ -3,10 +3,10 @@ title: "Matter, Atoms, Electron Behaviour, and Quantum Foundations"
 slug: 06-matter-quantum
 module: "Module 06"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]
 connections: [07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -27,7 +27,7 @@ The necessity of quantum mechanics arises from several observable phenomena that
 
 To explain these phenomena, several foundational concepts were developed:
 
-- **Quantisation:** Energy is not continuous but comes in discrete packets called quanta. For electromagnetic radiation, these quanta are called photons.
+- **Quantisation:** Measurements of particular observables can have discrete allowed values in bound systems. Electromagnetic radiation exchanges energy in photons, while other observables or free-particle spectra may be continuous.
 - **Wave-Particle Duality:** Matter and light exhibit both wave-like and particle-like characteristics depending on the experiment. Electrons, traditionally thought of as particles, can diffract and interfere like waves. Light, traditionally thought of as a wave, can behave as a stream of particles (photons).
 - **Quantum States and Orbitals:** Electrons in atoms do not travel in defined planetary orbits. Instead, they exist in quantum states described by wavefunctions, which determine the probability of finding an electron in a specific region of space (an orbital).
 - **The Pauli Exclusion Principle:** No two identical fermions (particles with half-integer spin, such as electrons) can occupy the exact same quantum state simultaneously. This principle dictates the structure of multi-electron atoms and the periodic table.
@@ -37,7 +37,7 @@ To explain these phenomena, several foundational concepts were developed:
 
 The structure of matter emerges from the interactions of fundamental particles governed by quantum mechanics:
 
-**From Quarks to Nuclei:** The strong nuclear force, mediated by gluons, binds quarks together to form protons and neutrons (nucleons). This force overcomes the immense electrostatic repulsion between positively charged protons, allowing stable atomic nuclei to exist.
+**From Quarks to Nuclei:** Quantum chromodynamics describes gluons binding quarks inside nucleons. A residual strong interaction between nucleons, together with quantum structure and the balance of nuclear and electrostatic energies, permits some nuclei to be stable.
 
 **From Nuclei to Atoms:** The electromagnetic force, mediated by photons, binds negatively charged electrons to the positively charged nucleus. The behaviour of these electrons is governed by the Schrödinger equation. Because the electrons are confined to the electrical potential well of the nucleus, their allowed energy states are quantised.
 
@@ -62,7 +62,8 @@ $$ E = h\nu = \frac{hc}{\lambda} $$
 
 **The de Broglie Wavelength:**
 Every particle with momentum has an associated wavelength.
-$$ \lambda = \frac{h}{p} = \frac{h}{mv} $$
+$$ \lambda = \frac{h}{p} $$
+For a nonrelativistic particle with constant mass, $p \approx mv$, giving $\lambda \approx h/(mv)$.
 
 **The Time-Independent Schrödinger Equation:**
 This partial differential equation determines the allowed wavefunctions and energy levels of a quantum system.
@@ -71,7 +72,7 @@ Where $\hat{H}$ is the Hamiltonian operator (representing total energy, kinetic 
 $$ \left( -\frac{\hbar^2}{2m}\nabla^2 + V(x,y,z) \right)\psi(x,y,z) = E\psi(x,y,z) $$
 
 **Heisenberg Uncertainty Principle:**
-It is impossible to simultaneously know both the exact position and exact momentum of a particle.
+For identically prepared states, the standard deviations of position and momentum outcomes obey a lower bound.
 $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 
 ## 7. Definitions of symbols and units
@@ -112,23 +113,27 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
   **Correction:** "Observation" in quantum mechanics simply means interaction with a macroscopic measuring device, which causes wavefunction collapse or decoherence; consciousness is not required.
 - **Misconception:** Wave-particle duality means a particle is sometimes a wave and sometimes a particle.
   **Correction:** Quantum entities are neither classical waves nor classical particles; they are a unique type of entity that exhibits properties of both depending on how they are measured.
-- **Misconception:** Empty space is truly empty.
-  **Correction:** According to quantum field theory, a vacuum is teeming with fluctuating quantum fields and virtual particles popping in and out of existence.
+- **Misconception:** Quantum-field vacuum diagrams show literal particles continuously appearing and disappearing.
+  **Correction:** The vacuum is the lowest-energy field state and has measurable correlations; virtual particles are internal terms in perturbative calculations, not directly observed transient objects.
 
 ## 11. Connections to other modules
 
-- **07-chemical-bonds:** The quantum mechanical behaviour of electrons, specifically the overlap of atomic orbitals, is the fundamental basis for all chemical bonding.
-- **12-semiconductors:** The band theory of solids, which explains the behaviour of conductors, insulators, and semiconductors, is derived directly from the Pauli exclusion principle and quantum states in periodic lattices.
-- **08-thermodynamics:** Statistical mechanics bridges the quantum states of individual particles with the macroscopic thermodynamic properties of materials.
+- **07-chemical-bonding:** The quantum mechanical behaviour of electrons, specifically the overlap of atomic orbitals, is the fundamental basis for all chemical bonding.
+- **18-semiconductors-electronics:** The band theory of solids, which explains the behaviour of conductors, insulators, and semiconductors, is derived directly from the Pauli exclusion principle and quantum states in periodic lattices.
+- **08-energy-thermodynamics:** Statistical mechanics bridges the quantum states of individual particles with the macroscopic thermodynamic properties of materials.
+
+## Phase 7 review boundaries and validity limits
+
+- Quantisation means that particular observables have discrete spectra in particular systems; it does not mean every physical quantity is universally restricted to discrete values.
+- A wavefunction is a state representation and probability amplitude. The Born rule relates its squared magnitude to probabilities for measurement outcomes; an orbital is not a material cloud or a classical trajectory.
+- The uncertainty relation concerns statistical spreads for identically prepared states. It is not merely instrument disturbance and does not imply that every property lacks a state-dependent value in the same way.
+- Quantum field theory describes the vacuum as a lowest-energy state with measurable correlations and fluctuations. “Virtual particles popping in and out” is a calculation metaphor, not a literal movie of detectable particles.
+- Nonrelativistic equations, independent-particle orbitals, and the Born–Oppenheimer approximation have explicit validity domains. Relativistic, many-body, nuclear, or quantum-field models are needed outside them.
 
 ## 12. Sources
 
-- LibreTexts Chemistry. (2025). *11: Quantum Mechanics and Atomic Structure*. [1]
-- Wikipedia. (n.d.). *Standard Model*. [2]
-- Khan Academy. (n.d.). *The quantum mechanical model of the atom*. [3]
-- Wikipedia. (n.d.). *Schrödinger equation*. [4]
 
-[1]: https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure
-[2]: https://en.wikipedia.org/wiki/Standard_Model
-[3]: https://www.khanacademy.org/science/physics/quantum-physics/quantum-numbers-and-orbitals/a/the-quantum-mechanical-model-of-the-atom
-[4]: https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation
+1. CERN. *The Standard Model*. https://home.cern/science/physics/standard-model/
+2. OpenStax. *Chemistry 2e: Development of Quantum Theory*. https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory
+3. National Institute of Standards and Technology. *Atomic Spectroscopy Databases*. https://www.nist.gov/pml/atomic-spectroscopy-databases
+4. LibreTexts Chemistry. *Quantum Mechanics and Atomic Structure*. https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_for_the_Biosciences_(LibreTexts)/11%3A_Quantum_Mechanics_and_Atomic_Structure

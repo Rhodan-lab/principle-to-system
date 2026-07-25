@@ -3,10 +3,10 @@ title: "Exploring Fluids and Materials"
 slug: 12-fluids-materials-explore
 module: "Module 12"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]
 connections: [16-earth-planetary, 17-materials-manufacturing]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -16,13 +16,13 @@ content_license: CC-BY-4.0
 
 - **The Tap Stream:** Turn on a tap to a smooth, steady flow. Observe the shape of the water stream as it falls. Why does it get narrower further down?
 - **The Honey Spoon:** Dip a spoon into honey and pull it out. Watch how the honey flows off the spoon. Compare this to water. What does this tell you about internal friction?
-- **The Paperclip Bend:** Take a metal paperclip and bend it slightly, then let go. Now bend it severely until it stays bent. Finally, bend it back and forth rapidly in the same spot until it breaks. What three distinct material behaviours have you just observed?
+- **Stress–strain evidence:** Compare manufacturer curves or a classroom simulation for elastic, yielding, and fracture behaviour. Do not fatigue or break metal objects by hand; fractured ends can be sharp.
 
 ## 2. Prediction questions
 
 - If you hold two sheets of paper vertically, parallel to each other and a few centimetres apart, and blow air strongly between them, will the sheets move apart, move together, or stay still?
 - If you have a thick rubber band and a thin rubber band of the same length, and you hang the same weight from both, which will stretch more? Why, in terms of stress and strain?
-- If you scratch the surface of a glass rod and then try to bend it, will it break easier if the scratch is on the inside of the bend (under compression) or the outside of the bend (under tension)?
+- In a fracture simulation, place an identical surface flaw on the tensile side and compressive side of a bent specimen. Which orientation produces the larger opening stress at the crack tip?
 
 ## 3. Worked reasoning examples
 
@@ -44,9 +44,9 @@ content_license: CC-BY-4.0
 
 ## 5. Household and browser-based explorations
 
-- **The Venturi Tube:** Take a plastic bottle and carefully cut a small hole in the side near the bottom. Fill it with water and watch the stream. Now, attach a hose to a tap, pinch the end of the hose to make the opening smaller, and observe the speed of the water. You are manipulating the continuity equation ($A_1 v_1 = A_2 v_2$).
+- **Continuity and losses simulation:** Use a virtual pipe model to vary cross-section, elevation, flow rate, viscosity, and pump head. Compare ideal continuity/Bernoulli predictions with a model that includes head loss; do not cut pressurised containers or restrict hoses.
 - **Viscosity Race:** Place a drop of water, a drop of cooking oil, and a drop of honey at the top of a tilted baking tray. Time how long it takes each to reach the bottom. The difference in speed is a direct macroscopic observation of dynamic viscosity.
-- **Composite Construction:** Try to break a piece of dry spaghetti. It snaps easily (brittle fracture). Now, take several pieces of spaghetti and wrap them tightly in sticky tape. Try to break the bundle. The tape acts as a ductile matrix, preventing the brittle fracture of individual strands from propagating through the whole structure.
+- **Composite load-sharing model:** Use a diagram or simulation of fibres embedded in a matrix. Remove one fibre and observe how interfacial shear transfers load to neighbours; distinguish this from claiming that taped food is an engineering composite.
 
 ## 6. Model-building prompts
 
@@ -76,3 +76,19 @@ content_license: CC-BY-4.0
 - When applying Bernoulli's equation, always verify the assumptions: is the flow steady? Is it incompressible? Are viscous losses negligible? If the answer to any of these is no, the simple form of the equation will yield incorrect results.
 - Remember that stress is not a force, but a force *distribution*. A small force applied to a microscopic area (like a pinprick) can create a massive stress, exceeding the material's yield strength.
 - The distinction between elastic and plastic deformation is fundamental. Elasticity is about atomic bonds stretching; plasticity is about atomic planes sliding past one another.
+
+## Phase 7 review boundaries and validity limits
+
+- Bernoulli's equation is an energy relation for specified steady-flow assumptions; a constriction does not universally cause a pressure drop without considering elevation, losses, pumps, compressibility, and boundary conditions.
+- Aerodynamic lift comes from the complete pressure and shear distribution associated with circulation and momentum deflection. Bernoulli and Newton descriptions are consistent views of the same flow, not competing one-line causes.
+- Viscosity relates stress to rate of deformation for a constitutive model. Newtonian behavior is not universal; many polymers, suspensions, and biological fluids are non-Newtonian.
+- Stress and strain are tensor quantities in three dimensions. Scalar Hooke-law forms apply to simple uniaxial or shear cases in a linear elastic regime.
+- Griffith's ideal brittle-fracture equation is geometry- and assumption-dependent. Engineering fracture assessment normally uses stress-intensity factors, energy-release rates, toughness data, and flaw geometry.
+- Polycrystalline metals can be approximately isotropic only when texture and processing support that approximation; single crystals, wood, laminates, and many composites are anisotropic.
+
+## 11. Sources
+
+1. Leishman, J. G. *Introduction to Aerospace Flight Vehicles: Energy and Bernoulli Equations*. https://eaglepubs.erau.edu/introductiontoaerospaceflightvehicles/chapter/energy-equation/
+2. University of Central Florida. *University Physics Volume 1: Bernoulli's Equation*. https://pressbooks.online.ucf.edu/osuniversityphysics/chapter/14-6-bernoullis-equation/
+3. Massachusetts Institute of Technology. *Mechanical Behavior of Materials: Linear Elastic Behavior*. https://mitxonline.mit.edu/courses/course-v1:MITxT+3.032.1x/
+4. Nairn, J. A. (2000). Fracture mechanics of composites with residual stresses. https://www.cof.orst.edu/cof/wse/faculty/Nairn/papers/Damage.pdf

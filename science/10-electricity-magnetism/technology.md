@@ -3,10 +3,10 @@ title: "Engineering Electromagnetism: From Fields to Power Systems"
 slug: 10-electricity-magnetism-technology
 module: "Module 10"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 06-matter-quantum]
 connections: [18-semiconductors-electronics, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -15,7 +15,7 @@ content_license: CC-BY-4.0
 ## 1. Scientific principles used
 
 The engineering of electrical systems relies on the fundamental principles of electromagnetism described by Maxwell's equations and the Lorentz force law. Key principles include:
-- **Electromagnetic Induction (Faraday's Law):** A changing magnetic flux induces an electromotive force (EMF), which is the basis for generators and transformers.
+- **Electromagnetic Induction (Faraday's Law):** A changing magnetic flux linkage around a circuit induces an electromotive force (EMF), which is the basis for generators and transformers.
 - **Ampère's Law:** Electric currents generate magnetic fields, enabling the creation of electromagnets and motors.
 - **Ohm's Law and Joule Heating:** The relationship between voltage, current, and resistance governs power dissipation and transmission efficiency.
 - **Energy Storage in Fields:** Capacitors store energy in electric fields, while inductors store energy in magnetic fields, forming the basis for filtering and power conditioning.
@@ -85,13 +85,22 @@ The environmental impact of electrical technology is profound. While electricity
 
 ## 12. Connections to other technologies
 
-- **13-energy-systems:** Electrical technology is the backbone of modern energy distribution and renewable integration.
-- **14-electronics:** Provides the foundation for semiconductor devices and complex information processing circuits.
-- **15-control-systems:** Relies on electrical sensors and actuators to monitor and manage physical processes.
+- **20-sensors-control-infrastructure:** Electrical technology is the backbone of modern energy distribution and renewable integration.
+- **18-semiconductors-electronics:** Provides the foundation for semiconductor devices and complex information processing circuits.
+- **20-sensors-control-infrastructure:** Relies on electrical sensors and actuators to monitor and manage physical processes.
+
+## Phase 7 review boundaries and validity limits
+
+- Electric and magnetic fields are components of one electromagnetic field whose decomposition depends on reference frame. They are not two unrelated substances.
+- Ohm's law V = IR is a constitutive relation for approximately ohmic components under specified temperature and operating conditions, not a universal law for every device.
+- Current divides among available branches according to circuit impedances and Kirchhoff's laws; it does not choose only a single “path of least resistance.”
+- In the 2019 SI, c and e are exact defining constants, while μ₀ and ε₀ are experimentally determined quantities related through c² = 1/(μ₀ε₀).
+- Lumped-circuit models are valid when propagation delays and distributed fields are negligible. At high frequency or large physical size, transmission-line and full-field models are required.
 
 ## 13. Sources
 
-1. Wikipedia contributors. (n.d.). *Electromagnetic induction*. Wikipedia. https://en.wikipedia.org/wiki/Electromagnetic_induction
-2. LibreTexts. (2024). *8.7: Applications of Electromagnetic Induction*. Physics LibreTexts. https://phys.libretexts.org/Courses/Georgia_State_University/GSU-TM-Physics_II_(2212)/08%3A_Electromagnetic_Induction/8.07%3A_Applications_of_Electromagnetic_Induction
-3. Electronics Tutorials. (n.d.). *Power in AC Circuits*. https://www.electronics-tutorials.ws/accircuits/power-in-ac-circuits.html
-4. Wikipedia contributors. (n.d.). *Maxwell's equations*. Wikipedia. https://en.wikipedia.org/wiki/Maxwell%27s_equations
+
+1. MIT OpenCourseWare. *8.02 Physics II: Electricity and Magnetism*. https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/
+2. OpenStax. *University Physics Volume 2*. https://openstax.org/books/university-physics-volume-2/pages/1-introduction
+3. OpenStax. *Maxwell's Equations and Electromagnetic Waves*. https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves
+4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume II*. https://www.feynmanlectures.caltech.edu/II_toc.html
