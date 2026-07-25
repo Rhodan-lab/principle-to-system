@@ -3,10 +3,10 @@ title: "Materials Science, Fabrication, and Manufacturing"
 slug: 17-materials-manufacturing-technology
 module: "Module 17"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum, 07-chemical-bonding, 12-fluids-materials]
 connections: [18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -42,12 +42,15 @@ In a subtractive process like CNC machining, the control system directs the kine
 
 ## 6. System architecture
 
-Manufacturing processes can be broadly categorized into several architectural families:
-*   **Formative (Casting and Molding):** Liquid or highly plastic material is forced into a mold cavity and allowed to solidify. Excellent for complex internal geometries and high-volume production.
-*   **Deformative (Forging, Rolling, Extrusion):** Solid material is plastically deformed using massive compressive forces. This aligns the grain structure, resulting in superior mechanical properties compared to cast parts.
-*   **Subtractive (Machining):** Material is progressively removed from a solid block using cutting tools. Offers high precision and excellent surface finish but generates significant waste.
-*   **Additive (3D Printing):** Material is deposited layer-by-layer to build the final shape. Enables unprecedented geometric complexity and mass customization but often suffers from slow production rates and anisotropic properties.
-*   **Joining (Welding, Brazing):** Separate components are fused together, often using localized heat and a filler material.
+Manufacturing architectures combine material preparation, transformation, handling, metrology, process control, inspection, and disposition.
+
+- **Casting and moulding:** Shape material through flow and solidification or curing; performance depends on filling, heat transfer, shrinkage, reactions, tooling, and defects.
+- **Forming:** Uses controlled plastic flow in rolling, forging, extrusion, or drawing. Grain flow can be beneficial, neutral, or harmful depending on geometry and loading; forged parts are not automatically superior to cast or machined ones.
+- **Subtractive processing:** Removes material with defined tools or energy beams; precision depends on machine dynamics, tool wear, thermal effects, fixturing, and measurement.
+- **Additive manufacturing:** Builds material selectively. Geometry freedom is constrained by process physics, supports, residual stress, surface finish, inspection access, and qualification.
+- **Joining and assembly:** Create interfaces whose metallurgy, geometry, residual stress, contamination, and inspection can govern system reliability.
+
+A digital thread can connect requirements, material lots, process parameters, machine state, inspection, nonconformance, and lifecycle records, but data integrity and configuration control must be demonstrated.
 
 ## 7. Design constraints
 
@@ -58,7 +61,7 @@ Manufacturing processes can be broadly categorized into several architectural fa
 
 ## 8. Performance and efficiency
 
-Manufacturing efficiency is evaluated on multiple fronts. **Material efficiency** (the buy-to-fly ratio in aerospace) measures how much raw material ends up in the final part versus scrap. Additive manufacturing is highly material-efficient, while machining complex parts from solid billets is highly inefficient. **Energy efficiency** evaluates the energy consumed per unit of production. Thermal processes (melting, heat treatment) are highly energy-intensive. **Time efficiency** (cycle time) dictates production throughput. Injection molding can produce parts in seconds, whereas growing a single-crystal turbine blade or 3D printing a large metal component can take days.
+Performance is multi-objective: conformance, yield, capability, throughput, availability, energy, water, material use, labour, cost, and defect escape must be reported with a defined system boundary. Additive manufacturing can reduce buy-to-fly ratio for some geometries, but powder production, supports, failed builds, post-processing, inspection, and limited powder reuse can offset that advantage. Process capability and qualification require representative builds, calibrated measurements, uncertainty, acceptance criteria, and change control rather than one density or surface-finish number.
 
 ## 9. Reliability and failure modes
 
@@ -70,14 +73,13 @@ Manufacturing defects compromise component reliability.
 
 ## 10. Safety principles
 
-Manufacturing environments present significant hazards.
-*   **Thermal Hazards:** Furnaces, molten metal, and lasers require strict shielding and personal protective equipment (PPE) to prevent severe burns.
-*   **Mechanical Hazards:** High-speed rotating machinery (lathes, mills) and massive presses require physical guards, light curtains, and strict lockout/tagout procedures to prevent crushing or amputation injuries.
-*   **Chemical and Respiratory Hazards:** Machining coolants can cause dermatitis. Metal powders used in additive manufacturing are highly reactive, posing inhalation risks and severe fire/explosion hazards, requiring handling in inert atmospheres (argon or nitrogen).
+Manufacturing hazards are controlled through elimination or substitution where possible, engineered enclosure and machine guarding, interlocks, local exhaust, process monitoring, administrative controls, training, and appropriate protective equipment. Learners should not operate furnaces, presses, cutting machinery, lasers, reactive powders, chemical baths, or energized industrial systems.
+
+Metal-powder additive manufacturing can involve inhalation, dermal, fire, explosion, laser, and inert-gas hazards. Safe practice requires professional risk assessment, compatible equipment, containment, ventilation, grounding, housekeeping, emergency planning, and applicable occupational rules. Lockout and verification of hazardous-energy isolation are professional procedures, not household experiments.
 
 ## 11. Environmental and lifecycle considerations
 
-The environmental impact of manufacturing is substantial. The extraction and refinement of raw materials (especially metals like aluminum and titanium) are highly energy-intensive and generate significant greenhouse gas emissions. Subtractive processes generate large volumes of scrap, which must be recycled. The use of cutting fluids and chemical etchants presents disposal challenges. Sustainable manufacturing seeks to minimize energy consumption, maximize material recycling, transition to less toxic processing chemicals, and design components for end-of-life disassembly and reuse.
+Lifecycle assessment must state geography, electricity mix, recycled content, allocation, yield, transport, use phase, maintenance, and end-of-life assumptions. Mass reduction can lower use-phase energy in some applications but may increase manufacturing burden or reduce repairability. Circular strategies include longer life, modular repair, remanufacture, alloy and polymer separation, contamination control, and design for disassembly; recycling is constrained by collection, sorting, degradation, and economics.
 
 ## 12. Connections to other technologies
 
@@ -85,9 +87,18 @@ The environmental impact of manufacturing is substantial. The extraction and ref
 *   **Computational Modeling:** Finite Element Analysis (FEA) is used to simulate casting solidification, forging material flow, and additive manufacturing thermal stresses, allowing engineers to optimize processes virtually before physical trials.
 *   **Robotics and Automation:** Industrial robots are increasingly used for material handling, welding, and machine tending, improving throughput and consistency.
 
+## Phase 9 review boundaries and validity limits
+
+- Structure–property–processing relations are conditional on composition, defects, geometry, environment, loading history, manufacturing route, and measurement method.
+- Phase diagrams describe equilibrium or specified constrained equilibria; kinetic diagrams and process models are needed for finite-rate transformations.
+- Hall–Petch, Fickian diffusion, linear elasticity, and fracture parameters are model- and regime-dependent rather than universal laws across every scale.
+- Manufacturing claims require process qualification, traceable metrology, uncertainty reporting, defect acceptance criteria, and lifecycle boundaries.
+
 ## 13. Sources
 
-[1] Callister, W. D., & Rethwisch, D. G. (2018). *Materials Science and Engineering: An Introduction* (10th ed.). Wiley.
-[2] Hosford, W. F. (2006). *Materials Science: An Intermediate Text*. Cambridge University Press.
-[3] Gong, G., et al. (2021). "Research status of laser additive manufacturing for metal: a review." *Journal of Materials Research and Technology*, 15, 855-884.
-[4] Pelin, G., et al. (2024). "The Use of Additive Manufacturing Techniques in the Development of Polymer-Based Composites." *Polymers*, 16(8), 1055.
+1. Callister, W. D., and Rethwisch, D. G. *Materials Science and Engineering: An Introduction*. https://www.wiley.com/en-us/Materials+Science+and+Engineering%3A+An+Introduction%2C+10th+Edition-p-9781119405498
+2. Gong, G., et al. *Research Status of Laser Additive Manufacturing for Metal: A Review*. https://www.sciencedirect.com/science/article/pii/S2238785421008759
+3. National Institute of Standards and Technology. *Additive Manufacturing of Metals*. https://www.nist.gov/additive-manufacturing/research-areas/materials/metals
+4. National Institute for Occupational Safety and Health. *3D Printing with Metal Powders: Health and Safety Questions to Ask*. https://www.cdc.gov/niosh/docs/2020-114/default.html
+5. Occupational Safety and Health Administration. *General Requirements for All Machines*. https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.212
+6. Pelin, G., et al. *The Use of Additive Manufacturing Techniques in the Development of Polymer-Based Composites*. https://www.mdpi.com/2073-4360/16/8/1055

@@ -3,10 +3,10 @@ title: "Semiconductors, electronics, and computer hardware"
 slug: 18-semiconductors-electronics-explore
 module: "Module 18"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]
 connections: [19-software-ai, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -18,20 +18,19 @@ content_license: CC-BY-4.0
 
 ## 2. Prediction questions
 
-*   If you were to heat a piece of pure silicon, would its electrical resistance increase or decrease? Contrast this with what happens when you heat a copper wire.
-*   Imagine a p-n junction diode connected in a circuit. If you reverse the polarity of the battery connected to it, what will happen to the width of the depletion region, and how will this affect the current flowing through the circuit?
-*   According to Moore's law, transistor density doubles roughly every two years. If a processor today has 10 billion transistors, approximately how many transistors would a processor of the same size have had 10 years ago?
+- Compare intrinsic and doped silicon over a stated temperature range. Why can resistance trends depend on carrier generation, dopant activation, mobility, contacts, geometry, and self-heating?
+- In a diode model, reverse bias usually widens the depletion region, but predict leakage, capacitance, and possible breakdown only after device type, voltage range, temperature, and circuit resistance are specified.
+- Treat Moore's observation as historical data: given an assumed doubling interval, calculate a backward extrapolation and then explain why node economics, design choices, and product categories make it an unreliable prediction for a specific processor.
 
 ## 3. Worked reasoning examples
 
-**Question:** Why does a computer processor need a heatsink and a fan, while a simple calculator does not, even though both use transistors to perform logic?
+**Question:** Why does a high-performance processor often need substantial cooling while a calculator does not?
 
-**Reasoning:**
-1.  **Identify the fundamental action:** Both devices perform calculations by switching transistors on and off.
-2.  **Analyse energy dissipation:** Every time a transistor switches, a small amount of electrical energy is converted into heat due to the resistance of the semiconductor material and the charging/discharging of microscopic capacitances.
-3.  **Compare scale and frequency:** A simple calculator contains a few thousand transistors operating at a very low clock frequency (perhaps a few kilohertz). The total heat generated per second is negligible and easily dissipates into the surrounding air.
-4.  **Contrast with the processor:** A modern CPU contains billions of transistors switching billions of times per second (gigahertz).
-5.  **Synthesise the conclusion:** The power dissipated is proportional to the number of transistors and the switching frequency. The massive scale and speed of a CPU result in a high power density, generating heat faster than it can passively dissipate. Without active cooling (heatsink to increase surface area, fan to move air), the temperature would quickly rise until the silicon melts or the transistors fail.
+1. Identify workload, supply voltage, clocking, active capacitance, leakage, memory, display, and duty cycle rather than counting transistors alone.
+2. Dynamic switching power is approximated by $P_{dyn}=\alpha C V^2 f$ at a chosen boundary; leakage and supporting circuits add power.
+3. A calculator operates intermittently at low throughput and power, while a processor may sustain dense computation and data movement.
+4. Packaging and cooling determine temperature rise. Thermal throttling or shutdown protects many systems before destructive temperatures occur.
+5. Cooling need therefore follows total and local power, thermal resistance, allowable junction temperature, acoustics, reliability, and workload—not simply “billions times gigahertz.”
 
 ## 4. Thought experiments
 
@@ -41,9 +40,10 @@ content_license: CC-BY-4.0
 
 ## 5. Household and browser-based explorations
 
-*   **Logic Gate Simulation:** Use a free online logic circuit simulator (such as Logic.ly or CircuitVerse). Build a simple circuit using AND, OR, and NOT gates. Try to construct a Half Adder circuit (which adds two binary bits) and verify its truth table by toggling the inputs.
-*   **Tear Down (Safe):** Find an old, broken electronic device (like a remote control, a cheap toy, or a digital clock) that runs on low-voltage batteries (AA or AAA). Open it up and identify the printed circuit board (PCB). Look for the black, plastic-encapsulated integrated circuits ("chips"). Note how the copper traces on the board connect the different components. *Do not open devices that plug into the mains power or contain large capacitors (like camera flashes).*
-*   **Solar Cell Reversibility:** If you have a small solar garden light, cover the solar panel with your hand. The light turns on. The solar panel is a large p-n junction. When light hits it, it generates a voltage. When it's dark, the circuit uses the battery to drive current through an LED (another p-n junction) to create light.
+- **Logic simulation:** Build gates and a half-adder in a browser simulator. Add propagation delay or unknown states where supported, and distinguish Boolean function from electrical implementation.
+- **Virtual teardown:** Use manufacturer diagrams, repair documentation, or high-resolution board photographs rather than opening discarded electronics. Identify packages, connectors, power sections, traces, and uncertainty about hidden layers.
+- **Thermal observation:** Use built-in operating-system temperature or power telemetry only when available, without bypassing safety limits. Compare idle and ordinary workloads and note that sensor placement and software estimates introduce uncertainty.
+- **Semiconductor metrology:** Explore NIST material on critical dimension, overlay, and process measurement. Explain why fabrication success cannot be inferred from a nominal node label alone.
 
 ## 6. Model-building prompts
 
@@ -72,3 +72,19 @@ content_license: CC-BY-4.0
 ## 10. Reasoning notes
 
 When reasoning about semiconductors, it is crucial to maintain the distinction between the macroscopic behaviour of the device (voltage, current, logic state) and the microscopic quantum phenomena that enable it (band gaps, carrier mobility, depletion regions). A common pitfall is trying to apply classical mechanics (like billiard balls bouncing through a pipe) to electrons in a crystal lattice; the wave nature of electrons and the concept of energy bands are essential for accurate causal explanations. Furthermore, always consider the scale: a single transistor's behaviour is governed by physics, but the behaviour of a billion transistors is governed by architecture and statistical reliability.
+
+## Phase 9 review boundaries and validity limits
+
+- Band, carrier, junction, and compact-device equations assume specified equilibrium, statistics, geometry, temperature, and bias regimes.
+- Threshold voltage is a model parameter, not a hard microscopic on/off boundary; leakage, short-channel effects, variability, and parasitics matter.
+- Technology-node names are industrial labels rather than literal dimensions of every device feature.
+- Device performance, yield, reliability, and scaling claims require metrology, architecture, packaging, workload, and thermal context.
+
+## 11. Sources
+
+1. Massachusetts Institute of Technology OpenCourseWare. *Integrated Microelectronic Devices*. https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/
+2. National Institute of Standards and Technology. *Semiconductors*. https://www.nist.gov/semiconductors
+3. Intel. *Moore's Law*. https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html
+4. National Institute of Standards and Technology. *CHIPS for America Metrology Program*. https://www.nist.gov/chips/research-development-programs/metrology-program
+5. Orji, N. G., et al. *Metrology for the Next Generation of Semiconductor Devices*. https://www.nist.gov/publications/metrology-next-generation-semiconductor-devices
+6. Postek, M. T., and Bennett, M. H. *Critical Dimension and Overlay Metrology*. https://www.nist.gov/publications/critical-dimension-and-overlay-metrology

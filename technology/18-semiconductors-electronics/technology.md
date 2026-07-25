@@ -3,10 +3,10 @@ title: "Semiconductors, electronics, and computer hardware"
 slug: 18-semiconductors-electronics-technology
 module: "Module 18"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]
 connections: [19-software-ai, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -39,10 +39,10 @@ These logic gates are then interconnected to form more complex circuits like add
 
 ## 5. Matter, energy, force, or information flow
 
-In an integrated circuit, the primary flow is **information**, represented by the flow of **energy** (electrical charge). 
-1.  **Energy:** Electrical power is supplied to the chip. The movement of electrons and holes through the semiconductor lattice constitutes the current.
-2.  **Information:** The presence or absence of a voltage at a specific node represents a binary bit (1 or 0). As transistors switch on and off, they route these voltages through the logic gates, transforming the input data into output data according to the programmed instructions.
-3.  **Heat:** The resistance of the semiconductor material and the interconnects causes some electrical energy to be dissipated as heat, which must be removed to prevent the chip from failing.
+- **Information:** Logical states are encoded in voltage, charge, current, resistance, phase, or other physical variables within specified noise margins and timing windows.
+- **Charge and fields:** Carriers move and nodes charge or discharge through device and interconnect fields; information is not itself a substance flowing through the chip.
+- **Energy:** Dynamic power approximately scales as $P_{dyn}=\alpha C V^2 f$ for a stated switched capacitance and activity factor, while leakage, short-circuit current, memory, interconnect, clocking, and I/O add other terms.
+- **Heat:** Dissipated energy raises temperatures according to packaging, thermal resistance, cooling, workload, and spatial power density.
 
 ## 6. System architecture
 
@@ -58,16 +58,16 @@ Quantum Mechanics (Pauli Exclusion Principle) $\rightarrow$ Band Theory of Solid
 
 ## 7. Design constraints
 
-*   **Power Dissipation:** As transistor density increases, the heat generated per unit area (power density) becomes a critical limiting factor. If heat cannot be removed fast enough, the chip will melt.
-*   **Quantum Tunnelling:** As gate oxides become thinner (approaching a few atomic layers), electrons can quantum mechanically tunnel through the insulator, causing leakage current even when the transistor is supposed to be off.
-*   **Lithographic Limits:** The ability to print smaller features is constrained by the wavelength of light used in photolithography. Extreme Ultraviolet (EUV) lithography is required for the smallest modern nodes.
-*   **Interconnect Delay:** As transistors shrink and switch faster, the time it takes for a signal to travel through the microscopic metal wiring (RC delay) becomes a significant bottleneck.
+- **Power, temperature, and reliability:** Voltage, frequency, workload, cooling, and ageing mechanisms constrain sustained operation.
+- **Electrostatics and leakage:** Thin barriers, short channels, variability, and tunnelling limit off-state control.
+- **Lithography and pattern transfer:** Resolution depends on optics, masks, resist, process windows, multiple patterning, etch, overlay, and metrology; EUV is one part of the system.
+- **Interconnect and memory:** Resistance, capacitance, inductance, congestion, data movement, and memory latency can dominate device switching time.
+- **Yield and variability:** Defects and process variation turn nominal design into statistical production; redundancy, design rules, testing, and process control are required.
+- **Packaging:** Power delivery, signal integrity, thermal paths, mechanical stress, chiplets, and advanced integration shape system performance.
 
 ## 8. Performance and efficiency
 
-Performance is typically measured in instructions per second (IPS) or floating-point operations per second (FLOPS). Efficiency is measured in performance per watt. 
-
-Moore's law, the observation that transistor density doubles approximately every two years, has historically driven exponential increases in performance and decreases in cost per computation [1]. Dennard scaling, a corollary to Moore's law, stated that as transistors shrank, their power density remained constant, allowing clock speeds to increase without increasing overall power consumption. However, Dennard scaling broke down in the mid-2000s due to leakage currents, forcing the industry to shift from single-core processors with ever-increasing clock speeds to multi-core architectures [1].
+No single metric describes processor performance. Report workload, precision, compiler, memory, batch size, latency, throughput, energy, thermal limit, and comparison baseline. Transistor count and Moore's observation do not guarantee proportional performance. Dennard-style constant-field scaling was an approximate design framework whose power benefits weakened as leakage, voltage scaling, variability, interconnect, and other constraints became dominant. Modern improvements use architecture, parallelism, accelerators, packaging, memory, software, and workload specialisation as well as device scaling.
 
 ## 9. Reliability and failure modes
 
@@ -78,13 +78,11 @@ Moore's law, the observation that transistor density doubles approximately every
 
 ## 10. Safety principles
 
-While the voltages inside a microchip are very low (often around 1 Volt), the manufacturing process involves significant hazards. Semiconductor fabrication plants (fabs) use highly toxic, corrosive, and flammable gases (e.g., silane, phosphine, hydrofluoric acid) and strong acids for etching. Safety relies on extreme isolation, automated handling, continuous gas monitoring, and rigorous cleanroom protocols to protect both the workers and the easily contaminated silicon wafers.
+Semiconductor fabrication uses specialised high-energy equipment, vacuum systems, ionising and non-ionising radiation sources, corrosive and toxic chemicals, pyrophoric gases, pressure systems, and cleanroom controls. These are professional environments governed by engineered containment, monitoring, interlocks, ventilation, compatible materials, emergency systems, trained personnel, and regulation. Learners should use simulations, packaged low-voltage educational hardware, or documented fabrication data rather than attempting chemical processing or opening mains-powered devices.
 
 ## 11. Environmental and lifecycle considerations
 
-The manufacturing of integrated circuits is highly resource-intensive. It requires vast amounts of ultra-pure water, significant electrical energy, and rare earth elements. The chemicals used in etching and cleaning must be carefully treated before disposal. 
-
-At the end of their lifecycle, electronic devices contribute to e-waste. While the silicon itself is benign, the heavy metals, lead solder (in older devices), and toxic flame retardants in the packaging pose environmental hazards if not properly recycled. The short lifespan of consumer electronics exacerbates this issue.
+Semiconductor footprints depend on fab location, electricity mix, process gases, abatement, ultrapure water, yield, wafer size, device complexity, packaging, use-phase energy, lifetime, repair, and end-of-life pathways. “Rare earth” is not a sufficient summary of material dependence; critical inputs include many metals, gases, polymers, ceramics, and high-purity chemicals. E-waste risk depends on product composition and treatment. Longer support, efficient software, modularity, reuse, refurbishment, and responsible recycling can reduce impacts but involve trade-offs.
 
 ## 12. Connections to other technologies
 
@@ -92,7 +90,18 @@ At the end of their lifecycle, electronic devices contribute to e-waste. While t
 *   **Telecommunications:** High-speed internet and wireless networks rely on specialized semiconductor devices (like gallium arsenide or indium phosphide amplifiers) for transmitting and receiving high-frequency signals.
 *   **Power Electronics:** Specialized, robust transistors (like IGBTs) are used to manage and convert high voltages and currents in electric vehicles, solar inverters, and power grids.
 
+## Phase 9 review boundaries and validity limits
+
+- Band, carrier, junction, and compact-device equations assume specified equilibrium, statistics, geometry, temperature, and bias regimes.
+- Threshold voltage is a model parameter, not a hard microscopic on/off boundary; leakage, short-channel effects, variability, and parasitics matter.
+- Technology-node names are industrial labels rather than literal dimensions of every device feature.
+- Device performance, yield, reliability, and scaling claims require metrology, architecture, packaging, workload, and thermal context.
+
 ## 13. Sources
 
-[1] Wikipedia. "Moore's law." Accessed July 24, 2026. https://en.wikipedia.org/wiki/Moore%27s_law
-[2] Wikipedia. "Integrated circuit." Accessed July 24, 2026. https://en.wikipedia.org/wiki/Integrated_circuit
+1. Massachusetts Institute of Technology OpenCourseWare. *Integrated Microelectronic Devices*. https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/
+2. National Institute of Standards and Technology. *Semiconductors*. https://www.nist.gov/semiconductors
+3. Intel. *Moore's Law*. https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html
+4. National Institute of Standards and Technology. *CHIPS for America Metrology Program*. https://www.nist.gov/chips/research-development-programs/metrology-program
+5. Orji, N. G., et al. *Metrology for the Next Generation of Semiconductor Devices*. https://www.nist.gov/publications/metrology-next-generation-semiconductor-devices
+6. Postek, M. T., and Bennett, M. H. *Critical Dimension and Overlay Metrology*. https://www.nist.gov/publications/critical-dimension-and-overlay-metrology

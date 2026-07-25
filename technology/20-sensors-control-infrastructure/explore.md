@@ -3,10 +3,10 @@ title: "Exploring Control and Infrastructure"
 slug: 20-sensors-control-infrastructure-explore
 module: "Module 20"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]
 connections: []
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,9 +14,9 @@ content_license: CC-BY-4.0
 
 ## 1. Observation prompts
 
-- **The Hidden Sensors:** Walk through your home or a local building and identify as many sensors as you can. Look for motion detectors, thermostats, smoke alarms, automatic door sensors, and light sensors on streetlamps. What physical property is each one measuring?
-- **The Rhythm of the Grid:** Observe the power lines in your neighborhood. Can you identify the high-voltage transmission lines versus the lower-voltage distribution lines? Where are the transformers located?
-- **Everyday Automation:** Watch a washing machine go through its cycle. How does it know when it is full of water? How does it know when the clothes are balanced during the spin cycle? Try to map out the "Sense-Think-Act" loop for this common appliance.
+- Identify sensors only from normal public or household use. Do not open alarms, appliances, panels, meters, substations, cabinets, or restricted areas. Record measured variable, likely transduction principle, sampling, and possible failure modes.
+- Observe power infrastructure only from a public safe distance. Never touch, climb, approach damaged equipment, enter fenced areas, or infer voltage solely from appearance. Use utility diagrams to distinguish transmission, distribution, substations, and transformers.
+- Map an appliance's likely measure–estimate–decide–act–verify loop from manuals or animations rather than interfering with its operation.
 
 ## 2. Prediction questions
 
@@ -26,13 +26,13 @@ content_license: CC-BY-4.0
 
 ## 3. Worked reasoning examples
 
-**Scenario:** Tuning a Cruise Control System
+**Scenario:** Conceptual cruise-control tuning in a simulation
 
-Imagine you are designing a cruise control system for a car using a PID controller. The setpoint is 100 km/h. 
-
-1. **Proportional (P) only:** You start with only a proportional gain ($K_p$). If the car is at 90 km/h, the error is 10. The controller applies throttle proportional to this error. As the car reaches 99 km/h, the error is only 1, so it applies very little throttle. Because of friction and air resistance, the car might never reach exactly 100 km/h; it settles at 99 km/h. This is called *steady-state error*.
-2. **Adding Integral (I):** To fix this, you add integral gain ($K_i$). The controller now looks at the *accumulation* of past error. Even though the current error is small (1 km/h), over time, this error adds up. The integral term slowly increases the throttle until the car reaches exactly 100 km/h, eliminating the steady-state error.
-3. **Adding Derivative (D):** Now the car hits a steep hill. The speed drops rapidly. The proportional term reacts, but perhaps not fast enough. The derivative term ($K_d$) looks at the *rate of change* of the error. Because the speed is dropping quickly, the derivative term anticipates a large future error and applies a burst of throttle immediately, preventing the car from slowing down too much before the P and I terms catch up.
+1. Proportional action responds to current speed error. A constant hill or drag can leave offset depending on plant and gain.
+2. Integral action accumulates error and can remove offset only if the loop remains stable and the actuator has authority. Saturation requires anti-windup.
+3. Derivative action responds to rate and can add damping, but it amplifies measurement noise and does not literally anticipate a future hill.
+4. Feedforward from estimated grade or requested acceleration can complement feedback.
+5. Real vehicle control includes actuator limits, braking, traction, safety supervision, driver authority, and validated operating envelopes. This is a simulation exercise, not a driving or vehicle-modification instruction.
 
 ## 4. Thought experiments
 
@@ -41,8 +41,9 @@ Imagine you are designing a cruise control system for a car using a PID controll
 
 ## 5. Household and browser-based explorations
 
-- **The Human PID Controller:** Try balancing a long stick (like a broom) on the palm of your hand. You are acting as the controller. Your eyes are the sensors (measuring the angle of the stick), your brain is the processor, and your arm muscles are the actuators. Notice how you must anticipate the stick's movement (derivative control) to keep it balanced, rather than just reacting to its current position (proportional control).
-- **Grid Simulation:** Search online for "interactive power grid simulator" or "energy transition model." Many universities and organizations host free browser-based tools where you can adjust the mix of coal, nuclear, solar, and wind power, and observe the effects on grid stability, cost, and emissions over a 24-hour cycle.
+- **Low-energy feedback simulation:** Use a browser simulation of an inverted pendulum, temperature loop, or motor. Change delay, noise, sampling, gain, saturation, and disturbance; do not balance long objects near your face or other people.
+- **Grid model:** Use an institutional educational simulator or public historical dataset. Separate energy adequacy, frequency response, network congestion, reserves, emissions, cost, and reliability; a 24-hour energy balance is not a full stability study.
+- **Sensor calibration model:** Given a supplied table of reference and sensor readings, fit offset and scale, inspect residuals, and propagate uncertainty. Add a drift or stuck-sensor fault and design a diagnostic.
 
 ## 6. Model-building prompts
 
@@ -68,4 +69,20 @@ Imagine you are designing a cruise control system for a car using a PID controll
 
 ## 10. Reasoning notes
 
-When analyzing automated systems, always identify the boundaries of the system. What is considered the "plant" (the thing being controlled) and what is the "controller"? Remember that mathematical models are approximations; a PID controller assumes a relatively linear response, which may fail if an actuator reaches its physical limits (saturation). In infrastructure, recognize that technical solutions (like adding more solar panels) always interact with economic and regulatory systems, requiring a holistic, systems-thinking approach.
+Define the plant, controller, estimator, actuator, sensor, communication path, operator, protection system, environment, and service boundary. Track delay, sampling, saturation, uncertainty, common-cause failure, cybersecurity, maintenance, and recovery. A technically stable loop can still be unsafe, insecure, unfair, unaffordable, or difficult to operate. Conversely, resilience is not one component; it is the demonstrated ability of the whole socio-technical system to continue or recover an essential service.
+
+## Phase 9 review boundaries and validity limits
+
+- Closed-loop performance depends on sensing, estimation, delay, sampling, quantisation, communication, actuator saturation, disturbances, uncertainty, and model mismatch.
+- Stability and safety are properties of a specified operating region and architecture; a controller that works in one regime may fail in another.
+- Grid operation couples physics, protection, markets, communications, cybersecurity, regulation, operators, and restoration procedures.
+- Cyber-physical and infrastructure designs require defence in depth, fail-safe or fail-operational analysis, human authority, testing, maintenance, and lifecycle governance.
+
+## 11. Sources
+
+1. WPILib Contributors. *Introduction to State-Space Control*. https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html
+2. Peng, F. Z., et al. *Envisioning the Future Renewable and Resilient Energy Grids*. https://ieeexplore.ieee.org/abstract/document/10360247/
+3. National Institute of Standards and Technology. *Framework for Cyber-Physical Systems: Volume 1, Overview*. https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview
+4. National Institute of Standards and Technology. *SP 800-82 Rev. 2: Guide to Industrial Control Systems Security*. https://csrc.nist.gov/pubs/sp/800/82/r2/final
+5. United States Department of Energy. *Grid Modernization Initiative*. https://www.energy.gov/gmi/grid-modernization-initiative
+6. Filip, F. G., and Leiviskä, K. *Infrastructure and Complex Systems Automation*. https://link.springer.com/chapter/10.1007/978-3-030-96729-1_27
