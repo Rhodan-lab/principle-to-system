@@ -1,0 +1,90 @@
+name: Validate Phase 8 Life and Earth systems
+
+on:
+  push:
+    branches:
+      - agent/phase-8-life-earth-review
+    paths:
+      - 'science/13-cells-bioenergetics/**'
+      - 'science/14-dna-evolution/**'
+      - 'science/15-ecosystems-complex-systems/**'
+      - 'science/16-earth-planetary/**'
+      - 'sources/**'
+      - 'reports/phase-8-*'
+      - 'scripts/**'
+      - 'INDEX.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-8-life-earth.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-8-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed review
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate canonical metadata
+        run: python3 scripts/normalize_module_metadata.py
+
+      - name: Validate normalized source foundation
+        run: |
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Validate Phase 6 continuity
+        run: |
+          python3 scripts/apply_foundations_review_sources.py --check
+          python3 scripts/validate_foundations_continuity_phase8.py --allow-downstream-reviewed
+
+      - name: Validate Phase 7 continuity
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/finalize_phase7_review.py --check
+
+      - name: Validate Phase 8 sources and content
+        run: |
+          python3 scripts/apply_phase8_review_sources.py --check
+          python3 scripts/finalize_phase8_review.py --check
+          python3 scripts/validate_phase8_life_earth_review.py
+
+      - name: Verify Phase 8 deterministic idempotence
+        shell: bash
+        run: |
+          python3 scripts/finalize_phase8_review.py --write
+          git diff --exit-code -- \
+            science/13-cells-bioenergetics \
+            science/14-dna-evolution \
+            science/15-ecosystems-complex-systems \
+            science/16-earth-planetary \
+            INDEX.md
+
+      - name: Run repository structural validator
+        run: python3 scripts/validate_repo.py
+
+      - name: Verify Phase 8 audit records
+        shell: bash
+        run: |
+          test -f reports/phase-8-life-earth-review.md
+          test -f reports/phase-8-life-earth-sources.json
+          test -f sources/phase-8-reviewed-sources.json
+          grep -q '"ledger_records_before": 121' reports/phase-8-life-earth-sources.json
+          grep -q '"ledger_records_after": 131' reports/phase-8-life-earth-sources.json
+          grep -q 'Phase 8 Life and Earth Systems review implemented and validated on draft PR #9' PROJECT_STATE.md
+          grep -q 'Modules 13–16: \*\*Reviewed\*\*' PROJECT_STATE.md
+          grep -q 'Modules 17–20: \*\*Draft\*\*' PROJECT_STATE.md
