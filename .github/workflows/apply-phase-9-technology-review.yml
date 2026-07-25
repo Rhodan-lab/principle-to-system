@@ -35,6 +35,9 @@ jobs:
       - name: Normalize transformer source
         run: python3 scripts/normalize_phase9_transformer_literals.py --write
 
+      - name: Normalize finalizer source
+        run: python3 scripts/normalize_phase9_finalizer.py --write
+
       - name: Apply reviewed source records
         run: python3 scripts/apply_phase9_review_sources.py --write
 
@@ -62,6 +65,7 @@ jobs:
       - name: Verify source and content idempotence
         run: |
           python3 scripts/normalize_phase9_transformer_literals.py --check
+          python3 scripts/normalize_phase9_finalizer.py --check
           python3 scripts/apply_phase9_review_sources.py --check
           python3 scripts/finalize_phase9_review.py --check
 
