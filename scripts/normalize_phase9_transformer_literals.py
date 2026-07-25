@@ -12,11 +12,14 @@ TARGET = ROOT / "scripts" / "apply_phase9_technology_review.py"
 MULTILINE_PATTERN = re.compile(r'(:\s*)"""')
 UNSAFE_SUBSTITUTION = 'return pattern.sub(replacement.rstrip() + "\\n\\n", text, count=1)'
 SAFE_SUBSTITUTION = 'return pattern.sub(lambda _match: replacement.rstrip() + "\\n\\n", text, count=1)'
+AMBIGUOUS_SECURITY = 'none is automatically secure.'
+EXPLICIT_SECURITY = 'security depends on design, configuration, implementation, hardware, updates, and operation.'
 
 
 def normalized(text: str) -> str:
     fixed = MULTILINE_PATTERN.sub(r'\1r"""', text)
     fixed = fixed.replace(UNSAFE_SUBSTITUTION, SAFE_SUBSTITUTION)
+    fixed = fixed.replace(AMBIGUOUS_SECURITY, EXPLICIT_SECURITY)
     return fixed
 
 
@@ -38,6 +41,9 @@ def main() -> int:
         return 1
     if SAFE_SUBSTITUTION not in fixed:
         print("ERROR: literal-safe section replacement is missing", file=sys.stderr)
+        return 1
+    if AMBIGUOUS_SECURITY in fixed:
+        print("ERROR: ambiguous automatic-security phrasing remains", file=sys.stderr)
         return 1
 
     if args.write and fixed != text:
