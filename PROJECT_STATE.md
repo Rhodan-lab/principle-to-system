@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 10 Synthesis Reconciliation implemented on `agent/phase-10-synthesis-reconciliation`; coordinated validation and pull-request integration remain pending.**
+**Phase 10 Synthesis Reconciliation implemented and validated on draft PR #11; independent review and merge remain pending.**
 
 The repository remains a material-first educational foundation. Software is intentionally deferred until synthesis, release validation, and governance are mature.
 
@@ -22,16 +22,16 @@ The repository remains a material-first educational foundation. Software is inte
 | 7 | Physical-science review | Merged and validated through PR #8 |
 | 8 | Life and Earth systems review | Merged and validated through PR #9 |
 | 9 | Technology review | Merged and validated through PR #10 |
-| 10 | Synthesis reconciliation | Implemented on Phase 10 branch; coordinated validation pending |
+| 10 | Synthesis reconciliation | Implemented and validated on PR #11; awaiting merge |
 | 11 | Controlled material expansion | Seed exemplars exist; expansion pending reviewed synthesis |
 | 12 | Release candidate | Not started |
 | 13 | Optional software layer | Deferred |
 
 ## Integration topology
 
-`main` contains the reviewed Modules 01–20 after PR #10. The Phase 10 branch was created directly from that merged state and changes only synthesis, audit, state, and validation artifacts. No workflow automatically merges pull requests.
+`main` contains the reviewed Modules 01–20 after PR #10. The Phase 10 branch was created directly from that merged state and changes only synthesis, audit, state, and validation artifacts. PR #11 carries the focused reconciliation into `main`. No workflow automatically merges pull requests.
 
-## Repository status on the Phase 10 branch
+## Repository status on PR #11
 
 ### Foundations Modules 01–05
 
@@ -84,16 +84,20 @@ Phase 10 establishes `synthesis/phase-10-canonical-graph.json` as the machine-re
 
 Major repairs include removing hard transistor thresholds, universal material stereotypes, unconstrained genome-editing claims, fixed AI deployment promises, instantaneous-grid simplifications, frequency-capacity shortcuts, energy-in-bonds language, universal scale-free-network claims, and deterministic structure–function reasoning.
 
+The final editorial-scientific pass further reconciles causal language, thermodynamic boundaries, semiconductor scaling, AI deployment and autonomy, control and grid operation, communications, biotechnology, batteries, scale analysis, stability, emergence, and model purpose.
+
 ## Validation
 
 ```bash
-python3 scripts/apply_phase10_synthesis.py --check
+python3 scripts/normalize_phase10_reconciler.py --check
+python3 scripts/finalize_phase10_synthesis.py --check
 python3 scripts/validate_phase10_synthesis.py
+python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
 python3 scripts/validate_experiences.py --strict
 ```
 
-The Phase 10 gate requires all 16 synthesis files to be Reviewed, the canonical graph to match repository module prerequisites, all links to resolve, every prerequisite arrow to use `prerequisite for`, the source ledger to remain at 143 records, no synthesis completion claims, and no regression in Phase 4–9 validation.
+The permanent `.github/workflows/validate-phase-10-synthesis.yml` workflow has `contents: read`. It verifies metadata and the source foundation, Phases 6–9 continuity, all 16 synthesis files, the 20-module canonical graph, links, Mermaid edges, final-state idempotence, repository structure, applied-material validation, status history, and removal of the temporary write workflow.
 
 ## Next phase
 
