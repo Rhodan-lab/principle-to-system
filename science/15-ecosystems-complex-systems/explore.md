@@ -20,7 +20,7 @@ content_license: CC-BY-4.0
 
 ## 2. Prediction questions
 
-- If a highly connected, central species (a "keystone species") is removed from a food web, what is the likely cascade of effects compared to removing a species with only one or two connections?
+- If a species with strong measured effects on ecosystem structure is removed, how might outcomes differ from removing a highly connected species? Why are keystone effect, network degree, biomass, and functional uniqueness different quantities?
 - In a logistic growth model, if the carrying capacity ($K$) of an environment is suddenly halved due to a permanent drought, how will a population currently at the original carrying capacity respond dynamically over time?
 - Consider a shallow lake that is currently clear. If agricultural runoff slowly increases the nutrient load (phosphorus) year by year, will the lake's water quality degrade linearly, or might it exhibit a sudden regime shift? Why?
 
@@ -41,13 +41,13 @@ content_license: CC-BY-4.0
 
 ## 5. Household and browser-based explorations
 
-- **NetLogo Web (Browser):** Search for "NetLogo Web" and open the "Wolf Sheep Predation" model in the Biology section of the Models Library. Run the simulation. Observe how the populations oscillate. Experiment with changing the grass regrowth rate or the wolf reproduction rate. Can you find a set of parameters that leads to a stable equilibrium? Can you find parameters that cause the system to collapse?
+- **NetLogo Web (Browser):** Search for "NetLogo Web" and open the "Wolf Sheep Predation" model in the Biology section of the Models Library. Run the simulation. Observe how the populations oscillate. Experiment with changing the grass regrowth rate or the wolf reproduction rate. Can you find parameters that produce bounded persistence, a steady state, oscillation, or extinction? Can you find parameters that cause the system to collapse?
 - **The Logistic Map Calculator (Browser/Spreadsheet):** Open a spreadsheet. In cell A1, enter a starting population ratio (e.g., 0.1). In cell B1, enter a growth rate $r$ (start with 2.5). In cell A2, enter the formula `=B$1*A1*(1-A1)`. Drag this formula down for 50 rows. Plot the results on a line graph. Now, change the $r$ value in B1 to 3.1, then 3.5, then 3.8. Observe the transition from a stable state, to periodic oscillations, to deterministic chaos.
 
 ## 6. Model-building prompts
 
 - **Constructing a Network:** Using paper and pencil, draw a food web for a hypothetical ecosystem containing 10 species. Ensure there are producers, herbivores, and carnivores. Calculate the connectance ($C$) of your network. Now, simulate a disturbance by "extinguishing" one species. Redraw the network. How did the connectance change?
-- **System Dynamics Diagram:** Draw a causal loop diagram for a local ecosystem you are familiar with. Use arrows to connect variables (e.g., "Prey Population" $\rightarrow$ "Predator Population"). Label the arrows with '+' (positive correlation) or '-' (negative correlation). Identify the reinforcing (positive) and balancing (negative) feedback loops.
+- **System Dynamics Diagram:** Draw a causal loop diagram for a local ecosystem you are familiar with. Use arrows to connect variables (e.g., "Prey Population" $\rightarrow$ "Predator Population"). Label each arrow with '+' when an increase in the cause tends to increase the effect, or '-' when it tends to decrease the effect, holding the stated context fixed; these are hypothesised causal signs, not simple correlations. Identify the reinforcing (positive) and balancing (negative) feedback loops.
 
 ## 7. Self-explanation questions
 

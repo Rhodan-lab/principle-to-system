@@ -37,7 +37,7 @@ The primary flow in these systems is **information**. Sensors convert physical p
 2. **Mathematical Abstraction**: These continuous equations are discretized into a 3D grid covering the Earth, with parameterizations for sub-grid processes (e.g., clouds).
 3. **Software Architecture**: The model is written in a high-performance language (like Fortran or C++) and parallelized using Message Passing Interface (MPI) to divide the grid among thousands of processors.
 4. **Hardware Architecture**: A supercomputer consisting of thousands of CPU or GPU nodes, connected by a high-bandwidth, low-latency network (e.g., InfiniBand), executes the code [3].
-5. **System Output**: The supercomputer outputs petabytes of data representing the simulated future state of the climate, which is then analyzed and visualized.
+5. **System output:** The computation produces large multidimensional datasets representing model states, diagnostics, ensembles, and uncertainty information for analysis and visualisation.
 
 ## 7. Design constraints
 - **Harsh Environments**: Ocean buoys must withstand corrosive saltwater, biofouling, and extreme weather. Seismometers must be isolated from background noise (traffic, wind) and temperature fluctuations.

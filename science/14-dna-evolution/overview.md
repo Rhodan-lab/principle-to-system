@@ -55,7 +55,7 @@ Translation occurs at the ribosome. The mRNA sequence is read in sets of three n
 Evolution is defined as a change in allele frequencies in a population over time. This change is driven by four primary mechanisms:
 
 1.  **Mutation:** Introduces new alleles into the population.
-2.  **Natural Selection:** Alleles that confer a survival or reproductive advantage increase in frequency.
+2.  **Natural selection:** Heritable variants associated with greater reproductive contribution can change in frequency; the outcome also depends on dominance, environment, drift, migration, and genetic background.
 3.  **Genetic Drift:** Random fluctuations in allele frequencies, particularly significant in small populations (e.g., bottleneck or founder effects) [5].
 4.  **Gene Flow:** The transfer of alleles between populations due to migration.
 
@@ -83,9 +83,9 @@ The expected genotype frequencies are given by the Hardy-Weinberg equation:
 $$p^2 + 2pq + q^2 = 1$$
 
 Where:
-*   $p^2$ is the frequency of the homozygous dominant genotype ($AA$).
-*   $2pq$ is the frequency of the heterozygous genotype ($Aa$).
-*   $q^2$ is the frequency of the homozygous recessive genotype ($aa$).
+*   $p^2$ is the expected frequency of genotype $AA$.
+*   $2pq$ is the expected frequency of genotype $Aa$.
+*   $q^2$ is the expected frequency of genotype $aa$.
 
 ### Population Growth and Selection
 
@@ -104,7 +104,7 @@ $$\Delta p = p' - p = \frac{pq[p(w_{11} - w_{12}) + q(w_{12} - w_{22})]}{\bar{w}
 ## 7. Definitions of symbols and units
 
 *   $p$: Frequency of allele $A$ (dimensionless); dominance is a phenotype relationship, not a frequency label.
-*   $q$: Frequency of the recessive allele (dimensionless).
+*   $q$: Frequency of allele $a$ (dimensionless).
 *   $w$: Relative fitness on a chosen non-negative scale; it is often normalised, but the symbols are not inherently restricted to $0$–$1$.
 *   $\bar{w}$: Mean fitness of the population (dimensionless).
 *   bp: Base pairs, a unit of length for double-stranded nucleic acids.
@@ -130,9 +130,9 @@ $$\Delta p = p' - p = \frac{pq[p(w_{11} - w_{12}) + q(w_{12} - w_{22})]}{\bar{w}
 ## 11. Connections to other modules
 
 *   **07-chemical-bonding:** Understanding hydrogen bonding is crucial for comprehending the specific base-pairing in DNA and the secondary structures of RNA and proteins.
-*   **13-cells-bioenergetics:** The processes of DNA replication, transcription, and translation are highly energy-dependent, relying on ATP generated through cellular respiration.
+*   **13-cells-bioenergetics:** Replication, transcription, translation, repair, and regulation consume nucleotide triphosphates and depend on cellular metabolism, redox state, and molecular transport.
 *   **15-ecosystems-complex-systems:** Population genetics and evolutionary mechanisms are foundational for understanding ecological dynamics, species interactions, and biodiversity.
-*   **16-biotechnology:** The principles of DNA structure and gene expression are applied in genetic engineering, PCR, and sequencing technologies.
+*   **19-software-ai:** Bioinformatics and sequencing pipelines use computational models to store, align, annotate, and interpret genetic data while preserving uncertainty and provenance.
 
 ## 12. Sources
 
