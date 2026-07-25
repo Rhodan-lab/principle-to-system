@@ -1,15 +1,15 @@
 {
   "generated": "2026-07-26",
   "registry_records": 5,
-  "ledger_records_before": 115,
-  "records_added": [],
-  "already_present": [
+  "ledger_records_before": 116,
+  "records_added": [
     "https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri",
     "https://www.nist.gov/programs-projects/designing-advanced-scanning-probe-microscopy-instruments",
     "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P10001KF.TXT",
     "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf",
     "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/bernoulli-and-newton/"
   ],
-  "ledger_records_after": 115,
+  "already_present": [],
+  "ledger_records_after": 121,
   "errors": []
 }

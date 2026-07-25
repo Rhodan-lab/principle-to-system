@@ -1,134 +1,194 @@
 ---
-title: "Probability, Statistics, and Data Interpretation"
+title: "Probability, statistics, and data interpretation"
 slug: 04-probability-statistics
 module: "Module 04"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning, 03-mathematical-models]
 connections: [05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Probability, Statistics, and Data Interpretation
+# Probability, statistics, and data interpretation
 
 ## 1. The central questions
 
-How can we quantify uncertainty and make rational decisions when information is incomplete? How do we distinguish meaningful patterns from random noise in observational data? What is the mathematical foundation for inferring the properties of a vast population from a small, representative sample? Furthermore, how can we rigorously separate correlation—variables moving together—from causation, where one variable actively influences another?
+How can uncertainty and variation be represented mathematically? What can a sample reveal about a population or data-generating process? How should evidence update a model or decision? Which conclusions depend on random sampling, random assignment, distributional assumptions, or causal assumptions? Probability describes uncertainty within a model; statistics uses data, design, and models to estimate quantities, compare explanations, assess prediction, and support decisions.
 
 ## 2. Observable phenomena
 
-In the physical and social worlds, deterministic predictability is rare. When a coin is flipped, the exact mechanics of its trajectory are too complex to measure in real-time, resulting in an outcome that appears random. In manufacturing, identical machines produce parts with slight variations in dimension. In medicine, patients with the same diagnosis respond differently to identical treatments. 
+Repeated measurements vary, manufactured parts differ slightly, queues fluctuate, and biological populations are heterogeneous. Some variation reflects stochastic processes, some reflects unmeasured conditions, and some reflects measurement or sampling. Probability models do not require us to decide that every event is fundamentally random; they provide a coherent way to represent uncertainty given the information and model available.
 
-These phenomena exhibit variability. However, when observed in large aggregates, this variability often follows stable, predictable patterns. For instance, while the lifespan of a single lightbulb is highly uncertain, the average lifespan of ten thousand lightbulbs of the same model is highly predictable. This emergence of macro-level predictability from micro-level randomness is the phenomenon that probability and statistics seek to model and interpret.
+Large collections can show stable aggregate behavior even when individual outcomes remain uncertain. Stability is conditional: dependence, changing processes, heavy tails, selection, or feedback can prevent simple averaging arguments from working.
 
 ## 3. Essential concepts
 
-**Probability** is the mathematical language of uncertainty. It provides a framework for assigning numerical values between 0 (impossible) and 1 (certain) to the likelihood of events. It operates deductively, moving from a known model of the world to the expected outcomes.
+**Sample space and event:** A sample space $\Omega$ contains possible outcomes represented by the model. An event is a subset of $\Omega$.
 
-**Statistics** is the inverse process. It operates inductively, moving from observed data back to the underlying model of the world. It involves collecting, analysing, and interpreting data to estimate parameters, test hypotheses, and quantify the confidence in those estimates.
+**Probability measure:** A function assigning values to events according to non-negativity, normalization, and countable additivity. A probability is not automatically an empirical frequency, although frequencies can estimate probabilities under suitable repeated-process assumptions.
 
-**Random Variables** are mathematical functions that map the outcomes of a random process to numerical values. They can be discrete (taking specific, separate values, like the roll of a die) or continuous (taking any value within a range, like the exact height of a person).
+**Conditional probability:** $P(A\mid B)$ represents probability for $A$ after restricting the model to cases where $B$ occurs. Reversing the conditioning usually changes the value.
 
-**Probability Distributions** describe how the total probability of 1 is distributed across all possible values of a random variable. 
+**Random variable:** A measurable function mapping outcomes to numerical values. “Random” refers to the uncertain outcome, not to a variable that changes without structure.
 
-**Statistical Inference** is the process of drawing conclusions about a population based on a sample. It relies on the assumption that the sample is representative of the population.
+**Distribution:** A mathematical description of probabilities or probability densities across possible values. Parameters summarize features such as location, scale, shape, or dependence.
 
-**Correlation vs. Causation** is a fundamental distinction. Correlation indicates that two variables change together, but it does not imply that one causes the other. Causation requires a mechanism by which one variable directly influences the other, often established through controlled experiments or causal inference techniques.
+**Population, sample, and data-generating process:** A population is the target set or process about which a conclusion is intended. A sample is observed data. Valid inference depends on how the sample was generated, not merely on its size.
+
+**Statistic and estimator:** A statistic is a function of observed data. An estimator is a rule used to estimate a target parameter; its bias, variance, consistency, and robustness depend on assumptions.
+
+**Sampling distribution:** The distribution a statistic would have across repeated samples generated by the specified sampling process.
+
+**Likelihood and posterior:** A likelihood compares how parameter values make the observed data plausible under a model. In Bayesian inference, a prior distribution and likelihood combine to form a posterior distribution.
+
+**Prediction and causation:** A statistical association can improve prediction without identifying an intervention effect. Causal conclusions require design and identification assumptions beyond ordinary regression fit.
 
 ## 4. Mechanisms and causal chains
 
-The mechanism by which probability operates in the physical world often stems from sensitive dependence on initial conditions (chaos) or fundamental quantum indeterminacy. In macroscopic systems, what we model as "randomness" is usually a lack of complete information about the system's state.
+Statistical inference begins with a target quantity and a data-generation mechanism:
 
-In statistical inference, the causal chain begins with a **Population**, which possesses some true, unknown parameter (e.g., the true average height of all adults). A **Sampling Mechanism** selects a subset of this population. This mechanism must be random to avoid bias. The **Sample** yields a statistic (e.g., the average height of the sampled adults). Through the **Central Limit Theorem**, the distribution of this sample statistic is known, allowing us to construct a **Confidence Interval** or perform a **Hypothesis Test** to infer the true population parameter.
+```text
+target population or process
+→ sampling, assignment, and measurement
+→ observed data
+→ statistical model and estimator
+→ uncertainty statement
+→ qualified conclusion for the target
+```
 
-When interpreting data causally, the mechanism is often represented by a **Causal Diagram** (Directed Acyclic Graph). If variable $X$ causes variable $Y$, there is a directed path from $X$ to $Y$. Confounding occurs when a third variable $Z$ causes both $X$ and $Y$, creating a spurious correlation between them if $Z$ is not controlled for.
+Probability sampling can support population inference because inclusion probabilities are controlled or known. Random assignment can support causal comparison because treatment groups are exchangeable on average. Neither property is created later by choosing a sophisticated analysis.
+
+The Central Limit Theorem explains why standardized sums or means often approach a normal distribution under conditions such as independence or sufficiently weak dependence and finite variance. It does not state that raw data become normal or that every sample of size 30 is automatically adequate.
 
 ## 5. Important quantities
 
-| Quantity | Symbol | Definition | SI Unit |
-| :--- | :--- | :--- | :--- |
-| Probability | $P(A)$ | The likelihood of event $A$ occurring. | Dimensionless (0 to 1) |
-| Expected Value (Mean) | $\mu$ or $E[X]$ | The long-run average value of a random variable $X$. | Same as $X$ |
-| Variance | $\sigma^2$ or $Var(X)$ | The expected squared deviation of a random variable from its mean. | $(\text{Unit of } X)^2$ |
-| Standard Deviation | $\sigma$ | The square root of the variance, representing the typical spread of values. | Same as $X$ |
-| Covariance | $Cov(X,Y)$ | A measure of the joint variability of two random variables. | $(\text{Unit of } X) \times (\text{Unit of } Y)$ |
-| Correlation Coefficient | $\rho$ | A normalized measure of linear dependence between two variables. | Dimensionless (-1 to 1) |
-| Sample Size | $n$ | The number of observations in a sample. | Dimensionless (integer) |
-| p-value | $p$ | The probability of observing data as extreme as the sample, assuming the null hypothesis is true. | Dimensionless (0 to 1) |
+| Quantity | Symbol | Meaning | Unit |
+| --- | --- | --- | --- |
+| Probability | $P(A)$ | Probability assigned to event $A$ by a model | Dimensionless, $0$ to $1$ |
+| Expected value | $E[X]$ or $\mu$ | Probability-weighted mean when it exists | Same as $X$ |
+| Variance | $\operatorname{Var}(X)$ or $\sigma^2$ | Expected squared deviation from the mean | Unit of $X$ squared |
+| Standard deviation | $\sigma$ | Square root of variance | Same as $X$ |
+| Covariance | $\operatorname{Cov}(X,Y)$ | Joint linear variation | Product of units |
+| Correlation | $\rho$ | Standardized covariance | Dimensionless, $-1$ to $1$ |
+| Standard error | $\operatorname{SE}(\hat\theta)$ | Sampling variability of an estimator | Same as $\hat\theta$ |
+| Effect or parameter estimate | $\hat\theta$ | Estimated target quantity | Context-dependent |
+| p-value | $p$ | Tail probability under a specified null model | Dimensionless |
+| Loss or utility | $L(a,\theta)$ or $U(a,\theta)$ | Consequence assigned to action $a$ and state $\theta$ | Decision-dependent |
 
 ## 6. Mathematical models and equations
 
-### Kolmogorov's Axioms of Probability
-The foundation of probability theory rests on three axioms for a sample space $\Omega$ and events $A$:
-1. Non-negativity: $P(A) \ge 0$
-2. Normalization: $P(\Omega) = 1$
-3. Additivity for mutually exclusive events: If $A_1, A_2, \dots$ are disjoint, then $P(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty P(A_i)$
+### Probability axioms
 
-### Bayes' Theorem
-Bayes' theorem updates the probability of a hypothesis $H$ given new evidence $E$:
-$$P(H|E) = \frac{P(E|H)P(H)}{P(E)}$$
-Where $P(H|E)$ is the posterior probability, $P(E|H)$ is the likelihood, $P(H)$ is the prior probability, and $P(E)$ is the marginal probability of the evidence.
+For events in a sample space $\Omega$:
 
-### The Normal (Gaussian) Distribution
-The probability density function for a continuous random variable $X$ that is normally distributed with mean $\mu$ and variance $\sigma^2$:
-$$f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}$$
+1. $P(A)\ge0$.
+2. $P(\Omega)=1$.
+3. For pairwise disjoint events $A_i$,
 
-### The Central Limit Theorem (CLT)
-Let $X_1, X_2, \dots, X_n$ be independent and identically distributed random variables with mean $\mu$ and variance $\sigma^2$. As $n \to \infty$, the distribution of the sample mean $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$ approaches a normal distribution:
-$$\bar{X} \sim \mathcal{N}\left(\mu, \frac{\sigma^2}{n}\right)$$
+$$P\left(\bigcup_{i=1}^{\infty}A_i\right)=\sum_{i=1}^{\infty}P(A_i).$$
 
-### Linear Regression
-A model assuming a linear relationship between an independent variable $X$ and a dependent variable $Y$, with an error term $\epsilon$:
-$$Y = \beta_0 + \beta_1 X + \epsilon$$
-Where $\beta_0$ is the intercept and $\beta_1$ is the slope.
+### Conditional probability and Bayes’ theorem
+
+$$P(A\mid B)=\frac{P(A\cap B)}{P(B)},\qquad P(B)>0.$$
+
+Therefore,
+
+$$P(H\mid E)=\frac{P(E\mid H)P(H)}{P(E)}.$$
+
+The result depends on the model, including the prior or base rate $P(H)$ and the likelihoods.
+
+### Expected value and variance
+
+For a discrete random variable,
+
+$$E[X]=\sum_x xP(X=x),$$
+
+$$\operatorname{Var}(X)=E[(X-E[X])^2].$$
+
+Expected value need not be a possible individual outcome, and it may not exist for every distribution.
+
+### Central Limit Theorem
+
+If $X_1,\ldots,X_n$ are independent and identically distributed with mean $\mu$ and finite non-zero variance $\sigma^2$, then
+
+$$\frac{\sqrt{n}(\bar X_n-\mu)}{\sigma}\xrightarrow{d}\mathcal N(0,1).$$
+
+For large finite $n$, this motivates the approximation
+
+$$\bar X_n\approx\mathcal N\left(\mu,\frac{\sigma^2}{n}\right),$$
+
+but approximation quality depends on the underlying distribution and dependence structure.
+
+### Confidence interval example
+
+Under a normal approximation with estimated standard error,
+
+$$\hat\theta\pm z_{1-\alpha/2}\operatorname{SE}(\hat\theta)$$
+
+is a generic interval form. A 95% frequentist procedure has 95% long-run coverage under its assumptions; after one interval is computed, the fixed parameter is either inside it or not.
+
+### Linear regression
+
+$$Y=\beta_0+\beta_1X+\epsilon.$$
+
+This model describes a conditional relationship. The slope $\beta_1$ is not automatically causal. Interpretation also depends on functional form, measurement, sampling, dependence, omitted variables, and how uncertainty is estimated.
 
 ## 7. Definitions of symbols and units
 
-- $P(A)$: Probability of event $A$ (dimensionless, $0 \le P(A) \le 1$).
-- $\Omega$: The sample space, the set of all possible outcomes.
-- $H$: Hypothesis being tested or evaluated.
-- $E$: Evidence or observed data.
-- $\mu$: Population mean (units depend on the variable).
-- $\sigma^2$: Population variance (units squared).
-- $\sigma$: Population standard deviation (units depend on the variable).
-- $n$: Sample size (dimensionless integer).
-- $\bar{X}$: Sample mean (units depend on the variable).
-- $\beta_0, \beta_1$: Regression coefficients (units depend on $Y$ and $X$).
-- $\epsilon$: Error term or residual in a model (units depend on $Y$).
+- $\Omega$: Sample space.
+- $A,B,H,E$: Events, hypotheses, or evidence statements.
+- $X,Y$: Random variables.
+- $\mu,\sigma^2$: Population mean and variance when they exist.
+- $\bar X_n$: Sample mean from $n$ observations.
+- $\hat\theta$: Estimate of target parameter $\theta$.
+- $\operatorname{SE}(\hat\theta)$: Estimated standard error.
+- $z_{1-\alpha/2}$: Quantile of a standard normal distribution.
+- $\beta_0,\beta_1$: Regression intercept and slope.
+- $\epsilon$: Model error term, not necessarily measurement error.
 
 ## 8. Assumptions and approximations
 
-- **Independence:** Many statistical models (like the basic CLT or simple linear regression) assume that individual observations are independent of one another. In reality, data points (e.g., time series data or spatial data) are often correlated.
-- **Identical Distribution:** The assumption that all data points are drawn from the same underlying probability distribution. This is often violated if the system generating the data changes over time.
-- **Normality:** Hypothesis tests (like the t-test) often assume the underlying population is normally distributed. While the CLT helps for large samples, small samples from highly skewed distributions can invalidate these tests.
-- **Linearity:** Linear regression assumes the relationship between variables is a straight line. If the true relationship is non-linear, the model will yield biased predictions.
-- **No Unmeasured Confounders:** Causal inference from observational data heavily relies on the assumption that all variables influencing both the treatment and the outcome have been measured and controlled for.
+- Define the target population, estimand, and data-generation process.
+- Probability samples support design-based population inference; convenience samples may require stronger modelling and can remain unrepresentative.
+- Independence is a modelling condition, not a property created by placing data in separate rows.
+- Distributional assumptions should be checked with diagnostics and subject knowledge.
+- Missingness and selection can bias estimates even in large datasets.
+- Normal approximations can be poor for small samples, rare events, strong skew, dependence, or heavy tails.
+- Standard errors must account for clustering, repeated measures, time dependence, or complex survey design when present.
+- Multiple analyses and selective reporting change the interpretation of nominal p-values and intervals.
+- Causal inference requires assumptions such as exchangeability, positivity, consistency, and appropriate time ordering.
 
 ## 9. Spatial and temporal scales
 
-Probability and statistics are scale-independent mathematical frameworks, but their application varies drastically across scales:
-- **Microscopic/Quantum Scale:** Probability is fundamental. The position of an electron is not deterministic but described by a probability density function (wavefunction).
-- **Human Scale:** Statistics are used to understand populations, from the efficacy of a drug in a clinical trial (months/years, thousands of people) to the quality control of manufactured goods (hours/days, millions of parts).
-- **Macroscopic/Cosmological Scale:** Statistical mechanics uses probability to explain the thermodynamic behavior of large ensembles of particles (e.g., gases), bridging the microscopic laws of physics to macroscopic observables like temperature and pressure.
+Probability models apply across scales but represent different sources of uncertainty. In quantum mechanics, the Born rule relates $|\psi|^2$ to probability density for measurement outcomes; the wavefunction itself is generally complex-valued. In statistical mechanics, distributions over many microscopic states connect to macroscopic quantities. In human and engineered systems, variability may include behavior, environment, manufacturing, measurement, and changing policies.
+
+Time order and dependence matter. A sequence of sensor readings, financial values, or ecological observations is not usually an independent sample. Models may need autocorrelation, state transitions, non-stationarity, or feedback.
 
 ## 10. Common misconceptions
 
-- **The Gambler's Fallacy:** The belief that if an independent event occurs more frequently than normal in the past, it is less likely to occur in the future (e.g., "The coin has landed on heads five times, so tails is due"). Independent events have no memory.
-- **Confusing Correlation with Causation:** Assuming that because ice cream sales and shark attacks increase together, one causes the other. Both are caused by a confounding variable: summer weather.
-- **Misinterpreting the p-value:** The p-value is *not* the probability that the null hypothesis is true. It is the probability of observing the data, or something more extreme, *assuming* the null hypothesis is true.
-- **The Law of Averages:** The false belief that a small sample must reflect the population distribution. The Law of Large Numbers only guarantees convergence as the sample size approaches infinity.
+- **A probability is always a long-run frequency:** Frequency is one interpretation or estimation method; probability is defined within a model.
+- **A large sample fixes bias:** More observations reduce some sampling variation but can make a biased estimate very precise.
+- **A p-value is the probability the null is true:** It is computed assuming a null model; it does not give posterior probability without additional modelling.
+- **p < 0.05 separates truth from falsehood:** Thresholds do not replace effect size, uncertainty, design quality, multiplicity, or prior evidence.
+- **A 95% confidence interval has a 95% chance of containing a fixed parameter:** That is not the standard frequentist interpretation.
+- **Correlation near zero means no relationship:** Strong non-linear dependence can have zero linear correlation.
+- **Regression adjustment proves causation:** Adjustment can reduce or create bias depending on the causal structure.
+- **The CLT makes all data normal:** It concerns standardized sums or means under conditions, not the raw observations.
 
 ## 11. Connections to other modules
 
-- **01-scientific-reasoning:** Statistics provides the formal mathematical tools for hypothesis testing and evaluating evidence, which are central to the scientific method.
-- **03-mathematical-models:** Probability distributions are mathematical models of uncertainty. Regression is a method for fitting mathematical models to data.
-- **05-information-theory:** Information theory is built entirely on probability. Entropy, a key concept in information theory, is a measure of the unpredictability of a random variable.
-- **06-systems-thinking:** Statistical mechanics and complex systems rely on probabilistic models to understand how macroscopic properties emerge from the interactions of many microscopic components.
+- **01-scientific-reasoning:** Study design and evidence determine which statistical conclusions are justified.
+- **02-measurement-uncertainty:** Statistical variation is one part of measurement uncertainty and must be linked to the measurement model.
+- **03-mathematical-models:** Probability distributions and regressions are mathematical models with assumptions and validity domains.
+- **05-computation-algorithms:** Simulation, resampling, optimization, and numerical inference implement statistical methods.
+- **15-ecosystems-complex-systems:** Networks, variability, feedback, and aggregation require probabilistic reasoning.
+- **19-software-ai:** Learning systems rely on data-generation assumptions, loss functions, evaluation, and uncertainty.
 
 ## 12. Sources
 
-1. Blitzstein, J. K., & Hwang, J. (2019). *Introduction to Probability* (2nd ed.). CRC Press. [https://stat110.hsites.harvard.edu/](https://stat110.hsites.harvard.edu/)
-2. Wasserman, L. (2004). *All of Statistics: A Concise Course in Statistical Inference*. Springer. [https://link.springer.com/book/10.1007/978-0-387-21736-9](https://link.springer.com/book/10.1007/978-0-387-21736-9)
-3. Pearl, J., & Mackenzie, D. (2018). *The Book of Why: The New Science of Cause and Effect*. Basic Books.
-4. Tufte, E. R. (2001). *The Visual Display of Quantitative Information* (2nd ed.). Graphics Press.
+1. Blitzstein, J. K., & Hwang, J. (2019). *Introduction to Probability* (2nd ed.). CRC Press. https://stat110.hsites.harvard.edu/
+2. Wasserman, L. (2004). *All of Statistics*. Springer. https://link.springer.com/book/10.1007/978-0-387-21736-9
+3. Ang, A. H-S., & Tang, W. H. (2007). *Probability Concepts in Engineering* (2nd ed.). Wiley. https://www.wiley.com/en-us/Probability+Concepts+in+Engineering%3A+Emphasis+on+Applications+to+Civil+and+Environmental+Engineering%2C+2nd+Edition-p-9780471720645
+4. National Institute of Standards and Technology. *NIST/SEMATECH Engineering Statistics Handbook*. https://www.nist.gov/programs-projects/nistsematech-engineering-statistics-handbook
+5. Pearl, J., & Mackenzie, D. (2018). *The Book of Why*. Basic Books. https://www.hachettebookgroup.com/titles/judea-pearl/the-book-of-why/9780465097616/

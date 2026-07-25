@@ -1,92 +1,123 @@
 ---
-title: "Exploring Mathematical Models and Scale"
+title: "Exploring mathematical models and scale"
 slug: 03-mathematical-models-explore
 module: "Module 03"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning]
 connections: [04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Exploring Mathematical Models and Scale
+# Exploring mathematical models and scale
 
 ## 1. Observation prompts
 
-- Observe the flow of water from a tap. How does the shape of the water stream change as you increase the flow rate? Can you identify a transition from smooth (laminar) flow to chaotic (turbulent) flow?
-- Look at the branches of a tree or the veins in a leaf. Notice how the patterns repeat at different scales. This is an example of self-similarity, a concept closely related to scaling laws.
-- Watch a pendulum swing (you can make one with a string and a small weight). Does the time it takes to complete one swing (the period) seem to depend on how high you release it? What happens if you change the length of the string or the mass of the weight?
+- Observe a cooling drink, a bouncing ball, or a queue. Which quantities change, which appear nearly constant, and where would you place the system boundary?
+- Compare a real tree branch with a smaller branch. Which features are approximately repeated and which are not? Treat self-similarity as an approximation rather than an exact law.
+- Watch a safe pendulum demonstration or simulation. Does period depend visibly on length, mass, release angle, or friction? Which effects are difficult to separate by observation alone?
+- Find a graph that looks linear over one interval. What could happen outside the displayed range?
 
 ## 2. Prediction questions
 
-- If you double the length of a pendulum, what do you predict will happen to its period? Will it double, halve, or change by some other factor?
-- Imagine a spherical balloon. If you double its radius, by what factor does its surface area increase? By what factor does its volume increase?
-- If an animal were scaled up to be twice as tall, twice as wide, and twice as long, how much heavier would it be? Would its legs need to be proportionally thicker or thinner to support the new weight?
+- If pendulum length is doubled under the small-angle model, by what factor does the period change?
+- If every linear dimension of a similar object is doubled, how do area, volume, and mass change when density is constant?
+- If an exponential-growth model is fitted early in a process, what observations would indicate that saturation or resource limits need to be added?
+- If two parameter sets produce nearly identical output curves, what does that suggest about identifiability?
 
 ## 3. Worked reasoning examples
 
-**Dimensional Analysis of a Pendulum**
+### Dimensional analysis of a pendulum
 
-Let's use dimensional analysis to deduce the formula for the period ($T$) of a simple pendulum. We assume the period might depend on the mass of the bob ($m$), the length of the string ($L$), and the acceleration due to gravity ($g$).
+Assume a small-angle pendulum period $T$ depends on bob mass $m$, length $L$, and gravitational acceleration $g$:
 
-1.  **Identify dimensions:**
-    -   $[T] = \text{Time (T)}$
-    -   $[m] = \text{Mass (M)}$
-    -   $[L] = \text{Length (L)}$
-    -   $[g] = \text{Length/Time}^2 (\text{L/T}^2)$
+$$T=Cm^aL^bg^c,$$
 
-2.  **Set up the equation:**
-    Assume $T \propto m^a L^b g^c$.
-    In terms of dimensions: $\text{T} = \text{M}^a \text{L}^b (\text{L/T}^2)^c$
+where $C$ is dimensionless. Using dimensions,
 
-3.  **Equate dimensions:**
-    -   Mass (M): $0 = a$ (The period does not depend on mass!)
-    -   Length (L): $0 = b + c$
-    -   Time (T): $1 = -2c$
+$$[T]=[M]^a[L]^b[LT^{-2}]^c.$$
 
-4.  **Solve for exponents:**
-    -   $c = -1/2$
-    -   $b = 1/2$
+Equating exponents gives
 
-5.  **Construct the final formula:**
-    $T \propto L^{1/2} g^{-1/2} = \sqrt{\frac{L}{g}}$
-    The actual formula, derived from differential equations, is $T = 2\pi\sqrt{\frac{L}{g}}$. Dimensional analysis gave us the correct functional form, missing only the dimensionless constant $2\pi$.
+$$a=0,\qquad b+c=0,\qquad -2c=1,$$
+
+so
+
+$$T=C\sqrt{\frac{L}{g}}.$$
+
+Dimensional analysis shows that mass cannot appear under these assumptions and determines the dimensional form, but it cannot determine $C=2\pi$, damping, amplitude dependence, or whether omitted variables matter.
+
+### Linearization error
+
+For a pendulum, the approximation $\sin\theta\approx\theta$ is based on the Taylor series
+
+$$\sin\theta=\theta-\frac{\theta^3}{6}+\frac{\theta^5}{120}-\cdots.$$
+
+The leading neglected term is approximately $-\theta^3/6$. This makes the limitation visible: “small” should be judged against an acceptable prediction error, not used as an undefined label.
 
 ## 4. Thought experiments
 
-- **The Isometrically Scaled Giant:** Imagine a human scaled up isometrically (all proportions remain exactly the same) to be 10 times taller. Their volume (and thus mass) would increase by a factor of $10^3 = 1000$. However, the cross-sectional area of their leg bones, which determines their strength, would only increase by a factor of $10^2 = 100$. The giant's bones would experience 10 times more stress than a normal human's, likely causing them to shatter under their own weight. This thought experiment illustrates why large animals have proportionally thicker limbs (allometric scaling).
-- **The Frictionless World:** Imagine a world where friction and air resistance do not exist. If you set a pendulum in motion, it would swing forever. If you pushed a block on a flat surface, it would slide indefinitely at a constant velocity. This idealized world is often the starting point for mathematical models in physics, allowing us to isolate the effects of other forces before adding the complexity of friction back in.
+- **Same fit, different mechanism:** Construct two models that match the same short dataset but predict different long-term behavior. What future observation would discriminate between them?
+- **Scaled giant:** If a body is enlarged geometrically, mass grows approximately as $L^3$ while cross-sectional area grows as $L^2$. What changes in shape, material, posture, or internal transport could compensate?
+- **Frictionless baseline:** Start with an ideal oscillator without friction, then add damping. Which new parameter appears, and what observation could estimate it?
+- **Model outside its domain:** Imagine applying a room-temperature material law during a fire. Which assumptions fail before the numerical solver does?
 
 ## 5. Household and browser-based explorations
 
-- **Pendulum Experiment:** Build a simple pendulum using string and a small, dense object (like a nut or a washer). Measure the time it takes for 10 complete swings for different lengths of string. Plot the period (time for one swing) against the length, and then against the square root of the length. What do you observe?
-- **Scaling in Baking:** Find a recipe for a cake. If you want to bake a cake that is twice as wide and twice as long (but the same height), how should you adjust the ingredients? What if you want a cake that is twice as wide, twice as long, and twice as high?
-- **Browser Simulation:** Search for "PhET Pendulum Lab" online. Use the interactive simulation to explore how changing the mass, length, gravity, and friction affects the motion of a pendulum. Verify the results of your dimensional analysis and physical experiments.
+- **Pendulum data:** Use a simulation, or a lightweight object tied securely to string in a clear area away from people and breakable objects. Measure several lengths and time multiple periods. Plot $T$ against $L$ and against $\sqrt{L}$.
+- **Cooling curve:** Record a drink or safe container approaching room temperature. Compare a linear fit with an exponential model and examine residuals.
+- **Recipe scaling:** Scale a rectangular cake pan in width and length while holding height fixed, then scale all three dimensions. Identify which ingredients, heating times, and structural effects may not follow geometry alone.
+- **Model comparison:** Use a spreadsheet to fit exponential and logistic population models to synthetic data. Reserve later points for validation rather than fitting every point.
 
 ## 6. Model-building prompts
 
-- **Cooling Coffee:** Formulate a simple mathematical model for the temperature of a cup of coffee over time. Assume the rate of cooling is proportional to the difference between the coffee's temperature and the room temperature (Newton's Law of Cooling). What parameters would you need to measure to calibrate your model?
-- **Population Growth:** Create a model for the population of rabbits on an island. Start with a simple exponential growth model (birth rate is proportional to the current population). Then, refine the model by adding a carrying capacity (a maximum population the island can support), leading to a logistic growth model.
+- **Newton cooling:** Write
+
+  $$\frac{dT}{dt}=-k(T-T_a),$$
+
+  define every quantity, and list conditions under which $k$ could be treated as constant.
+- **Queue model:** Define arrivals, service times, capacity, and queue discipline. Which outputs matter: mean wait, maximum wait, or probability of exceeding a threshold?
+- **State-space model:** For a mass–spring–damper system, choose state variables and convert the second-order equation into two first-order equations.
+- **Non-dimensionalization:** Choose characteristic length and time scales for a falling object and identify dimensionless groups that compare drag, inertia, and gravity.
 
 ## 7. Self-explanation questions
 
-- Why is it useful to linearise a non-linear differential equation? What are the limitations of this approach?
-- Explain the difference between a scalar, a vector, and a tensor. Give an example of a physical quantity that requires a tensor for its description.
-- How does dimensional analysis help us check the validity of an equation? Can it tell us if an equation is definitely correct?
+- What is the difference between a state variable, parameter, input, and output?
+- Why can a model fit data well yet have the wrong mechanism?
+- What does dimensional analysis prove, and what can it not prove?
+- Why is linearization local?
+- How do calibration, verification, and validation answer different questions?
+- What does it mean for a parameter to be non-identifiable?
 
 ## 8. Transfer questions
 
-- The square-cube law explains why large animals have proportionally thicker legs. How might this law apply to the design of buildings or bridges?
-- Exponential decay describes the cooling of a cup of coffee and the radioactive decay of isotopes. Can you think of a phenomenon in economics or sociology that might also follow an exponential decay model?
-- We used dimensional analysis to find the period of a pendulum. Could you use the same technique to find the speed of a wave on a stretched string, given that it depends on the tension force and the mass per unit length of the string?
+- How can a model validated for one bridge design fail for another geometry or material?
+- Why can a machine-learning surrogate be fast yet unsafe outside its training domain?
+- How do scaling laws affect cooling, structural support, communication delay, or metabolic transport?
+- How should a digital twin respond when sensor data move outside the model’s validation domain?
 
 ## 9. Suggested learning paths
 
-- **Calculus and Differential Equations:** To deeply understand mathematical modelling, a solid foundation in calculus (derivatives and integrals) and differential equations is essential.
-- **Linear Algebra:** For working with vectors, matrices, and linearised systems, linear algebra provides the necessary mathematical framework.
-- **Computational Modelling:** Learn a programming language (like Python or MATLAB) to numerically solve complex models that cannot be solved analytically.
+- **Calculus and differential equations:** Derivatives, integrals, ordinary differential equations, and stability.
+- **Linear algebra:** Vectors, matrices, eigenvalues, coordinate transformations, and state-space models.
+- **Dimensional analysis and similarity:** Buckingham $\pi$, scaling, and experimental similitude.
+- **Statistical modelling:** Calibration, residuals, identifiability, uncertainty, and model comparison.
+- **Computational modelling:** Numerical solvers, discretization, verification, and convergence.
 
 ## 10. Reasoning notes
 
-When building mathematical models, always start simple. Identify the most crucial variables and the fundamental laws governing their interaction. Make simplifying assumptions (like ignoring air resistance or assuming small angles) to create a tractable model. Once you understand the behavior of the simple model, gradually add complexity to capture more subtle effects. Always verify your model's predictions against real-world observations or experimental data. Remember that a model is a tool for understanding, not a perfect replica of reality.
+For every model, record:
+
+1. Intended question and decision.
+2. System boundary and resolution.
+3. Variables, parameters, units, and reference frames.
+4. Governing laws, empirical relationships, and data sources.
+5. Initial and boundary conditions.
+6. Assumptions and prohibited extrapolations.
+7. Calibration method and validation evidence.
+8. Sensitivity, uncertainty, and model discrepancy.
+9. Competing models and observations that could distinguish them.
+10. Version, implementation, and reviewer.
+
+Start with the simplest model that can answer the question, but do not confuse simplicity with adequacy or complexity with truth.

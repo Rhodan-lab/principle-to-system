@@ -1,143 +1,171 @@
 ---
-title: "Measurement, Units, Error, and Uncertainty"
+title: "Measurement, units, error, and uncertainty"
 slug: 02-measurement-uncertainty
 module: "Module 02"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning]
 connections: [06-matter-quantum]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Measurement, Units, Error, and Uncertainty
+# Measurement, units, error, and uncertainty
 
 ## 1. The central questions
 
-How do we quantify the physical world in a way that is universally understood and reproducible? When we measure a physical quantity, how do we know the true value, and how do we quantify our doubt about that measurement? Measurement is the bridge between abstract mathematical models and physical reality. Without a rigorous framework for units, error, and uncertainty, scientific observations would be subjective and technological systems would fail to interoperate. The central questions of this module explore how we establish standard units, how we use dimensional analysis to verify physical relationships, and how we account for the inevitable imperfections in every measurement we make.
+How can a physical or chemical quantity be described so that another person can measure the same thing? What information must accompany a measured value? How are calibration, traceability, resolution, repeatability, systematic effects, and uncertainty related? Measurement connects models to observations, but a numerical display is not a complete measurement result unless the measurand, procedure, units, conditions, and relevant uncertainty are understood.
 
 ## 2. Observable phenomena
 
-Every day, we interact with measurement systems. A digital scale reads the mass of ingredients, a speedometer indicates the velocity of a vehicle, and a thermometer displays the ambient temperature. However, these readings are never absolute truths. If you step on a bathroom scale three times in succession, you might get slightly different readings. If you measure the length of a table with a wooden ruler versus a laser measure, the results will differ in precision and accuracy. These phenomena highlight that every measurement is an approximation of a true value, bounded by the resolution of the instrument, the method of measurement, and environmental factors. The variations we observe are manifestations of random and systematic errors.
+Repeated readings of the same object may vary. Two instruments may agree closely yet both be biased relative to a reference. A thermometer can respond slowly, a ruler can expand with temperature, and a sensor can change the system it measures. A digital display may show many digits even when only a few are supported by calibration and noise.
+
+These effects arise from the full measurement process: the definition of the measurand, sampling in space and time, sensor interaction, calibration, environmental influence, data processing, and reporting. Uncertainty is therefore evaluated from all relevant information, not only from the scatter of repeated readings.
 
 ## 3. Essential concepts
 
-**The International System of Units (SI):** The globally accepted system of measurement, based on seven defining constants of nature (such as the speed of light in vacuum and the Planck constant). From these constants, seven base units are derived: the metre (length), kilogram (mass), second (time), ampere (electric current), kelvin (thermodynamic temperature), mole (amount of substance), and candela (luminous intensity) [1].
+**Measurement:** The experimental process of obtaining one or more quantity values that can reasonably be attributed to a quantity. A measurement requires a defined measurand, procedure, calibrated measuring system, and specified conditions.
 
-**Dimensional Analysis:** A mathematical tool used to check the consistency of equations and to deduce the relationships between physical quantities. It relies on the principle that only quantities with the same dimensions can be added, subtracted, or equated. The dimensions of any physical quantity can be expressed as a product of the dimensions of the base quantities (e.g., Length $L$, Mass $M$, Time $T$).
+**Measurand:** The quantity intended to be measured. “Length of the beam” is incomplete if thermal expansion matters; “length of the beam at $20\ ^\circ\mathrm{C}$ under specified support conditions” is better defined.
 
-**True Value vs. Measured Value:** The true value of a quantity is an idealized concept—the value that would be obtained by a perfect measurement. The measured value is the result of a physical measurement process, which always includes some error.
+**Measurement result:** A set of quantity values attributed to a measurand together with relevant information. It is commonly expressed as a measured value plus measurement uncertainty and units.
 
-**Error:** The difference between the measured value and the true value. Error is traditionally categorized into two types:
-*   **Systematic Error:** A consistent, repeatable error associated with faulty equipment or a flawed experimental design. It affects the accuracy of a measurement, shifting all measurements in the same direction (e.g., a scale that is not zeroed properly).
-*   **Random Error:** Unpredictable fluctuations in the readings of a measurement apparatus, or in the experimenter's interpretation of the instrumental reading. It affects the precision of a measurement, causing data points to scatter around a mean value.
+**Reference quantity value:** A value used as a basis for comparison. It may come from a calibrated standard, a certified reference material, a reference procedure, or a conventional definition.
 
-**Uncertainty:** A non-negative parameter characterizing the dispersion of the quantity values being attributed to a measurand, based on the information used [2]. While error is a single (usually unknown) value, uncertainty is a range or an interval. It quantifies the doubt about the measurement result.
+**Measurement error:** A measured quantity value minus a reference quantity value. Error can sometimes be estimated or corrected, but the exact error relative to an unknown true value is generally unknown.
 
-**Accuracy and Precision:** Accuracy refers to the closeness of agreement between a measured quantity value and a true quantity value of a measurand. Precision refers to the closeness of agreement between indications or measured quantity values obtained by replicate measurements on the same or similar objects under specified conditions [3].
+**Systematic measurement error:** A component of error that remains constant or changes predictably under repeated measurement conditions. A known estimate can be corrected, but uncertainty remains in the correction.
 
-**Significant Figures:** The digits in a measurement that carry meaning contributing to its precision. This includes all certain digits plus one estimated digit.
+**Random measurement error:** A component of error that varies unpredictably in replicate measurements. Repetition can reduce the uncertainty associated with estimating a mean, but it does not remove systematic effects.
+
+**Measurement uncertainty:** A non-negative parameter characterizing the dispersion of quantity values attributed to the measurand, based on the information used. It is not itself “the error” and is not merely an interval.
+
+**Accuracy, trueness, and precision:** Accuracy is qualitative closeness between a measured value and a true value. Trueness concerns agreement between the average of many replicate values and a reference value. Precision concerns agreement among replicate values under stated conditions. Accuracy is not assigned a numerical value and should not be used as a synonym for precision.
+
+**Resolution:** The smallest change in a quantity that produces a perceptible change in indication. Resolution does not establish accuracy or uncertainty by itself.
+
+**Metrological traceability:** A property of a measurement result whereby it can be related to a reference through a documented, unbroken calibration chain, each link contributing to measurement uncertainty.
 
 ## 4. Mechanisms and causal chains
 
-The process of measurement involves a causal chain from the physical phenomenon to the final recorded value. Consider measuring the temperature of a liquid with a mercury thermometer. The thermal energy of the liquid transfers to the glass bulb (heat transfer), causing the mercury to expand (thermal expansion). The volume change of the mercury forces it up the capillary tube. The height of the mercury column is then visually compared against a printed scale by an observer. 
+Consider measuring liquid temperature with a contact thermometer:
 
-Errors and uncertainties enter at every step of this chain:
-1.  **The Measurand:** The liquid's temperature might not be uniform (spatial variation).
-2.  **The Sensor:** The glass bulb takes time to reach thermal equilibrium (dynamic error), and the thermometer itself absorbs some heat, slightly altering the liquid's temperature (loading effect).
-3.  **The Transduction:** The expansion of mercury might not be perfectly linear over the entire range.
-4.  **The Scale:** The printed markings might be slightly misplaced during manufacturing (systematic error).
-5.  **The Observer:** The observer might read the scale from an angle, causing parallax error (random or systematic error).
+```text
+liquid state
+→ heat exchange with sensor
+→ temperature-dependent sensor property
+→ electrical or visual indication
+→ calibration function
+→ corrected value and uncertainty
+```
 
-Understanding this causal chain is essential for identifying sources of error and evaluating the overall measurement uncertainty.
+Uncertainty can enter because the liquid is not uniform, the sensor has finite response time, the sensor perturbs the liquid, calibration coefficients are uncertain, the response is non-linear, the display is quantized, or the reading time is inconsistent. The first task is not to label every effect “random” or “systematic,” but to construct a measurement model and evaluate each relevant input.
 
 ## 5. Important quantities
 
-| Quantity | Symbol | SI Unit | Dimension | Description |
-| :--- | :---: | :--- | :---: | :--- |
-| Length | $l, x, r$ | metre ($\text{m}$) | $L$ | The one-dimensional extent of an object. |
-| Mass | $m$ | kilogram ($\text{kg}$) | $M$ | A measure of an object's resistance to acceleration. |
-| Time | $t$ | second ($\text{s}$) | $T$ | The continuous progress of existence and events. |
-| Temperature | $T$ | kelvin ($\text{K}$) | $\Theta$ | A measure of the average kinetic energy of particles. |
-| Electric Current | $I, i$ | ampere ($\text{A}$) | $I$ | The rate of flow of electric charge. |
-| Amount of Substance | $n$ | mole ($\text{mol}$) | $N$ | The number of elementary entities (atoms, molecules). |
-| Luminous Intensity | $I_v$ | candela ($\text{cd}$) | $J$ | The wavelength-weighted power emitted by a light source. |
+| Quantity | Symbol | SI unit | Dimension | Careful description |
+| --- | --- | --- | --- | --- |
+| Length | $l,x,r$ | metre, $\mathrm{m}$ | $L$ | Spatial extent or separation defined by a measurement procedure. |
+| Mass | $m$ | kilogram, $\mathrm{kg}$ | $M$ | Physical quantity associated with inertia and gravitation; operational meaning depends on the model and procedure. |
+| Time | $t$ | second, $\mathrm{s}$ | $T$ | Duration between specified events, realized using periodic processes. |
+| Thermodynamic temperature | $T$ | kelvin, $\mathrm{K}$ | $\Theta$ | Thermodynamic state quantity defined through the kelvin and Boltzmann constant; it is not generally identical to average translational kinetic energy. |
+| Electric current | $I$ | ampere, $\mathrm{A}$ | $I$ | Rate of electric-charge flow through a surface. |
+| Amount of substance | $n$ | mole, $\mathrm{mol}$ | $N$ | Number of specified elementary entities scaled by the Avogadro constant. |
+| Luminous intensity | $I_v$ | candela, $\mathrm{cd}$ | $J$ | Luminous flux per unit solid angle in a specified direction, spectrally weighted for human vision. |
+
+The SI base units are defined by assigning exact numerical values to seven defining constants. Realizing a unit in practice still requires an experimental procedure with uncertainty.
 
 ## 6. Mathematical models and equations
 
-### Dimensional Analysis and the Buckingham $\pi$ Theorem
+### Type A evaluation from repeated observations
 
-Any physical equation must be dimensionally homogeneous. If an equation is given by $A = B + C$, then the dimensions of $A$, $B$, and $C$ must be identical: $[A] = [B] = [C]$.
+For $N$ observations $x_i$ obtained under specified repeatability conditions, the sample mean is
 
-The Buckingham $\pi$ theorem states that if there is a physically meaningful equation involving $n$ physical variables, and these variables are expressible in terms of $k$ independent fundamental physical dimensions, then the original equation can be rewritten in terms of a set of $p = n - k$ dimensionless parameters $\pi_1, \pi_2, \dots, \pi_p$.
+$$\bar{x}=\frac{1}{N}\sum_{i=1}^{N}x_i,$$
 
-### Statistical Evaluation of Random Error (Type A Evaluation)
+and the experimental standard deviation is
 
-When a measurement is repeated $N$ times under the same conditions, the best estimate of the true value is the arithmetic mean, $\bar{x}$:
+$$s(x)=\sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(x_i-\bar{x})^2}.$$
 
-$$ \bar{x} = \frac{1}{N} \sum_{i=1}^{N} x_i $$
+When observations are independent and identically distributed with finite variance, the estimated standard uncertainty of the mean is
 
-The dispersion of the values is characterized by the experimental standard deviation, $s(x)$:
+$$u(\bar{x})=\frac{s(x)}{\sqrt{N}}.$$
 
-$$ s(x) = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N} (x_i - \bar{x})^2} $$
+This evaluates only the repeatability contribution. Calibration, resolution, drift, environmental corrections, sampling, and model uncertainty may require Type B evaluation or additional models.
 
-The standard uncertainty of the mean, $u(\bar{x})$, which represents how well the mean estimates the true value, is given by the standard deviation of the mean:
+### Propagation through a measurement model
 
-$$ u(\bar{x}) = \frac{s(x)}{\sqrt{N}} $$
+For an output estimate
 
-### Propagation of Uncertainty
+$$y=f(x_1,x_2,\ldots,x_N),$$
 
-When a quantity $Y$ is not measured directly but is determined from $N$ other measured quantities $X_1, X_2, \dots, X_N$ through a functional relationship $Y = f(X_1, X_2, \dots, X_N)$, the combined standard uncertainty $u_c(y)$ is calculated using the law of propagation of uncertainty (assuming the input quantities are uncorrelated) [2]:
+a first-order approximation to combined standard uncertainty is
 
-$$ u_c^2(y) = \sum_{i=1}^{N} \left( \frac{\partial f}{\partial x_i} \right)^2 u^2(x_i) $$
+$$u_c^2(y)=\sum_{i=1}^{N}\left(\frac{\partial f}{\partial x_i}\right)^2u^2(x_i)
++2\sum_{i<j}\frac{\partial f}{\partial x_i}\frac{\partial f}{\partial x_j}u(x_i,x_j),$$
 
-Where:
-*   $y$ is the estimate of the measurand $Y$.
-*   $x_i$ are the estimates of the input quantities $X_i$.
-*   $u(x_i)$ is the standard uncertainty associated with $x_i$.
-*   $\frac{\partial f}{\partial x_i}$ are the sensitivity coefficients, evaluated at $X_i = x_i$.
+where $u(x_i,x_j)$ denotes covariance. The covariance terms vanish only when the input estimates are uncorrelated.
 
-For simple operations, this reduces to:
-*   **Addition/Subtraction ($Y = A \pm B$):** $u_c(y) = \sqrt{u^2(a) + u^2(b)}$
-*   **Multiplication/Division ($Y = A \cdot B$ or $Y = A / B$):** $\frac{u_c(y)}{|y|} = \sqrt{\left(\frac{u(a)}{a}\right)^2 + \left(\frac{u(b)}{b}\right)^2}$
+For strongly non-linear models, asymmetric distributions, discontinuities, or bounded inputs, propagation of distributions using Monte Carlo methods may be more appropriate than first-order linearization.
+
+### Reporting an expanded uncertainty
+
+A result may be reported as
+
+$$Y=y\pm U,\qquad U=k\,u_c(y),$$
+
+where $k$ is a coverage factor chosen for a stated coverage objective under a stated distributional approximation. The report should identify $k$, the intended coverage, and the method used.
 
 ## 7. Definitions of symbols and units
 
-*   $x_i$: The $i$-th measured value of a quantity (unit depends on the quantity).
-*   $\bar{x}$: The arithmetic mean of a set of measured values (unit depends on the quantity).
-*   $N$: The number of repeated measurements (dimensionless).
-*   $s(x)$: The experimental standard deviation (unit depends on the quantity).
-*   $u(x_i)$: The standard uncertainty of an input estimate $x_i$ (unit depends on the quantity).
-*   $u_c(y)$: The combined standard uncertainty of an output estimate $y$ (unit depends on the quantity).
-*   $\frac{\partial f}{\partial x_i}$: The partial derivative of the function $f$ with respect to $x_i$, representing the sensitivity coefficient (unit is the unit of $y$ divided by the unit of $x_i$).
+- $x_i$: Individual observed value; same unit as the measurand.
+- $\bar{x}$: Mean of replicate values.
+- $N$: Number of observations; dimensionless integer.
+- $s(x)$: Experimental standard deviation.
+- $u(x_i)$: Standard uncertainty of input estimate $x_i$.
+- $u(x_i,x_j)$: Estimated covariance between input estimates.
+- $u_c(y)$: Combined standard uncertainty of output estimate $y$.
+- $U$: Expanded uncertainty.
+- $k$: Coverage factor; dimensionless.
+- $\partial f/\partial x_i$: Sensitivity coefficient, with units of $y$ per unit of $x_i$.
 
 ## 8. Assumptions and approximations
 
-*   **Normal Distribution:** The statistical methods for evaluating random error (Type A evaluation) and calculating coverage intervals generally assume that the repeated measurements follow a Gaussian (normal) distribution.
-*   **Linearization:** The standard law of propagation of uncertainty is based on a first-order Taylor series expansion of the measurement function. It assumes that the function is approximately linear in the region defined by the uncertainties of the input quantities. If the function is highly non-linear, higher-order terms or Monte Carlo methods must be used.
-*   **Uncorrelated Inputs:** The simplified uncertainty propagation formula assumes that the input quantities $X_i$ are independent (uncorrelated). If they are correlated, covariance terms must be included in the calculation.
+- The measurand and measurement conditions are defined adequately for the intended use.
+- Replicate observations used in the simple $s/\sqrt{N}$ formula are sufficiently independent and generated under stable conditions.
+- A Type A evaluation does not automatically require a normal population; distributional assumptions matter when constructing coverage intervals or using small-sample approximations.
+- First-order propagation assumes the model is adequately linear over the relevant input distributions.
+- Correlation among inputs must be represented rather than silently ignored.
+- Corrections for known systematic effects should be applied when practical, with uncertainty assigned to the corrections.
+- More displayed digits do not justify more reported information than the uncertainty supports.
 
 ## 9. Spatial and temporal scales
 
-Measurement spans an extraordinary range of scales. At the quantum scale, spatial measurements are on the order of femtometres ($10^{-15}\text{ m}$) for atomic nuclei, and time is measured in attoseconds ($10^{-18}\text{ s}$) for electron dynamics. At the cosmological scale, distances are measured in parsecs or light-years (order of $10^{16}\text{ m}$ to $10^{26}\text{ m}$), and time spans billions of years ($10^{17}\text{ s}$). The SI system accommodates these extremes through the use of standard prefixes (e.g., nano-, kilo-, giga-), but the physical instruments and the dominant sources of uncertainty change drastically across these scales. For instance, quantum uncertainty (Heisenberg's uncertainty principle) sets a fundamental limit at the microscopic scale, which is entirely negligible at the macroscopic scale where instrumental and environmental errors dominate.
+Measurement spans subatomic, laboratory, industrial, geophysical, and astronomical scales. Different scales require different measurands, sampling strategies, reference standards, and uncertainty models. At small scales, quantum theory may constrain which physical quantities can have simultaneously sharp states, but this is conceptually distinct from measurement uncertainty in metrology. At large scales, sampling and model uncertainty can dominate instrument resolution.
+
+Temporal scale also matters. A rapidly changing measurand requires adequate sensor bandwidth and synchronized clocks. A slowly drifting instrument may appear precise over minutes but produce biased comparisons across months.
 
 ## 10. Common misconceptions
 
-*   **Misconception:** "Error" means a mistake made by the experimenter.
-    *   **Correction:** In metrology, error is the inevitable difference between a measured value and the true value, arising from the limitations of instruments and the physical environment, not necessarily human blunders.
-*   **Misconception:** A digital display with many decimal places is highly accurate.
-    *   **Correction:** A high number of decimal places indicates high resolution, but not necessarily high accuracy. A highly precise instrument can still have a large systematic error (e.g., a digital scale that is improperly calibrated).
-*   **Misconception:** The "true value" of a physical quantity can be known exactly if we have good enough instruments.
-    *   **Correction:** The true value is an idealized concept. Every measurement has some uncertainty. We can only estimate the true value and quantify our confidence in that estimate.
+- **Error means a mistake:** Measurement error is a technical difference from a reference value; mistakes are separate procedural failures.
+- **Uncertainty is the same as error:** Error is a difference; uncertainty characterizes dispersion of values attributed to the measurand.
+- **Many decimal places mean accuracy:** Display resolution can exceed calibration quality and useful precision.
+- **Repeating measurements removes all uncertainty:** Repetition mainly reduces uncertainty in the mean from repeatability effects; common bias remains.
+- **A calibration certificate makes an instrument permanently correct:** Calibration applies under stated conditions and at a time; drift, transport, use, and recalibration interval matter.
+- **The true value can always be known exactly:** The true-value concept is idealized and generally unknowable in practice; some approaches focus instead on compatible measurement results and reference values.
 
 ## 11. Connections to other modules
 
-*   **01-scientific-reasoning:** Measurement is the empirical foundation of scientific reasoning. Hypotheses are tested by comparing theoretical predictions with measured values, taking uncertainty into account.
-*   **03-kinematics-dynamics:** The measurement of length, time, and mass is essential for defining velocity, acceleration, and force.
-*   **04-thermodynamics:** Temperature measurement and the definition of the kelvin are central to thermodynamic models.
+- **01-scientific-reasoning:** Evidence quality depends on how quantities are defined and measured.
+- **03-mathematical-models:** A measurement result depends on a model linking indications and inputs to the measurand.
+- **04-probability-statistics:** Probability models support evaluation of sampling variation and uncertainty distributions.
+- **05-computation-algorithms:** Numerical methods propagate uncertainty and implement calibration functions.
+- **06-matter-quantum:** Atomic and quantum phenomena support modern unit realizations and precision instruments.
 
 ## 12. Sources
 
-[1] Bureau International des Poids et Mesures. (2019). *The International System of Units (SI)* (9th ed.). https://www.bipm.org/en/publications/si-brochure
-[2] Joint Committee for Guides in Metrology. (2008). *Evaluation of measurement data — Guide to the expression of uncertainty in measurement (GUM)* (JCGM 100:2008). https://www.bipm.org/documents/20126/2071204/JCGM_100_2008_E.pdf
-[3] Joint Committee for Guides in Metrology. (2012). *International vocabulary of metrology — Basic and general concepts and associated terms (VIM)* (JCGM 200:2012). https://www.bipm.org/documents/20126/2071204/JCGM_200_2012.pdf
+1. Bureau International des Poids et Mesures. (2019). *The International System of Units (SI)*, 9th ed. https://www.bipm.org/en/publications/si-brochure
+2. Joint Committee for Guides in Metrology. (2008). *Evaluation of measurement data — Guide to the expression of uncertainty in measurement* (JCGM 100:2008). https://doi.org/10.59161/JCGM100-2008E
+3. Joint Committee for Guides in Metrology. (2008). *Propagation of distributions using a Monte Carlo method* (JCGM 101:2008). https://doi.org/10.59161/JCGM101-2008
+4. Joint Committee for Guides in Metrology. (2012). *International vocabulary of metrology* (JCGM 200:2012). https://doi.org/10.59161/JCGM200-2012
+5. National Institute of Standards and Technology. *Metrological Traceability*. https://www.nist.gov/metrology/metrological-traceability
