@@ -78,13 +78,31 @@ jobs:
         run: python3 scripts/validate_repo.py
 
       - name: Verify Phase 8 audit records
-        shell: bash
         run: |
-          test -f reports/phase-8-life-earth-review.md
-          test -f reports/phase-8-life-earth-sources.json
-          test -f sources/phase-8-reviewed-sources.json
-          grep -q '"ledger_records_before": 121' reports/phase-8-life-earth-sources.json
-          grep -q '"ledger_records_after": 131' reports/phase-8-life-earth-sources.json
-          grep -q 'Phase 8 Life and Earth Systems review implemented and validated on draft PR #9' PROJECT_STATE.md
-          grep -q 'Modules 13–16: \*\*Reviewed\*\*' PROJECT_STATE.md
-          grep -q 'Modules 17–20: \*\*Draft\*\*' PROJECT_STATE.md
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          review = Path('reports/phase-8-life-earth-review.md')
+          source_report = Path('reports/phase-8-life-earth-sources.json')
+          registry = Path('sources/phase-8-reviewed-sources.json')
+          for path in (review, source_report, registry):
+              assert path.is_file(), f'missing audit artifact: {path}'
+
+          report = json.loads(source_report.read_text(encoding='utf-8'))
+          assert report['registry_records'] == 10
+          assert report['ledger_records_before'] == 121
+          assert len(report['records_added']) == 10
+          assert report['ledger_records_after'] == 131
+          assert report['errors'] == []
+
+          state = Path('PROJECT_STATE.md').read_text(encoding='utf-8')
+          required = (
+              'Phase 8 Life and Earth Systems review implemented and validated on draft PR #9',
+              'Modules 13–16: **Reviewed**',
+              'Modules 17–20: **Draft**',
+              'The integrated ledger contains **131 records**',
+          )
+          for marker in required:
+              assert marker in state, f'missing project-state marker: {marker}'
+          PY
