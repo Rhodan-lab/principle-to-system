@@ -1,8 +1,9 @@
-name: Phase 5 source repair
+name: Validate Phase 5 sources
 
 on:
   push:
     branches:
+      - main
       - agent/phase-5-source-repair
     paths:
       - 'scripts/normalize_source_ledger.py'
@@ -26,57 +27,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: phase-5-source-repair-${{ github.ref }}
-  cancel-in-progress: false
+  group: validate-phase-5-sources-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  normalize:
-    if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source-repair branch
-        uses: actions/checkout@v4
-        with:
-          ref: agent/phase-5-source-repair
-          fetch-depth: 0
-
-      - name: Configure Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Recover and normalize legacy rows
-        continue-on-error: true
-        run: python3 scripts/normalize_source_ledger.py --write
-
-      - name: Apply inspected source replacements
-        run: python3 scripts/apply_verified_source_baseline.py --write
-
-      - name: Regenerate final source-quality audit
-        continue-on-error: true
-        run: python3 scripts/normalize_source_ledger.py --write --strict
-
-      - name: Verify replacement idempotence
-        run: python3 scripts/apply_verified_source_baseline.py --check
-
-      - name: Commit repaired ledger and reports
-        shell: bash
-        run: |
-          if git diff --quiet; then
-            echo 'No source-ledger changes remain.'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add sources/source-ledger.md reports/phase-5-source-audit.json reports/phase-5-source-replacements.json
-          git commit -m 'chore: apply verified source baseline'
-          git push origin HEAD:agent/phase-5-source-repair
-
   verify:
-    if: github.event_name == 'pull_request' || github.actor == 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out committed result
