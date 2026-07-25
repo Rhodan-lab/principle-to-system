@@ -44,7 +44,25 @@ jobs:
           python3 scripts/apply_phase8_life_earth_review.py --check
 
       - name: Validate Phase 8 review contract
-        run: python3 scripts/validate_phase8_life_earth_review.py
+        id: phase8
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase8_life_earth_review.py > phase8-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase8-validation.log
+          exit 0
+
+      - name: Upload Phase 8 validation diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase8-validation-diagnostics
+          path: phase8-validation.log
+
+      - name: Stop on Phase 8 validation errors
+        if: steps.phase8.outputs.status != '0'
+        run: exit 1
 
       - name: Validate repository structure
         run: python3 scripts/validate_repo.py
