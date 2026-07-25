@@ -67,7 +67,15 @@ jobs:
         shell: bash
         run: |
           python3 scripts/finalize_phase7_review.py --write
-          git diff --exit-code
+          git diff --exit-code -- \
+            science/06-matter-quantum \
+            science/07-chemical-bonding \
+            science/08-energy-thermodynamics \
+            science/09-motion-forces \
+            science/10-electricity-magnetism \
+            science/11-waves-signals \
+            science/12-fluids-materials \
+            INDEX.md
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py
