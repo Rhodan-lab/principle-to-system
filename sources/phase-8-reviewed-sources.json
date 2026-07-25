@@ -1,0 +1,102 @@
+[
+  {
+    "title": "Bioenergetics and Metabolism — Mitochondria, Chloroplasts, and Peroxisomes",
+    "author": "NCBI Bookshelf / National Library of Medicine",
+    "date": "2000",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK9911/",
+    "type": "Institutional Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-26",
+    "relevance": "Institutional treatment of metabolic energy conversion, mitochondria, chloroplasts, oxidative phosphorylation, and photosynthesis."
+  },
+  {
+    "title": "Cell Membranes",
+    "author": "NCBI Bookshelf / National Library of Medicine",
+    "date": "2000",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK9928/",
+    "type": "Institutional Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-26",
+    "relevance": "Institutional explanation of selective permeability, channels, carriers, electrochemical gradients, and active transport."
+  },
+  {
+    "title": "DNA Replication",
+    "author": "National Human Genome Research Institute",
+    "date": "n.d.",
+    "locator": "https://www.genome.gov/genetics-glossary/DNA-Replication",
+    "type": "Government Scientific Agency",
+    "modules": "14-dna-evolution",
+    "accessed": "2026-07-26",
+    "relevance": "Official genomics explanation of genome copying, high-fidelity replication, and DNA polymerase function."
+  },
+  {
+    "title": "Gene Expression",
+    "author": "National Human Genome Research Institute",
+    "date": "n.d.",
+    "locator": "https://www.genome.gov/genetics-glossary/Gene-Expression",
+    "type": "Government Scientific Agency",
+    "modules": "14-dna-evolution",
+    "accessed": "2026-07-26",
+    "relevance": "Official explanation of regulated RNA and protein production, including coding and non-coding gene products."
+  },
+  {
+    "title": "Evolution",
+    "author": "National Human Genome Research Institute",
+    "date": "n.d.",
+    "locator": "https://www.genome.gov/genetics-glossary/Evolution",
+    "type": "Government Scientific Agency",
+    "modules": "14-dna-evolution",
+    "accessed": "2026-07-26",
+    "relevance": "Official genomics overview of heritable variation, differential reproduction, and evolutionary change across generations."
+  },
+  {
+    "title": "Guiding Principles for Constructed Treatment Wetlands",
+    "author": "United States Environmental Protection Agency",
+    "date": "2000",
+    "locator": "https://www.epa.gov/wetlands/guiding-principles-constructed-treatment-wetlands-providing-water-quality-and-wildlife",
+    "type": "Government Technical Guidance",
+    "modules": "15-ecosystems-complex-systems",
+    "accessed": "2026-07-26",
+    "relevance": "Official guidance on siting, design, operation, monitoring, habitat trade-offs, and limits of constructed treatment wetlands."
+  },
+  {
+    "title": "MELiSSA Environmental Control and Life Support Research",
+    "author": "European Space Agency",
+    "date": "n.d.",
+    "locator": "https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Life_Support_and_Physical_Sciences/Research_and_development",
+    "type": "Research Institution",
+    "modules": "15-ecosystems-complex-systems",
+    "accessed": "2026-07-26",
+    "relevance": "Official description of regenerative life-support research using linked biological and physicochemical compartments."
+  },
+  {
+    "title": "Chapter 7: Earth's Energy Budget, Climate Feedbacks, and Climate Sensitivity",
+    "author": "Intergovernmental Panel on Climate Change",
+    "date": "2021",
+    "locator": "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/",
+    "type": "International Scientific Assessment",
+    "modules": "16-earth-planetary",
+    "accessed": "2026-07-26",
+    "relevance": "Assessed definitions and evidence for effective radiative forcing, feedbacks, energy imbalance, and climate sensitivity."
+  },
+  {
+    "title": "Argo Program",
+    "author": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "date": "n.d.",
+    "locator": "https://www.aoml.noaa.gov/argo/",
+    "type": "Government Observing Program",
+    "modules": "16-earth-planetary",
+    "accessed": "2026-07-26",
+    "relevance": "Official description of global profiling-float measurements, data assimilation, ocean heat and salinity monitoring, and observing-system limits."
+  },
+  {
+    "title": "This Dynamic Earth: The Story of Plate Tectonics",
+    "author": "United States Geological Survey",
+    "date": "1996",
+    "locator": "https://pubs.usgs.gov/gip/dynamic/dynamic.html",
+    "type": "Government Scientific Publication",
+    "modules": "16-earth-planetary",
+    "accessed": "2026-07-26",
+    "relevance": "USGS synthesis of plate boundaries, seafloor spreading, subduction, evidence for plate motions, and remaining scientific questions."
+  }
+]

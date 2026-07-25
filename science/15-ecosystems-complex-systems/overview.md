@@ -3,10 +3,10 @@ title: "Ecosystems, Feedback, Networks, and Complex Systems"
 slug: 15-ecosystems-complex-systems
 module: "Module 15"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]
 connections: [16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,7 +14,7 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How do vast numbers of interacting biological organisms and their physical environments self-organise into stable, enduring structures? Why do some ecosystems absorb massive disturbances and recover, while others collapse abruptly into entirely different states? How do local interactions between predators, prey, and nutrients give rise to emergent properties that cannot be predicted by studying individual species in isolation? 
+How do interacting organisms and physical environments generate changing patterns, functions, and feedbacks across scales? Why do some ecosystems absorb massive disturbances and recover, while others collapse abruptly into entirely different states? How do local interactions between predators, prey, and nutrients give rise to emergent properties that cannot be predicted by studying individual species in isolation? 
 
 ## 2. Observable phenomena
 
@@ -34,11 +34,11 @@ Ecosystems exhibit phenomena that span multiple scales of space and time. A clas
 
 ## 4. Mechanisms and causal chains
 
-The flow of energy and the cycling of nutrients are the fundamental mechanisms driving ecosystems. Solar energy is captured by autotrophs through photosynthesis, converting carbon dioxide and water into organic compounds. This energy flows unidirectionally through trophic levels, with significant losses at each transfer (typically around 90% lost as heat, following the laws of thermodynamics). In contrast, nutrients such as carbon, nitrogen, and phosphorus cycle continuously between the biotic and abiotic components of the system.
+The flow of energy and the cycling of nutrients are the fundamental mechanisms driving ecosystems. Solar energy is captured by autotrophs through photosynthesis, converting carbon dioxide and water into organic compounds. This energy flows unidirectionally through trophic levels, with transfer efficiency varying among organisms, resources, ecosystems, and definitions; respiration, unconsumed biomass, waste, and decomposer pathways all affect the accounting. In contrast, nutrients such as carbon, nitrogen, and phosphorus cycle continuously between the biotic and abiotic components of the system.
 
-Population dynamics are governed by the balance between birth rates, death rates, immigration, and emigration. When resources are abundant, populations can grow exponentially. However, as population density increases, negative feedback mechanisms—such as resource depletion, increased disease transmission, and higher predation rates—intensify. This density dependence constrains growth, leading to a carrying capacity.
+Population dynamics are governed by the balance between birth rates, death rates, immigration, and emigration. When resources are abundant, populations can grow exponentially. However, as population density increases, negative feedback mechanisms—such as resource depletion, increased disease transmission, and higher predation rates—intensify. Density dependence can constrain growth, but the effective carrying-capacity parameter changes with resources, climate, interactions, behaviour, and spatial structure.
 
-In complex networks, the topology of interactions determines stability. High connectance (the proportion of possible links that are realised) and modularity (the degree to which a network is compartmentalised) influence how disturbances propagate. A highly modular food web can contain the impact of a species extinction within a single module, preventing a cascading collapse across the entire ecosystem.
+In complex networks, the topology of interactions determines stability. High connectance (the proportion of possible links that are realised) and modularity (the degree to which a network is compartmentalised) influence how disturbances propagate. Modularity and weak cross-module links can sometimes limit disturbance propagation, but outcomes depend on interaction strengths, redundancy, directionality, adaptive responses, and which nodes or functions are lost.
 
 ## 5. Important quantities
 
@@ -78,7 +78,7 @@ Where:
 - $\delta$ is the predator growth rate coefficient (efficiency of converting prey into predator biomass).
 - $\gamma$ is the predator mortality rate in the absence of prey.
 
-This model produces continuous oscillations in both populations, illustrating a simple dynamic equilibrium driven by coupled feedback loops.
+Under its ideal assumptions, the classical model has neutrally stable closed orbits whose amplitude depends on initial conditions; this is not a generally attracting equilibrium and is structurally fragile to added realism.
 
 ### The Logistic Map and Chaos
 
@@ -88,7 +88,7 @@ $$ x_{n+1} = r x_n (1 - x_n) $$
 
 Where:
 - $x_n$ is the population ratio at time step $n$ (a value between 0 and 1, representing the fraction of the carrying capacity).
-- $r$ is a parameter representing the combined rate of reproduction and starvation.
+- $r$ is a dimensionless control parameter of the discrete map; mapping it to biological rates requires an explicit derivation and time-step definition.
 
 For low values of $r$ (e.g., $r < 3$), the population settles to a stable equilibrium. As $r$ increases, the system undergoes period-doubling bifurcations, oscillating between two, then four, then eight values. Beyond $r \approx 3.57$, the system enters a chaotic regime, where population sizes fluctuate wildly and are highly sensitive to initial conditions (the "butterfly effect").
 
@@ -108,7 +108,7 @@ For low values of $r$ (e.g., $r < 3$), the population settles to a stable equili
 
 ## 8. Assumptions and approximations
 
-The logistic growth model assumes that the carrying capacity $K$ is constant, which is rarely true in nature as environments fluctuate. It also assumes an immediate response to density changes, ignoring time lags in reproduction or resource depletion. The basic Lotka-Volterra model assumes that prey have unlimited food (no carrying capacity for prey) and that predators have an insatiable appetite (linear functional response), which leads to structurally unstable oscillations. Real ecosystems feature complex functional responses (e.g., predators becoming satiated) and spatial heterogeneity, which dampen these oscillations and promote stability.
+The logistic growth model assumes that the carrying capacity $K$ is constant, which is rarely true in nature as environments fluctuate. It also assumes an immediate response to density changes, ignoring time lags in reproduction or resource depletion. The basic Lotka-Volterra model assumes that prey have unlimited food (no carrying capacity for prey) and that predators have an insatiable appetite (linear functional response), which leads to structurally unstable oscillations. Real ecosystems include nonlinear functional responses, delays, stochasticity, evolution, spatial structure, and resource limits; these additions may damp, amplify, destabilise, or qualitatively change oscillations depending on parameters.
 
 ## 9. Spatial and temporal scales
 
@@ -125,12 +125,13 @@ Ecosystem dynamics operate across vast scales. Spatially, they range from a micr
 - **04-probability-statistics:** Essential for understanding the stochastic nature of population fluctuations and the statistical mechanics of complex networks.
 - **13-cells-bioenergetics:** Provides the foundation for understanding energy flow and metabolic constraints at the base of the food web.
 - **14-dna-evolution:** Explains how species adapt to their environments and to each other, driving the long-term structural changes in ecosystems.
-- **16-climate-earth-systems:** Ecosystems are deeply coupled with the climate system through biogeochemical cycles (e.g., the carbon cycle) and feedback loops (e.g., albedo changes).
+- **16-earth-planetary:** Ecosystems are deeply coupled with the climate system through biogeochemical cycles (e.g., the carbon cycle) and feedback loops (e.g., albedo changes).
 
 ## 12. Sources
 
-[1] Holling, C. S. (1973). Resilience and stability of ecological systems. *Annual Review of Ecology and Systematics*, 4(1), 1-23.
-[2] May, R. M. (1972). Will a large complex system be stable? *Nature*, 238(5364), 413-414.
-[3] Levin, S. A. (1998). Ecosystems and the biosphere as complex adaptive systems. *Ecosystems*, 1(5), 431-436.
-[4] Scheffer, M., et al. (2001). Catastrophic shifts in ecosystems. *Nature*, 413(6856), 591-596.
-[5] Dunne, J. A., Williams, R. J., & Martinez, N. D. (2002). Food-web structure and network theory: the role of connectance and size. *Proceedings of the National Academy of Sciences*, 99(20), 12917-12922.
+1. Holling, C. S. *Resilience and Stability of Ecological Systems*. https://www.annualreviews.org/doi/abs/10.1146/annurev.es.04.110173.000245
+2. May, R. M. *Will a Large Complex System Be Stable?* https://www.nature.com/articles/238413a0
+3. Scheffer, M., et al. *Catastrophic Shifts in Ecosystems*. https://www.nature.com/articles/35098000
+4. Dunne, J. A., et al. *Food-web Structure and Network Theory*. https://www.pnas.org/doi/abs/10.1073/pnas.192407699
+5. U.S. Environmental Protection Agency. *Guiding Principles for Constructed Treatment Wetlands*. https://www.epa.gov/wetlands/guiding-principles-constructed-treatment-wetlands-providing-water-quality-and-wildlife
+6. European Space Agency. *MELiSSA Environmental Control and Life Support Research*. https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Life_Support_and_Physical_Sciences/Research_and_development

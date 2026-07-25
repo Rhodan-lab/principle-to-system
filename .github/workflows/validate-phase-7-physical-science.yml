@@ -53,10 +53,10 @@ jobs:
           python3 scripts/normalize_source_ledger.py --check --strict
           python3 scripts/apply_verified_source_baseline.py --check
 
-      - name: Validate Phase 6 continuity
+      - name: Validate Phase 6 continuity through Phase 8
         run: |
           python3 scripts/apply_foundations_review_sources.py --check
-          python3 scripts/validate_foundations_review.py --allow-downstream-reviewed
+          python3 scripts/validate_foundations_continuity_phase8.py --allow-downstream-reviewed
 
       - name: Validate Phase 7 sources and content
         run: |
@@ -67,12 +67,20 @@ jobs:
         shell: bash
         run: |
           python3 scripts/finalize_phase7_review.py --write
-          git diff --exit-code
+          git diff --exit-code -- \
+            science/06-matter-quantum \
+            science/07-chemical-bonding \
+            science/08-energy-thermodynamics \
+            science/09-motion-forces \
+            science/10-electricity-magnetism \
+            science/11-waves-signals \
+            science/12-fluids-materials \
+            INDEX.md
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py
 
-      - name: Verify review records
+      - name: Verify review records through Phase 8
         shell: bash
         run: |
           test -f reports/phase-6-foundations-review.md
@@ -80,4 +88,5 @@ jobs:
           test -f reports/phase-7-physical-science-sources.json
           grep -q 'Modules 01–05: \*\*Reviewed\*\*' PROJECT_STATE.md
           grep -q 'Modules 06–12: \*\*Reviewed\*\*' PROJECT_STATE.md
-          grep -q 'Modules 13–20: \*\*Draft\*\*' PROJECT_STATE.md
+          grep -q 'Modules 13–16: \*\*Reviewed\*\*' PROJECT_STATE.md
+          grep -q 'Modules 17–20: \*\*Draft\*\*' PROJECT_STATE.md

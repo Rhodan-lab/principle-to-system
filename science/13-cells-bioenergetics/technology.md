@@ -3,10 +3,10 @@ title: "Cells, membranes, enzymes, metabolism, and bioenergetics"
 slug: 13-cells-bioenergetics-technology
 module: "Module 13"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [07-chemical-bonding, 08-energy-thermodynamics]
 connections: [14-dna-evolution, 15-ecosystems-complex-systems]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -27,7 +27,7 @@ Engineers seek to harness cellular machinery to perform useful tasks outside the
 
 ## 4. How the components interact
 
-In a typical bioprocess, genetically engineered cells are cultivated in a bioreactor. The bioreactor continuously supplies nutrients and oxygen while removing waste products, maintaining conditions that optimize the kinetics of the target metabolic pathway. If immobilized enzymes are used, the substrate solution flows over the solid support, and the product is collected in the effluent. Synthetic membranes may be integrated into the system to continuously separate the product from the reaction mixture, preventing product inhibition and driving the reaction forward.
+In a typical bioprocess, genetically engineered cells are cultivated in a bioreactor. The bioreactor continuously supplies nutrients and oxygen while removing waste products, maintaining conditions that optimize the kinetics of the target metabolic pathway. If immobilized enzymes are used, the substrate solution flows over the solid support, and the product is collected in the effluent. Synthetic membranes may continuously separate products from the broth, reducing inhibition or simplifying downstream processing. Product removal changes reaction driving force only when it changes relevant activities and the process is thermodynamically coupled.
 
 ## 5. Matter, energy, force, or information flow
 
@@ -47,14 +47,14 @@ A bio-manufacturing system typically features a hierarchical architecture. At th
 
 ## 7. Design constraints
 
-- **Thermodynamic Limits:** The overall process must be exergonic. Energy inputs (e.g., aeration, agitation) must not exceed the value of the product.
+- **Thermodynamic and energy constraints:** Endergonic transformations can operate when coupled to external energy or favourable reactions. Design therefore tracks free-energy requirements, heat removal, oxygen transfer, exergy losses, and the chosen economic boundary rather than requiring every overall process to be exergonic.
 - **Kinetic Limits:** Reaction rates are constrained by enzyme turnover numbers and substrate diffusion rates.
 - **Biological Constraints:** Cells have limited tolerance for extreme pH, temperature, and high concentrations of toxic metabolites or products (product inhibition).
 - **Economic Constraints:** The cost of raw materials, downstream processing, and enzyme purification must be minimized to ensure commercial viability.
 
 ## 8. Performance and efficiency
 
-Performance is evaluated based on titer (concentration of product), yield (amount of product per unit of substrate), and productivity (rate of product formation). Efficiency is often limited by the diversion of carbon and energy toward cellular biomass production rather than the target product. Metabolic engineering aims to maximize the theoretical yield by eliminating competing pathways and optimizing ATP and redox balances.
+Performance is evaluated based on titer (concentration of product), yield (amount of product per unit of substrate), and productivity (rate of product formation). Efficiency is often limited by the diversion of carbon and energy toward cellular biomass production rather than the target product. Metabolic engineering balances product yield, titre, rate, redox and ATP demands, growth, robustness, and genetic stability. Removing a competing pathway can improve yield but can also create toxic accumulation or reduce cellular resilience.
 
 ## 9. Reliability and failure modes
 
@@ -65,7 +65,7 @@ Performance is evaluated based on titer (concentration of product), yield (amoun
 
 ## 10. Safety principles
 
-Bioprocesses must adhere to biosafety regulations to prevent the release of genetically modified organisms (GMOs) into the environment. This involves physical containment (sealed bioreactors, HEPA filters) and biological containment (engineering strains that cannot survive outside the controlled environment). Additionally, processes must be designed to safely handle flammable byproducts (e.g., ethanol, methane) and pressurized systems.
+Bioprocess containment and oversight are selected through organism-, construct-, scale-, and process-specific risk assessment; requirements differ across jurisdictions and applications. This involves physical containment (sealed bioreactors, HEPA filters) and biological containment (engineering strains that cannot survive outside the controlled environment). Additionally, processes must be designed to safely handle flammable byproducts (e.g., ethanol, methane) and pressurized systems.
 
 ## 11. Environmental and lifecycle considerations
 
@@ -79,7 +79,9 @@ Biotechnology offers the potential for sustainable production by utilizing renew
 
 ## 13. Sources
 
-1. Wikipedia contributors. (2024). Cellular respiration. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Cellular_respiration
-2. Wikipedia contributors. (2024). Bioenergetics. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Bioenergetics
-3. Wikipedia contributors. (2024). Enzyme kinetics. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Enzyme_kinetics
-4. Wikipedia contributors. (2024). Membrane transport. In *Wikipedia, The Free Encyclopedia*. Retrieved from https://en.wikipedia.org/wiki/Membrane_transport
+1. NCBI Bookshelf. *Electron-Transport Chains and Their Proton Pumps*. https://www.ncbi.nlm.nih.gov/books/NBK26904/
+2. NCBI Bookshelf. *Principles of Membrane Transport*. https://www.ncbi.nlm.nih.gov/books/NBK26815/
+3. NCBI Bookshelf. *Protein Function*. https://www.ncbi.nlm.nih.gov/books/NBK26911/
+4. OpenStax. *Regulation of Cellular Respiration*. https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration
+5. NCBI Bookshelf. *Bioenergetics and Metabolism*. https://www.ncbi.nlm.nih.gov/books/NBK9911/
+6. NCBI Bookshelf. *Cell Membranes*. https://www.ncbi.nlm.nih.gov/books/NBK9928/

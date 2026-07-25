@@ -3,10 +3,10 @@ title: "Earth, Atmosphere, Oceans, Climate, and Planetary Systems"
 slug: 16-earth-planetary-technology
 module: "Module 16"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]
 connections: []
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -37,28 +37,28 @@ The primary flow in these systems is **information**. Sensors convert physical p
 2. **Mathematical Abstraction**: These continuous equations are discretized into a 3D grid covering the Earth, with parameterizations for sub-grid processes (e.g., clouds).
 3. **Software Architecture**: The model is written in a high-performance language (like Fortran or C++) and parallelized using Message Passing Interface (MPI) to divide the grid among thousands of processors.
 4. **Hardware Architecture**: A supercomputer consisting of thousands of CPU or GPU nodes, connected by a high-bandwidth, low-latency network (e.g., InfiniBand), executes the code [3].
-5. **System Output**: The supercomputer outputs petabytes of data representing the simulated future state of the climate, which is then analyzed and visualized.
+5. **System output:** The computation produces large multidimensional datasets representing model states, diagnostics, ensembles, and uncertainty information for analysis and visualisation.
 
 ## 7. Design constraints
 - **Harsh Environments**: Ocean buoys must withstand corrosive saltwater, biofouling, and extreme weather. Seismometers must be isolated from background noise (traffic, wind) and temperature fluctuations.
 - **Power Supply**: Remote sensors (buoys, autonomous floats) are constrained by battery life and rely on solar panels or wave energy harvesting.
-- **Computational Limits**: Climate models are constrained by the trade-off between spatial resolution and computational cost. Doubling the resolution of a 3D model requires roughly an eight-fold increase in computing power.
+- **Computational Limits**: Climate models are constrained by the trade-off between spatial resolution and computational cost. Increasing three-dimensional resolution raises grid-cell count steeply and can require shorter time steps, more communication, and more expensive parameterisations; the total cost increase is architecture- and solver-dependent and can exceed the simple cell-count factor.
 - **Data Transmission**: Transmitting large volumes of data from remote ocean locations via satellite is expensive and bandwidth-limited.
 
 ## 8. Performance and efficiency
-The performance of a climate model is measured by its ability to accurately reproduce past climate variations (hindcasting) and its spatial resolution. Efficiency is measured in simulated years per day (SYPD) of computing time. For ocean observing systems, performance is measured by the spatial density of the network, the accuracy of the sensors, and the uptime of the data transmission links. The Argo array, for example, maintains over 3,800 active floats, providing unprecedented coverage of the upper 2,000 meters of the ocean [2].
+The performance of a climate model is measured by its ability to accurately reproduce past climate variations (hindcasting) and its spatial resolution. Efficiency is measured in simulated years per day (SYPD) of computing time. For ocean observing systems, performance is measured by the spatial density of the network, the accuracy of the sensors, and the uptime of the data transmission links. The Argo programme maintains a changing international array of profiling floats; core floats typically sample temperature, salinity, and pressure through the upper ocean, while Deep and biogeochemical extensions broaden depth and variables [2].
 
 ## 9. Reliability and failure modes
 - **Sensor Drift**: Over time, sensors on buoys and satellites can lose calibration, requiring complex statistical corrections or physical replacement.
 - **Biofouling**: Marine organisms growing on ocean sensors can degrade measurements, a major failure mode for long-term deployments.
 - **Communication Failure**: Loss of satellite link can result in data gaps from remote observing stations.
-- **Model Divergence**: In climate modeling, small errors in initial conditions or parameterizations can grow over time due to the chaotic nature of the fluid equations, leading to inaccurate long-term projections.
+- **Forecast and projection uncertainty:** Initial-condition errors limit detailed weather prediction, while long-term climate projections focus on distributions and forced responses. Structural assumptions, parameterisations, forcing scenarios, internal variability, and numerical choices contribute distinct uncertainties.
 
 ## 10. Safety principles
 Safety in Earth observation systems primarily concerns the deployment and maintenance of equipment in hazardous environments (e.g., deploying buoys in rough seas). For systems like seismic networks, the "safety" aspect is their role in early warning systems. The architecture must ensure ultra-low latency and high redundancy so that earthquake and tsunami warnings are issued reliably within seconds of an event.
 
 ## 11. Environmental and lifecycle considerations
-The deployment of thousands of autonomous floats and buoys raises concerns about marine debris when their batteries die. Modern designs aim for longer lifespans and use less toxic battery chemistries. Supercomputers used for climate modeling consume massive amounts of electricity (often megawatts), contributing to carbon emissions unless powered by renewable energy. The lifecycle of satellites involves significant energy expenditure during launch and the creation of space debris at the end of their operational life.
+The deployment of thousands of autonomous floats and buoys raises concerns about marine debris when their batteries die. Modern designs aim for longer lifespans and use less toxic battery chemistries. High-performance computing has substantial electricity, cooling, hardware, and embodied-material demands; lifecycle impact depends on workload, facility efficiency, electricity mix, hardware utilisation, and replacement cycle. The lifecycle of satellites involves significant energy expenditure during launch and the creation of space debris at the end of their operational life.
 
 ## 12. Connections to other technologies
 - **Telecommunications**: Essential for transmitting data from remote sensors and satellites.
@@ -67,6 +67,10 @@ The deployment of thousands of autonomous floats and buoys raises concerns about
 - **Materials Science**: Crucial for developing corrosion-resistant materials for ocean buoys and advanced semiconductors for supercomputers.
 
 ## 13. Sources
-[1] Ringler, A. T., et al. (2015). The Global Seismographic Network. *Earthquake Spectra*, 31(1), 1-24.
-[2] Roemmich, D., et al. (2009). The Argo Program: Observing the global ocean with profiling floats. *Oceanography*, 22(2), 34-43.
-[3] Washington, W. M., et al. (2009). How much climate change can be avoided by mitigation? *Geophysical Research Letters*, 36(8).
+
+1. U.S. Geological Survey. *This Dynamic Earth: The Story of Plate Tectonics*. https://pubs.usgs.gov/gip/dynamic/dynamic.html
+2. Intergovernmental Panel on Climate Change. *AR6 WGI Chapter 7: Earth's Energy Budget, Climate Feedbacks, and Climate Sensitivity*. https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/
+3. NOAA Atlantic Oceanographic and Meteorological Laboratory. *Argo Program*. https://www.aoml.noaa.gov/argo/
+4. Ramaswamy, V., et al. *Radiative Forcing of Climate*. https://journals.ametsoc.org/view/journals/amsm/59/1/amsmonographs-d-19-0001.1.xml
+5. Bercovici, D. *The Generation of Plate Tectonics from Mantle Convection*. https://www.sciencedirect.com/science/article/pii/S0012821X02010099
+6. Ringler, A. T., et al. *The Global Seismographic Network*. https://journals.sagepub.com/doi/10.1193/060414EQS082M

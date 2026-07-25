@@ -3,10 +3,10 @@ title: "DNA, Gene Expression, Inheritance, and Evolution"
 slug: 14-dna-evolution-technology
 module: "Module 14"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [07-chemical-bonding, 13-cells-bioenergetics]
 connections: [15-ecosystems-complex-systems]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -15,8 +15,8 @@ content_license: CC-BY-4.0
 The technologies derived from the study of DNA and evolution rely on several core scientific principles:
 *   **Complementary Base Pairing:** The specific hydrogen bonding between adenine and thymine (or uracil in RNA), and cytosine and guanine, allows for the targeted hybridization of nucleic acid strands.
 *   **Enzymatic Catalysis:** Biological enzymes, such as DNA polymerases, restriction endonucleases, and ligases, can be isolated and utilized *in vitro* to manipulate DNA with high precision.
-*   **The Central Dogma:** The predictable flow of information from DNA to RNA to protein enables the engineering of organisms to produce specific proteins by introducing the corresponding DNA sequences.
-*   **Evolutionary Conservation:** Because the fundamental mechanisms of gene expression are conserved across all domains of life, genes from one organism can often be expressed in a completely different organism (e.g., human insulin produced in bacteria).
+*   **Information flow and regulation:** DNA can be transcribed into coding or non-coding RNA, and coding RNA can be translated into protein. Reverse transcription and RNA genomes are important extensions, and expression requires compatible regulatory context.
+*   **Evolutionary conservation with context:** Shared molecular machinery permits cross-species expression in many cases, but promoter recognition, RNA processing, codon use, protein folding, modification, localisation, and toxicity can prevent functional expression.
 
 ## 2. The engineering problem
 
@@ -53,7 +53,7 @@ The Polymerase Chain Reaction (PCR) is a foundational technology that perfectly 
 1.  **Principle:** DNA strands separate at high temperatures (denaturation); short complementary DNA sequences (primers) can bind to target regions at lower temperatures (annealing); and a heat-stable DNA polymerase can extend these primers to synthesize a new strand (extension) [2].
 2.  **Component:** A thermal cycler (a machine that precisely controls temperature), Taq polymerase (a heat-stable enzyme isolated from the thermophilic bacterium *Thermus aquaticus*), synthetic DNA primers, deoxynucleotide triphosphates (dNTPs), and the template DNA.
 3.  **System:** The thermal cycler rapidly cycles through three temperatures: $\sim 95^\circ\text{C}$ to denature the DNA, $\sim 50-65^\circ\text{C}$ to allow primers to anneal, and $\sim 72^\circ\text{C}$ for Taq polymerase to extend the primers.
-4.  **Output:** Because each cycle doubles the amount of target DNA, 30 cycles can produce over a billion copies of a specific DNA sequence from a single starting molecule, enabling downstream applications like sequencing, cloning, or forensic analysis.
+4.  **Output:** Under an ideal efficiency of two, each cycle doubles target molecules and $2^{30}$ is about one billion; real amplification efficiency falls below the ideal and contamination, inhibitors, primer design, and stochastic effects matter, enabling downstream applications like sequencing, cloning, or forensic analysis.
 
 ## 7. Design constraints
 
@@ -70,7 +70,7 @@ The efficiency of genetic engineering systems is often measured by transformatio
 
 *   **Contamination:** The extreme sensitivity of PCR makes it highly susceptible to contamination by foreign DNA, leading to false-positive results.
 *   **Mutation:** During replication or amplification, polymerases can introduce errors. If a mutation occurs early in a PCR reaction or within a cloned gene, the error will be propagated.
-*   **Plasmid Loss:** Host cells may eject recombinant plasmids if they do not provide a selective advantage (which is why antibiotic resistance genes are often included in vectors to force the cells to retain them).
+*   **Construct loss:** Cells can lose or rearrange engineered DNA when it imposes a burden. Regulated laboratory systems may use selectable markers or chromosomal integration, with marker choice governed by biosafety and application constraints.
 *   **Expression Failure:** A gene may be successfully inserted but fail to express due to incorrect promoter sequences, poor codon optimization for the host organism, or improper protein folding.
 
 ## 10. Safety principles
@@ -92,5 +92,10 @@ The industrial-scale production of biological molecules using engineered microbe
 
 ## 13. Sources
 
-[1] Clancy, S., & Brown, W. (2008). Translation: DNA to mRNA to Protein. *Nature Education*, 1(1), 101. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
-[2] Pray, L. (2008). Major molecular events of DNA replication. *Nature Education*, 1(1), 99. http://www.nature.com/scitable/topicpage/major-molecular-events-of-dna-replication-413
+1. NCBI Bookshelf. *DNA Replication Mechanisms*. https://www.ncbi.nlm.nih.gov/books/NBK26850/
+2. Nature Education. *DNA Transcription*. https://www.nature.com/scitable/topicpage/dna-transcription-426/
+3. Nature Education. *Translation: DNA to mRNA to Protein*. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
+4. OpenStax. *Mechanisms of Evolution*. https://openstax.org/books/concepts-biology/pages/11-2-mechanisms-of-evolution
+5. National Human Genome Research Institute. *DNA Replication*. https://www.genome.gov/genetics-glossary/DNA-Replication
+6. National Human Genome Research Institute. *Gene Expression*. https://www.genome.gov/genetics-glossary/Gene-Expression
+7. National Human Genome Research Institute. *Evolution*. https://www.genome.gov/genetics-glossary/Evolution

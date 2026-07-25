@@ -3,10 +3,10 @@ title: "Earth, Atmosphere, Oceans, Climate, and Planetary Systems"
 slug: 16-earth-planetary-explore
 module: "Module 16"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]
 connections: []
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -39,9 +39,10 @@ content_license: CC-BY-4.0
 - **The Hollow Earth:** Imagine the Earth was hollow, with all its mass concentrated in a thin outer shell. How would gravity on the surface differ? Would plate tectonics still be possible? Why or why not?
 
 ## 5. Household and browser-based explorations
-- **Convection Currents:** Fill a clear, heat-safe glass baking dish with water. Place it on a stove across two burners, but only turn one burner on (low heat). Add a few drops of food coloring near the heated side. Observe the flow of the colored water. This models mantle convection and atmospheric circulation.
-- **Coriolis Effect on a Sphere:** Take a globe or a ball. While spinning it slowly, try to draw a straight line from the "North Pole" to the "Equator" using a marker. Notice how the line curves relative to the surface of the spinning sphere.
-- **Browser Exploration:** Visit an interactive Earth wind map (like earth.nullschool.net). Observe the global wind patterns. Can you identify the trade winds, the westerlies, and the polar easterlies? Switch the overlay to ocean currents or sea surface temperature and look for correlations.
+
+- **Convection simulation:** Use a browser-based fluid or mantle-convection simulation rather than heating a dish on a stove. Change viscosity, heating location, boundary conditions, and density contrast; explain why a low-viscosity water model does not reproduce solid-mantle rheology.
+- **Rotation on a sphere:** Use a digital globe or removable tape on a ball rather than a permanent marker. Compare a straight path in an inertial frame with its apparent deflection in a rotating frame.
+- **Earth-data exploration:** Use an institutional wind, ocean, earthquake, or climate-data viewer. Record variable definitions, units, timestamps, coverage gaps, and whether the display shows observations, reanalysis, or model output.
 
 ## 6. Model-building prompts
 - **Energy Balance Model:** Using a spreadsheet, build a simple zero-dimensional energy balance model. Input the solar constant and Earth's albedo to calculate the effective emission temperature. Then, add a parameter for the greenhouse effect (emissivity) to see how changing it affects the surface temperature.
@@ -54,9 +55,10 @@ content_license: CC-BY-4.0
 - What is the difference between weather and climate?
 
 ## 8. Transfer questions
-- The principles of fluid dynamics that govern Earth's atmosphere also apply to other planets. Based on what you know about the Coriolis effect, how would the atmospheric circulation of a rapidly spinning planet like Jupiter differ from Earth's?
-- If you were designing a terraforming process for Mars, which currently has a very thin atmosphere and is very cold, how could you use the concept of radiative forcing to warm the planet?
-- How might the principles of mantle convection apply to a rocky exoplanet that is much larger than Earth (a "Super-Earth")?
+
+- How would rotation rate, planetary radius, atmospheric depth, heating pattern, and friction jointly affect circulation on another planet? Avoid attributing every difference to Coriolis effects alone.
+- Compare hypothetical changes in atmospheric composition using a radiative-transfer model. Why does increasing a greenhouse gas not translate directly into a fixed surface-temperature change without feedbacks and ocean heat uptake?
+- For a rocky exoplanet, list the unknown material properties and boundary conditions required before inferring plate tectonics from planet mass alone.
 
 ## 9. Suggested learning paths
 - **To understand the deep Earth:** Start with mineralogy and rock types, move to seismology (how we know what's inside), then study mantle convection and plate tectonics.
@@ -65,3 +67,12 @@ content_license: CC-BY-4.0
 
 ## 10. Reasoning notes
 When reasoning about the Earth system, always consider the **scale** of the process. A mechanism that is dominant on a local scale (like a sea breeze) may be negligible on a global scale. Pay attention to **feedbacks**. The Earth system is full of positive feedbacks (which amplify changes, like the ice-albedo feedback) and negative feedbacks (which dampen changes, like the weathering thermostat). Understanding these feedbacks is crucial for predicting how the system will respond to perturbations. Finally, remember that the Earth is a **closed system** for matter (mostly) but an **open system** for energy. Mass is conserved and cycled, while energy flows through.
+
+## 11. Sources
+
+1. U.S. Geological Survey. *This Dynamic Earth: The Story of Plate Tectonics*. https://pubs.usgs.gov/gip/dynamic/dynamic.html
+2. Intergovernmental Panel on Climate Change. *AR6 WGI Chapter 7: Earth's Energy Budget, Climate Feedbacks, and Climate Sensitivity*. https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/
+3. NOAA Atlantic Oceanographic and Meteorological Laboratory. *Argo Program*. https://www.aoml.noaa.gov/argo/
+4. Ramaswamy, V., et al. *Radiative Forcing of Climate*. https://journals.ametsoc.org/view/journals/amsm/59/1/amsmonographs-d-19-0001.1.xml
+5. Bercovici, D. *The Generation of Plate Tectonics from Mantle Convection*. https://www.sciencedirect.com/science/article/pii/S0012821X02010099
+6. Ringler, A. T., et al. *The Global Seismographic Network*. https://journals.sagepub.com/doi/10.1193/060414EQS082M

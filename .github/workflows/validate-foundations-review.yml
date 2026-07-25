@@ -11,6 +11,7 @@ on:
       - 'sources/foundations-review-sources.json'
       - 'scripts/apply_foundations_review_sources.py'
       - 'scripts/validate_foundations_review.py'
+      - 'scripts/validate_foundations_continuity_phase8.py'
       - 'reports/phase-6-foundations-review.md'
       - 'reports/phase-6-foundations-sources.json'
       - 'INDEX.md'
@@ -55,11 +56,8 @@ jobs:
       - name: Verify Phase 6 reviewed source additions
         run: python3 scripts/apply_foundations_review_sources.py --check
 
-      - name: Validate Foundations scientific review
-        # PR #8 now integrates Phase 6 and the merged Phase 7 review. This mode
-        # preserves every Phase 6 requirement while requiring Modules 06–12 to
-        # be Reviewed and Modules 13–20 to remain Draft.
-        run: python3 scripts/validate_foundations_review.py --allow-downstream-reviewed
+      - name: Validate Foundations scientific review through Phase 8
+        run: python3 scripts/validate_foundations_continuity_phase8.py --allow-downstream-reviewed
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py

@@ -3,24 +3,24 @@ title: "DNA, Gene Expression, Inheritance, and Evolution"
 slug: 14-dna-evolution-explore
 module: "Module 14"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [07-chemical-bonding, 13-cells-bioenergetics]
 connections: [15-ecosystems-complex-systems]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 ## 1. Observation prompts
 
-*   Examine the physical traits of individuals within a family (e.g., eye color, hair texture, presence of freckles). Can you trace the inheritance of specific traits across generations? Do some traits seem to skip a generation?
-*   Look at a population of plants or animals of the same species in your local environment (e.g., pigeons in a park, dandelions on a lawn). What variations in phenotype can you observe? How might these variations affect their survival in that specific environment?
-*   Compare the anatomical structures of different species (e.g., the forelimb of a human, the wing of a bat, the flipper of a whale). What similarities suggest a common evolutionary ancestor?
+- Use an anonymised or fictional pedigree containing clearly defined single-gene traits. Which inheritance patterns are consistent with the data, and which alternatives remain possible? Avoid inferring sensitive family or health information from appearance.
+- Observe visible variation in a common local plant or animal population without touching, feeding, or disturbing organisms. Which differences are measurable, and which environmental variables could also explain them?
+- Compare published diagrams or museum images of homologous structures. Separate similarity due to common ancestry from similarity caused by convergent function.
 
 ## 2. Prediction questions
 
-*   If a population of bacteria is exposed to a low concentration of an antibiotic, what do you predict will happen to the allele frequencies in that population over several generations?
-*   Suppose a mutation occurs in the promoter region of a gene, altering the sequence so that RNA polymerase binds much more tightly. How would you predict this mutation affects the expression level of that gene?
-*   If a small group of individuals from a large, diverse population colonizes an isolated island, how might the genetic diversity of the new island population compare to the original mainland population after many generations?
+- In a digital population model, suppose one heritable variant has higher reproductive success under a changed environment. Predict allele-frequency trajectories while varying population size, dominance, migration, and drift.
+- A promoter mutation changes transcription-factor or polymerase occupancy. Why can expression increase, decrease, remain unchanged, or become condition-dependent rather than following a single ‘tighter binding means more expression’ rule?
+- If a small group colonises an isolated habitat, how might sampling, drift, inbreeding, migration, and later selection alter diversity relative to the source population?
 
 ## 3. Worked reasoning examples
 
@@ -30,7 +30,7 @@ content_license: CC-BY-4.0
 1.  **Identify the core mechanism:** The translation of mRNA into protein relies on the genetic code, where triplets of nucleotides (codons) specify amino acids.
 2.  **Recall the properties of the genetic code:** The genetic code is *degenerate* or *redundant*, meaning that most amino acids are specified by more than one codon. For example, the codons CCU, CCC, CCA, and CCG all code for the amino acid proline [1].
 3.  **Apply to the scenario:** The point mutation changed the nucleotide sequence of the mRNA codon. However, because of the redundancy of the genetic code, the new mutated codon happens to specify the exact same amino acid as the original codon.
-4.  **Conclusion:** This is known as a "silent mutation." It alters the genotype (the DNA sequence) but does not affect the phenotype (the protein sequence and function).
+4.  **Conclusion:** This is a synonymous substitution: the encoded amino-acid sequence is unchanged. It may still affect RNA structure, splicing, translation rate, expression, or fitness, so unchanged protein sequence does not guarantee no phenotypic effect.
 
 ## 4. Thought experiments
 
@@ -39,9 +39,9 @@ content_license: CC-BY-4.0
 
 ## 5. Household and browser-based explorations
 
-*   **DNA Extraction at Home:** You can extract visible DNA from strawberries or bananas using common household items. Mash the fruit, mix it with a solution of water, dish soap (to break down cell membranes), and salt (to help DNA precipitate). Filter the mixture, then slowly pour cold rubbing alcohol down the side of the glass. The DNA will precipitate at the interface of the water and alcohol layers as a white, stringy substance.
-*   **Browser Exploration:** Visit the National Center for Biotechnology Information (NCBI) website. Search for a specific gene, such as the human *BRCA1* gene. Explore the database to find the gene's nucleotide sequence, the amino acid sequence of the protein it encodes, and information about known mutations associated with disease.
-*   **Evolution Simulation:** Search online for "population genetics simulation" or "Hardy-Weinberg simulator." Use these tools to model how changing parameters like mutation rate, population size, or selection pressure affects allele frequencies over time.
+- **Genome-browser exploration:** Use an official genome browser or NCBI sequence record for a non-sensitive example gene, such as a plant pigment or bacterial metabolic gene. Identify exons or coding regions, strand direction, transcripts, and evidence annotations. Do not treat a database label as proof of function without checking evidence.
+- **Population-genetics simulation:** Use a browser simulator or spreadsheet to compare drift, migration, selection, and mutation. Run repeated trials; a single stochastic trajectory is not a general result.
+- **Replication-fidelity model:** Simulate copying a symbolic sequence with a defined error probability, then add proofreading and repair stages. Compare per-copy error, total errors, and the distribution across many trials.
 
 ## 6. Model-building prompts
 
@@ -71,4 +71,10 @@ When reasoning about genetics and evolution, it is crucial to distinguish betwee
 
 ## 11. Sources
 
-[1] Clancy, S., & Brown, W. (2008). Translation: DNA to mRNA to Protein. *Nature Education*, 1(1), 101. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
+1. NCBI Bookshelf. *DNA Replication Mechanisms*. https://www.ncbi.nlm.nih.gov/books/NBK26850/
+2. Nature Education. *DNA Transcription*. https://www.nature.com/scitable/topicpage/dna-transcription-426/
+3. Nature Education. *Translation: DNA to mRNA to Protein*. https://www.nature.com/scitable/topicpage/translation-dna-to-mrna-to-protein-393/
+4. OpenStax. *Mechanisms of Evolution*. https://openstax.org/books/concepts-biology/pages/11-2-mechanisms-of-evolution
+5. National Human Genome Research Institute. *DNA Replication*. https://www.genome.gov/genetics-glossary/DNA-Replication
+6. National Human Genome Research Institute. *Gene Expression*. https://www.genome.gov/genetics-glossary/Gene-Expression
+7. National Human Genome Research Institute. *Evolution*. https://www.genome.gov/genetics-glossary/Evolution
