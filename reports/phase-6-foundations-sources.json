@@ -1,0 +1,16 @@
+{
+  "generated": "2026-07-25",
+  "registry_records": 6,
+  "ledger_records_before": 110,
+  "records_added": [
+    "https://doi.org/10.59161/JCGM100-2008E",
+    "https://doi.org/10.59161/JCGM101-2008",
+    "https://doi.org/10.59161/JCGM200-2012",
+    "https://ocw.mit.edu/courses/2-141-modeling-and-simulation-of-dynamic-systems-fall-2006/",
+    "https://www.nist.gov/programs-projects/nistsematech-engineering-statistics-handbook",
+    "https://www.nist.gov/publications/verification-and-validation-computer-simulations-high-consequence-engineering-systems"
+  ],
+  "already_present": [],
+  "ledger_records_after": 116,
+  "errors": []
+}

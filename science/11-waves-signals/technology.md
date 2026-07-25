@@ -3,10 +3,10 @@ title: "Oscillations, Waves, Sound, Optics, and Signals"
 slug: 11-waves-signals-technology
 module: "Module 11"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 09-motion-forces]
 connections: [20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,7 +14,7 @@ content_license: CC-BY-4.0
 
 The engineering of wave-based technologies relies on several core scientific principles:
 - **Transduction:** The conversion of energy from one form to another (e.g., acoustic to electrical) while preserving the signal's waveform.
-- **Total Internal Reflection:** The optical phenomenon where light travelling in a denser medium hits a boundary at an angle greater than the critical angle and is completely reflected back, allowing light to be guided along a path.
+- **Total Internal Reflection:** The optical phenomenon where light travelling in a denser medium hits a boundary at an angle greater than the critical angle and is reflected in the ideal ray model while an evanescent field and real losses remain, allowing light to be guided along a path.
 - **Superposition and Interference:** The addition of wave amplitudes, utilised in noise-cancelling headphones, interferometers, and phased array antennas.
 - **Modulation:** The process of varying one or more properties of a periodic waveform (the carrier signal) with a modulating signal that contains information to be transmitted.
 - **Resonance:** The tendency of a system to oscillate with greater amplitude at some frequencies than at others, used for filtering and signal selection.
@@ -38,8 +38,8 @@ To illustrate these principles, we examine a **Global Fibre Optic Communication 
 The interaction forms a continuous principle-to-system chain:
 1. **Information to Electrical Signal:** A microphone or computer generates a time-varying electrical voltage representing data.
 2. **Electrical to Optical (Modulation):** This voltage drives a modulator that rapidly varies the intensity of a laser beam. The continuous wave is now a signal.
-3. **Propagation (Total Internal Reflection):** The modulated light enters the optical fibre. Because the core has a higher refractive index than the cladding, light striking the boundary at a shallow angle undergoes total internal reflection, zig-zagging down the fibre with minimal loss.
-4. **Amplification (Stimulated Emission):** As the light travels hundreds of kilometres, it attenuates. It passes through an EDFA, where a secondary "pump" laser excites erbium ions. When the weak signal photons pass by, they stimulate the ions to emit identical photons, amplifying the wave optically.
+3. **Propagation (Total Internal Reflection):** The modulated light enters the optical fibre. Because the core has a higher refractive index than the cladding, light striking the boundary at a shallow angle undergoes total internal reflection, propagating as guided electromagnetic modes determined by the core–cladding index profile.
+4. **Amplification (Stimulated Emission):** As the light travels hundreds of kilometres, it attenuates. It passes through an EDFA, where a secondary "pump" laser excites erbium ions. The signal stimulates emission into the guided optical modes, coherently amplifying the field while adding unavoidable amplifier noise.
 5. **Optical to Electrical (Transduction):** At the destination, the light strikes a photodiode. The energy of the photons excites electrons, creating a current proportional to the light intensity.
 6. **Signal Processing:** The electrical signal is filtered, amplified, and decoded to reconstruct the original data.
 
@@ -59,7 +59,7 @@ Modern optical networks use **Wavelength-Division Multiplexing (WDM)**. Instead 
 
 ## 8. Performance and efficiency
 
-The performance of a communication system is often measured by its **bandwidth** (data rate, e.g., Terabits per second) and **latency** (time delay). Fibre optics offer exceptionally high bandwidth and low latency compared to copper cables. Efficiency is measured by the **Bit Error Rate (BER)**—the fraction of bits received incorrectly. Advanced modulation schemes (like Quadrature Amplitude Modulation, QAM) pack more bits into each symbol, increasing efficiency but requiring higher signal-to-noise ratios.
+The performance of a communication system is often measured by its available channel bandwidth and achievable data rate (distinct quantities linked by modulation, coding, and signal-to-noise ratio) and **latency** (time delay). Fibre optics offer exceptionally high bandwidth and low latency compared to copper cables. Reliability is measured in part by the **Bit Error Rate (BER)**—the fraction of bits received incorrectly. Advanced modulation schemes (like Quadrature Amplitude Modulation, QAM) pack more bits into each symbol, increasing efficiency but requiring higher signal-to-noise ratios.
 
 ## 9. Reliability and failure modes
 
@@ -82,9 +82,19 @@ Manufacturing high-purity optical fibre is energy-intensive. However, once deplo
 - **Medical Imaging (Ultrasound):** Uses high-frequency sound waves and their reflections to image internal organs.
 - **Radar and Lidar:** Uses the reflection and Doppler shift of electromagnetic waves to determine the position and velocity of objects.
 
+## Phase 7 review boundaries and validity limits
+
+- A wave transports energy and momentum, while material elements in a mechanical medium usually oscillate around equilibrium; some waves and nonlinear flows can also produce net transport.
+- Refraction follows phase matching and a change in phase velocity or refractive index, not a vague distinction between “optically dense” and “less dense” matter.
+- Fourier series apply to suitably behaved periodic signals; Fourier transforms generalise the idea to non-periodic signals. Real measurements also involve finite windows, sampling, leakage, and noise.
+- Destructive interference means local cancellation of the chosen field variable. Energy conservation must be evaluated from flux and boundary conditions; energy may be redistributed, reflected, or stored rather than always appearing at a nearby bright fringe.
+- Fiber guidance is described by electromagnetic modes. Total internal reflection is a useful ray approximation, but evanescent fields, bending loss, scattering, absorption, and dispersion remain.
+
 ## 13. Sources
 
-- [1] OpenStax. (2022). *College Physics 2e*. Chapter 16: Oscillatory Motion and Waves.
-- [2] MIT OpenCourseWare. (2011). *6.003 Signals and Systems*.
-- [3] Hecht, E. (2016). *Optics* (5th ed.). Pearson.
-- [4] Agrawal, G. P. (2010). *Fiber-Optic Communication Systems* (4th ed.). Wiley.
+
+
+1. MIT OpenCourseWare. *8.03SC Physics III: Vibrations and Waves*. https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/
+2. MIT OpenCourseWare. *6.003 Signals and Systems*. https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/
+3. OpenStax. *College Physics 2e: Oscillatory Motion and Waves*. https://openstax.org/books/college-physics-2e/pages/16-introduction-to-oscillatory-motion-and-waves
+4. Agrawal, G. P. *Fiber-Optic Communication Systems*. https://doi.org/10.1002/9780470918524

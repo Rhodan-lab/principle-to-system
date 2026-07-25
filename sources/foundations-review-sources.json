@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Evaluation of measurement data — Guide to the expression of uncertainty in measurement",
+    "author": "Joint Committee for Guides in Metrology",
+    "date": "2008",
+    "locator": "https://doi.org/10.59161/JCGM100-2008E",
+    "type": "Primary standard",
+    "modules": "02-measurement-uncertainty",
+    "accessed": "2026-07-25",
+    "relevance": "Official DOI for the GUM framework used to define and propagate standard measurement uncertainty."
+  },
+  {
+    "title": "Evaluation of measurement data — Supplement 1: Propagation of distributions using a Monte Carlo method",
+    "author": "Joint Committee for Guides in Metrology",
+    "date": "2008",
+    "locator": "https://doi.org/10.59161/JCGM101-2008",
+    "type": "Primary standard",
+    "modules": "02-measurement-uncertainty",
+    "accessed": "2026-07-25",
+    "relevance": "Official supplement covering propagation of probability distributions through non-linear measurement models."
+  },
+  {
+    "title": "International vocabulary of metrology — Basic and general concepts and associated terms",
+    "author": "Joint Committee for Guides in Metrology",
+    "date": "2012",
+    "locator": "https://doi.org/10.59161/JCGM200-2012",
+    "type": "Primary standard",
+    "modules": "02-measurement-uncertainty",
+    "accessed": "2026-07-25",
+    "relevance": "Official DOI for VIM definitions of measurement, error, uncertainty, accuracy, precision, and traceability."
+  },
+  {
+    "title": "Modeling and Simulation of Dynamic Systems",
+    "author": "Massachusetts Institute of Technology OpenCourseWare",
+    "date": "2006",
+    "locator": "https://ocw.mit.edu/courses/2-141-modeling-and-simulation-of-dynamic-systems-fall-2006/",
+    "type": "Course Material",
+    "modules": "03-mathematical-models",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional course on dynamic-system models, state variables, simulation, linearization, and model-based engineering."
+  },
+  {
+    "title": "NIST/SEMATECH Engineering Statistics Handbook",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/programs-projects/nistsematech-engineering-statistics-handbook",
+    "type": "Government Scientific Agency",
+    "modules": "04-probability-statistics",
+    "accessed": "2026-07-25",
+    "relevance": "Government engineering-statistics reference covering experimental design, distributions, estimation, process control, and reliability."
+  },
+  {
+    "title": "Verification and Validation of Computer Simulations of High-Consequence Engineering Systems",
+    "author": "National Institute of Standards and Technology",
+    "date": "2004",
+    "locator": "https://www.nist.gov/publications/verification-and-validation-computer-simulations-high-consequence-engineering-systems",
+    "type": "Government Technical Report",
+    "modules": "05-computation-algorithms",
+    "accessed": "2026-07-25",
+    "relevance": "Government report distinguishing verification, validation, uncertainty, and evidence requirements for high-consequence simulations."
+  }
+]

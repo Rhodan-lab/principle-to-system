@@ -1,0 +1,83 @@
+name: Validate Phase 7 physical science
+
+on:
+  push:
+    branches:
+      - agent/phase-7-physical-science-review
+    paths:
+      - 'foundations/**'
+      - 'science/06-matter-quantum/**'
+      - 'science/07-chemical-bonding/**'
+      - 'science/08-energy-thermodynamics/**'
+      - 'science/09-motion-forces/**'
+      - 'science/10-electricity-magnetism/**'
+      - 'science/11-waves-signals/**'
+      - 'science/12-fluids-materials/**'
+      - 'sources/**'
+      - 'reports/phase-6-*'
+      - 'reports/phase-7-*'
+      - 'scripts/**'
+      - 'INDEX.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-7-physical-science.yml'
+  pull_request:
+    branches:
+      - main
+      - agent/phase-6-foundations-review
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-7-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed review
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate canonical metadata
+        run: python3 scripts/normalize_module_metadata.py
+
+      - name: Validate normalized source foundation
+        run: |
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Validate Phase 6 continuity
+        run: |
+          python3 scripts/apply_foundations_review_sources.py --check
+          python3 scripts/validate_foundations_review.py --allow-downstream-reviewed
+
+      - name: Validate Phase 7 sources and content
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/finalize_phase7_review.py --check
+
+      - name: Verify deterministic idempotence
+        shell: bash
+        run: |
+          python3 scripts/finalize_phase7_review.py --write
+          git diff --exit-code
+
+      - name: Run repository structural validator
+        run: python3 scripts/validate_repo.py
+
+      - name: Verify review records
+        shell: bash
+        run: |
+          test -f reports/phase-6-foundations-review.md
+          test -f reports/phase-7-physical-science-review.md
+          test -f reports/phase-7-physical-science-sources.json
+          grep -q 'Modules 01–05: \*\*Reviewed\*\*' PROJECT_STATE.md
+          grep -q 'Modules 06–12: \*\*Reviewed\*\*' PROJECT_STATE.md
+          grep -q 'Modules 13–20: \*\*Draft\*\*' PROJECT_STATE.md

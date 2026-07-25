@@ -1,76 +1,139 @@
 ---
-title: "Engineering with Mathematical Models"
+title: "Engineering with mathematical models"
 slug: 03-mathematical-models-technology
 module: "Module 03"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning]
 connections: [04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Engineering with Mathematical Models
+# Engineering with mathematical models
 
 ## 1. Scientific principles used
 
-The engineering of complex systems relies fundamentally on the scientific principles of mathematical modelling, dimensional analysis, and scaling laws. By representing physical phenomena through differential equations, vectors, and tensors, engineers can simulate, predict, and optimize system behavior before physical construction begins. The principle of linearisation allows for the simplification of complex dynamics, enabling the design of robust control systems.
+Engineering models combine conservation laws, constitutive relations, geometry, probability, control, and empirical data. They translate a design question into quantities and constraints that can be analyzed before, during, and after physical testing. Dimensional analysis, similarity, linearization, sensitivity analysis, optimization, and uncertainty quantification help determine which effects dominate and which approximations are acceptable.
+
+A model is trustworthy only relative to an intended use. A model adequate for choosing an early concept may be inadequate for certification, safety limits, or operation outside the tested range.
 
 ## 2. The engineering problem
 
-The core engineering problem is how to design systems that perform reliably and efficiently in the real world, given constraints on time, cost, and materials. Trial-and-error physical prototyping is often prohibitively expensive, dangerous, or impossible (e.g., designing a spacecraft trajectory or a skyscraper's response to earthquakes). The solution is to build mathematical models that accurately capture the system's dynamics, allowing engineers to explore the design space virtually.
+Engineers must make decisions before every detail of a system is known. Building and testing every candidate can be slow, expensive, wasteful, or impractical. The challenge is to create a model that is simple enough to solve, detailed enough for the decision, connected to evidence, and explicit about uncertainty.
+
+The model must answer a specific question such as maximum stress, cooling time, control stability, energy use, or probability of failure. “Model the entire system accurately” is not a usable requirement.
 
 ## 3. Main components
 
-In the context of engineering with mathematical models, the "components" are the mathematical and computational tools used to represent the physical system:
-
-- **State Variables**: Quantities that define the current condition of the system (e.g., position, velocity, temperature, pressure).
-- **Parameters**: Constants that define the system's physical properties (e.g., mass, stiffness, resistance).
-- **Governing Equations**: Differential equations derived from physical laws (e.g., Newton's laws, Maxwell's equations) that describe how state variables change over time and space.
-- **Boundary and Initial Conditions**: The specific constraints and starting states applied to the governing equations to solve for a particular scenario.
-- **Computational Solvers**: Algorithms (e.g., finite element analysis, computational fluid dynamics) used to numerically solve the governing equations when analytical solutions are impossible.
+- **System boundary:** Defines what is included, excluded, and treated as an external input.
+- **State variables:** Describe the evolving condition of the system.
+- **Parameters and properties:** Represent geometry, materials, rates, and other quantities treated as fixed during a run.
+- **Governing equations:** Encode conservation, force balance, transport, reaction, or empirical relationships.
+- **Initial and boundary conditions:** Specify starting state and interaction with surroundings.
+- **Observation model:** Connects internal state to quantities that sensors or tests can measure.
+- **Uncertainty model:** Represents uncertain inputs, parameters, model discrepancy, and measurement effects.
+- **Solver and implementation:** Produce analytical or numerical results.
+- **Calibration, verification, and validation evidence:** Connect implementation and predictions to reference problems and physical observations.
 
 ## 4. How the components interact
 
-The engineering process begins by identifying the relevant state variables and parameters. Governing equations are then formulated to describe the interactions between these variables. For example, in structural engineering, the stress tensor (a mathematical component) interacts with the material's stiffness parameters to determine the resulting strain (deformation) under a given load. These equations are subjected to boundary conditions (e.g., the base of a building is fixed to the ground) and solved using computational tools to predict the system's response.
+For a structural component, loads and supports define boundary conditions. Geometry and material models determine stiffness. The governing equations relate displacement, strain, stress, and force balance. A solver approximates the state, and an observation model predicts strain-gauge or displacement measurements. Test data calibrate uncertain parameters and evaluate whether the model is adequate for the relevant load range.
+
+```text
+design question
+→ system boundary and quantities
+→ governing relationships
+→ parameters and conditions
+→ solution
+→ predicted observables
+→ comparison with tests
+→ revised model or design decision
+```
 
 ## 5. Matter, energy, force, or information flow
 
-Mathematical models track the flow of matter, energy, force, and information through a system. In a fluid dynamics model of a pipe network, the equations track the flow of matter (water) and energy (pressure and kinetic energy). In a control system model, the equations track the flow of information (sensor readings) and force (actuator commands) to maintain a desired state.
+A mathematical model represents flows rather than replacing them. Conservation equations track matter, energy, momentum, charge, or information across a boundary. Constitutive relations describe how a material or component responds. Inputs and measurements carry information into calibration and validation, while model outputs carry information into design decisions.
+
+A useful model preserves the balances and constraints essential to the decision. For example, a thermal model that predicts temperature without accounting for energy storage and transfer may fit one dataset but fail when geometry or operating conditions change.
 
 ## 6. System architecture
 
-The architecture of a mathematical model often mirrors the physical architecture of the system it represents. A complex system, such as an aircraft, is modelled as a hierarchy of subsystems (aerodynamics, propulsion, structures, control). Each subsystem has its own mathematical model, and these models are coupled together to simulate the entire aircraft's behavior. This modular architecture allows specialized engineering teams to work on different aspects of the design simultaneously.
+Large models are usually modular. An aircraft, building, power system, or manufacturing process may contain structural, thermal, fluid, electrical, control, and economic submodels. Coupling must specify which quantities cross subsystem boundaries, their units, update frequency, and whether feedback is solved simultaneously or sequentially.
+
+Hierarchical models can use different fidelity at different stages:
+
+- reduced-order models for screening and control;
+- medium-fidelity models for trade studies;
+- high-fidelity models for local mechanisms or final evidence;
+- test data and monitoring models for operation.
+
+The highest-fidelity model is not automatically the system authority. Model governance records purpose, version, data, assumptions, validation domain, and responsible reviewers.
 
 ## 7. Design constraints
 
-Mathematical models are essential for navigating design constraints. Engineers use models to perform optimization, searching for the combination of parameters that maximizes performance while satisfying constraints on weight, cost, strength, and efficiency. Dimensional analysis helps identify the dimensionless groups (e.g., Reynolds number, Mach number) that govern the system's behavior, reducing the number of variables that need to be tested and simplifying the design space.
+- **Purpose and decision consequence:** Higher-consequence decisions require stronger evidence and margins.
+- **Data availability:** Parameters may be poorly measured or non-identifiable.
+- **Computational budget:** Resolution, model dimension, and number of scenarios compete for resources.
+- **Coupling and stiffness:** Fast and slow processes can make equations difficult to solve reliably.
+- **Uncertainty and variability:** Material properties, loads, environments, and human use may vary.
+- **Extrapolation:** Predictions outside the calibration and validation domain carry greater model-form risk.
+- **Standards and regulation:** Required load cases, factors, tests, and documentation may constrain acceptable models.
 
 ## 8. Performance and efficiency
 
-The performance and efficiency of an engineered system are directly tied to the accuracy of its mathematical models. A more accurate model allows engineers to design closer to the physical limits of the materials, reducing safety margins and saving weight and cost. However, increasing model fidelity often requires more computational power and time. Engineers must balance the need for accuracy with the cost of computation, often using simplified, linearised models for initial design and high-fidelity, non-linear models for final verification.
+Model performance should be evaluated using quantities tied to the intended decision:
+
+- error or residuals for relevant outputs;
+- conservation and consistency checks;
+- parameter sensitivity and identifiability;
+- uncertainty interval calibration;
+- prediction on data not used for calibration;
+- robustness across mesh, time step, solver, and model alternatives;
+- computational cost and turnaround time.
+
+A closer fit can result from overfitting or parameter compensation. It should not be used by itself to reduce safety margins. Margins, factors, and acceptance criteria require evidence, standards, uncertainty analysis, and engineering judgment.
 
 ## 9. Reliability and failure modes
 
-Mathematical models are crucial for predicting and preventing failure. By simulating extreme conditions and edge cases, engineers can identify potential failure modes (e.g., resonance, fatigue, buckling) before they occur in the real world. Probabilistic models, which incorporate uncertainty in parameters and operating conditions, are used to assess the reliability of the system and ensure it meets safety standards.
+- **Wrong boundary:** Important interactions are excluded or double-counted.
+- **Incorrect constitutive relation:** A material or component model is used outside its range.
+- **Parameter compensation:** Incorrect parameters cancel one another inside calibration data but fail elsewhere.
+- **Non-identifiability:** Multiple parameter sets produce nearly identical outputs.
+- **Numerical artifact:** Mesh, time step, solver tolerance, or implementation changes the result materially.
+- **Extrapolation:** A fitted relationship is applied beyond observed conditions.
+- **Coupling error:** Submodels exchange inconsistent units, timing, or state definitions.
+- **Decision mismatch:** The validated output is not the quantity used in the final decision.
 
 ## 10. Safety principles
 
-Safety in engineering relies on the principle of conservative modelling. When uncertainties exist, engineers make assumptions that err on the side of safety (e.g., assuming a material is weaker than it likely is, or a load is heavier than expected). Mathematical models are also used to design fail-safe mechanisms and redundancy, ensuring that the failure of one component does not lead to catastrophic system failure.
+- State intended use, prohibited use, and validation domain.
+- Preserve physical conservation and dimensional checks where applicable.
+- Separate calibration data from validation evidence when possible.
+- Compare multiple model forms for high-consequence predictions.
+- Use sensitivity and uncertainty analysis to identify fragile conclusions.
+- Retain appropriate engineering margins rather than treating model precision as certainty.
+- Require physical tests or monitoring where model evidence alone is insufficient.
+- Track model version, parameter source, solver configuration, and reviewer decisions.
 
 ## 11. Environmental and lifecycle considerations
 
-Mathematical models are increasingly used to assess the environmental impact and lifecycle of engineered systems. Models can predict energy consumption, emissions, and material degradation over the system's lifespan, allowing engineers to design for sustainability and circularity.
+Models can reduce physical prototypes, material waste, operating energy, and maintenance burden, but computation and data collection also consume resources. Lifecycle models should include manufacture, use, degradation, repair, replacement, and end-of-life rather than optimizing only initial performance.
+
+A model may become invalid as materials age, software changes, operating conditions shift, or sensors drift. Lifecycle governance therefore includes revalidation, change control, archival of old versions, and criteria for retiring a model.
 
 ## 12. Connections to other technologies
 
-- **Computer-Aided Engineering (CAE)**: Software tools that implement mathematical models for structural, thermal, and fluid analysis.
-- **Digital Twins**: Virtual replicas of physical systems that are continuously updated with real-time sensor data, relying on underlying mathematical models to predict future behavior and optimize performance.
-- **Control Systems**: Technologies that use mathematical models to regulate the behavior of dynamic systems, from thermostats to autonomous vehicles.
+- **Computer-aided engineering:** Implements structural, thermal, electromagnetic, and fluid models.
+- **Digital twins:** Combine models with observations to estimate current state and forecast limited future behavior; they require continuous calibration and validation.
+- **Control systems:** Reduced-order state-space models support estimation and feedback design.
+- **Optimization:** Searches design variables subject to model equations and constraints.
+- **Surrogate models:** Approximate expensive simulations but inherit the training domain and uncertainty of the source model.
+- **Reliability engineering:** Combines physical models with probability distributions and failure criteria.
 
 ## 13. Sources
 
-1. Meerschaert, M. M. (2013). *Mathematical Modeling* (4th ed.). Academic Press. [1]
-2. Mahajan, S. (2010). *Street-Fighting Mathematics: The Art of Educated Guessing and Opportunistic Problem Solving*. MIT Press. [2]
-3. Barenblatt, G. I. (1996). *Scaling, Self-similarity, and Intermediate Asymptotics: Dimensional Analysis and Intermediate Asymptotics*. Cambridge University Press. [3]
-4. Giordano, F. R., Fox, W. P., & Horton, S. B. (2013). *A First Course in Mathematical Modeling* (5th ed.). Brooks/Cole. [4]
+1. Meerschaert, M. M. (2013). *Mathematical Modeling* (4th ed.). Academic Press. https://www.sciencedirect.com/book/monograph/9780123869128/mathematical-modeling
+2. Giordano, F. R., Fox, W. P., & Horton, S. B. (2013). *A First Course in Mathematical Modeling* (5th ed.). Cengage. https://www.cengage.com/c/a-first-course-in-mathematical-modeling-5e-giordano/9781285050904/
+3. MIT OpenCourseWare. *Introduction to Modeling and Simulation*. https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/
+4. MIT OpenCourseWare. *Modeling and Simulation of Dynamic Systems*. https://ocw.mit.edu/courses/2-141-modeling-and-simulation-of-dynamic-systems-fall-2006/

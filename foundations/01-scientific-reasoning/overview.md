@@ -3,10 +3,10 @@ title: "Scientific reasoning, causality, and explanation"
 slug: 01-scientific-reasoning
 module: "Module 01"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: []
 connections: [02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
@@ -14,111 +14,109 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How do we reliably acquire knowledge about the natural world? What distinguishes a scientific explanation from a mere description or a post-hoc rationalisation? At the heart of scientific reasoning lie fundamental questions about causality, evidence, and the structure of theories. We must ask how observations can be used to infer underlying mechanisms, how we can distinguish causal relationships from mere correlations, and what it means for a hypothesis to be testable and falsifiable. Furthermore, we must consider the nature of scientific explanation itself: does explaining a phenomenon mean deducing it from universal laws, or does it require identifying the specific causal mechanisms that produced it?
+How can observations support reliable knowledge about the natural world? What distinguishes description, prediction, causal explanation, and mechanism? How should evidence change our confidence in a claim, and what evidence would count against it? Scientific reasoning is not one fixed sequence of steps. It is a family of practices that includes careful measurement, model construction, comparison of competing explanations, experimental and observational study design, uncertainty analysis, criticism, and independent checking.
 
 ## 2. Observable phenomena
 
-The need for rigorous scientific reasoning arises from the complexity and ambiguity of observable phenomena. We observe regularities in nature—the sun rises every day, objects fall when dropped, specific diseases follow exposure to certain pathogens. However, we also observe exceptions, noise, and confounding factors. A patient may recover from an illness after taking a specific herb, but this single observation does not prove the herb caused the recovery; the patient might have recovered anyway, or another factor might be responsible. 
+Regular patterns can have several explanations. Ice-cream sales and swimming-pool attendance both rise in warm weather, but neither variable needs to cause the other. A medicine may appear effective because treated and untreated groups differ before treatment, because outcomes are measured differently, or because chance variation is large. Conversely, a real causal effect can be difficult to see when measurements are noisy or when effects differ across people and conditions.
 
-Similarly, we observe correlations that do not imply causation. For example, the sales of ice cream and the rate of drownings may both increase during the summer, but one does not cause the other; both are driven by a common cause (warmer weather). Scientific reasoning provides the tools to disentangle these complex observations, isolate variables, and identify the true causal structures underlying the phenomena we perceive.
+Scientific reasoning therefore begins by asking how the data were produced. The same numerical association can support very different conclusions under random assignment, a representative survey, a selected convenience sample, or an uncontrolled before-and-after comparison.
 
 ## 3. Essential concepts
 
-**Scientific Reasoning:** The systematic process of formulating hypotheses, designing experiments or observations to test them, and drawing conclusions based on empirical evidence. It involves both inductive reasoning (generalising from specific observations) and deductive reasoning (deriving specific predictions from general theories).
+**Evidence:** Observations or measurements that can increase, decrease, or leave unchanged the support for a claim when interpreted through an explicit study design and model.
 
-**Causality:** The relationship between cause and effect. In science, establishing causality requires more than just observing a correlation; it requires demonstrating that a change in one variable directly produces a change in another, often through a specific mechanism.
+**Hypothesis and model:** A hypothesis is a testable claim. A model states variables, relationships, assumptions, and expected observations precisely enough to compare the claim with data.
 
-**Causal Inference:** The process of drawing conclusions about causal relationships from data. This often involves sophisticated statistical techniques and experimental designs to control for confounding variables.
+**Falsifiability and testability:** A scientific claim should expose itself to possible conflict with observation. Falsifiability is an important feature of scientific testing, but it is not the only criterion of good science; measurement quality, explanatory scope, predictive performance, coherence, and reproducibility also matter.
 
-**Falsifiability:** A concept introduced by Karl Popper, stating that for a hypothesis or theory to be considered scientific, it must be inherently disprovable. There must be some conceivable observation or experiment that could show the theory to be false.
+**Association and causal effect:** Association describes how variables vary together. A causal effect compares outcomes under different interventions or conditions while holding the target population and relevant background conditions conceptually fixed.
 
-**Experimental Design:** The careful planning of experiments to ensure that the results are valid, reliable, and capable of answering the research question. Key elements include control groups, randomisation, and blinding.
+**Confounding:** A common cause of an exposure and an outcome can create or hide an association. Random assignment, design restrictions, measurement of covariates, and justified causal models can help address confounding, but no statistical adjustment automatically removes all bias.
 
-**Explanation vs. Description:** A description simply states *what* happens, while an explanation addresses *why* or *how* it happens. Scientific explanations often involve identifying the causal mechanisms or underlying laws that produce a phenomenon.
+**Mechanism:** A mechanism describes entities, activities, and intermediate states through which a change produces an effect. Mechanistic evidence can strengthen explanation and support transfer to new conditions, but a causal effect may sometimes be identified before every mechanism is known.
+
+**Reproducibility and replicability:** Reproducibility asks whether consistent computational results can be obtained using the same data and analysis procedures. Replicability asks whether a new study addressing the same question obtains results that are consistent within the expected uncertainty.
 
 ## 4. Mechanisms and causal chains
 
-A causal mechanism is the step-by-step process by which a cause produces an effect. Identifying mechanisms is crucial for scientific explanation, as it moves beyond mere correlation to show exactly how a system operates. 
+A causal explanation links an intervention to a change in outcome through a defensible design and, where possible, a mechanism. For example, consider a plant-growth study. Light exposure affects photosynthetic activity; photosynthesis changes chemical-energy storage; stored energy and available matter affect growth. A randomized assignment of similar plants to light conditions can estimate an average effect, while measurements of photosynthetic rate can test parts of the proposed mechanism.
 
-Consider the causal chain linking smoking to lung cancer. The initial cause (smoking) introduces carcinogens into the lungs. These carcinogens interact with the DNA in lung cells, causing mutations (the mechanism). Over time, accumulated mutations can lead to uncontrolled cell division, resulting in a tumour (the effect). 
-
-Understanding this mechanism provides a much deeper explanation than simply observing a statistical correlation between smoking and cancer rates. It allows scientists to identify specific targets for intervention (e.g., developing drugs that block the effects of specific mutations) and to make more accurate predictions about the risks associated with different levels of exposure.
+The causal chain does not remove the need to consider alternative explanations. Temperature, water, soil, measurement timing, and plant variety may alter the result. A good explanation states the system boundary, identifies competing causes, predicts observations that distinguish alternatives, and records where the evidence remains incomplete.
 
 ## 5. Important quantities
 
-In the context of scientific reasoning and causal inference, several key quantities are used to measure the strength and reliability of evidence:
-
-*   **P-value:** The probability of obtaining test results at least as extreme as the results actually observed, assuming that the null hypothesis is correct. A low p-value (typically < 0.05) suggests that the observed data are unlikely under the null hypothesis, leading to its rejection.
-*   **Effect Size:** A quantitative measure of the magnitude of a phenomenon or the strength of a relationship between variables. Unlike p-values, which only indicate statistical significance, effect sizes provide information about practical significance.
-*   **Confidence Interval:** A range of values that is likely to contain the true population parameter with a certain level of confidence (e.g., 95%). It provides a measure of the precision of an estimate.
-*   **Correlation Coefficient ($r$):** A measure of the linear relationship between two variables, ranging from -1 (perfect negative correlation) to +1 (perfect positive correlation).
+- **Effect estimate:** A numerical estimate of a contrast, such as a difference in means, risk difference, ratio, or regression coefficient. Its causal interpretation depends on design and identification assumptions.
+- **Standard error:** An estimate of how much a statistic would vary across repeated samples generated by the same sampling process.
+- **Confidence interval:** An interval produced by a procedure that, under its assumptions, would contain the target parameter at the stated long-run coverage rate. A single 95% interval is not a 95% probability statement about a fixed parameter unless a Bayesian model is being used.
+- **p-value:** Under a specified statistical model and null hypothesis, the probability of obtaining a test statistic at least as incompatible with the null as the observed statistic. It is not the probability that the null hypothesis is true and it does not measure effect importance.
+- **Correlation coefficient, $r$:** A dimensionless measure of linear association. A value near zero does not rule out a strong non-linear relationship, and a value near $1$ or $-1$ does not establish causation.
 
 ## 6. Mathematical models and equations
 
-Mathematical models are essential tools for formalising scientific theories and making precise predictions. In causal inference, models are used to represent causal relationships and estimate the effects of interventions.
+A structural causal model can represent variables as functions of their direct causes and background factors. A simplified model is
 
-One common framework is the **Structural Causal Model (SCM)**, which uses directed acyclic graphs (DAGs) and structural equations to represent causal relationships. 
+$$Y = \beta_0 + \beta_1X + \gamma Z + U,$$
 
-A simple linear structural equation might take the form:
+where $Y$ is an outcome, $X$ is an exposure or intervention, $Z$ is a measured common cause, and $U$ collects background factors not represented explicitly. The coefficient $\beta_1$ is a causal effect only when the model, study design, and identification assumptions justify that interpretation. In an ordinary predictive regression, it is simply a conditional association parameter.
 
-$$ Y = \beta_0 + \beta_1 X + \epsilon $$
+The potential-outcomes definition of an average treatment effect is
 
-Where:
-*   $Y$ is the outcome variable.
-*   $X$ is the causal variable.
-*   $\beta_0$ is the intercept.
-*   $\beta_1$ is the causal effect of $X$ on $Y$.
-*   $\epsilon$ represents unobserved error terms or confounding factors.
+$$\operatorname{ATE}=E\left[Y(1)-Y(0)\right],$$
 
-In experimental design, the **Average Treatment Effect (ATE)** is a key quantity, defined as the difference in the expected outcome between the treatment group and the control group:
+where $Y(1)$ and $Y(0)$ are the outcomes that would occur under treatment and control. Both potential outcomes cannot normally be observed for the same unit, so causal inference uses study design and assumptions to estimate the missing counterfactual contrast.
 
-$$ ATE = E[Y(1) - Y(0)] $$
+For a randomized experiment with complete follow-up, a simple estimator is
 
-Where:
-*   $E[\cdot]$ denotes the expected value.
-*   $Y(1)$ is the potential outcome if the subject receives the treatment.
-*   $Y(0)$ is the potential outcome if the subject does not receive the treatment.
+$$\widehat{\operatorname{ATE}}=\bar{Y}_{T=1}-\bar{Y}_{T=0}.$$
+
+Randomization supports exchangeability on average, but non-compliance, missing outcomes, interference between units, and measurement error can still complicate interpretation.
 
 ## 7. Definitions of symbols and units
 
-*   $Y$: Outcome variable (units depend on the specific context, e.g., blood pressure in mmHg, crop yield in kg/ha).
-*   $X$: Causal or treatment variable (often binary, 0 or 1, or continuous with specific units).
-*   $\beta_1$: Causal effect coefficient (units are units of $Y$ per unit of $X$).
-*   $\epsilon$: Error term (same units as $Y$).
-*   $ATE$: Average Treatment Effect (same units as $Y$).
+- $Y$: Outcome variable; units depend on context.
+- $X$: Exposure, treatment, or predictor; binary or continuous.
+- $Z$: Measured covariate or potential common cause.
+- $U$: Background factors not explicitly represented.
+- $\beta_0$: Intercept; same units as $Y$.
+- $\beta_1$: Change in $Y$ per unit change in $X$ under the stated model; causal only when identified.
+- $Y(1),Y(0)$: Potential outcomes under treatment and control.
+- $E[\cdot]$: Expectation over a defined population or data-generating process.
 
 ## 8. Assumptions and approximations
 
-Scientific reasoning and causal inference rely on several critical assumptions:
-
-*   **Causal Markov Condition:** A variable is independent of its non-descendants, conditional on its direct causes. This assumption is fundamental to using DAGs for causal inference.
-*   **No Unmeasured Confounding:** In observational studies, estimating causal effects often requires assuming that all relevant confounding variables have been measured and controlled for. This is a strong assumption that is frequently violated in practice.
-*   **Linearity:** Many statistical models assume linear relationships between variables. If the true relationship is non-linear, these models may produce biased estimates.
-*   **Homogeneity of Treatment Effects:** The assumption that the treatment effect is the same for all individuals in the population. In reality, treatment effects often vary across different subgroups.
+- **Well-defined intervention and consistency:** The treatment or condition must be specified clearly enough that the observed outcome under the received condition corresponds to the relevant potential outcome.
+- **Exchangeability:** Treatment groups must be comparable with respect to potential outcomes, through randomization or a justified adjustment strategy.
+- **Positivity:** Every relevant subgroup must have a non-zero chance of receiving each condition being compared.
+- **Limited interference:** One unit's treatment should not alter another unit's outcome unless that interaction is included in the model.
+- **Measurement validity:** Variables must represent the intended constructs with known limitations.
+- **Model adequacy:** Functional form, dependence, missing-data process, and uncertainty model must be checked rather than assumed automatically.
+- **Graphical assumptions:** DAG-based identification also relies on assumptions such as acyclicity for the represented time slice and an adequate causal graph.
 
 ## 9. Spatial and temporal scales
 
-Scientific reasoning applies across all spatial and temporal scales, from the subatomic realm of quantum mechanics to the cosmological scale of the universe. However, the specific methods and challenges vary depending on the scale.
-
-At microscopic scales, causal mechanisms often involve the interactions of individual molecules or particles, requiring highly specialised equipment and statistical mechanics models. At macroscopic scales, such as ecology or climate science, causal relationships are often complex, non-linear, and subject to numerous confounding factors, making controlled experiments difficult or impossible.
-
-Temporally, causal inference can be challenging when there are long delays between cause and effect, such as the decades-long latency period between asbestos exposure and mesothelioma. Longitudinal studies and sophisticated time-series analysis are required to establish causality in such cases.
+Scientific reasoning applies from laboratory measurements to planetary systems, but available interventions and evidence differ by scale. Controlled experiments may be practical for a small mechanical system and impossible for an entire climate. Long delays, feedback, adaptation, and path dependence can make cause and effect difficult to separate. The appropriate design may therefore combine experiments, natural experiments, longitudinal observations, mechanistic models, and sensitivity analysis.
 
 ## 10. Common misconceptions
 
-*   **Correlation implies causation:** This is perhaps the most common fallacy in scientific reasoning. Just because two variables are correlated does not mean one causes the other; they may be linked by a common cause, or the correlation may be entirely spurious.
-*   **Science proves theories to be true:** In reality, science cannot definitively prove a theory to be true; it can only fail to falsify it. Theories are always subject to revision or rejection in light of new evidence.
-*   **A single experiment can definitively settle a scientific question:** Scientific consensus is built on the replication of results across multiple studies and independent research groups. A single anomalous result is rarely sufficient to overturn an established theory.
-*   **Scientific models are exact representations of reality:** All models are simplifications of reality, based on assumptions and approximations. They are useful tools for understanding and predicting phenomena, but they are not perfect reflections of the natural world.
+- **Correlation proves causation:** Association alone does not identify an intervention effect.
+- **A small p-value proves an important discovery:** A p-value depends on the model, sample size, and analysis choices; effect magnitude, uncertainty, design quality, and prior evidence also matter.
+- **Failing to reject proves no effect:** Data may be too imprecise to distinguish a small effect from no effect.
+- **Science proves theories permanently:** Scientific confidence can become extremely strong, but claims remain open to refinement when better evidence or broader models appear.
+- **One successful study settles the question:** Independent scrutiny, transparent analysis, reproducibility, and replication help reveal chance findings, hidden assumptions, and context dependence.
+- **A mechanism or a prediction is sufficient by itself:** Mechanistic plausibility does not replace effect estimation, and accurate prediction does not by itself reveal the effects of intervention.
 
 ## 11. Connections to other modules
 
-This module provides the foundational principles for all subsequent modules in the "Principle to System" repository. The concepts of causality, experimental design, and mathematical modelling are essential for understanding how scientific principles are discovered and how they are applied to engineer complex systems.
+- **02-measurement-uncertainty:** Evidence depends on well-defined measurands, calibration, and uncertainty.
+- **03-mathematical-models:** Models make assumptions and predicted relationships explicit.
+- **04-probability-statistics:** Statistical tools quantify sampling variation and support inference.
+- **05-computation-algorithms:** Reproducible computation, simulation, and verification are part of modern evidence production.
 
 ## 12. Sources
 
-[1] Hempel, C. G., & Oppenheim, P. (1948). Studies in the Logic of Explanation. *Philosophy of Science*, 15(2), 135-175.
-[2] Woodward, J. (2003). *Making Things Happen: A Theory of Causal Explanation*. Oxford University Press.
-[3] Pearl, J. (2009). *Causality: Models, Reasoning, and Inference* (2nd ed.). Cambridge University Press.
-[4] Popper, K. (1959). *The Logic of Scientific Discovery*. Routledge.
-[5] Craver, C. F. (2007). *Explaining the Brain: Mechanisms and the Mosaic Unity of Neuroscience*. Oxford University Press.
+1. Hempel, C. G., & Oppenheim, P. (1948). “Studies in the Logic of Explanation.” *Philosophy of Science*, 15(2), 135–175. https://doi.org/10.1086/286983
+2. Woodward, J. (2003). *Making Things Happen: A Theory of Causal Explanation*. Oxford University Press. https://doi.org/10.1093/0195155270.001.0001
+3. Pearl, J. (2009). *Causality: Models, Reasoning, and Inference* (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511803161
+4. Hernán, M. A., & Robins, J. M. (2020). *Causal Inference: What If*. Chapman & Hall/CRC. https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/
+5. Peters, J., Janzing, D., & Schölkopf, B. (2017). *Elements of Causal Inference*. MIT Press. https://mitpress.mit.edu/9780262037310/
