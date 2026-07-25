@@ -1,11 +1,11 @@
 ---
 title: "Computation, Algorithms, Numerical Methods, and Simulation"
-slug: "05-computation-algorithms"
-module: "Module 05: Computation, algorithms, numerical methods, and simulation"
-domain: "foundations"
+slug: 05-computation-algorithms
+module: "Module 05"
+domain: foundations
 status: draft
-prerequisites: ["03-mathematical-models", "04-probability-statistics"]
-connections: ["06-systems-control", "07-data-information"]
+prerequisites: [03-mathematical-models, 04-probability-statistics]
+connections: [19-software-ai]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

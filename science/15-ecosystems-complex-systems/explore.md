@@ -1,11 +1,11 @@
 ---
 title: "Explore: Ecosystems, Feedback, Networks, and Complex Systems"
-slug: "15-ecosystems-complex-systems-explore"
-module: "Module 15: Ecosystems, feedback, networks, and complex systems"
-domain: "science"
+slug: 15-ecosystems-complex-systems-explore
+module: "Module 15"
+domain: science
 status: draft
-prerequisites: ["15-ecosystems-complex-systems"]
-connections: []
+prerequisites: [04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]
+connections: [16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

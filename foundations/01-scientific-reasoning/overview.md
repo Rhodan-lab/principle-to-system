@@ -1,11 +1,11 @@
 ---
 title: "Scientific reasoning, causality, and explanation"
-slug: "scientific-reasoning-causality-explanation"
-module: "Module 01: Scientific reasoning, causality, and explanation"
-domain: "foundations"
+slug: 01-scientific-reasoning
+module: "Module 01"
+domain: foundations
 status: draft
 prerequisites: []
-connections: []
+connections: [02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

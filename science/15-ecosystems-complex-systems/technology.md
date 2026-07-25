@@ -1,11 +1,11 @@
 ---
 title: "Engineering with Ecosystems: Bioremediation and Closed Ecological Systems"
-slug: "15-ecosystems-complex-systems-tech"
-module: "Module 15: Ecosystems, feedback, networks, and complex systems"
-domain: "technology"
+slug: 15-ecosystems-complex-systems-technology
+module: "Module 15"
+domain: science
 status: draft
-prerequisites: ["15-ecosystems-complex-systems"]
-connections: ["18-agricultural-engineering", "22-environmental-control-systems"]
+prerequisites: [04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]
+connections: [16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

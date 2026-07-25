@@ -1,11 +1,11 @@
 ---
 title: "Exploring Motion and Forces"
-slug: "09-motion-forces-explore"
-module: "Module 09: Motion, forces, momentum, rotation, and gravitation"
-domain: "science"
+slug: 09-motion-forces-explore
+module: "Module 09"
+domain: science
 status: draft
-prerequisites: ["09-motion-forces"]
-connections: ["03-mathematical-models"]
+prerequisites: [03-mathematical-models]
+connections: [03-mathematical-models, 11-waves-signals, 12-fluids-materials, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

@@ -1,11 +1,11 @@
 ---
 title: "Engineering Motion: From Principles to Systems"
-slug: "09-motion-forces-technology"
-module: "Module 09: Motion, forces, momentum, rotation, and gravitation"
-domain: "technology"
+slug: 09-motion-forces-technology
+module: "Module 09"
+domain: science
 status: draft
-prerequisites: ["09-motion-forces"]
-connections: ["10-thermodynamics-technology", "11-electromagnetism-technology"]
+prerequisites: [03-mathematical-models]
+connections: [11-waves-signals, 12-fluids-materials, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

@@ -1,11 +1,11 @@
 ---
 title: "Engineering with Mathematical Models"
-slug: "03-mathematical-models-technology"
-module: "Module 03: Mathematical models, quantities, vectors, and scale"
-domain: "technology"
+slug: 03-mathematical-models-technology
+module: "Module 03"
+domain: foundations
 status: draft
-prerequisites: ["03-mathematical-models"]
-connections: ["04-classical-mechanics", "07-control-systems"]
+prerequisites: [01-scientific-reasoning]
+connections: [04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

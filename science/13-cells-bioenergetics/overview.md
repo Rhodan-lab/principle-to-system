@@ -1,11 +1,11 @@
 ---
 title: "Cells, membranes, enzymes, metabolism, and bioenergetics"
-slug: "13-cells-bioenergetics"
-module: "Module 13: Cells, membranes, enzymes, metabolism, and bioenergetics"
-domain: "science"
+slug: 13-cells-bioenergetics
+module: "Module 13"
+domain: science
 status: draft
-prerequisites: ["07-chemical-bonding", "08-energy-thermodynamics"]
-connections: ["14-genetics-molecular-biology", "15-physiology-systems"]
+prerequisites: [07-chemical-bonding, 08-energy-thermodynamics]
+connections: [14-dna-evolution, 15-ecosystems-complex-systems]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

@@ -1,11 +1,11 @@
 ---
 title: "Matter, Atoms, Electron Behaviour, and Quantum Foundations"
-slug: "06-matter-quantum"
-module: "Module 06: Matter, atoms, electron behaviour, and quantum foundations"
-domain: "science"
+slug: 06-matter-quantum
+module: "Module 06"
+domain: science
 status: draft
-prerequisites: ["01-scientific-reasoning", "02-measurement-uncertainty", "03-mathematical-models"]
-connections: ["07-chemical-bonds", "08-thermodynamics", "12-semiconductors"]
+prerequisites: [01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]
+connections: [07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

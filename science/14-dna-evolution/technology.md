@@ -1,11 +1,11 @@
 ---
 title: "DNA, Gene Expression, Inheritance, and Evolution"
-slug: "14-dna-evolution"-technology
-module: "Module 14: DNA, gene expression, inheritance, and evolution"
-domain: "technology"
+slug: 14-dna-evolution-technology
+module: "Module 14"
+domain: science
 status: draft
-prerequisites: ["07-chemical-bonding", "13-cells-bioenergetics"]
-connections: ["15-ecology-systems", "16-biotechnology"]
+prerequisites: [07-chemical-bonding, 13-cells-bioenergetics]
+connections: [15-ecosystems-complex-systems]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

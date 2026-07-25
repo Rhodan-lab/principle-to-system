@@ -1,11 +1,11 @@
 ---
 title: "Exploring Electricity and Magnetism"
-slug: "10-electricity-magnetism-explore"
-module: "Module 10: Electricity, magnetism, fields, and circuits"
-domain: "science"
+slug: 10-electricity-magnetism-explore
+module: "Module 10"
+domain: science
 status: draft
-prerequisites: ["10-electricity-magnetism"]
-connections: []
+prerequisites: [03-mathematical-models, 06-matter-quantum]
+connections: [18-semiconductors-electronics, 20-sensors-control-infrastructure]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

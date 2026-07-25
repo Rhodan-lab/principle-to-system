@@ -1,11 +1,11 @@
 ---
 title: "Computational Systems and Simulation Engineering"
-slug: "05-computation-algorithms-technology"
-module: "Module 05: Computation, algorithms, numerical methods, and simulation"
-domain: "technology"
+slug: 05-computation-algorithms-technology
+module: "Module 05"
+domain: foundations
 status: draft
-prerequisites: ["05-computation-algorithms"]
-connections: ["06-systems-control", "07-data-information"]
+prerequisites: [03-mathematical-models, 04-probability-statistics]
+connections: [19-software-ai]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

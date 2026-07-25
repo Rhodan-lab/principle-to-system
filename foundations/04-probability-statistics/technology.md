@@ -1,11 +1,11 @@
 ---
 title: "Probability, Statistics, and Data Interpretation in Systems"
-slug: "04-probability-statistics-technology"
+slug: 04-probability-statistics-technology
 module: "Module 04"
-domain: "technology"
+domain: foundations
 status: draft
-prerequisites: ["01-scientific-reasoning", "03-mathematical-models"]
-connections: ["05-information-theory", "06-systems-thinking"]
+prerequisites: [01-scientific-reasoning, 03-mathematical-models]
+connections: [05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

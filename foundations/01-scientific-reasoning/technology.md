@@ -1,11 +1,11 @@
 ---
 title: "Engineering causal inference systems"
-slug: "engineering-causal-inference-systems"
-module: "Module 01: Scientific reasoning, causality, and explanation"
-domain: "technology"
+slug: 01-scientific-reasoning-technology
+module: "Module 01"
+domain: foundations
 status: draft
-prerequisites: ["scientific-reasoning-causality-explanation"]
-connections: []
+prerequisites: []
+connections: [02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

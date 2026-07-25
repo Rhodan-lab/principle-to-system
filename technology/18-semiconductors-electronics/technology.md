@@ -1,11 +1,11 @@
 ---
 title: "Semiconductors, electronics, and computer hardware"
-slug: "18-semiconductors-electronics"-technology
-module: "Module 18: Semiconductors, electronics, and computer hardware"
-domain: "technology"
+slug: 18-semiconductors-electronics-technology
+module: "Module 18"
+domain: technology
 status: draft
-prerequisites: ["06-matter-quantum", "10-electricity-magnetism", "17-materials-manufacturing"]
-connections: ["19-computing-architecture", "20-software-algorithms"]
+prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]
+connections: [19-software-ai, 20-sensors-control-infrastructure]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

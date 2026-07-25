@@ -1,11 +1,11 @@
 ---
 title: "Quantum Technologies and Atomic Engineering"
-slug: "06-matter-quantum-tech"
-module: "Module 06: Matter, atoms, electron behaviour, and quantum foundations"
-domain: "technology"
+slug: 06-matter-quantum-technology
+module: "Module 06"
+domain: science
 status: draft
-prerequisites: ["06-matter-quantum"]
-connections: ["12-semiconductors", "15-lasers-optics", "20-medical-imaging"]
+prerequisites: [01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]
+connections: [07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

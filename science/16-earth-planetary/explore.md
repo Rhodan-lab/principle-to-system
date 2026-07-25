@@ -1,10 +1,10 @@
 ---
 title: "Earth, Atmosphere, Oceans, Climate, and Planetary Systems"
-slug: "16-earth-planetary"-explore
-module: "Module 16: Earth, atmosphere, oceans, climate, and planetary systems"
-domain: "science"
+slug: 16-earth-planetary-explore
+module: "Module 16"
+domain: science
 status: draft
-prerequisites: ["08-energy-thermodynamics", "09-motion-forces", "12-fluids-materials", "15-ecosystems-complex-systems"]
+prerequisites: [08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]
 connections: []
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
