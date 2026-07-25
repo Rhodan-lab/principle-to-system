@@ -11,9 +11,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 01\"",
-        "domain": "foundations",
         "slug": "01-scientific-reasoning",
         "prerequisites": "[]",
+        "domain": "foundations",
         "connections": "[02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]"
       },
       "new": {
@@ -31,9 +31,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 01\"",
-        "domain": "foundations",
         "slug": "01-scientific-reasoning-technology",
         "prerequisites": "[]",
+        "domain": "foundations",
         "connections": "[02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]"
       },
       "new": {
@@ -51,9 +51,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 01\"",
-        "domain": "foundations",
         "slug": "01-scientific-reasoning-explore",
         "prerequisites": "[]",
+        "domain": "foundations",
         "connections": "[02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]"
       },
       "new": {
@@ -71,9 +71,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 02\"",
-        "domain": "foundations",
         "slug": "02-measurement-uncertainty",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[06-matter-quantum]"
       },
       "new": {
@@ -91,9 +91,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 02\"",
-        "domain": "foundations",
         "slug": "02-measurement-uncertainty-technology",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[06-matter-quantum]"
       },
       "new": {
@@ -111,9 +111,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 02\"",
-        "domain": "foundations",
         "slug": "02-measurement-uncertainty-explore",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[06-matter-quantum]"
       },
       "new": {
@@ -131,9 +131,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 03\"",
-        "domain": "foundations",
         "slug": "03-mathematical-models",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]"
       },
       "new": {
@@ -151,9 +151,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 03\"",
-        "domain": "foundations",
         "slug": "03-mathematical-models-technology",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]"
       },
       "new": {
@@ -171,9 +171,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 03\"",
-        "domain": "foundations",
         "slug": "03-mathematical-models-explore",
         "prerequisites": "[01-scientific-reasoning]",
+        "domain": "foundations",
         "connections": "[04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]"
       },
       "new": {
@@ -191,9 +191,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 04\"",
-        "domain": "foundations",
         "slug": "04-probability-statistics",
         "prerequisites": "[01-scientific-reasoning, 03-mathematical-models]",
+        "domain": "foundations",
         "connections": "[05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]"
       },
       "new": {
@@ -211,9 +211,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 04\"",
-        "domain": "foundations",
         "slug": "04-probability-statistics-technology",
         "prerequisites": "[01-scientific-reasoning, 03-mathematical-models]",
+        "domain": "foundations",
         "connections": "[05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]"
       },
       "new": {
@@ -231,9 +231,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 04\"",
-        "domain": "foundations",
         "slug": "04-probability-statistics-explore",
         "prerequisites": "[01-scientific-reasoning, 03-mathematical-models]",
+        "domain": "foundations",
         "connections": "[05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]"
       },
       "new": {
@@ -251,9 +251,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 05\"",
-        "domain": "foundations",
         "slug": "05-computation-algorithms",
         "prerequisites": "[03-mathematical-models, 04-probability-statistics]",
+        "domain": "foundations",
         "connections": "[19-software-ai]"
       },
       "new": {
@@ -271,9 +271,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 05\"",
-        "domain": "foundations",
         "slug": "05-computation-algorithms-technology",
         "prerequisites": "[03-mathematical-models, 04-probability-statistics]",
+        "domain": "foundations",
         "connections": "[19-software-ai]"
       },
       "new": {
@@ -291,9 +291,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 05\"",
-        "domain": "foundations",
         "slug": "05-computation-algorithms-explore",
         "prerequisites": "[03-mathematical-models, 04-probability-statistics]",
+        "domain": "foundations",
         "connections": "[19-software-ai]"
       },
       "new": {
@@ -311,9 +311,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 06\"",
-        "domain": "science",
         "slug": "06-matter-quantum",
         "prerequisites": "[01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]",
+        "domain": "science",
         "connections": "[07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]"
       },
       "new": {
@@ -331,9 +331,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 06\"",
-        "domain": "science",
         "slug": "06-matter-quantum-technology",
         "prerequisites": "[01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]",
+        "domain": "science",
         "connections": "[07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]"
       },
       "new": {
@@ -351,9 +351,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 06\"",
-        "domain": "science",
         "slug": "06-matter-quantum-explore",
         "prerequisites": "[01-scientific-reasoning, 02-measurement-uncertainty, 03-mathematical-models]",
+        "domain": "science",
         "connections": "[07-chemical-bonding, 08-energy-thermodynamics, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics]"
       },
       "new": {
@@ -371,9 +371,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 07\"",
-        "domain": "science",
         "slug": "07-chemical-bonding",
         "prerequisites": "[06-matter-quantum]",
+        "domain": "science",
         "connections": "[13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing]"
       },
       "new": {
@@ -391,9 +391,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 07\"",
-        "domain": "science",
         "slug": "07-chemical-bonding-technology",
         "prerequisites": "[06-matter-quantum]",
+        "domain": "science",
         "connections": "[13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing]"
       },
       "new": {
@@ -411,9 +411,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 07\"",
-        "domain": "science",
         "slug": "07-chemical-bonding-explore",
         "prerequisites": "[06-matter-quantum]",
+        "domain": "science",
         "connections": "[13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing]"
       },
       "new": {
@@ -431,9 +431,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 08\"",
-        "domain": "science",
         "slug": "08-energy-thermodynamics",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]"
       },
       "new": {
@@ -451,9 +451,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 08\"",
-        "domain": "science",
         "slug": "08-energy-thermodynamics-technology",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]"
       },
       "new": {
@@ -471,9 +471,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 08\"",
-        "domain": "science",
         "slug": "08-energy-thermodynamics-explore",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]"
       },
       "new": {
@@ -491,9 +491,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 09\"",
-        "domain": "science",
         "slug": "09-motion-forces",
         "prerequisites": "[03-mathematical-models]",
+        "domain": "science",
         "connections": "[11-waves-signals, 12-fluids-materials, 16-earth-planetary]"
       },
       "new": {
@@ -511,9 +511,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 09\"",
-        "domain": "science",
         "slug": "09-motion-forces-technology",
         "prerequisites": "[03-mathematical-models]",
+        "domain": "science",
         "connections": "[11-waves-signals, 12-fluids-materials, 16-earth-planetary]"
       },
       "new": {
@@ -531,9 +531,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 09\"",
-        "domain": "science",
         "slug": "09-motion-forces-explore",
         "prerequisites": "[03-mathematical-models]",
+        "domain": "science",
         "connections": "[03-mathematical-models, 11-waves-signals, 12-fluids-materials, 16-earth-planetary]"
       },
       "new": {
@@ -551,9 +551,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 10\"",
-        "domain": "science",
         "slug": "10-electricity-magnetism",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[18-semiconductors-electronics, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -571,9 +571,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 10\"",
-        "domain": "science",
         "slug": "10-electricity-magnetism-technology",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[18-semiconductors-electronics, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -591,9 +591,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 10\"",
-        "domain": "science",
         "slug": "10-electricity-magnetism-explore",
         "prerequisites": "[03-mathematical-models, 06-matter-quantum]",
+        "domain": "science",
         "connections": "[18-semiconductors-electronics, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -611,9 +611,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 11\"",
-        "domain": "science",
         "slug": "11-waves-signals",
         "prerequisites": "[03-mathematical-models, 09-motion-forces]",
+        "domain": "science",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -631,9 +631,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 11\"",
-        "domain": "science",
         "slug": "11-waves-signals-technology",
         "prerequisites": "[03-mathematical-models, 09-motion-forces]",
+        "domain": "science",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -651,9 +651,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 11\"",
-        "domain": "science",
         "slug": "11-waves-signals-explore",
         "prerequisites": "[03-mathematical-models, 09-motion-forces]",
+        "domain": "science",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -671,9 +671,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 12\"",
-        "domain": "science",
         "slug": "12-fluids-materials",
         "prerequisites": "[03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]",
+        "domain": "science",
         "connections": "[16-earth-planetary, 17-materials-manufacturing]"
       },
       "new": {
@@ -691,9 +691,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 12\"",
-        "domain": "science",
         "slug": "12-fluids-materials-technology",
         "prerequisites": "[03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]",
+        "domain": "science",
         "connections": "[16-earth-planetary, 17-materials-manufacturing]"
       },
       "new": {
@@ -711,9 +711,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 12\"",
-        "domain": "science",
         "slug": "12-fluids-materials-explore",
         "prerequisites": "[03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]",
+        "domain": "science",
         "connections": "[16-earth-planetary, 17-materials-manufacturing]"
       },
       "new": {
@@ -731,9 +731,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 13\"",
-        "domain": "science",
         "slug": "13-cells-bioenergetics",
         "prerequisites": "[07-chemical-bonding, 08-energy-thermodynamics]",
+        "domain": "science",
         "connections": "[14-dna-evolution, 15-ecosystems-complex-systems]"
       },
       "new": {
@@ -751,9 +751,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 13\"",
-        "domain": "science",
         "slug": "13-cells-bioenergetics-technology",
         "prerequisites": "[07-chemical-bonding, 08-energy-thermodynamics]",
+        "domain": "science",
         "connections": "[14-dna-evolution, 15-ecosystems-complex-systems]"
       },
       "new": {
@@ -771,9 +771,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 13\"",
-        "domain": "science",
         "slug": "13-cells-bioenergetics-explore",
         "prerequisites": "[07-chemical-bonding, 08-energy-thermodynamics]",
+        "domain": "science",
         "connections": "[14-dna-evolution, 15-ecosystems-complex-systems]"
       },
       "new": {
@@ -791,9 +791,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 14\"",
-        "domain": "science",
         "slug": "14-dna-evolution",
         "prerequisites": "[07-chemical-bonding, 13-cells-bioenergetics]",
+        "domain": "science",
         "connections": "[15-ecosystems-complex-systems]"
       },
       "new": {
@@ -811,9 +811,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 14\"",
-        "domain": "science",
         "slug": "14-dna-evolution-technology",
         "prerequisites": "[07-chemical-bonding, 13-cells-bioenergetics]",
+        "domain": "science",
         "connections": "[15-ecosystems-complex-systems]"
       },
       "new": {
@@ -831,9 +831,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 14\"",
-        "domain": "science",
         "slug": "14-dna-evolution-explore",
         "prerequisites": "[07-chemical-bonding, 13-cells-bioenergetics]",
+        "domain": "science",
         "connections": "[15-ecosystems-complex-systems]"
       },
       "new": {
@@ -851,9 +851,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 15\"",
-        "domain": "science",
         "slug": "15-ecosystems-complex-systems",
         "prerequisites": "[04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]",
+        "domain": "science",
         "connections": "[16-earth-planetary]"
       },
       "new": {
@@ -871,9 +871,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 15\"",
-        "domain": "science",
         "slug": "15-ecosystems-complex-systems-technology",
         "prerequisites": "[04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]",
+        "domain": "science",
         "connections": "[16-earth-planetary]"
       },
       "new": {
@@ -891,9 +891,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 15\"",
-        "domain": "science",
         "slug": "15-ecosystems-complex-systems-explore",
         "prerequisites": "[04-probability-statistics, 13-cells-bioenergetics, 14-dna-evolution]",
+        "domain": "science",
         "connections": "[16-earth-planetary]"
       },
       "new": {
@@ -911,9 +911,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 16\"",
-        "domain": "science",
         "slug": "16-earth-planetary",
         "prerequisites": "[08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]",
+        "domain": "science",
         "connections": "[]"
       },
       "new": {
@@ -931,9 +931,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 16\"",
-        "domain": "science",
         "slug": "16-earth-planetary-technology",
         "prerequisites": "[08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]",
+        "domain": "science",
         "connections": "[]"
       },
       "new": {
@@ -951,9 +951,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 16\"",
-        "domain": "science",
         "slug": "16-earth-planetary-explore",
         "prerequisites": "[08-energy-thermodynamics, 09-motion-forces, 12-fluids-materials, 15-ecosystems-complex-systems]",
+        "domain": "science",
         "connections": "[]"
       },
       "new": {
@@ -971,9 +971,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 17\"",
-        "domain": "technology",
         "slug": "17-materials-manufacturing",
         "prerequisites": "[06-matter-quantum, 07-chemical-bonding, 12-fluids-materials]",
+        "domain": "technology",
         "connections": "[18-semiconductors-electronics]"
       },
       "new": {
@@ -991,9 +991,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 17\"",
-        "domain": "technology",
         "slug": "17-materials-manufacturing-technology",
         "prerequisites": "[06-matter-quantum, 07-chemical-bonding, 12-fluids-materials]",
+        "domain": "technology",
         "connections": "[18-semiconductors-electronics]"
       },
       "new": {
@@ -1011,9 +1011,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 17\"",
-        "domain": "technology",
         "slug": "17-materials-manufacturing-explore",
         "prerequisites": "[06-matter-quantum, 07-chemical-bonding, 12-fluids-materials]",
+        "domain": "technology",
         "connections": "[18-semiconductors-electronics]"
       },
       "new": {
@@ -1031,9 +1031,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 18\"",
-        "domain": "technology",
         "slug": "18-semiconductors-electronics",
         "prerequisites": "[06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]",
+        "domain": "technology",
         "connections": "[19-software-ai, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1051,9 +1051,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 18\"",
-        "domain": "technology",
         "slug": "18-semiconductors-electronics-technology",
         "prerequisites": "[06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]",
+        "domain": "technology",
         "connections": "[19-software-ai, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1071,9 +1071,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 18\"",
-        "domain": "technology",
         "slug": "18-semiconductors-electronics-explore",
         "prerequisites": "[06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]",
+        "domain": "technology",
         "connections": "[19-software-ai, 20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1091,9 +1091,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 19\"",
-        "domain": "technology",
         "slug": "19-software-ai",
         "prerequisites": "[04-probability-statistics, 05-computation-algorithms, 18-semiconductors-electronics]",
+        "domain": "technology",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1111,9 +1111,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 19\"",
-        "domain": "technology",
         "slug": "19-software-ai-technology",
         "prerequisites": "[04-probability-statistics, 05-computation-algorithms, 18-semiconductors-electronics]",
+        "domain": "technology",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1131,9 +1131,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 19\"",
-        "domain": "technology",
         "slug": "19-software-ai-explore",
         "prerequisites": "[04-probability-statistics, 05-computation-algorithms, 18-semiconductors-electronics]",
+        "domain": "technology",
         "connections": "[20-sensors-control-infrastructure]"
       },
       "new": {
@@ -1151,9 +1151,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 20\"",
-        "domain": "technology",
         "slug": "20-sensors-control-infrastructure",
         "prerequisites": "[10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]",
+        "domain": "technology",
         "connections": "[]"
       },
       "new": {
@@ -1171,9 +1171,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 20\"",
-        "domain": "technology",
         "slug": "20-sensors-control-infrastructure-technology",
         "prerequisites": "[10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]",
+        "domain": "technology",
         "connections": "[]"
       },
       "new": {
@@ -1191,9 +1191,9 @@
       "changed": false,
       "old": {
         "module": "\"Module 20\"",
-        "domain": "technology",
         "slug": "20-sensors-control-infrastructure-explore",
         "prerequisites": "[10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]",
+        "domain": "technology",
         "connections": "[]"
       },
       "new": {
