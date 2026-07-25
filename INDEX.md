@@ -3,17 +3,17 @@
 Status meanings:
 
 - **Draft** — content exists but has not completed repository-wide scientific and editorial review.
-- **Reviewed** — structure, sources, equations, links, and scientific claims have been checked.
+- **Reviewed** — structure, sources, equations, links, safety, and scientific claims have completed focused review.
 - **Complete** — reviewed content has passed strict validation and has no known blocking issues.
 - **Blocked** — work cannot proceed until a stated dependency is resolved.
 
 | # | Module | Domain | Prerequisites | Core concepts | Technology connections | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| 01 | [Scientific Reasoning](foundations/01-scientific-reasoning/) | Foundations | None | Causality, explanation, hypothesis, falsifiability | All modules | Draft |
-| 02 | [Measurement and Uncertainty](foundations/02-measurement-uncertainty/) | Foundations | 01 | Units, error, precision, accuracy | Sensors, instruments | Draft |
-| 03 | [Mathematical Models](foundations/03-mathematical-models/) | Foundations | 01 | Quantities, vectors, functions, scale | All modules | Draft |
-| 04 | [Probability and Statistics](foundations/04-probability-statistics/) | Foundations | 01, 03 | Distributions, inference, data interpretation | Quality control, signals | Draft |
-| 05 | [Computation and Algorithms](foundations/05-computation-algorithms/) | Foundations | 03, 04 | Algorithms, numerical methods, simulation | All digital technology | Draft |
+| 01 | [Scientific Reasoning](foundations/01-scientific-reasoning/) | Foundations | None | Causality, explanation, hypothesis, falsifiability | All modules | Reviewed |
+| 02 | [Measurement and Uncertainty](foundations/02-measurement-uncertainty/) | Foundations | 01 | Units, error, precision, accuracy | Sensors, instruments | Reviewed |
+| 03 | [Mathematical Models](foundations/03-mathematical-models/) | Foundations | 01 | Quantities, vectors, functions, scale | All modules | Reviewed |
+| 04 | [Probability and Statistics](foundations/04-probability-statistics/) | Foundations | 01, 03 | Distributions, inference, data interpretation | Quality control, signals | Reviewed |
+| 05 | [Computation and Algorithms](foundations/05-computation-algorithms/) | Foundations | 03, 04 | Algorithms, numerical methods, simulation | All digital technology | Reviewed |
 | 06 | [Matter and Quantum Foundations](science/06-matter-quantum/) | Science | 01, 02, 03 | Atoms, electrons, quantum states, orbitals | Semiconductors, lasers | Draft |
 | 07 | [Chemical Bonding and Reactions](science/07-chemical-bonding/) | Science | 06 | Bonds, molecules, reaction kinetics | Materials, batteries, pharma | Draft |
 | 08 | [Energy and Thermodynamics](science/08-energy-thermodynamics/) | Science | 03, 06 | Energy, heat, entropy, laws of thermodynamics | Engines, refrigeration, power | Draft |
