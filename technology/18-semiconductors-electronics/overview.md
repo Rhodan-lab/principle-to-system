@@ -3,119 +3,127 @@ title: "Semiconductors, electronics, and computer hardware"
 slug: 18-semiconductors-electronics
 module: "Module 18"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]
 connections: [19-software-ai, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 ## 1. The central questions
 
-How can we control the flow of electricity with such precision that it can represent information, perform logic, and store memory? Why do certain materials act as insulators under some conditions and conductors under others? How do we manipulate the atomic structure of these materials to create microscopic switches, and how can billions of these switches be integrated into a single chip to form the foundation of modern computing?
+How do material states, interfaces, fields, and carrier populations create controllable electronic behaviour? How are device characteristics converted into noise-tolerant logic, memory, sensing, communication, and power conversion? How do fabrication, metrology, architecture, packaging, software, workload, and reliability determine system performance beyond the behaviour of one transistor?
 
 ## 2. Observable phenomena
 
-The effects of semiconductor physics are ubiquitous in modern life, though the mechanisms operate at a microscopic scale. A smartphone processing billions of operations per second without melting is a direct consequence of semiconductor efficiency. The illumination of a room by light-emitting diodes (LEDs) demonstrates the conversion of electrical energy into light across a semiconductor junction. The ability of a solar panel to generate electricity when exposed to sunlight is the reverse process. The exponential increase in computing power over the last half-century, commonly known as Moore's law, is an observable trend driven by the continuous miniaturisation of semiconductor devices.
+The effects of semiconductor physics are ubiquitous in modern life, though the mechanisms operate at a microscopic scale. A smartphone performing many operations while remaining within thermal limits reflects device efficiency, architecture, workload scheduling, packaging, cooling, and power management rather than semiconductor efficiency alone. The illumination of a room by light-emitting diodes (LEDs) demonstrates the conversion of electrical energy into light across a semiconductor junction. The ability of a solar panel to generate electricity when exposed to sunlight is the reverse process. Moore's original observation concerned economical component density. Later performance gains also depended on device design, architecture, memory, software, packaging, and power limits; it is an historical trend, not a physical law or guaranteed forecast.
 
 ## 3. Essential concepts
 
-**Band Theory of Solids:** In isolated atoms, electrons occupy discrete energy levels. When atoms are brought together to form a solid crystal lattice, these discrete levels merge into continuous bands of allowed energy states. The highest energy band that is completely filled with electrons at absolute zero is the **valence band**. The next higher band, which is empty at absolute zero, is the **conduction band**. The energy difference between the top of the valence band and the bottom of the conduction band is the **band gap** ($E_g$).
+**Bands and Fermi level:** Periodic solids have allowed electronic states whose occupancy is described using band structure and the Fermi level. “Valence” and “conduction” bands are useful labels for many semiconductors, but metals, degenerate semiconductors, surfaces, disorder, and low-dimensional devices need more careful descriptions.
 
-**Conductors, Insulators, and Semiconductors:** The electrical properties of a material depend on its band structure. In conductors (metals), the valence and conduction bands overlap, allowing electrons to move freely. In insulators, the band gap is large (typically $> 4 \text{ eV}$), preventing thermal excitation of electrons into the conduction band at room temperature. Semiconductors have a small band gap (typically $1 \text{ to } 3 \text{ eV}$), allowing a small but significant number of electrons to be thermally excited into the conduction band at room temperature [1].
+**Semiconductor behaviour:** Conductivity depends on band structure, carrier statistics, temperature, defects, dopants, contacts, fields, illumination, and scattering. A fixed band-gap threshold does not universally separate conductors, semiconductors, and insulators.
 
-**Electrons and Holes:** When an electron is excited from the valence band to the conduction band, it leaves behind a vacancy in the valence band. This vacancy, called a **hole**, acts as a mobile positive charge carrier. Both electrons in the conduction band and holes in the valence band contribute to electrical conductivity.
+**Electrons and holes:** A hole is a quasiparticle description of unoccupied valence-band states and their collective response. Carrier charge, effective mass, mobility, and lifetime are model- and material-dependent.
 
-**Doping:** The intrinsic conductivity of a pure semiconductor is very low. Doping is the intentional introduction of specific impurity atoms into the semiconductor lattice to drastically alter its electrical properties. 
-*   **n-type doping:** Introducing atoms with more valence electrons than the host (e.g., phosphorus in silicon) creates extra electrons in the conduction band. The majority charge carriers are electrons.
-*   **p-type doping:** Introducing atoms with fewer valence electrons (e.g., boron in silicon) creates extra holes in the valence band. The majority charge carriers are holes.
+**Doping and activation:** Donors and acceptors introduce electronic states and shift carrier populations. Dopant concentration is not identical to free-carrier concentration because activation, compensation, degeneracy, defects, and temperature matter.
 
-**The p-n Junction:** The fundamental building block of most semiconductor devices is the p-n junction, formed by joining p-type and n-type semiconductors. At the interface, electrons from the n-side diffuse into the p-side and recombine with holes, while holes from the p-side diffuse into the n-side. This creates a **depletion region** devoid of mobile charge carriers, leaving behind fixed, charged impurity ions. These fixed charges create a built-in electric field that opposes further diffusion, establishing an equilibrium.
+**Junctions and interfaces:** A p–n junction develops space charge and a built-in electrostatic potential. The depletion approximation neglects mobile charge in a region for tractability; the physical carrier density is not literally zero.
 
 ## 4. Mechanisms and causal chains
 
-**Diode Action (Rectification):** A p-n junction acts as a diode, allowing current to flow in only one direction. 
-*   **Forward Bias:** Applying a positive voltage to the p-side relative to the n-side reduces the built-in electric field and narrows the depletion region. Electrons and holes are pushed toward the junction, where they recombine, allowing a continuous current to flow.
-*   **Reverse Bias:** Applying a negative voltage to the p-side increases the built-in electric field and widens the depletion region. The barrier to charge flow increases, and only a negligible leakage current flows.
+**Diodes:** Applied bias changes electrostatic barriers and carrier injection. Forward current, reverse leakage, recombination, series resistance, capacitance, and breakdown depend on device structure and operating regime; a diode is not an ideal one-way valve.
 
-**Transistor Action (Amplification and Switching):** A transistor uses a small input signal to control a much larger output current.
-*   **Bipolar Junction Transistor (BJT):** Consists of three alternating doped regions (e.g., n-p-n). A small current injected into the thin central region (the base) lowers the potential barrier, allowing a large current to flow from the emitter to the collector.
-*   **Metal-Oxide-Semiconductor Field-Effect Transistor (MOSFET):** The dominant transistor type in modern integrated circuits. It consists of a source, a drain, and a gate separated from the semiconductor channel by a thin insulating oxide layer. Applying a voltage to the gate creates an electric field that attracts charge carriers to the channel region, changing it from an insulator to a conductor. This allows current to flow between the source and drain. The MOSFET acts as a voltage-controlled switch [2].
+**BJTs:** Emitter injection, transport through a thin base, recombination, and collector fields produce current gain. “A small base current controls a large current” is a circuit-level approximation, not the microscopic mechanism.
+
+**MOSFETs:** Gate voltage changes surface potential and carrier density near an insulated interface. Current depends continuously on gate and drain bias, geometry, capacitance, mobility, contacts, leakage, and short-channel effects. Threshold is not a hard on/off boundary.
+
+**Logic and memory:** Circuits assign voltage ranges to logical states with noise margins and timing constraints. Information is encoded in physical states but is not identical to charge flow or energy.
 
 ## 5. Important quantities
 
-| Quantity | Symbol | SI Unit | Description |
+| Quantity | Symbol | Unit | Boundary |
 | :--- | :---: | :--- | :--- |
-| Band gap energy | $E_g$ | Joule ($\text{J}$) or Electron-volt ($\text{eV}$) | Energy required to excite an electron from the valence band to the conduction band. |
-| Carrier concentration | $n, p$ | $\text{m}^{-3}$ | Number of electrons ($n$) or holes ($p$) per unit volume. |
-| Doping concentration | $N_D, N_A$ | $\text{m}^{-3}$ | Concentration of donor ($N_D$) or acceptor ($N_A$) impurity atoms. |
-| Mobility | $\mu_e, \mu_h$ | $\text{m}^2/(\text{V}\cdot\text{s})$ | How quickly an electron or hole can move through a semiconductor under an applied electric field. |
-| Built-in potential | $V_{bi}$ | Volt ($\text{V}$) | The potential difference across a p-n junction in thermal equilibrium. |
-| Threshold voltage | $V_{th}$ | Volt ($\text{V}$) | The minimum gate voltage required to create a conducting channel in a MOSFET. |
+| Band-gap energy | $E_g$ | J or eV | Depends on material, temperature, strain, composition, and structure. |
+| Fermi level | $E_F$ | J or eV | Chemical potential for electrons under equilibrium conditions. |
+| Carrier concentration | $n,p$ | $m^{-3}$ | Free-carrier density, not automatically equal to dopant density. |
+| Mobility | $\mu_n,\mu_p$ | $m^2/(V\,s)$ | Low-field transport parameter affected by scattering and field. |
+| Threshold voltage | $V_{th}$ | V | Extraction- and model-dependent transition parameter. |
+| Subthreshold slope | $S$ | V/decade | Describes current change below threshold over a stated regime. |
+| Delay and energy | $t_d,E_{switch}$ | s, J | Circuit- and workload-dependent rather than device-count-only. |
 
 ## 6. Mathematical models and equations
 
-**Intrinsic Carrier Concentration:**
-The number of electrons in the conduction band ($n_i$) and holes in the valence band ($p_i$) in a pure semiconductor depends exponentially on temperature and the band gap:
-$$n_i = p_i = \sqrt{N_c N_v} \exp\left(-\frac{E_g}{2k_B T}\right)$$
-Where $N_c$ and $N_v$ are the effective density of states in the conduction and valence bands, $k_B$ is the Boltzmann constant, and $T$ is the absolute temperature.
+For a non-degenerate semiconductor with approximately parabolic bands in thermal equilibrium,
+$$n_i\approx\sqrt{N_cN_v}\exp\left(-\frac{E_g}{2k_BT}\right),\qquad np=n_i^2.$$
+These relations require equilibrium and Maxwell–Boltzmann approximations; degeneracy, band-gap narrowing, nonequilibrium generation, and traps can invalidate them.
 
-**Mass Action Law:**
-In thermal equilibrium, the product of electron and hole concentrations is constant for a given semiconductor at a given temperature, regardless of doping:
-$$n \cdot p = n_i^2$$
+In a low-field drift model,
+$$\sigma=q(n\mu_n+p\mu_p).$$
+Mobility need not remain constant at high field, high doping, or strong confinement.
 
-**Conductivity:**
-The electrical conductivity ($\sigma$) of a semiconductor depends on the concentration and mobility of both electrons and holes:
-$$\sigma = e(n\mu_e + p\mu_h)$$
-Where $e$ is the elementary charge.
+For an ideal abrupt non-degenerate homojunction with activated dopants,
+$$V_{bi}=\frac{k_BT}{q}\ln\left(\frac{N_AN_D}{n_i^2}\right).$$
+The built-in potential is not directly measured by placing a voltmeter across equilibrium contacts.
 
-**Built-in Potential of a p-n Junction:**
-The built-in voltage ($V_{bi}$) depends on the doping concentrations on both sides:
-$$V_{bi} = \frac{k_B T}{e} \ln\left(\frac{N_A N_D}{n_i^2}\right)$$
-
-**MOSFET Drain Current (Linear Region):**
-When the gate voltage ($V_{GS}$) exceeds the threshold voltage ($V_{th}$) and the drain-source voltage ($V_{DS}$) is small, the MOSFET acts like a resistor:
-$$I_D = \mu_n C_{ox} \frac{W}{L} \left( (V_{GS} - V_{th})V_{DS} - \frac{V_{DS}^2}{2} \right)$$
-Where $\mu_n$ is the electron mobility, $C_{ox}$ is the gate oxide capacitance per unit area, $W$ is the channel width, and $L$ is the channel length.
+A long-channel square-law MOSFET model can be useful pedagogically, but modern devices require compact models including velocity saturation, mobility degradation, channel-length modulation, leakage, capacitance, variability, and contact effects.
 
 ## 7. Definitions of symbols and units
 
-*   $E_g$: Band gap energy, measured in electron-volts ($\text{eV}$). $1 \text{ eV} \approx 1.602 \times 10^{-19} \text{ J}$.
-*   $k_B$: Boltzmann constant, $1.38 \times 10^{-23} \text{ J/K}$.
-*   $T$: Absolute temperature, measured in Kelvin ($\text{K}$).
-*   $e$: Elementary charge, $1.602 \times 10^{-19} \text{ C}$.
-*   $\mu_e, \mu_h$: Electron and hole mobility, measured in $\text{m}^2/(\text{V}\cdot\text{s})$.
-*   $C_{ox}$: Oxide capacitance per unit area, measured in Farads per square metre ($\text{F/m}^2$).
+- $E_g$: band-gap energy, J or eV.
+- $E_F$: Fermi level or electron chemical potential under equilibrium, J or eV.
+- $k_B$: Boltzmann constant, exactly $1.380649\times10^{-23}$ J/K.
+- $T$: absolute temperature, K.
+- $q$: elementary charge magnitude, exactly $1.602176634\times10^{-19}$ C.
+- $n,p$: free electron and hole concentrations, m$^{-3}$.
+- $n_i$: intrinsic carrier concentration under the stated model, m$^{-3}$.
+- $N_c,N_v$: effective densities of states, m$^{-3}$.
+- $N_D,N_A$: activated donor and acceptor concentrations in the ideal junction model, m$^{-3}$.
+- $\mu_n,\mu_p$: electron and hole mobility in the stated transport regime, m$^2$/(V$\,$s).
+- $\sigma$: electrical conductivity, S/m.
+- $V_{bi}$: modelled built-in potential, V.
+- $V_{th}$: extraction- and compact-model-dependent threshold voltage, V.
 
 ## 8. Assumptions and approximations
 
-*   **Thermal Equilibrium:** Many equations (like the mass action law) assume the semiconductor is in thermal equilibrium, meaning no external forces (like light or applied voltage) are generating excess carriers.
-*   **Complete Ionisation:** It is typically assumed that at room temperature, all dopant atoms are ionised, meaning every donor atom has given up an electron and every acceptor atom has accepted an electron.
-*   **Abrupt Junction Approximation:** When modelling p-n junctions, the transition from p-type to n-type doping is often assumed to be instantaneous, simplifying the calculation of the electric field and depletion width.
-*   **Ideal MOSFET:** The basic MOSFET equations assume an ideal structure with no leakage currents, perfect insulators, and constant mobility, which breaks down at nanoscale dimensions.
+- **Equilibrium and non-degenerate statistics:** Carrier formulas change under strong injection, illumination, degeneracy, trapping, and rapid transients.
+- **Complete ionisation:** Can fail at low temperature, high doping, compensation, or deep impurity levels.
+- **Depletion and abrupt-junction approximations:** Simplify Poisson's equation but omit graded profiles and mobile carriers.
+- **Low-field mobility:** Drift mobility is not constant across electric field, temperature, geometry, and carrier density.
+- **Long-channel compact models:** Nanoscale transistors include short-channel electrostatics, tunnelling, discrete variability, parasitics, self-heating, and quantum confinement.
 
 ## 9. Spatial and temporal scales
 
-*   **Spatial:** Semiconductor physics operates at the atomic scale (nanometres, $10^{-9} \text{ m}$). The band gap arises from the spacing of atoms in the crystal lattice. Modern MOSFET transistors have feature sizes (like gate length) on the order of a few nanometres. An integrated circuit chip, however, is on the macroscopic scale (millimetres to centimetres), containing billions of these nanoscale devices.
-*   **Temporal:** The movement of charge carriers across a transistor channel happens on the scale of picoseconds ($10^{-12} \text{ s}$) to nanoseconds ($10^{-9} \text{ s}$). This allows modern processors to operate at clock frequencies of several gigahertz ($\text{GHz}$), performing billions of switching operations per second.
+Electronic structure begins at atomic and unit-cell scales, while depletion widths, channels, interconnects, vias, packages, boards, and systems span nanometres to metres. Industrial node names do not directly specify one physical dimension. Characteristic times range from carrier scattering and dielectric response through device switching, interconnect propagation, memory access, clock periods, thermal transients, ageing, and product lifetimes. A processor's instruction rate cannot be inferred from transistor transit time or clock frequency alone.
 
 ## 10. Common misconceptions
 
-*   **Misconception:** Semiconductors are just materials that are halfway between conductors and insulators.
-    *   **Correction:** While their conductivity is intermediate, the defining feature of a semiconductor is its band gap, which allows its conductivity to be dynamically controlled by temperature, doping, light, or electric fields.
-*   **Misconception:** Holes are actual physical particles.
-    *   **Correction:** A hole is the absence of an electron in the valence band. It is treated as a positively charged particle for mathematical convenience because the collective movement of the remaining electrons in the valence band behaves exactly like the movement of a positive charge.
-*   **Misconception:** Current in a wire is the speed of light.
-    *   **Correction:** The electrical signal propagates near the speed of light, but the actual drift velocity of electrons in a semiconductor or metal is very slow, often fractions of a millimetre per second.
+- **“A semiconductor is halfway between a conductor and an insulator.”** The useful feature is controllable carrier population and transport within a designed material and device structure.
+- **“Holes are imaginary.”** Holes are quasiparticles that accurately describe collective valence-band transport within a model; they are not tiny empty beads moving through space.
+- **“A transistor is either perfectly off or on.”** Current changes continuously, leakage persists, and logic states are defined by circuit thresholds and noise margins.
+- **“Electrical information travels at electron drift speed.”** Signal propagation follows electromagnetic fields and circuit geometry, while carrier drift and local charging support that propagation.
+- **“Smaller node names equal one literal feature size.”** Node labels bundle technology generations and do not specify every gate, pitch, or interconnect dimension.
 
 ## 11. Connections to other modules
 
-*   **06-matter-quantum:** Quantum mechanics is the foundation of band theory. The Pauli exclusion principle and the wave nature of electrons dictate the formation of energy bands and band gaps.
-*   **10-electricity-magnetism:** The behaviour of charge carriers under electric fields, capacitance in MOSFETs, and the built-in potential of p-n junctions rely on classical electromagnetism.
-*   **17-materials-manufacturing:** The extreme purity required for semiconductor crystals and the complex photolithography processes used to fabricate integrated circuits are advanced materials science and manufacturing techniques.
-*   **19-computing-architecture:** The logic gates and memory cells built from transistors form the physical hardware upon which computer architectures are designed.
+- **06-matter-quantum:** Quantum states, statistics, tunnelling, and periodic potentials underpin device models.
+- **10-electricity-magnetism:** Fields, capacitance, current continuity, and transmission-line effects connect devices to circuits.
+- **17-materials-manufacturing:** Crystal growth, deposition, implantation, etching, patterning, cleaning, packaging, and metrology create devices.
+- **19-software-ai:** Instruction sets, memory hierarchies, compilers, workloads, and algorithms determine how hardware capability is used.
+- **20-sensors-control-infrastructure:** Sensors, power electronics, embedded controllers, and communication interfaces connect chips to physical systems.
+
+## Phase 9 review boundaries and validity limits
+
+- Band, carrier, junction, and compact-device equations assume specified equilibrium, statistics, geometry, temperature, and bias regimes.
+- Threshold voltage is a model parameter, not a hard microscopic on/off boundary; leakage, short-channel effects, variability, and parasitics matter.
+- Technology-node names are industrial labels rather than literal dimensions of every device feature.
+- Device performance, yield, reliability, and scaling claims require metrology, architecture, packaging, workload, and thermal context.
 
 ## 12. Sources
 
-[1] Wikipedia. "Semiconductor device." Accessed July 24, 2026. https://en.wikipedia.org/wiki/Semiconductor_device
-[2] Wikipedia. "Transistor." Accessed July 24, 2026. https://en.wikipedia.org/wiki/Transistor
+1. Massachusetts Institute of Technology OpenCourseWare. *Integrated Microelectronic Devices*. https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/
+2. National Institute of Standards and Technology. *Semiconductors*. https://www.nist.gov/semiconductors
+3. Intel. *Moore's Law*. https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html
+4. National Institute of Standards and Technology. *CHIPS for America Metrology Program*. https://www.nist.gov/chips/research-development-programs/metrology-program
+5. Orji, N. G., et al. *Metrology for the Next Generation of Semiconductor Devices*. https://www.nist.gov/publications/metrology-next-generation-semiconductor-devices
+6. Postek, M. T., and Bennett, M. H. *Critical Dimension and Overlay Metrology*. https://www.nist.gov/publications/critical-dimension-and-overlay-metrology

@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Additive Manufacturing of Metals",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/additive-manufacturing/research-areas/materials/metals",
+    "type": "Government Scientific Program",
+    "modules": "17-materials-manufacturing",
+    "accessed": "2026-07-26",
+    "relevance": "Official measurement-science treatment of metal additive manufacturing, process monitoring, material characterization, qualification, and standards needs."
+  },
+  {
+    "title": "3D Printing with Metal Powders: Health and Safety Questions to Ask",
+    "author": "National Institute for Occupational Safety and Health",
+    "date": "2020",
+    "locator": "https://www.cdc.gov/niosh/docs/2020-114/default.html",
+    "type": "Government Occupational Safety Guidance",
+    "modules": "17-materials-manufacturing",
+    "accessed": "2026-07-26",
+    "relevance": "Official guidance on inhalation, dermal, fire, explosion, ventilation, containment, housekeeping, and worker-protection concerns in metal-powder additive manufacturing."
+  },
+  {
+    "title": "General Requirements for All Machines",
+    "author": "Occupational Safety and Health Administration",
+    "date": "n.d.",
+    "locator": "https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.212",
+    "type": "Government Safety Standard",
+    "modules": "17-materials-manufacturing",
+    "accessed": "2026-07-26",
+    "relevance": "Official machine-guarding requirements for points of operation, rotating parts, flying chips, sparks, and other manufacturing hazards."
+  },
+  {
+    "title": "CHIPS for America Metrology Program",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/chips/research-development-programs/metrology-program",
+    "type": "Government Scientific Program",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-26",
+    "relevance": "Official overview of fit-for-purpose measurement, process monitoring, prediction, quality, and yield challenges in advanced semiconductor manufacturing and packaging."
+  },
+  {
+    "title": "Metrology for the Next Generation of Semiconductor Devices",
+    "author": "Ndubuisi G. Orji et al.",
+    "date": "2018",
+    "locator": "https://www.nist.gov/publications/metrology-next-generation-semiconductor-devices",
+    "type": "Government-Hosted Review Article",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-26",
+    "relevance": "Review of dimensional metrology, device complexity, lithography, heat dissipation, carrier mobility, fault tolerance, and measurement limits for advanced integrated circuits."
+  },
+  {
+    "title": "Critical Dimension and Overlay Metrology",
+    "author": "Michael T. Postek and Marylyn H. Bennett",
+    "date": "2003",
+    "locator": "https://www.nist.gov/publications/critical-dimension-and-overlay-metrology",
+    "type": "Government Metrology Publication",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-26",
+    "relevance": "Institutional treatment of critical-dimension and layer-overlay measurement in semiconductor fabrication and the role of traceable standards."
+  },
+  {
+    "title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0)",
+    "author": "National Institute of Standards and Technology",
+    "date": "2023",
+    "locator": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+    "type": "Government Risk-Management Framework",
+    "modules": "19-software-ai",
+    "accessed": "2026-07-26",
+    "relevance": "Lifecycle framework for governing, mapping, measuring, and managing AI risks to individuals, organizations, and society."
+  },
+  {
+    "title": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+    "author": "Chloe Autio et al.",
+    "date": "2024",
+    "locator": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+    "type": "Government Risk-Management Profile",
+    "modules": "19-software-ai",
+    "accessed": "2026-07-26",
+    "relevance": "Cross-sector guidance on generative-AI risks, evaluation, governance, content provenance, information integrity, privacy, security, and human oversight."
+  },
+  {
+    "title": "RFC 9293: Transmission Control Protocol (TCP)",
+    "author": "Internet Engineering Task Force",
+    "date": "2022",
+    "locator": "https://www.rfc-editor.org/info/rfc9293/",
+    "type": "Internet Standard",
+    "modules": "19-software-ai",
+    "accessed": "2026-07-26",
+    "relevance": "Current standards-track specification for TCP segment processing, reliability mechanisms, connection behavior, and implementation requirements."
+  },
+  {
+    "title": "Framework for Cyber-Physical Systems: Volume 1, Overview",
+    "author": "National Institute of Standards and Technology",
+    "date": "2017",
+    "locator": "https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview",
+    "type": "Government Systems Framework",
+    "modules": "20-sensors-control-infrastructure",
+    "accessed": "2026-07-26",
+    "relevance": "Framework for integrated digital, analog, physical, and human components, including timing, trustworthiness, data, boundaries, composition, and lifecycle concerns."
+  },
+  {
+    "title": "SP 800-82 Rev. 2: Guide to Industrial Control Systems Security",
+    "author": "National Institute of Standards and Technology",
+    "date": "2015",
+    "locator": "https://csrc.nist.gov/pubs/sp/800/82/r2/final",
+    "type": "Government Cybersecurity Guidance",
+    "modules": "20-sensors-control-infrastructure",
+    "accessed": "2026-07-26",
+    "relevance": "Guidance for securing SCADA, distributed control, PLC, and other industrial-control environments while preserving safety, reliability, and real-time performance."
+  },
+  {
+    "title": "Grid Modernization Initiative",
+    "author": "United States Department of Energy",
+    "date": "n.d.",
+    "locator": "https://www.energy.gov/gmi/grid-modernization-initiative",
+    "type": "Government Energy Program",
+    "modules": "20-sensors-control-infrastructure",
+    "accessed": "2026-07-26",
+    "relevance": "Official program addressing grid integration, distributed generation, storage, resilience, security, reliability, and modernization across technical and institutional layers."
+  }
+]

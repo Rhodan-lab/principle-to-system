@@ -1,20 +1,20 @@
-name: Validate Phase 8 Life and Earth systems
+name: Validate Phase 9 Technology
 
 on:
   push:
     branches:
-      - agent/phase-8-life-earth-review
+      - agent/phase-9-technology-review
     paths:
-      - 'science/13-cells-bioenergetics/**'
-      - 'science/14-dna-evolution/**'
-      - 'science/15-ecosystems-complex-systems/**'
-      - 'science/16-earth-planetary/**'
+      - 'technology/17-materials-manufacturing/**'
+      - 'technology/18-semiconductors-electronics/**'
+      - 'technology/19-software-ai/**'
+      - 'technology/20-sensors-control-infrastructure/**'
       - 'sources/**'
-      - 'reports/phase-8-*'
+      - 'reports/phase-9-*'
       - 'scripts/**'
       - 'INDEX.md'
       - 'PROJECT_STATE.md'
-      - '.github/workflows/validate-phase-8-life-earth.yml'
+      - '.github/workflows/validate-phase-9-technology.yml'
   pull_request:
     branches:
       - main
@@ -24,7 +24,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-phase-8-${{ github.ref }}
+  group: validate-phase-9-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -47,42 +47,43 @@ jobs:
           python3 scripts/normalize_source_ledger.py --check --strict
           python3 scripts/apply_verified_source_baseline.py --check
 
-      - name: Validate Phase 6 continuity through Phase 9
+      - name: Validate Foundations continuity through Phase 9
         run: |
           python3 scripts/apply_foundations_review_sources.py --check
           python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
 
-      - name: Validate Phase 7 continuity
+      - name: Validate Physical Science continuity
         run: |
           python3 scripts/apply_phase7_review_sources.py --check
           python3 scripts/finalize_phase7_review.py --check
 
-      - name: Validate Phase 8 continuity through Phase 9
+      - name: Validate Life and Earth continuity through Phase 9
         run: |
           python3 scripts/apply_phase8_review_sources.py --check
           python3 scripts/finalize_phase8_review.py --check
           python3 scripts/validate_phase8_continuity_phase9.py
 
-      - name: Verify Phase 8 deterministic idempotence
+      - name: Validate Phase 9 source and content contracts
+        run: |
+          python3 scripts/normalize_phase9_transformer_literals.py --check
+          python3 scripts/normalize_phase9_finalizer.py --check
+          python3 scripts/apply_phase9_review_sources.py --check
+          python3 scripts/finalize_phase9_review.py --check
+          python3 scripts/validate_phase9_technology_review.py
+
+      - name: Verify Phase 9 deterministic idempotence
         shell: bash
         run: |
-          python3 scripts/finalize_phase8_review.py --write
+          python3 scripts/finalize_phase9_review.py --write
           git diff --exit-code -- \
-            science/13-cells-bioenergetics \
-            science/14-dna-evolution \
-            science/15-ecosystems-complex-systems \
-            science/16-earth-planetary
+            technology/17-materials-manufacturing \
+            technology/18-semiconductors-electronics \
+            technology/19-software-ai \
+            technology/20-sensors-control-infrastructure \
+            INDEX.md
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py
 
-      - name: Verify Phase 8 audit records through Phase 9
-        shell: bash
-        run: |
-          test -f reports/phase-8-life-earth-review.md
-          test -f reports/phase-8-life-earth-sources.json
-          test -f sources/phase-8-reviewed-sources.json
-          grep -Fq 'Modules 13–16: **Reviewed**' PROJECT_STATE.md
-          grep -Fq 'Modules 17–20: **Reviewed**' PROJECT_STATE.md
-          grep -Fq 'Modules 01–20: **Reviewed**' PROJECT_STATE.md
-          grep -Fq '**143 records**' PROJECT_STATE.md
+      - name: Validate Phase 9 audit and read-only state
+        run: python3 scripts/validate_phase9_audit.py

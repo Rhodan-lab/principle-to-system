@@ -25,7 +25,7 @@ Status meanings:
 | 14 | [DNA and Evolution](science/14-dna-evolution/) | Science | 07, 13 | Gene expression, inheritance, selection | Genetic engineering | Reviewed |
 | 15 | [Ecosystems and Complex Systems](science/15-ecosystems-complex-systems/) | Science | 04, 13, 14 | Feedback, networks, emergence | Environmental engineering | Reviewed |
 | 16 | [Earth and Planetary Systems](science/16-earth-planetary/) | Science | 08, 09, 12, 15 | Atmosphere, oceans, climate, geology | Climate monitoring, resources | Reviewed |
-| 17 | [Materials Science and Manufacturing](technology/17-materials-manufacturing/) | Technology | 06, 07, 12 | Crystallography, alloys, polymers, fabrication | All physical technology | Draft |
-| 18 | [Semiconductors and Electronics](technology/18-semiconductors-electronics/) | Technology | 06, 10, 17 | Transistors, logic, ICs, processors | Computing, communication | Draft |
-| 19 | [Software and AI Foundations](technology/19-software-ai/) | Technology | 04, 05, 18 | Information, algorithms, networks, learning | Digital infrastructure | Draft |
-| 20 | [Sensors, Control, and Infrastructure](technology/20-sensors-control-infrastructure/) | Technology | 10, 11, 18, 19 | Sensors, feedback, automation, power grids | Robotics, energy systems | Draft |
+| 17 | [Materials Science and Manufacturing](technology/17-materials-manufacturing/) | Technology | 06, 07, 12 | Crystallography, alloys, polymers, fabrication | All physical technology | Reviewed |
+| 18 | [Semiconductors and Electronics](technology/18-semiconductors-electronics/) | Technology | 06, 10, 17 | Transistors, logic, ICs, processors | Computing, communication | Reviewed |
+| 19 | [Software and AI Foundations](technology/19-software-ai/) | Technology | 04, 05, 18 | Information, algorithms, networks, learning | Digital infrastructure | Reviewed |
+| 20 | [Sensors, Control, and Infrastructure](technology/20-sensors-control-infrastructure/) | Technology | 10, 11, 18, 19 | Sensors, feedback, automation, power grids | Robotics, energy systems | Reviewed |

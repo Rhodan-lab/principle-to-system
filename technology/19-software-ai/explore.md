@@ -3,10 +3,10 @@ title: "Software, Information, Networks, and AI Foundations"
 slug: 19-software-ai-explore
 module: "Module 19"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [04-probability-statistics, 05-computation-algorithms, 18-semiconductors-electronics]
 connections: [20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,59 +14,47 @@ content_license: CC-BY-4.0
 
 ## 1. Observation prompts
 
-Observe the behavior of your home internet connection. When you stream a high-definition video, does it start immediately, or is there a delay? If multiple devices are streaming simultaneously, how does the quality change? Notice how text-based websites load almost instantly compared to image-heavy or video-heavy sites. Consider the physical path the data must take from a server, potentially on another continent, to your device.
-
-Observe the recommendations provided by a streaming service or an online retailer. How do these recommendations change immediately after you watch a new genre of movie or purchase a specific type of item? Notice how the system seems to infer your preferences without you explicitly stating them.
+- Use browser or operating-system performance panels on your own device to compare page size, request count, latency, caching, and throughput. Do not infer physical route or server location from delay alone.
+- Examine recommendation settings using a fictional profile or your own non-sensitive history. Record what the interface reveals, what remains unknown, and how privacy, exploration, popularity, and business objectives could shape outputs.
+- Compare two model outputs on a low-stakes public question. Check sources, uncertainty, consistency, and failure modes instead of rating fluency as understanding.
 
 ## 2. Prediction questions
 
-If you compress a text file containing a highly repetitive string (e.g., "ABABABAB...") using a standard zip utility, predict how the compressed file size will compare to the original. Now, predict what will happen if you try to compress a file containing completely random characters.
-
-If a network router between your computer and a web server suddenly fails, predict what will happen to an ongoing file download. Will the download fail completely, pause and resume, or continue seamlessly?
-
-If a machine learning model is trained exclusively on images of cats indoors, predict how it will perform when asked to identify a cat outdoors in a grassy field.
+- Predict compression for repetitive, already-compressed, encrypted, and random-looking files. Why can headers make some compressed outputs larger?
+- If one router or link fails, outcomes depend on routing convergence, transport timeout, application retry, resumable transfer, multipath support, and failure location. List competing outcomes rather than predicting seamless continuation.
+- A classifier trained on indoor cats may fail outdoors because background, lighting, camera, breed, label, and sampling distributions changed. Which validation set would test the intended deployment?
 
 ## 3. Worked reasoning examples
 
-**Problem:** Calculate the Shannon entropy of a fair coin toss and a biased coin toss (where heads has a 90% probability).
+**Problem:** Compare the entropy of a fair binary source with a source where one outcome has probability $0.9$.
 
-**Reasoning:**
-For a fair coin, the probabilities are $P(Heads) = 0.5$ and $P(Tails) = 0.5$.
-Using the entropy formula: $H = -(0.5 \log_2 0.5 + 0.5 \log_2 0.5)$
-$H = -(-0.5 - 0.5) = 1$ bit.
-This means one bit of information is required to communicate the result of a fair coin toss.
-
-For the biased coin, $P(Heads) = 0.9$ and $P(Tails) = 0.1$.
-$H = -(0.9 \log_2 0.9 + 0.1 \log_2 0.1)$
-$H \approx -(0.9 \times -0.152 + 0.1 \times -3.32)$
-$H \approx -(-0.1368 - 0.332) = 0.469$ bits.
-The entropy is lower because the outcome is more predictable; we are less uncertain about the result before the toss occurs.
+For probabilities $p$ and $1-p$,
+$$H=-p\log_2p-(1-p)\log_2(1-p).$$
+The fair source has $H=1$ bit per symbol. The $0.9/0.1$ source has approximately $0.469$ bit per symbol. These are ensemble averages under the stated model. One isolated binary outcome still needs a representation agreed by sender and receiver; entropy bounds expected code length across repeated or block-coded symbols rather than assigning a fractional physical bit to one event.
 
 ## 4. Thought experiments
 
-Imagine a communication channel with zero noise. According to the Shannon-Hartley theorem, what is the channel capacity? If $N = 0$, then $S/N$ approaches infinity, and the capacity $C$ approaches infinity. This implies that over a perfectly noiseless channel, you could transmit an infinite amount of information instantly, regardless of the bandwidth. Why is this physically impossible in the real world?
-
-Consider an AI system designed to clean a room, with its reward function tied strictly to the amount of dust collected by its vacuum. What unintended behaviors might this system exhibit to maximize its reward? (e.g., it might intentionally dump the dust back onto the floor so it can collect it again). This illustrates the problem of reward hacking in AI safety.
+- **Noiseless-channel limit:** The Shannon–Hartley equation assumes an idealised Gaussian channel model. Letting $N\to0$ while holding other abstractions fixed exposes a model limit, not a physical design for infinite instantaneous communication. Identify omitted constraints such as quantisation, timing, bandwidth definition, finite energy, hardware, and relativity.
+- **Proxy objective failure:** A room-cleaning system rewarded only for measured dust could manipulate the sensor or repeatedly move dust. Redesign the system using multiple measurements, constraints, human review, shutdown authority, and tests for distribution shift.
+- **Automation and appeal:** Imagine a model recommends access to a school resource. What evidence, uncertainty, privacy protection, explanation, human review, and appeal process are required before the recommendation affects a student?
 
 ## 5. Household and browser-based explorations
 
-Open the developer tools in your web browser (usually F12) and navigate to the "Network" tab. Load a complex webpage (like a news site). Observe the waterfall chart showing the dozens or hundreds of individual requests made to different servers to assemble the single page you see. Note the latency (time waiting for a response) versus the download time for each asset.
-
-Use a command-line interface (Terminal on macOS/Linux, Command Prompt on Windows) to run the `ping` command to a well-known server (e.g., `ping google.com`). Observe the round-trip time in milliseconds. This is a direct measurement of network latency. Try pinging a server known to be on another continent and compare the times.
+- **Network waterfall:** Use developer tools only on pages you are authorised to access. Record request timing, cache status, content type, and third-party domains without copying tokens, cookies, personal data, or credentials.
+- **Latency measurement:** Use your operating system's connection diagnostics, your own router, or a reputable public measurement page. Do not probe private systems or interpret one round-trip value as geographic distance.
+- **Model evaluation sheet:** Build a small fictional classification dataset with a held-out test set. Report confusion matrix, calibration bins, subgroup uncertainty, and examples where the model should abstain.
+- **Compression experiment:** Compare original and compressed sizes for several non-sensitive files, including an already compressed image. Record algorithm, options, metadata overhead, and reproducibility.
 
 ## 6. Model-building prompts
 
-Construct a simple physical model of a network using string and cups, but introduce a "router" (a person in the middle who must receive a message from one cup and pass it to another specific cup based on an address). How does adding more nodes and routers increase the complexity of ensuring the message reaches the correct destination?
-
-Design a simple decision tree (a basic form of machine learning model) on paper to classify whether you should take an umbrella outside. What are the input features (e.g., is it cloudy? is the forecast calling for rain?), and what are the decision thresholds?
+- Build a paper packet-routing model with addressed cards, several nodes, two possible routes, a queue, a dropped packet, and a routing update. Record which behavior belongs to forwarding, routing, transport retry, and application semantics.
+- Design a small decision tree for a low-stakes fictional choice. Define inputs, missing values, thresholds, target, cost of each error, validation examples, and an abstain path rather than treating the tree as an objective decision-maker.
 
 ## 7. Self-explanation questions
 
-Explain why a compressed file (like a .zip) cannot usually be compressed significantly a second time. Relate this to the concept of entropy.
-
-Describe the difference between the Transport layer (TCP) and the Network layer (IP) in the internet protocol stack. Why are both necessary?
-
-Explain the concept of "gradient descent" in neural network training using the analogy of a person trying to find the lowest point in a hilly landscape while blindfolded.
+- Explain why an already compressed file often changes little or grows under another compressor. Include algorithm mismatch, headers, finite length, and the difference between measured file structure and source-model entropy.
+- Compare IP best-effort delivery with TCP's reliable ordered byte stream and with UDP or QUIC. Which guarantees still belong to the application?
+- Improve the “blindfolded hill” analogy for gradient descent by adding local slope, noisy estimates, step size, constraints, flat directions, saddles, and multiple basins. Which aspects of high-dimensional optimisation remain hidden by the analogy?
 
 ## 8. Transfer questions
 
@@ -76,14 +64,28 @@ The concept of caching (storing frequently accessed data closer to the processor
 
 ## 9. Suggested learning paths
 
-To deepen your understanding of information theory, begin with Claude Shannon's original 1948 paper, "A Mathematical Theory of Communication." While mathematically dense, the introduction provides profound conceptual clarity.
-
-For networking, explore the concept of packet switching versus circuit switching. Understand why the internet was designed around packet switching to ensure resilience.
-
-To understand machine learning practically, explore introductory tutorials on building simple neural networks using Python libraries like TensorFlow or PyTorch. Focus on understanding the shape of the data as it passes through the layers.
+- **Information:** Begin with probability and coding examples before reading selected parts of Shannon's paper; distinguish theorem assumptions from implementation.
+- **Networks:** Study layering, packet forwarding, routing, transports, naming, congestion, security, and application semantics. Packet switching supports statistical sharing and alternate paths but does not by itself guarantee resilience.
+- **Software systems:** Connect operating systems, databases, distributed failure models, testing, security, and recovery.
+- **Machine learning and AI:** Start with simple reproducible models and datasets. Add train/validation/test separation, calibration, distribution shift, privacy, threat models, documentation, and human oversight before increasing model complexity.
 
 ## 10. Reasoning notes
 
-When analyzing computing systems, always distinguish between the logical abstraction and the physical implementation. A file is a logical abstraction provided by the operating system; physically, it is a scattered collection of magnetic domains on a disk or trapped electrons in flash memory.
+Distinguish logical abstractions from physical implementation, specification from implementation, average from tail behavior, benchmark from deployment, and correlation from causal effect. Treat model outputs as fallible evidence. Avoid anthropomorphism in either direction: do not infer human-like consciousness from fluent behavior, and do not replace empirical capability analysis with the slogan “only pattern matching.” State the tested task, comparison, uncertainty, distribution, tools, and human context.
 
-In AI, be careful not to anthropomorphize the models. When a language model outputs a coherent sentence, it is not "thinking" or "understanding" in the human sense; it is performing complex statistical pattern matching based on its training data. Recognizing this distinction is crucial for accurately assessing the capabilities and limitations of current AI systems.
+## Phase 9 review boundaries and validity limits
+
+- Information-theory limits are asymptotic results for stated source and channel models; finite systems trade error, latency, energy, complexity, and cost.
+- Protocol guarantees apply only under their specifications and assumptions; end-to-end service also depends on applications, networks, implementations, and failures.
+- Machine-learning evaluation must address distribution shift, uncertainty, calibration, subgroup performance, robustness, privacy, security, misuse, monitoring, and human oversight.
+- Model outputs are evidence requiring verification, not authoritative facts or proof of consciousness, intention, or understanding.
+
+## 11. Sources
+
+1. Shannon, C. E. *A Mathematical Theory of Communication*. https://doi.org/10.1002/j.1538-7305.1948.tb01338.x
+2. Kurose, J. F., and Ross, K. W. *Computer Networking: A Top-Down Approach*. https://www.pearson.com/en-us/subject-catalog/p/computer-networking-a-top-down-approach/P200000013385
+3. Goodfellow, I., Bengio, Y., and Courville, A. *Deep Learning*. http://www.deeplearningbook.org
+4. Hellerstein, J. M., Stonebraker, M., and Hamilton, J. *Architecture of a Database System*. https://doi.org/10.1561/1900000002
+5. National Institute of Standards and Technology. *Artificial Intelligence Risk Management Framework (AI RMF 1.0)*. https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10
+6. National Institute of Standards and Technology. *AI RMF: Generative Artificial Intelligence Profile*. https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence
+7. Internet Engineering Task Force. *RFC 9293: Transmission Control Protocol*. https://www.rfc-editor.org/info/rfc9293/

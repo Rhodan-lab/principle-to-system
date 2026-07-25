@@ -3,10 +3,10 @@ title: "Sensors, Control, Automation, Robotics, Energy, and Infrastructure"
 slug: 20-sensors-control-infrastructure
 module: "Module 20"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]
 connections: []
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -14,128 +14,113 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How do physical systems perceive their environment, make decisions, and act upon those decisions to achieve desired outcomes? How can we mathematically model and control dynamic systems to ensure stability and precision? Furthermore, how do these principles scale up to manage massive, distributed networks like the electrical power grid, ensuring resilience and reliability in the face of intermittent renewable energy sources and complex demand patterns?
+How do engineered systems measure variables, estimate hidden state, choose constrained actions, and verify physical response? Under what models and operating regions are stability, performance, safety, and robustness claims valid? How do these ideas scale to infrastructure in which variable resources, stored energy, networks, markets, protection, operators, cybersecurity, maintenance, and recovery interact?
 
 ## 2. Observable phenomena
 
-In daily life, these principles manifest when a thermostat maintains a room's temperature, a drone stabilizes itself against wind gusts, or a robotic arm precisely welds a car chassis. On a larger scale, we observe the continuous availability of electricity despite fluctuating demand and the variable output of solar and wind farms. We see automated manufacturing lines producing goods with minimal human intervention, and smart grids rerouting power autonomously to isolate faults and prevent blackouts.
+A thermostat cycles or modulates equipment while room temperature responds slowly. A robot rejects some disturbances but exhibits delay, compliance, saturation, and residual error. A grid maintains service through continuous coordination of generation, storage, demand, networks, controls, protection, and operators; faults can be isolated, but no smart-grid function guarantees blackout prevention. Observations must distinguish commanded state, measured state, estimated state, physical state, and service outcome.
 
 ## 3. Essential concepts
 
-**Transduction:** The process of converting one form of energy into another. Sensors are transducers that convert physical phenomena (temperature, pressure, light) into electrical signals. Actuators are transducers that convert electrical signals into physical action (motion, heat, fluid flow).
+**Measurement and transduction:** Sensors map physical variables to signals through mechanisms such as resistance, capacitance, charge, frequency, optical intensity, or digital state. This is not always a direct conversion of one energy form into another.
 
-**Feedback Loop:** A system structure where the output is measured and compared to a desired reference value (setpoint). The difference (error) is used to adjust the system's input to minimize the error. This is the foundation of closed-loop control.
+**Estimation:** Measurements are incomplete and noisy. Filters and observers combine data and models to estimate hidden state, bias, disturbance, and uncertainty.
 
-**Control Theory:** The mathematical study of how to manipulate the inputs of a dynamic system to achieve a desired output. It encompasses classical methods like PID (Proportional-Integral-Derivative) control and modern methods like state-space representation.
+**Feedback and feedforward:** Controllers use measurements, estimates, references, constraints, and forecasts to shape behavior. Objectives can include tracking, regulation, disturbance rejection, safety, efficiency, and constraint satisfaction—not merely minimising instantaneous error.
 
-**Automation and Robotics:** The integration of sensors, control systems, and actuators to perform tasks with minimal human intervention. Robotics specifically involves programmable machines capable of complex physical actions.
+**Automation and robotics:** Physical autonomy integrates sensing, estimation, planning, control, actuation, communication, safety systems, operators, and maintenance.
 
-**Grid Architecture:** The structure of the electrical power system, traditionally consisting of centralized generation, high-voltage transmission, and lower-voltage distribution. Modern architectures incorporate Distributed Energy Resources (DERs) like rooftop solar and local battery storage.
-
-**Infrastructure Resilience:** The ability of critical systems (like the power grid) to anticipate, absorb, adapt to, and rapidly recover from disruptive events, such as extreme weather or cyberattacks [1].
+**Infrastructure resilience:** Resilience concerns anticipation, absorption, adaptation, recovery, and learning across technical, human, organisational, and supply-chain layers. Reliability, resilience, safety, and security are related but distinct.
 
 ## 4. Mechanisms and causal chains
 
-The fundamental causal chain in automation is the **Sense-Think-Act** cycle:
-1. **Sense:** A physical phenomenon alters the state of a sensor. For example, increased temperature changes the resistance of a thermistor. This change is converted into an analog electrical voltage, which is then digitized by an Analog-to-Digital Converter (ADC).
-2. **Think:** A controller (a microprocessor or computer) receives the digital signal, compares it to a desired setpoint, and calculates an error value. Using a control algorithm (like PID or state-space), it computes a corrective command.
-3. **Act:** The digital command is converted back to an analog signal via a Digital-to-Analog Converter (DAC) and amplified to drive an actuator. A motor spins, a valve opens, or a heater turns on, altering the physical environment. The cycle then repeats, closing the feedback loop.
+A more complete loop is **measure–condition–sample–estimate–decide–act–verify**. Sensors have calibration, bandwidth, noise, drift, and failure modes. Controllers operate on delayed and quantised data. Actuators have dynamics, dead zones, saturation, rate limits, and energy constraints. Independent protection, alarms, operators, and emergency systems may override normal control.
 
-In energy infrastructure, the causal chain of **Grid Balancing** is critical:
-1. **Generation/Demand Fluctuation:** Solar output drops due to cloud cover, or industrial demand spikes.
-2. **Frequency Deviation:** The imbalance between supply and demand causes the AC grid frequency (nominally 50 Hz or 60 Hz) to deviate.
-3. **Sensing and Control:** Grid sensors (Phasor Measurement Units) detect the frequency change. Automated control systems signal fast-responding generators or battery storage systems to inject or absorb power.
-4. **Restoration:** The balance is restored, and the grid frequency returns to nominal.
+In an AC grid, active-power imbalance interacts with stored kinetic or electronic energy, frequency-sensitive demand, controls, network constraints, and protection. Frequency is an important indicator but not a complete state estimate. Primary response, inverter controls, storage, demand response, dispatch, reserves, and restoration act on different timescales. Protection must isolate faults without causing unnecessary cascading trips.
 
 ## 5. Important quantities
 
-| Quantity | Symbol | SI Unit | Description |
-| :--- | :---: | :---: | :--- |
-| Error | $e(t)$ | Varies | The difference between the desired setpoint and the measured process variable. |
-| Control Output | $u(t)$ | Varies | The signal sent to the actuator to correct the error. |
-| State Vector | $\mathbf{x}(t)$ | Varies | A mathematical vector representing the internal state of a dynamic system. |
-| Active Power | $P$ | Watt (W) | The rate at which electrical energy is transferred by an electric circuit. |
-| Reactive Power | $Q$ | Volt-Ampere Reactive (VAR) | Power that oscillates back and forth in an AC circuit due to inductive and capacitive loads. |
-| Grid Frequency | $f$ | Hertz (Hz) | The rate at which alternating current reverses direction. |
+| Quantity | Unit | Boundary |
+| :--- | :--- | :--- |
+| Measurement error and uncertainty | sensor-specific | Separate bias, noise, resolution, calibration, and model uncertainty. |
+| Sampling period and delay | s | Include computation, communication, actuator, and transport delay. |
+| State estimate and covariance | mixed units | Defined by the state model and estimator. |
+| Control input and saturation | actuator-specific | State amplitude and rate limits. |
+| Stability margins | dB, degrees, or model-specific | Valid for a specified linearisation and loop. |
+| Active power | W | Average real energy-transfer rate under stated waveform conditions. |
+| Reactive power | var | Defined for AC models; interpretation depends on waveform and convention. |
+| Frequency and rate of change | Hz, Hz/s | Local measurements influenced by dynamics and estimation. |
+| Reliability and resilience metrics | event- and service-specific | Require service boundary, duration, severity, and consequence. |
 
 ## 6. Mathematical models and equations
 
-### PID Control
+An ideal continuous PID law is
+$$u(t)=K_pe(t)+K_i\int_0^t e(\tau)d\tau+K_d\frac{de(t)}{dt}.$$
+Derivative action responds to rate; it does not literally predict the future. Real implementations filter derivatives, discretise time, limit outputs, prevent integral windup, and handle setpoint changes and sensor noise.
 
-The Proportional-Integral-Derivative (PID) controller is the most widely used control algorithm in industry. It calculates the control output $u(t)$ based on the current error, the accumulation of past errors, and the predicted future error [2].
+A linear time-invariant state-space model is
+$$\dot{\mathbf{x}}=A\mathbf{x}+B\mathbf{u}+E\mathbf{w},\qquad \mathbf{y}=C\mathbf{x}+D\mathbf{u}+\mathbf{v},$$
+with disturbance $\mathbf{w}$ and measurement noise $\mathbf{v}$. Stability, controllability, observability, and estimator assumptions must be checked around a defined operating point.
 
-$$ u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) d\tau + K_d \frac{de(t)}{dt} $$
-
-Where:
-- $u(t)$ is the control signal applied to the system.
-- $e(t)$ is the error signal ($Setpoint - Measured Value$).
-- $K_p$ is the proportional gain (reacts to current error).
-- $K_i$ is the integral gain (eliminates steady-state error by accumulating past errors).
-- $K_d$ is the derivative gain (dampens the system by predicting future error trends).
-
-### State-Space Representation
-
-Modern control theory uses state-space representation to model complex, multi-input multi-output (MIMO) systems. It describes a system using a set of first-order differential equations [3].
-
-$$ \dot{\mathbf{x}}(t) = \mathbf{A}\mathbf{x}(t) + \mathbf{B}\mathbf{u}(t) $$
-$$ \mathbf{y}(t) = \mathbf{C}\mathbf{x}(t) + \mathbf{D}\mathbf{u}(t) $$
-
-Where:
-- $\mathbf{x}(t)$ is the state vector (internal variables of the system).
-- $\dot{\mathbf{x}}(t)$ is the time derivative of the state vector.
-- $\mathbf{u}(t)$ is the input vector (control signals).
-- $\mathbf{y}(t)$ is the output vector (measured variables).
-- $\mathbf{A}$ is the system matrix (describes internal dynamics).
-- $\mathbf{B}$ is the input matrix (describes how inputs affect states).
-- $\mathbf{C}$ is the output matrix (describes how states map to outputs).
-- $\mathbf{D}$ is the feedthrough matrix (describes direct input-to-output coupling, often zero).
-
-### AC Power
-
-In alternating current (AC) power grids, the relationship between apparent power ($S$), active power ($P$), and reactive power ($Q$) is modeled using complex numbers.
-
-$$ S = P + jQ $$
-$$ P = V_{rms} I_{rms} \cos(\phi) $$
-$$ Q = V_{rms} I_{rms} \sin(\phi) $$
-
-Where $V_{rms}$ and $I_{rms}$ are the root-mean-square voltage and current, and $\phi$ is the phase angle between them. $\cos(\phi)$ is known as the power factor.
+For sinusoidal steady state in a single-phase convention,
+$$\underline S=P+jQ=\underline V_{rms}\underline I_{rms}^{*},\quad P=V_{rms}I_{rms}\cos\phi,\quad Q=V_{rms}I_{rms}\sin\phi.$$
+Three-phase, unbalanced, distorted, and converter-dominated systems require the appropriate convention and model.
 
 ## 7. Definitions of symbols and units
 
-- $t$: Time, measured in seconds (s).
-- $\tau$: Variable of integration for time, measured in seconds (s).
-- $K_p, K_i, K_d$: Tuning parameters for a PID controller. Units depend on the specific process being controlled.
-- $j$: The imaginary unit, where $j^2 = -1$.
-- $V_{rms}$: Root-mean-square voltage, measured in Volts (V).
-- $I_{rms}$: Root-mean-square current, measured in Amperes (A).
+- $t,\tau$: time and integration variable, s.
+- $e(t)$: reference-minus-measurement error under the stated sign convention, units of the controlled variable.
+- $u(t)$: controller output, actuator command, or manipulated variable with system-specific units.
+- $K_p,K_i,K_d$: gains whose units make proportional, integral, and derivative terms compatible with $u$.
+- $\mathbf x,\mathbf u,\mathbf w$: state, input, and disturbance vectors with component-specific units.
+- $\mathbf y,\mathbf v$: output and measurement-noise vectors with component-specific units.
+- $A,B,C,D,E$: state-space matrices with units determined by the selected states, inputs, outputs, and time unit.
+- $\underline S$: complex power under the stated sinusoidal convention, VA.
+- $P,Q$: active and reactive power, W and var.
+- $\underline V_{rms},\underline I_{rms}$: RMS voltage and current phasors, V and A.
+- $\phi$: voltage-current phase difference for the simple sinusoidal scalar form, rad.
+- $j$: imaginary unit, $j^2=-1$.
 
 ## 8. Assumptions and approximations
 
-- **Linearity:** State-space models ($\dot{\mathbf{x}} = \mathbf{A}\mathbf{x} + \mathbf{B}\mathbf{u}$) assume the system is linear and time-invariant (LTI). Real systems are often non-linear, requiring linearization around an operating point or advanced non-linear control techniques.
-- **Ideal Sensors and Actuators:** Basic control models often assume sensors have no noise or delay, and actuators have infinite bandwidth and no saturation limits. In reality, signal conditioning and anti-windup mechanisms are necessary.
-- **Lumped Parameters:** Grid models often treat transmission lines as lumped parameters (resistors, inductors, capacitors) rather than distributed systems, which is a valid approximation for lines shorter than the wavelength of the AC signal.
+- **Linearity and time invariance:** Models usually apply near an operating point and over a stated frequency and amplitude range.
+- **Sampling and delay:** Continuous equations omit discrete sampling, jitter, communication loss, computation time, and zero-order hold unless added.
+- **Sensor and actuator limits:** Noise, drift, saturation, backlash, dead time, hysteresis, and rate constraints can destabilise or bias a loop.
+- **Known model:** Parameters, disturbances, and topology change; robust, adaptive, or gain-scheduled methods still require boundaries.
+- **Power-system phasors:** RMS and phasor models assume waveform and timescale conditions; electromagnetic and switching transients need faster models.
+- **Human and organisational layer:** Procedures, interfaces, staffing, maintenance, markets, regulation, and cybersecurity affect technical outcomes.
 
 ## 9. Spatial and temporal scales
 
-- **Temporal:** Control loops in robotics and power electronics operate at microsecond to millisecond scales. Mechanical systems (like heating a room) operate on scales of minutes to hours. Grid frequency control operates in milliseconds to seconds, while energy market dispatch operates in hours to days.
-- **Spatial:** Sensors operate at the microscale (MEMS accelerometers). Robotics operate at the human scale (meters). Power grids span continental scales (thousands of kilometers).
+Sensor physics can occur within microscopic structures while installations span machines, buildings, cities, regions, and interconnected grids. Time scales range from power-electronic switching, sampling, and protection through mechanical motion, thermal processes, dispatch, maintenance, asset ageing, and recovery. Required response time is architecture- and hazard-specific; “grid control” is not one single millisecond-to-second loop.
 
 ## 10. Common misconceptions
 
-- **"Derivative control is always necessary."** In many industrial processes (like temperature control), the derivative term ($K_d$) is set to zero because it amplifies high-frequency sensor noise, causing erratic actuator behavior. PI control is often sufficient.
-- **"Renewable energy makes the grid inherently unstable."** While wind and solar are intermittent and lack the physical inertia of massive spinning turbines, modern power electronics (smart inverters) and grid-scale battery storage can provide synthetic inertia and rapid frequency response, potentially making the grid *more* resilient if managed correctly [4].
-- **"Robots are just mechanical arms."** A robot is defined by its integration of sensing, computation, and actuation. A self-driving car or an autonomous drone is as much a robot as a factory arm.
+- **“Derivative control predicts the future.”** It reacts to measured rate and often amplifies noise; filtered PI or other structures may be preferable.
+- **“Integral action always removes steady-state error.”** This requires closed-loop stability, sufficient control authority, a suitable plant and disturbance model, and anti-windup handling.
+- **“Renewables inherently destabilise or automatically strengthen a grid.”** Outcomes depend on penetration, location, network strength, controls, reserves, protection, forecasting, storage, demand, and grid-forming or grid-following behavior.
+- **“Redundancy guarantees safety.”** Common-cause failure, shared software, incorrect sensors, maintenance, and voting logic can defeat redundant channels.
+- **“Automation removes the human role.”** Humans design, authorise, supervise, maintain, recover, and remain affected by system decisions.
 
 ## 11. Connections to other modules
 
-- **10-electricity-magnetism:** Provides the foundation for how sensors (like Hall effect sensors) and actuators (like electric motors) function.
-- **11-waves-signals:** Essential for understanding signal conditioning, filtering noise from sensor data, and AC power transmission.
-- **18-semiconductors-electronics:** Explains the microprocessors that execute control algorithms and the power electronics that drive actuators and interface renewable energy with the grid.
-- **19-software-ai:** Modern control systems increasingly use machine learning for system identification, predictive maintenance, and complex decision-making in robotics.
+- **10-electricity-magnetism:** Supports fields, machines, power conversion, grounding, electromagnetic compatibility, and many transducers.
+- **11-waves-signals:** Supports sampling, filtering, communication, spectral analysis, timing, and signal integrity.
+- **18-semiconductors-electronics:** Provides sensing elements, embedded processors, memory, interfaces, power devices, and communication hardware.
+- **19-software-ai:** Provides algorithms, operating systems, networks, data systems, security, and model evaluation; machine learning is optional and must remain inside validated safety and authority boundaries.
+
+## Phase 9 review boundaries and validity limits
+
+- Closed-loop performance depends on sensing, estimation, delay, sampling, quantisation, communication, actuator saturation, disturbances, uncertainty, and model mismatch.
+- Stability and safety are properties of a specified operating region and architecture; a controller that works in one regime may fail in another.
+- Grid operation couples physics, protection, markets, communications, cybersecurity, regulation, operators, and restoration procedures.
+- Cyber-physical and infrastructure designs require defence in depth, fail-safe or fail-operational analysis, human authority, testing, maintenance, and lifecycle governance.
 
 ## 12. Sources
 
-[1] Awad, H., & Bayoumi, E. H. E. (2026). Resilient Grid Architectures for High Renewable Penetration: Electrical Engineering Strategies for 2030 and Beyond. *Technologies*, 14(2), 112. https://www.mdpi.com/2227-7080/14/2/112
-[2] WPILib Contributors. (2025). Introduction to State-Space Control. *FIRST Robotics Competition Documentation*. https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html
-[3] Filip, F. G., & Leiviskä, K. (2023). Infrastructure and complex systems automation. In *Springer Handbook of Automation* (pp. 555-575). Springer.
-[4] Peng, F. Z., Liu, C. C., Li, Y., Jain, A. K., et al. (2023). Envisioning the future renewable and resilient energy grids—A power grid revolution enabled by renewables, energy storage, and energy electronics. *IEEE Journal of Emerging and Selected Topics in Power Electronics*. https://ieeexplore.ieee.org/abstract/document/10360247/
+1. WPILib Contributors. *Introduction to State-Space Control*. https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html
+2. Peng, F. Z., et al. *Envisioning the Future Renewable and Resilient Energy Grids*. https://ieeexplore.ieee.org/abstract/document/10360247/
+3. National Institute of Standards and Technology. *Framework for Cyber-Physical Systems: Volume 1, Overview*. https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview
+4. National Institute of Standards and Technology. *SP 800-82 Rev. 2: Guide to Industrial Control Systems Security*. https://csrc.nist.gov/pubs/sp/800/82/r2/final
+5. United States Department of Energy. *Grid Modernization Initiative*. https://www.energy.gov/gmi/grid-modernization-initiative
+6. Filip, F. G., and Leiviskä, K. *Infrastructure and Complex Systems Automation*. https://link.springer.com/chapter/10.1007/978-3-030-96729-1_27

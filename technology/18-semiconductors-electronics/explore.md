@@ -3,53 +3,53 @@ title: "Semiconductors, electronics, and computer hardware"
 slug: 18-semiconductors-electronics-explore
 module: "Module 18"
 domain: technology
-status: draft
+status: reviewed
 prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing]
 connections: [19-software-ai, 20-sensors-control-infrastructure]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 ## 1. Observation prompts
 
-*   Examine a modern smartphone or laptop. Identify the areas that become warmest during heavy use. What does this heat distribution suggest about the location and power consumption of the main processor compared to other components like the battery or screen?
-*   Look closely at a solar panel (if accessible) or a high-quality photograph of one. Notice the grid of thin metal lines on the surface. Why are these lines necessary, and why do they only cover a small fraction of the surface area rather than the whole panel?
-*   Observe the behaviour of an LED light bulb when it is turned on and off. Does it fade out slowly like an incandescent bulb, or does it switch off instantly? What does this imply about the mechanism of light generation?
+- Use built-in telemetry during ordinary use only; do not intentionally overheat or stress a device. Compare reported temperature, power, utilisation, brightness, charging, and workload while recognising that sensor placement and software estimates limit interpretation.
+- Study a manufacturer diagram or safe photograph of a photovoltaic module. Identify cells, busbars, fingers, encapsulation, bypass elements, and shading trade-offs without touching installed electrical equipment.
+- Compare recorded LED and incandescent turn-off transients. Driver capacitance, phosphor persistence, thermal inertia, and camera exposure can affect the observation, so turn-off appearance alone does not identify one emission mechanism.
 
 ## 2. Prediction questions
 
-*   If you were to heat a piece of pure silicon, would its electrical resistance increase or decrease? Contrast this with what happens when you heat a copper wire.
-*   Imagine a p-n junction diode connected in a circuit. If you reverse the polarity of the battery connected to it, what will happen to the width of the depletion region, and how will this affect the current flowing through the circuit?
-*   According to Moore's law, transistor density doubles roughly every two years. If a processor today has 10 billion transistors, approximately how many transistors would a processor of the same size have had 10 years ago?
+- Compare intrinsic and doped silicon over a stated temperature range. Why can resistance trends depend on carrier generation, dopant activation, mobility, contacts, geometry, and self-heating?
+- In a diode model, reverse bias usually widens the depletion region, but predict leakage, capacitance, and possible breakdown only after device type, voltage range, temperature, and circuit resistance are specified.
+- Treat Moore's observation as historical data: given an assumed doubling interval, calculate a backward extrapolation and then explain why node economics, design choices, and product categories make it an unreliable prediction for a specific processor.
 
 ## 3. Worked reasoning examples
 
-**Question:** Why does a computer processor need a heatsink and a fan, while a simple calculator does not, even though both use transistors to perform logic?
+**Question:** Why does a high-performance processor often need substantial cooling while a calculator does not?
 
-**Reasoning:**
-1.  **Identify the fundamental action:** Both devices perform calculations by switching transistors on and off.
-2.  **Analyse energy dissipation:** Every time a transistor switches, a small amount of electrical energy is converted into heat due to the resistance of the semiconductor material and the charging/discharging of microscopic capacitances.
-3.  **Compare scale and frequency:** A simple calculator contains a few thousand transistors operating at a very low clock frequency (perhaps a few kilohertz). The total heat generated per second is negligible and easily dissipates into the surrounding air.
-4.  **Contrast with the processor:** A modern CPU contains billions of transistors switching billions of times per second (gigahertz).
-5.  **Synthesise the conclusion:** The power dissipated is proportional to the number of transistors and the switching frequency. The massive scale and speed of a CPU result in a high power density, generating heat faster than it can passively dissipate. Without active cooling (heatsink to increase surface area, fan to move air), the temperature would quickly rise until the silicon melts or the transistors fail.
+1. Identify workload, supply voltage, clocking, active capacitance, leakage, memory, display, and duty cycle rather than counting transistors alone.
+2. Dynamic switching power is approximated by $P_{dyn}=\alpha C V^2 f$ at a chosen boundary; leakage and supporting circuits add power.
+3. A calculator operates intermittently at low throughput and power, while a processor may sustain dense computation and data movement.
+4. Packaging and cooling determine temperature rise. Thermal throttling or shutdown protects many systems before destructive temperatures occur.
+5. Cooling need therefore follows total and local power, thermal resistance, allowable junction temperature, acoustics, reliability, and workload—not simply “billions times gigahertz.”
 
 ## 4. Thought experiments
 
-*   **The Mechanical Computer:** Imagine trying to build a modern smartphone processor using mechanical relays (electromagnetically operated switches) instead of microscopic transistors. If a relay is $1 \text{ cm}^3$ in volume, how large would a 10-billion-relay processor be? How much power would it consume to physically move those metal contacts billions of times per second?
-*   **The Perfect Insulator:** Suppose you could create a material with an infinitely large band gap. Would it be possible to dope this material to make it a semiconductor? Why or why not?
-*   **The Shrinking Limit:** Imagine continuing to shrink transistors until the gate oxide is only one atom thick. What quantum mechanical phenomena would dominate the behaviour of the transistor, and why would the classical models of field-effect conductivity break down?
+- **Relay scaling model:** Given a specified relay volume, switching time, coil energy, contact life, and component count, calculate size, delay, power, and reliability. Which assumptions fail when extrapolated to a processor?
+- **Large-gap limit:** Increase band-gap energy in a model while keeping defects, contacts, fields, and dopants specified. Why does “infinite band gap” leave the model's physical domain rather than define a manufacturable perfect insulator?
+- **Ultrathin gate stack:** As dimensions approach atomic scales, discuss tunnelling, interface states, variability, quantum confinement, electrostatics, reliability, and the limits of a classical long-channel model.
 
 ## 5. Household and browser-based explorations
 
-*   **Logic Gate Simulation:** Use a free online logic circuit simulator (such as Logic.ly or CircuitVerse). Build a simple circuit using AND, OR, and NOT gates. Try to construct a Half Adder circuit (which adds two binary bits) and verify its truth table by toggling the inputs.
-*   **Tear Down (Safe):** Find an old, broken electronic device (like a remote control, a cheap toy, or a digital clock) that runs on low-voltage batteries (AA or AAA). Open it up and identify the printed circuit board (PCB). Look for the black, plastic-encapsulated integrated circuits ("chips"). Note how the copper traces on the board connect the different components. *Do not open devices that plug into the mains power or contain large capacitors (like camera flashes).*
-*   **Solar Cell Reversibility:** If you have a small solar garden light, cover the solar panel with your hand. The light turns on. The solar panel is a large p-n junction. When light hits it, it generates a voltage. When it's dark, the circuit uses the battery to drive current through an LED (another p-n junction) to create light.
+- **Logic simulation:** Build gates and a half-adder in a browser simulator. Add propagation delay or unknown states where supported, and distinguish Boolean function from electrical implementation.
+- **Virtual teardown:** Use manufacturer diagrams, repair documentation, or high-resolution board photographs rather than opening discarded electronics. Identify packages, connectors, power sections, traces, and uncertainty about hidden layers.
+- **Thermal observation:** Use built-in operating-system temperature or power telemetry only when available, without bypassing safety limits. Compare idle and ordinary workloads and note that sensor placement and software estimates introduce uncertainty.
+- **Semiconductor metrology:** Explore NIST material on critical dimension, overlay, and process measurement. Explain why fabrication success cannot be inferred from a nominal node label alone.
 
 ## 6. Model-building prompts
 
-*   Using physical objects (like marbles, coins, or drawn symbols), create a visual model of a p-n junction. Show the p-type side with excess "holes" and the n-type side with excess "electrons". Demonstrate what happens at the boundary to form the depletion region.
-*   Draw a diagram showing the energy bands (valence and conduction) for a conductor, a semiconductor, and an insulator. Add arrows to represent the thermal excitation of electrons across the band gap at room temperature for each material.
-*   Construct a truth table for a NAND gate (NOT AND). Then, using only NAND gates in a logic simulator, try to build an inverter (NOT gate) and an AND gate. This demonstrates that NAND is a "universal gate" from which any logic circuit can be built.
+- Build a charge-accounting model of an abrupt p–n junction. Represent ionised dopants, reduced mobile-carrier density, electric field, and potential separately; do not portray holes as empty beads that simply disappear at the boundary.
+- Compare schematic band diagrams for a metal, intrinsic semiconductor, doped semiconductor, and insulator under stated temperature and equilibrium conditions. Mark Fermi level and explain why a class label is not determined by band gap alone.
+- Construct NAND-based Boolean functions in a simulator, then add propagation delay, fan-out, unknown state, or noise-margin constraints to separate logical universality from a physical implementation.
 
 ## 7. Self-explanation questions
 
@@ -59,9 +59,9 @@ content_license: CC-BY-4.0
 
 ## 8. Transfer questions
 
-*   The principles of p-n junctions are used in solar cells to convert light into electricity. How might these same principles be applied to create a sensor that detects specific chemical molecules in the air?
-*   If we reach the physical limits of shrinking silicon transistors (the end of Moore's law), what alternative physical mechanisms or materials might be used to continue increasing computing power? (Consider quantum computing, optical computing, or carbon nanotubes).
-*   How does the architecture of the human brain, with its billions of interconnected neurons, compare and contrast with the architecture of a modern CPU with its billions of interconnected transistors?
+- Compare a photovoltaic junction with a chemical or biological field-effect sensor. Which parts of the transduction chain involve carrier generation, surface potential, selective chemistry, amplification, calibration, and interference?
+- Instead of one “end of Moore's law,” identify separate limits and opportunities in devices, interconnect, memory, packaging, architecture, algorithms, photonics, quantum systems, and economics.
+- Compare an artificial neural-network computation graph with biological neural tissue only at explicitly chosen levels such as connectivity, dynamics, learning signal, energy, and embodiment. Why do matching component counts not establish functional or cognitive equivalence?
 
 ## 9. Suggested learning paths
 
@@ -71,4 +71,20 @@ content_license: CC-BY-4.0
 
 ## 10. Reasoning notes
 
-When reasoning about semiconductors, it is crucial to maintain the distinction between the macroscopic behaviour of the device (voltage, current, logic state) and the microscopic quantum phenomena that enable it (band gaps, carrier mobility, depletion regions). A common pitfall is trying to apply classical mechanics (like billiard balls bouncing through a pipe) to electrons in a crystal lattice; the wave nature of electrons and the concept of energy bands are essential for accurate causal explanations. Furthermore, always consider the scale: a single transistor's behaviour is governed by physics, but the behaviour of a billion transistors is governed by architecture and statistical reliability.
+Separate electronic structure from semiclassical transport, device behaviour from compact models, Boolean function from circuit voltage, and transistor count from system performance. Classical circuit and transport models remain useful within validated regimes; quantum theory does not replace every engineering abstraction. State temperature, bias, geometry, statistics, contacts, measurement, and uncertainty before extending a device explanation to an integrated system.
+
+## Phase 9 review boundaries and validity limits
+
+- Band, carrier, junction, and compact-device equations assume specified equilibrium, statistics, geometry, temperature, and bias regimes.
+- Threshold voltage is a model parameter, not a hard microscopic on/off boundary; leakage, short-channel effects, variability, and parasitics matter.
+- Technology-node names are industrial labels rather than literal dimensions of every device feature.
+- Device performance, yield, reliability, and scaling claims require metrology, architecture, packaging, workload, and thermal context.
+
+## 11. Sources
+
+1. Massachusetts Institute of Technology OpenCourseWare. *Integrated Microelectronic Devices*. https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/
+2. National Institute of Standards and Technology. *Semiconductors*. https://www.nist.gov/semiconductors
+3. Intel. *Moore's Law*. https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html
+4. National Institute of Standards and Technology. *CHIPS for America Metrology Program*. https://www.nist.gov/chips/research-development-programs/metrology-program
+5. Orji, N. G., et al. *Metrology for the Next Generation of Semiconductor Devices*. https://www.nist.gov/publications/metrology-next-generation-semiconductor-devices
+6. Postek, M. T., and Bennett, M. H. *Critical Dimension and Overlay Metrology*. https://www.nist.gov/publications/critical-dimension-and-overlay-metrology

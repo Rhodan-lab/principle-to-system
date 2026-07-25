@@ -12,6 +12,7 @@ on:
       - 'scripts/apply_foundations_review_sources.py'
       - 'scripts/validate_foundations_review.py'
       - 'scripts/validate_foundations_continuity_phase8.py'
+      - 'scripts/validate_foundations_continuity_phase9.py'
       - 'reports/phase-6-foundations-review.md'
       - 'reports/phase-6-foundations-sources.json'
       - 'INDEX.md'
@@ -26,6 +27,7 @@ on:
       - 'sources/foundations-review-sources.json'
       - 'scripts/apply_foundations_review_sources.py'
       - 'scripts/validate_foundations_review.py'
+      - 'scripts/validate_foundations_continuity_phase9.py'
       - 'reports/phase-6-foundations-review.md'
       - 'reports/phase-6-foundations-sources.json'
       - 'INDEX.md'
@@ -56,8 +58,8 @@ jobs:
       - name: Verify Phase 6 reviewed source additions
         run: python3 scripts/apply_foundations_review_sources.py --check
 
-      - name: Validate Foundations scientific review through Phase 8
-        run: python3 scripts/validate_foundations_continuity_phase8.py --allow-downstream-reviewed
+      - name: Validate Foundations scientific review through Phase 9
+        run: python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py
