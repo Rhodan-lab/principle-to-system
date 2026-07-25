@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - agent/phase-7-physical-science-review
-    paths:
-      - 'scripts/apply_phase7_physical_science_review.py'
-      - 'scripts/run_phase7_review.py'
-      - '.github/workflows/apply-phase-7-review.yml'
   pull_request:
     branches:
       - main
@@ -37,7 +33,25 @@ jobs:
           python-version: '3.12'
 
       - name: Apply reviewed physical-science content
-        run: python3 scripts/run_phase7_review.py --write
+        id: transform
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/run_phase7_review.py --write > phase7-transform.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase7-transform.log
+          exit 0
+
+      - name: Upload transformer diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase7-transform-diagnostics
+          path: phase7-transform.log
+
+      - name: Stop on transformation errors
+        if: steps.transform.outputs.status != '0'
+        run: exit 1
 
       - name: Verify idempotent reviewed state
         run: python3 scripts/run_phase7_review.py --check
