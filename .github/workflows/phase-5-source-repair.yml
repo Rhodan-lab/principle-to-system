@@ -6,18 +6,22 @@ on:
       - agent/phase-5-source-repair
     paths:
       - 'scripts/normalize_source_ledger.py'
+      - 'scripts/apply_verified_source_baseline.py'
       - 'sources/source-ledger.md'
       - 'sources/verified-source-baseline.json'
       - 'reports/phase-5-source-audit.json'
+      - 'reports/phase-5-source-replacements.json'
       - '.github/workflows/phase-5-source-repair.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'scripts/normalize_source_ledger.py'
+      - 'scripts/apply_verified_source_baseline.py'
       - 'sources/source-ledger.md'
       - 'sources/verified-source-baseline.json'
       - 'reports/phase-5-source-audit.json'
+      - 'reports/phase-5-source-replacements.json'
       - '.github/workflows/phase-5-source-repair.yml'
   workflow_dispatch:
 
@@ -45,10 +49,18 @@ jobs:
           python-version: '3.12'
 
       - name: Recover and normalize legacy rows
-        continue-on-error: true
         run: python3 scripts/normalize_source_ledger.py --write
 
-      - name: Commit normalized ledger and audit
+      - name: Apply inspected source replacements
+        run: python3 scripts/apply_verified_source_baseline.py --write
+
+      - name: Regenerate final source-quality audit
+        run: python3 scripts/normalize_source_ledger.py --write --strict
+
+      - name: Verify replacement idempotence
+        run: python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Commit repaired ledger and reports
         shell: bash
         run: |
           if git diff --quiet; then
@@ -57,8 +69,8 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add sources/source-ledger.md reports/phase-5-source-audit.json
-          git commit -m 'chore: normalize legacy source ledger'
+          git add sources/source-ledger.md reports/phase-5-source-audit.json reports/phase-5-source-replacements.json
+          git commit -m 'chore: apply verified source baseline'
           git push origin HEAD:agent/phase-5-source-repair
 
   verify:
@@ -73,5 +85,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify normalized source structure
-        run: python3 scripts/normalize_source_ledger.py --check
+      - name: Verify normalized source structure and coverage
+        run: python3 scripts/normalize_source_ledger.py --check --strict
+
+      - name: Verify inspected replacements are applied
+        run: python3 scripts/apply_verified_source_baseline.py --check
