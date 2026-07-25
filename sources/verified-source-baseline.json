@@ -1,0 +1,267 @@
+[
+  {
+    "title": "Introduction to Modeling and Simulation",
+    "author": "Massachusetts Institute of Technology OpenCourseWare",
+    "date": "2012",
+    "locator": "https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/",
+    "type": "Course Material",
+    "modules": "03-mathematical-models",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional introduction to continuum, atomistic, and quantum modeling and simulation approaches.",
+    "replaces": []
+  },
+  {
+    "title": "Principles of Applied Mathematics",
+    "author": "Massachusetts Institute of Technology OpenCourseWare",
+    "date": "2014",
+    "locator": "https://ocw.mit.edu/courses/18-311-principles-of-applied-mathematics-spring-2014/",
+    "type": "Course Material",
+    "modules": "03-mathematical-models",
+    "accessed": "2026-07-25",
+    "relevance": "University treatment of mathematical models, differential equations, approximation, and analysis.",
+    "replaces": []
+  },
+  {
+    "title": "The Book of Why: The New Science of Cause and Effect",
+    "author": "Judea Pearl and Dana Mackenzie",
+    "date": "2018",
+    "locator": "https://www.hachettebookgroup.com/titles/judea-pearl/the-book-of-why/9780465097616/",
+    "type": "Book",
+    "modules": "04-probability-statistics",
+    "accessed": "2026-07-25",
+    "relevance": "Publisher record for the existing source on causal models and the distinction between association and intervention.",
+    "replaces": ["https://en.wikipedia.org/wiki/The_Book_of_Why"]
+  },
+  {
+    "title": "Verification and Validation in Computational Science and Engineering",
+    "author": "Patrick J. Roache",
+    "date": "1998",
+    "locator": "https://hero.epa.gov/reference/156915/",
+    "type": "Textbook",
+    "modules": "05-computation-algorithms",
+    "accessed": "2026-07-25",
+    "relevance": "Government bibliographic record for the foundational computational verification and validation text.",
+    "replaces": ["ISBN: 978-0913692214"]
+  },
+  {
+    "title": "The Standard Model",
+    "author": "CERN",
+    "date": "n.d.",
+    "locator": "https://home.cern/science/physics/standard-model/",
+    "type": "Research Institution",
+    "modules": "06-matter-quantum",
+    "accessed": "2026-07-25",
+    "relevance": "CERN overview of the Standard Model, fundamental particles, interactions, and known limitations.",
+    "replaces": ["https://en.wikipedia.org/wiki/Standard_Model"]
+  },
+  {
+    "title": "Development of Quantum Theory",
+    "author": "OpenStax",
+    "date": "2019",
+    "locator": "https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory",
+    "type": "Open Textbook",
+    "modules": "06-matter-quantum",
+    "accessed": "2026-07-25",
+    "relevance": "Peer-reviewed open-textbook treatment of wavefunctions, quantum numbers, orbitals, and the Schrödinger model of atoms.",
+    "replaces": [
+      "https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation",
+      "https://www.khanacademy.org/science/physics/quantum-physics/quantum-numbers-and-orbitals/a/the-quantum-mechanical-model-of-the-atom"
+    ]
+  },
+  {
+    "title": "Atomic Spectroscopy Databases",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/pml/atomic-spectroscopy-databases",
+    "type": "Government Scientific Agency",
+    "modules": "06-matter-quantum",
+    "accessed": "2026-07-25",
+    "relevance": "Critically evaluated atomic energy-level, wavelength, transition, and spectroscopy data.",
+    "replaces": []
+  },
+  {
+    "title": "Physics II: Electricity and Magnetism",
+    "author": "Massachusetts Institute of Technology OpenCourseWare",
+    "date": "2019",
+    "locator": "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/",
+    "type": "Course Material",
+    "modules": "10-electricity-magnetism",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional course covering fields, circuits, induction, electromagnetism, and electronic-device applications.",
+    "replaces": [
+      "https://en.wikipedia.org/wiki/Electromagnetic_induction",
+      "http://hyperphysics.phy-astr.gsu.edu/hbase/emcon.html"
+    ]
+  },
+  {
+    "title": "Maxwell's Equations and Electromagnetic Waves",
+    "author": "OpenStax",
+    "date": "2016",
+    "locator": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves",
+    "type": "Open Textbook",
+    "modules": "10-electricity-magnetism",
+    "accessed": "2026-07-25",
+    "relevance": "Open-textbook derivation and interpretation of Maxwell's equations, Faraday induction, and electromagnetic waves.",
+    "replaces": ["https://en.wikipedia.org/wiki/Maxwell%27s_equations"]
+  },
+  {
+    "title": "Fiber-Optic Communication Systems",
+    "author": "Govind P. Agrawal",
+    "date": "2010",
+    "locator": "https://doi.org/10.1002/9780470918524",
+    "type": "Textbook",
+    "modules": "11-waves-signals",
+    "accessed": "2026-07-25",
+    "relevance": "Publisher DOI for the fourth edition covering optical-fiber components, modulation, propagation, receivers, and system design.",
+    "replaces": ["ISBN: 978-0470505113"]
+  },
+  {
+    "title": "Optics, 5th edition",
+    "author": "Eugene Hecht",
+    "date": "2016",
+    "locator": "https://www.pearson.com/en-us/subject-catalog/p/optics/P200000006793/9780133977226",
+    "type": "Textbook",
+    "modules": "11-waves-signals",
+    "accessed": "2026-07-25",
+    "relevance": "Publisher record for the existing optics text on wave propagation, interference, diffraction, and instrumentation.",
+    "replaces": ["ISBN: 978-0133977226"]
+  },
+  {
+    "title": "Regulation of Cellular Respiration",
+    "author": "OpenStax",
+    "date": "2018",
+    "locator": "https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration",
+    "type": "Open Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-25",
+    "relevance": "Open-textbook account of cellular-respiration control, ATP demand, feedback inhibition, and pathway regulation.",
+    "replaces": [
+      "https://en.wikipedia.org/wiki/Bioenergetics",
+      "https://en.wikipedia.org/wiki/Cellular_respiration"
+    ]
+  },
+  {
+    "title": "Protein Function",
+    "author": "Molecular Biology of the Cell via NCBI Bookshelf",
+    "date": "2002",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26911/",
+    "type": "Institutional Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional textbook chapter covering protein function, catalysis, enzyme kinetics, binding, and molecular machines.",
+    "replaces": ["https://en.wikipedia.org/wiki/Enzyme_kinetics"]
+  },
+  {
+    "title": "Principles of Membrane Transport",
+    "author": "Molecular Biology of the Cell via NCBI Bookshelf",
+    "date": "2002",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26815/",
+    "type": "Institutional Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional treatment of membrane permeability, channels, carriers, electrochemical gradients, and active transport.",
+    "replaces": ["https://en.wikipedia.org/wiki/Membrane_transport"]
+  },
+  {
+    "title": "Electron-Transport Chains and Their Proton Pumps",
+    "author": "Molecular Biology of the Cell via NCBI Bookshelf",
+    "date": "2002",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26904/",
+    "type": "Institutional Textbook",
+    "modules": "13-cells-bioenergetics",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional explanation of respiratory electron transport, proton gradients, ATP synthesis, and uncoupling.",
+    "replaces": []
+  },
+  {
+    "title": "Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid",
+    "author": "James D. Watson and Francis H. C. Crick",
+    "date": "1953",
+    "locator": "https://doi.org/10.1038/171737a0",
+    "type": "Primary Literature",
+    "modules": "14-dna-evolution",
+    "accessed": "2026-07-25",
+    "relevance": "Original primary paper proposing the double-helical structure of DNA and complementary base pairing.",
+    "replaces": ["http://www.nature.com/scitable/topicpage/discovery-of-dna-structure-and-function-watson-397"]
+  },
+  {
+    "title": "DNA Replication Mechanisms",
+    "author": "Molecular Biology of the Cell via NCBI Bookshelf",
+    "date": "2002",
+    "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26850/",
+    "type": "Institutional Textbook",
+    "modules": "14-dna-evolution",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional account of replication forks, polymerases, proofreading, leading and lagging strands, and coordinated replication machinery.",
+    "replaces": ["http://www.nature.com/scitable/topicpage/major-molecular-events-of-dna-replication-413"]
+  },
+  {
+    "title": "Semiconductors",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/semiconductors",
+    "type": "Government Scientific Agency",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-25",
+    "relevance": "NIST overview of semiconductor materials, devices, integrated circuits, measurement, fabrication, and reliability.",
+    "replaces": [
+      "https://en.wikipedia.org/wiki/Integrated_circuit",
+      "https://en.wikipedia.org/wiki/Semiconductor_device"
+    ]
+  },
+  {
+    "title": "Integrated Microelectronic Devices",
+    "author": "Massachusetts Institute of Technology OpenCourseWare",
+    "date": "2007",
+    "locator": "https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/",
+    "type": "Course Material",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-25",
+    "relevance": "University course on silicon integrated-circuit devices, energy-band models, junctions, and MOSFET design.",
+    "replaces": []
+  },
+  {
+    "title": "Moore's Law",
+    "author": "Intel",
+    "date": "1965",
+    "locator": "https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html",
+    "type": "Primary Corporate Archive",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional archive explaining Gordon Moore's original 1965 component-density observation and its historical context.",
+    "replaces": ["https://en.wikipedia.org/wiki/Moore%27s_law"]
+  },
+  {
+    "title": "The Nobel Prize in Physics 1956",
+    "author": "Nobel Prize Outreach",
+    "date": "1956",
+    "locator": "https://www.nobelprize.org/prizes/physics/1956/summary/",
+    "type": "Scientific Institution",
+    "modules": "18-semiconductors-electronics",
+    "accessed": "2026-07-25",
+    "relevance": "Institutional record of semiconductor research and discovery of the transistor effect.",
+    "replaces": ["https://en.wikipedia.org/wiki/Transistor"]
+  },
+  {
+    "title": "Computer Networking: A Top-Down Approach",
+    "author": "James F. Kurose and Keith W. Ross",
+    "date": "2025",
+    "locator": "https://www.pearson.com/en-us/subject-catalog/p/computer-networking-a-top-down-approach/P200000013385",
+    "type": "Textbook",
+    "modules": "19-software-ai",
+    "accessed": "2026-07-25",
+    "relevance": "Publisher record for the networking text covering layered architecture, protocols, transport, routing, wireless systems, and security.",
+    "replaces": ["Pearson"]
+  },
+  {
+    "title": "Operating System Concepts, 10th Edition",
+    "author": "Abraham Silberschatz, Peter B. Galvin, and Greg Gagne",
+    "date": "2018",
+    "locator": "https://uat.store.wiley.com/en-us/operating-system-concepts-10th-edition-p-9781119320913",
+    "type": "Textbook",
+    "modules": "19-software-ai",
+    "accessed": "2026-07-25",
+    "relevance": "Publisher record for the operating-systems text covering processes, memory, storage, protection, and distributed systems.",
+    "replaces": ["Wiley"]
+  }
+]
