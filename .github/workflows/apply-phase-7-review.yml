@@ -35,12 +35,12 @@ jobs:
       - name: Apply direct reviewed sources
         run: python3 scripts/apply_phase7_review_sources.py --write
 
-      - name: Apply reviewed physical-science content
+      - name: Apply final reviewed physical-science content
         id: transform
         shell: bash
         run: |
           set +e
-          python3 scripts/run_phase7_review.py --write > phase7-transform.log 2>&1
+          python3 scripts/finalize_phase7_review.py --write > phase7-transform.log 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
           cat phase7-transform.log
@@ -59,7 +59,7 @@ jobs:
       - name: Verify source and content idempotence
         run: |
           python3 scripts/apply_phase7_review_sources.py --check
-          python3 scripts/run_phase7_review.py --check
+          python3 scripts/finalize_phase7_review.py --check
 
       - name: Commit reviewed files and source records
         shell: bash
@@ -71,5 +71,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add science/06-matter-quantum science/07-chemical-bonding science/08-energy-thermodynamics science/09-motion-forces science/10-electricity-magnetism science/11-waves-signals science/12-fluids-materials INDEX.md sources/source-ledger.md reports/phase-7-physical-science-sources.json
-          git commit -m 'content: strengthen Phase 7 review and sources'
+          git commit -m 'content: finalize Phase 7 physical science review'
           git push origin HEAD:agent/phase-7-physical-science-review
