@@ -6,6 +6,7 @@ on:
       - main
       - agent/phase-5-source-repair
     paths:
+      - 'PROJECT_STATE.md'
       - 'scripts/normalize_source_ledger.py'
       - 'scripts/apply_verified_source_baseline.py'
       - 'sources/source-ledger.md'
@@ -17,6 +18,7 @@ on:
     branches:
       - main
     paths:
+      - 'PROJECT_STATE.md'
       - 'scripts/normalize_source_ledger.py'
       - 'scripts/apply_verified_source_baseline.py'
       - 'sources/source-ledger.md'
