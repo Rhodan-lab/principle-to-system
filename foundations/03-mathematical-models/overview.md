@@ -1,98 +1,182 @@
 ---
-title: "Mathematical Models, Quantities, Vectors, and Scale"
+title: "Mathematical models, quantities, vectors, and scale"
 slug: 03-mathematical-models
 module: "Module 03"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [01-scientific-reasoning]
 connections: [04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Mathematical Models, Quantities, Vectors, and Scale
+# Mathematical models, quantities, vectors, and scale
 
 ## 1. The central questions
 
-How do we translate the physical world into the language of mathematics? When we observe a falling apple, a cooling cup of coffee, or a fluctuating stock market, how can we predict their future states? The central questions of mathematical modelling revolve around abstraction and quantification: What are the essential features of a system? How do these features relate to one another? How do changes in one quantity affect others? By constructing mathematical models, we bridge the gap between qualitative observation and quantitative prediction, allowing us to simulate reality, test hypotheses, and engineer solutions.
+How can a real system be represented with variables, relationships, and rules that are simple enough to analyze yet adequate for a purpose? Which details belong inside the model boundary? What data determine parameters, and what observations test the model? A mathematical model is not reality translated without loss. It is a purposeful representation whose usefulness depends on its question, assumptions, scale, data, uncertainty, and range of validity.
 
 ## 2. Observable phenomena
 
-The physical world is replete with phenomena that demand mathematical description. A pendulum swings with a regular period, its motion tracing a sinusoidal curve. A population of bacteria grows exponentially until constrained by resources, at which point the growth rate slows, following a logistic curve. A heated metal rod cools down, its temperature approaching that of the surrounding air at a rate proportional to the temperature difference. These observable phenomena—periodic motion, exponential growth, and exponential decay—are not isolated events but manifestations of underlying mathematical structures that govern the universe.
+Many systems show recurring mathematical patterns: nearly periodic oscillation, approximately exponential growth or decay, diffusion, saturation, thresholds, conservation, and feedback. Similar curve shapes do not prove identical mechanisms. Exponential-looking change can arise from several processes, and a straight line over a narrow range can hide a non-linear relationship.
+
+Modelling begins by defining the system, selecting quantities, and identifying candidate mechanisms or empirical relationships. It continues through calibration, solution, comparison with observations, and revision.
 
 ## 3. Essential concepts
 
-To build mathematical models, we must first define the language of quantities. 
+**Quantity:** A property that can be expressed by a number and a reference such as a unit. Variables should be defined operationally and dimensionally.
 
-**Scalars** are quantities fully described by a magnitude (a number) and a unit. Examples include mass ($m$), temperature ($T$), and time ($t$). 
+**State variable:** A quantity included to summarize the current state sufficiently for the model to determine future evolution when inputs are specified.
 
-**Vectors** are quantities that require both a magnitude and a direction for complete description. Examples include velocity ($\vec{v}$), force ($\vec{F}$), and acceleration ($\vec{a}$). Vectors are essential for modelling phenomena in multi-dimensional space.
+**Parameter:** A quantity treated as fixed during one model run, such as mass, stiffness, rate constant, or carrying capacity. Parameters may still be uncertain or vary across systems.
 
-**Tensors** are a generalization of scalars and vectors. A scalar is a tensor of rank 0, and a vector is a tensor of rank 1. Higher-rank tensors, such as the stress tensor or the moment of inertia tensor, describe complex relationships between vectors and are crucial in fields like fluid dynamics and general relativity.
+**Scalar:** A quantity represented by one component that is invariant under a change of coordinate orientation, such as mass or thermodynamic temperature.
 
-**Functions** describe the relationship between variables. A function $f(x)$ assigns a unique output value to each input value $x$. Functions are the building blocks of mathematical models, representing how one quantity depends on another.
+**Vector:** A geometric quantity with components that transform according to vector rules, such as displacement, velocity, or force. A vector is not merely “a number with a direction”; its coordinate representation depends on the basis.
 
-**Rates of change** describe how a quantity changes with respect to another, typically time or space. The derivative, a fundamental concept in calculus, formalizes the notion of an instantaneous rate of change.
+**Tensor:** A multilinear geometric object whose components obey tensor transformation rules. Stress and moment of inertia require second-rank tensors because their effects depend on direction.
+
+**Function and equation:** A function maps admissible inputs to outputs. Equations can encode definitions, constraints, conservation laws, constitutive relations, empirical fits, or dynamical rules.
+
+**Calibration:** Estimation of model parameters or discrepancy terms using data.
+
+**Verification and validation:** Verification checks whether equations and calculations are implemented correctly. Validation evaluates whether model outputs agree adequately with observations for the intended use.
+
+**Sensitivity and identifiability:** Sensitivity measures how outputs change with inputs. Identifiability asks whether available observations can distinguish parameter values or model structures.
 
 ## 4. Mechanisms and causal chains
 
-Mathematical models capture the mechanisms and causal chains of physical systems. Consider a simple harmonic oscillator, such as a mass on a spring. The causal chain begins with a displacement from equilibrium, which generates a restoring force (Hooke's Law). This force causes an acceleration (Newton's Second Law), which changes the velocity, which in turn changes the displacement. This continuous feedback loop is elegantly captured by a differential equation, which relates the displacement, velocity, and acceleration of the mass.
+A model may encode a mechanism, but mathematics alone does not make it causal. For a mass–spring system,
+
+```text
+displacement
+→ restoring force
+→ acceleration
+→ velocity change
+→ displacement change
+```
+
+is represented by
+
+$$m\frac{d^2x}{dt^2}+c\frac{dx}{dt}+kx=F(t).$$
+
+Here $m$ is mass, $c$ damping, $k$ stiffness, and $F(t)$ external force. The equation is useful only under conditions where these lumped parameters and linear relationships are adequate. A fitted sinusoid might predict the same motion without explaining the force mechanism.
 
 ## 5. Important quantities
 
-Several quantities are fundamental to mathematical modelling across various domains:
-
-| Quantity | Symbol | SI Unit | Description |
-| :--- | :---: | :---: | :--- |
-| Time | $t$ | $\text{s}$ | The continuous progression of existence and events. |
-| Position | $\vec{r}$ | $\text{m}$ | The location of an object in space relative to a reference point. |
-| Velocity | $\vec{v}$ | $\text{m/s}$ | The rate of change of position with respect to time. |
-| Acceleration | $\vec{a}$ | $\text{m/s}^2$ | The rate of change of velocity with respect to time. |
-| Mass | $m$ | $\text{kg}$ | A measure of an object's resistance to acceleration. |
-| Force | $\vec{F}$ | $\text{N}$ ($\text{kg}\cdot\text{m/s}^2$) | An interaction that, when unopposed, changes the motion of an object. |
+| Quantity | Symbol | Typical unit | Role |
+| --- | --- | --- | --- |
+| Independent variable | $t$ or $x$ | context-dependent | Indexes time, position, or another input. |
+| State vector | $\mathbf{x}$ | mixed units | Collects variables needed to represent system state. |
+| Input | $\mathbf{u}$ | context-dependent | External forcing or control. |
+| Parameter vector | $\boldsymbol{\theta}$ | mixed units | Defines material, rate, geometry, or model properties. |
+| Output | $\mathbf{y}$ | context-dependent | Quantity compared with observations or used for decisions. |
+| Residual | $r_i=y_i-\hat y_i$ | same as output | Difference between observation and model prediction. |
+| Sensitivity | $\partial y/\partial\theta_j$ | output per parameter unit | Local response to a parameter change. |
+| Characteristic scale | $L_c,T_c,Q_c$ | corresponding units | Reference size used for comparison and non-dimensionalization. |
 
 ## 6. Mathematical models and equations
 
-Mathematical models often take the form of differential equations, which relate a function to its derivatives. 
+A general continuous-time state-space model is
 
-**Linearisation** is a powerful technique used to simplify complex, non-linear models. By approximating a non-linear function with a linear one near a specific point (often an equilibrium point), we can analyze the system's behavior using the tools of linear algebra and linear differential equations. For example, the equation for a simple pendulum is non-linear:
-$$ \frac{d^2\theta}{dt^2} + \frac{g}{L}\sin(\theta) = 0 $$
-For small angles ($\theta \approx 0$), we can linearise the equation using the approximation $\sin(\theta) \approx \theta$:
-$$ \frac{d^2\theta}{dt^2} + \frac{g}{L}\theta = 0 $$
-This linearised equation is much easier to solve and provides a highly accurate model for small oscillations.
+$$\frac{d\mathbf{x}}{dt}=\mathbf{f}(\mathbf{x},\mathbf{u},\boldsymbol{\theta},t),$$
 
-**Dimensional analysis** is a method for checking the consistency of mathematical models and deriving relationships between physical quantities. By ensuring that the dimensions (e.g., length, mass, time) on both sides of an equation match, we can verify the model's validity and even deduce the form of unknown equations.
+$$\mathbf{y}=\mathbf{g}(\mathbf{x},\mathbf{u},\boldsymbol{\theta},t).$$
+
+The functions $\mathbf{f}$ and $\mathbf{g}$ may come from physical laws, empirical relationships, or a combination.
+
+### Linearization
+
+Near a reference state $\mathbf{x}_0$, a differentiable non-linear model can be approximated by a first-order Taylor expansion:
+
+$$\mathbf{f}(\mathbf{x})\approx\mathbf{f}(\mathbf{x}_0)+J_f(\mathbf{x}_0)(\mathbf{x}-\mathbf{x}_0),$$
+
+where $J_f$ is the Jacobian matrix. This is a local approximation; accuracy should be checked over the actual operating region.
+
+For a pendulum,
+
+$$\frac{d^2\theta}{dt^2}+\frac{g}{L}\sin\theta=0.$$
+
+When $|\theta|$ is sufficiently small and expressed in radians,
+
+$$\sin\theta\approx\theta,$$
+
+so
+
+$$\frac{d^2\theta}{dt^2}+\frac{g}{L}\theta=0.$$
+
+The approximation error increases with amplitude, and damping or moving supports require additional terms.
+
+### Non-dimensionalization
+
+Let $x=L_cx^*$ and $t=T_ct^*$. Rewriting equations in dimensionless variables can reveal governing groups, compare systems of different size, and identify negligible terms. Dimensional consistency is necessary but not sufficient for physical correctness.
+
+### Calibration and residuals
+
+Parameters can be estimated by minimizing a loss such as
+
+$$J(\boldsymbol{\theta})=\sum_{i=1}^{n}w_i\left[y_i-\hat y_i(\boldsymbol{\theta})\right]^2.$$
+
+A small fitted loss does not prove the model structure is correct. Residual patterns, out-of-sample prediction, parameter plausibility, uncertainty, and comparison with alternatives are also needed.
 
 ## 7. Definitions of symbols and units
 
-- $\theta$: Angular displacement (radians, $\text{rad}$)
-- $t$: Time (seconds, $\text{s}$)
-- $g$: Acceleration due to gravity ($\approx 9.81 \text{ m/s}^2$)
-- $L$: Length of the pendulum (meters, $\text{m}$)
+- $\mathbf{x}$: State vector.
+- $\mathbf{u}$: Input or forcing vector.
+- $\boldsymbol{\theta}$: Parameter vector.
+- $\mathbf{y}$: Model output.
+- $\mathbf{f},\mathbf{g}$: State-evolution and observation functions.
+- $J_f$: Jacobian matrix of partial derivatives.
+- $\theta$: Pendulum angle; radian, dimensionless in SI.
+- $g$: Local gravitational acceleration, $\mathrm{m\,s^{-2}}$.
+- $L$: Pendulum length, $\mathrm{m}$.
+- $r_i$: Residual, same unit as $y_i$.
+- $w_i$: Weight, chosen according to the fitting model.
 
 ## 8. Assumptions and approximations
 
-Every mathematical model is an abstraction of reality and relies on assumptions and approximations. The linearised pendulum model assumes that the angle of swing is small, the string is massless and inextensible, and there is no air resistance or friction at the pivot. When these assumptions are violated (e.g., for large swings or in a viscous fluid), the model's predictions will diverge from reality, necessitating a more complex model.
+A model should state:
+
+- system boundary and omitted interactions;
+- spatial and temporal resolution;
+- conservation laws and constitutive relations used;
+- parameter constancy or variability;
+- initial and boundary conditions;
+- deterministic or stochastic treatment of variation;
+- approximation order and operating range;
+- calibration data and independence of validation data;
+- model-form discrepancy and measurement uncertainty;
+- quantities or regimes for which the model should not be used.
+
+An assumption is not automatically a flaw. It becomes a flaw when it is hidden, unjustified for the intended use, or applied outside its range.
 
 ## 9. Spatial and temporal scales
 
-Mathematical models operate across a vast range of spatial and temporal scales. **Orders of magnitude** provide a way to compare quantities that differ vastly in size. For example, the mass of an electron is on the order of $10^{-30} \text{ kg}$, while the mass of the Sun is on the order of $10^{30} \text{ kg}$. 
+Different mechanisms dominate at different scales. A continuum model may be adequate when microscopic details average out, while molecular or agent-based models may be needed when discreteness matters. Multi-scale modelling connects representations rather than assuming one equation is valid everywhere.
 
-**Scaling laws** describe how the properties of a system change as its size changes. For instance, the surface area of an object scales with the square of its characteristic length ($L^2$), while its volume scales with the cube ($L^3$). This square-cube law explains why large animals have proportionally thicker legs than small animals (to support their weight, which scales with volume) and why cells cannot grow indefinitely large (as their surface area, which controls nutrient exchange, would not keep pace with their volume).
+Scaling laws such as area $\propto L^2$ and volume $\propto L^3$ explain important tendencies, but real organisms and engineered systems can change shape, material, posture, metabolism, internal transport, and control as size changes. The square–cube law is therefore a starting constraint, not a complete explanation of biological form.
 
 ## 10. Common misconceptions
 
-A common misconception is that a mathematical model is a perfect representation of reality. In truth, as statistician George Box famously noted, "All models are wrong, but some are useful." Models are simplifications designed to capture the essential features of a system while ignoring irrelevant details. Another misconception is that more complex models are always better. Often, a simple, linearised model provides more insight and is easier to analyze than a highly complex, non-linear model, provided the assumptions of the simple model hold.
+- **A model is a miniature reality:** A model is a purpose-dependent representation.
+- **A good fit proves the mechanism:** Different models can fit the same data, especially inside the calibration range.
+- **More parameters always improve the model:** Added flexibility can reduce interpretability, identifiability, and out-of-sample performance.
+- **Dimensionally correct means physically correct:** Dimensional consistency cannot determine signs, dimensionless constants, mechanisms, or boundary conditions.
+- **Validation proves a model universally true:** Validation evidence is conditional on quantities, regimes, data quality, and intended use.
+- **Higher fidelity always means higher trust:** A complex model can contain more unresolved assumptions, numerical error, and uncertain parameters.
 
 ## 11. Connections to other modules
 
-- **01-scientific-reasoning**: Mathematical models are the formal expression of scientific hypotheses and theories.
-- **04-classical-mechanics**: Classical mechanics relies heavily on vectors, differential equations, and calculus to model the motion of objects.
-- **05-thermodynamics**: Thermodynamics uses mathematical models to describe the transfer of heat and work, often employing statistical mechanics to bridge microscopic and macroscopic scales.
+- **01-scientific-reasoning:** Models formalize hypotheses and competing explanations.
+- **02-measurement-uncertainty:** Observations, calibration, and uncertainty determine what a model can learn and test.
+- **04-probability-statistics:** Statistical models represent variability, parameter uncertainty, and residual structure.
+- **05-computation-algorithms:** Numerical methods solve models and introduce discretization and floating-point effects.
+- **08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials:** These modules supply domain-specific governing laws, constitutive relations, and characteristic scales.
 
 ## 12. Sources
 
-1. Meerschaert, M. M. (2013). *Mathematical Modeling* (4th ed.). Academic Press. [1]
-2. Mahajan, S. (2010). *Street-Fighting Mathematics: The Art of Educated Guessing and Opportunistic Problem Solving*. MIT Press. [2]
-3. Barenblatt, G. I. (1996). *Scaling, Self-similarity, and Intermediate Asymptotics: Dimensional Analysis and Intermediate Asymptotics*. Cambridge University Press. [3]
-4. Giordano, F. R., Fox, W. P., & Horton, S. B. (2013). *A First Course in Mathematical Modeling* (5th ed.). Brooks/Cole. [4]
+1. Meerschaert, M. M. (2013). *Mathematical Modeling* (4th ed.). Academic Press. https://www.sciencedirect.com/book/monograph/9780123869128/mathematical-modeling
+2. Mahajan, S. (2010). *Street-Fighting Mathematics*. MIT Press. https://mitpress.mit.edu/9780262514293/street-fighting-mathematics/
+3. Barenblatt, G. I. (1996). *Scaling, Self-similarity, and Intermediate Asymptotics*. Cambridge University Press. https://www.cambridge.org/core/books/scaling-selfsimilarity-and-intermediate-asymptotics/3B56096C3B7E822794C81B51F7370B82
+4. Giordano, F. R., Fox, W. P., & Horton, S. B. (2013). *A First Course in Mathematical Modeling* (5th ed.). Cengage. https://www.cengage.com/c/a-first-course-in-mathematical-modeling-5e-giordano/9781285050904/
+5. MIT OpenCourseWare. *Introduction to Modeling and Simulation*. https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/
