@@ -10,6 +10,15 @@ on:
       - 'science/**'
       - 'technology/**'
       - '.github/workflows/normalize-phase-4-metadata.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/normalize_module_metadata.py'
+      - 'foundations/**'
+      - 'science/**'
+      - 'technology/**'
+      - '.github/workflows/normalize-phase-4-metadata.yml'
   workflow_dispatch:
 
 permissions:
@@ -19,7 +28,7 @@ jobs:
   normalize:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out repair branch
         uses: actions/checkout@v4
         with:
           ref: agent/phase-4-metadata-normalization
