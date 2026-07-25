@@ -1,40 +1,18 @@
 {
   "generated": "2026-07-25",
-  "input_cells": 872,
-  "logical_rows_recovered": 109,
-  "normalized_rows": 109,
+  "input_cells": 880,
+  "logical_rows_recovered": 110,
+  "normalized_rows": 110,
   "duplicates_removed": [],
   "parse_errors": [],
   "normalization_notes": [],
   "invalid_access_dates": [],
-  "invalid_locators": [
-    {
-      "title": "Verification and Validation in Computational Science and Engineering",
-      "locator": "ISBN: 978-0913692214"
-    },
-    {
-      "title": "Fiber-Optic Communication Systems (4th ed.)",
-      "locator": "ISBN: 978-0470505113"
-    },
-    {
-      "title": "Optics (5th ed.)",
-      "locator": "ISBN: 978-0133977226"
-    },
-    {
-      "title": "Computer Networking: A Top-Down Approach",
-      "locator": "Pearson"
-    },
-    {
-      "title": "Operating System Concepts",
-      "locator": "Wiley"
-    }
-  ],
+  "invalid_locators": [],
   "unmapped_module_fields": [],
   "tier_counts": {
-    "1": 33,
-    "2": 44,
-    "3": 15,
-    "4": 17
+    "1": 36,
+    "2": 57,
+    "3": 17
   },
   "module_coverage": {
     "01-scientific-reasoning": {
@@ -50,8 +28,8 @@
       "minimum_strong": 2
     },
     "03-mathematical-models": {
-      "total_sources": 4,
-      "policy_tier_1_or_2": 1,
+      "total_sources": 6,
+      "policy_tier_1_or_2": 3,
       "target_total": 4,
       "minimum_strong": 2
     },
@@ -69,7 +47,7 @@
     },
     "06-matter-quantum": {
       "total_sources": 4,
-      "policy_tier_1_or_2": 1,
+      "policy_tier_1_or_2": 4,
       "target_total": 4,
       "minimum_strong": 2
     },
@@ -92,8 +70,8 @@
       "minimum_strong": 2
     },
     "10-electricity-magnetism": {
-      "total_sources": 8,
-      "policy_tier_1_or_2": 4,
+      "total_sources": 7,
+      "policy_tier_1_or_2": 6,
       "target_total": 4,
       "minimum_strong": 2
     },
@@ -111,13 +89,13 @@
     },
     "13-cells-bioenergetics": {
       "total_sources": 4,
-      "policy_tier_1_or_2": 0,
+      "policy_tier_1_or_2": 4,
       "target_total": 4,
       "minimum_strong": 2
     },
     "14-dna-evolution": {
       "total_sources": 6,
-      "policy_tier_1_or_2": 2,
+      "policy_tier_1_or_2": 4,
       "target_total": 4,
       "minimum_strong": 2
     },
@@ -141,7 +119,7 @@
     },
     "18-semiconductors-electronics": {
       "total_sources": 4,
-      "policy_tier_1_or_2": 0,
+      "policy_tier_1_or_2": 3,
       "target_total": 4,
       "minimum_strong": 2
     },
@@ -158,142 +136,5 @@
       "minimum_strong": 2
     }
   },
-  "weak_rows": [
-    {
-      "title": "The Book of Why: The New Science of Cause and Effect",
-      "locator": "https://en.wikipedia.org/wiki/The_Book_of_Why",
-      "modules": [
-        "04-probability-statistics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Schr\u00f6dinger equation",
-      "locator": "https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation",
-      "modules": [
-        "06-matter-quantum"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Standard Model",
-      "locator": "https://en.wikipedia.org/wiki/Standard_Model",
-      "modules": [
-        "06-matter-quantum"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "The quantum mechanical model of the atom",
-      "locator": "https://www.khanacademy.org/science/physics/quantum-physics/quantum-numbers-and-orbitals/a/the-quantum-mechanical-model-of-the-atom",
-      "modules": [
-        "06-matter-quantum"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Electromagnetic induction",
-      "locator": "https://en.wikipedia.org/wiki/Electromagnetic_induction",
-      "modules": [
-        "10-electricity-magnetism"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "HyperPhysics: Electricity and Magnetism",
-      "locator": "http://hyperphysics.phy-astr.gsu.edu/hbase/emcon.html",
-      "modules": [
-        "10-electricity-magnetism"
-      ],
-      "reason": "weak or incomplete source record"
-    },
-    {
-      "title": "Maxwell's equations",
-      "locator": "https://en.wikipedia.org/wiki/Maxwell%27s_equations",
-      "modules": [
-        "10-electricity-magnetism"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Bioenergetics",
-      "locator": "https://en.wikipedia.org/wiki/Bioenergetics",
-      "modules": [
-        "13-cells-bioenergetics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Cellular respiration",
-      "locator": "https://en.wikipedia.org/wiki/Cellular_respiration",
-      "modules": [
-        "13-cells-bioenergetics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Enzyme kinetics",
-      "locator": "https://en.wikipedia.org/wiki/Enzyme_kinetics",
-      "modules": [
-        "13-cells-bioenergetics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Membrane transport",
-      "locator": "https://en.wikipedia.org/wiki/Membrane_transport",
-      "modules": [
-        "13-cells-bioenergetics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Discovery of DNA structure and function: Watson and Crick",
-      "locator": "http://www.nature.com/scitable/topicpage/discovery-of-dna-structure-and-function-watson-397",
-      "modules": [
-        "14-dna-evolution"
-      ],
-      "reason": "weak or incomplete source record"
-    },
-    {
-      "title": "Major molecular events of DNA replication",
-      "locator": "http://www.nature.com/scitable/topicpage/major-molecular-events-of-dna-replication-413",
-      "modules": [
-        "14-dna-evolution"
-      ],
-      "reason": "weak or incomplete source record"
-    },
-    {
-      "title": "Integrated circuit",
-      "locator": "https://en.wikipedia.org/wiki/Integrated_circuit",
-      "modules": [
-        "18-semiconductors-electronics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Moore's law",
-      "locator": "https://en.wikipedia.org/wiki/Moore%27s_law",
-      "modules": [
-        "18-semiconductors-electronics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Semiconductor device",
-      "locator": "https://en.wikipedia.org/wiki/Semiconductor_device",
-      "modules": [
-        "18-semiconductors-electronics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    },
-    {
-      "title": "Transistor",
-      "locator": "https://en.wikipedia.org/wiki/Transistor",
-      "modules": [
-        "18-semiconductors-electronics"
-      ],
-      "reason": "general-reference or encyclopedia source"
-    }
-  ]
+  "weak_rows": []
 }
