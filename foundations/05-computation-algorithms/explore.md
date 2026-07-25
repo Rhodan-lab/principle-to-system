@@ -1,85 +1,143 @@
 ---
-title: "Explore: Computation and Simulation"
+title: "Exploring computation and simulation"
 slug: 05-computation-algorithms-explore
 module: "Module 05"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models, 04-probability-statistics]
 connections: [19-software-ai]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
-# Explore: Computation and Simulation
+# Exploring computation and simulation
 
 ## 1. Observation prompts
 
-- Open a weather forecasting application that shows a radar or wind map. Zoom in as far as possible. Can you identify the discrete grid cells (pixels or blocks) where the simulation calculates the data? How large is the spatial step ($\Delta x$) in your local area?
-- Look at a digital photograph of a smooth gradient, like a clear blue sky. Zoom in until you see individual pixels. This is spatial discretisation. How does the illusion of a continuous sky break down at the discrete level?
-- Watch a video game or a 3D animated film. Observe how curved surfaces (like a character's face or a car tire) are actually composed of flat polygons. This is geometric discretisation.
+- Zoom into a digital photograph or map. Distinguish display pixels from the resolution of the data or model that produced the image; they are not necessarily the same grid.
+- Watch a recorded simulation at different frame rates. Which changes reflect the numerical time step, which reflect saved output intervals, and which are only animation choices?
+- Examine a spreadsheet containing many decimal digits. Which digits came from measurement, which from formulas, and which are merely display formatting?
+- Find two applications that solve similar problems. What evidence would show that they implement the same mathematical model and not merely produce similar-looking graphics?
 
 ## 2. Prediction questions
 
-- If you double the resolution of a 3D simulation grid (halving $\Delta x$, $\Delta y$, and $\Delta z$), by what factor does the number of spatial grid points increase? 
-- If the Courant-Friedrichs-Lewy (CFL) condition requires that $\Delta t \le \Delta x / v$, what must happen to the time step if you halve the spatial step $\Delta x$?
-- Based on the previous two answers, if you halve the spatial step in a 3D simulation, by what factor does the total computational time increase (assuming the physical time simulated remains the same)?
+- Halving $\Delta x$, $\Delta y$, and $\Delta z$ in a fixed 3D domain increases the number of spatial cells by approximately what factor?
+- If a time-integration stability condition also requires halving $\Delta t$, how many more cell-updates are required to simulate the same physical duration under an idealized constant-cost assumption?
+- Does a smaller residual always imply a more accurate physical prediction?
+- If two mathematically equivalent expressions are evaluated in floating-point arithmetic, must they return identical values?
+- When can more Monte Carlo samples fail to fix a biased result?
 
 ## 3. Worked reasoning examples
 
-**Estimating Pi using a Monte Carlo Method**
+### Resolution and computational work
 
-Imagine a square with side length $2r$, and a circle inscribed within it with radius $r$. 
-The area of the square is $A_s = (2r)^2 = 4r^2$.
-The area of the circle is $A_c = \pi r^2$.
-The ratio of their areas is $A_c / A_s = \pi r^2 / 4r^2 = \pi / 4$.
+Suppose a 3D grid has $N_xN_yN_z$ cells. Halving spacing in every direction approximately doubles each dimension count:
 
-If we randomly throw darts at the square, the probability that a dart lands inside the circle is equal to the ratio of their areas ($\pi / 4$).
+$$N_{\text{cells,new}}\approx(2N_x)(2N_y)(2N_z)=8N_{\text{cells,old}}.$$
 
-1. Generate $N$ random points $(x, y)$ where $x$ and $y$ are between $-r$ and $r$.
-2. For each point, calculate its distance from the centre: $d = \sqrt{x^2 + y^2}$.
-3. If $d \le r$, the point is inside the circle. Count this as $N_{inside}$.
-4. The ratio $N_{inside} / N$ approximates $\pi / 4$.
-5. Therefore, $\pi \approx 4 \times (N_{inside} / N)$.
+If the time step is also halved, twice as many time steps are needed for the same simulated duration. An idealized explicit calculation therefore requires about
 
-As $N$ increases, the approximation of $\pi$ becomes more accurate, demonstrating how random sampling can solve a deterministic geometric problem.
+$$8\times2=16$$
+
+as many cell-updates. Real runtime can scale worse or better depending on solver complexity, memory, communication, parallel efficiency, and cache behavior.
+
+### Estimating $\pi$ with Monte Carlo sampling
+
+Sample $N$ independent points uniformly from the square $[-1,1]^2$. Let $I_i=1$ when $x_i^2+y_i^2\le1$ and $0$ otherwise. Since $E[I_i]=\pi/4$,
+
+$$\hat\pi=4\bar I=\frac{4}{N}\sum_{i=1}^{N}I_i.$$
+
+An estimated standard error is
+
+$$\widehat{\operatorname{SE}}(\hat\pi)=4\sqrt{\frac{\bar I(1-\bar I)}{N}}.$$
+
+Increasing $N$ reduces sampling variation at roughly $N^{-1/2}$, but a non-uniform or dependent point generator can introduce bias or invalidate the simple standard-error calculation.
+
+### Cancellation in floating-point arithmetic
+
+For small $x$, directly evaluating
+
+$$\sqrt{1+x}-1$$
+
+can lose significant digits because two nearly equal numbers are subtracted. Algebraically rationalizing gives
+
+$$\sqrt{1+x}-1=\frac{x}{\sqrt{1+x}+1},$$
+
+which can be numerically more stable. Mathematical equivalence over real numbers does not guarantee equal floating-point behavior.
 
 ## 4. Thought experiments
 
-- **The Infinite Precision Machine**: Imagine a computer with infinite memory that can represent real numbers with zero round-off error. Would numerical simulations on this machine be perfectly accurate? (Consider truncation error and modelling error).
-- **The Butterfly Effect in Simulation**: In a weather simulation, you change the initial temperature of a single grid cell in Brazil by $0.000001^\circ\text{C}$. Due to the non-linear equations of fluid dynamics, how might this affect the simulated weather in Texas a month later? How does this limit the predictive power of simulations, regardless of computational power?
+- **Infinite precision, imperfect model:** If a computer represented real numbers exactly, which errors would remain in a simulation?
+- **Chaotic sensitivity:** Two weather simulations begin with slightly different initial states. How can their detailed trajectories diverge while ensemble or statistical forecasts remain useful?
+- **Small residual, wrong answer:** Imagine solving an ill-conditioned linear system. Why can the equations be nearly satisfied while the recovered parameters are inaccurate?
+- **Reproducible but invalid:** A perfectly documented simulation is rerun exactly and gives the same output. What further evidence is required before using it for a real system?
 
 ## 5. Household and browser-based explorations
 
-- **Spreadsheet Integration**: Open a spreadsheet program. Create a column of $x$ values from $0$ to $1$ in steps of $0.1$ ($\Delta x = 0.1$). In the next column, calculate $y = x^2$. In a third column, calculate the area of the trapezoid for each step: $(y_i + y_{i-1}) / 2 \times \Delta x$. Sum the third column. Compare your result to the analytical integral of $x^2$ from $0$ to $1$ (which is $1/3 \approx 0.333$). Decrease $\Delta x$ to $0.01$ and see how the error changes.
-- **Browser Physics Engines**: Search for a browser-based 2D physics sandbox (like Matter.js or Box2D demonstrations). Build a tall tower of blocks. Find the setting to change the "time step" or "iterations per step." Lower the iterations significantly and watch the tower collapse or blocks pass through each other. This demonstrates numerical instability when the solver cannot resolve the collision forces accurately within the given discrete steps.
+- **Trapezoidal rule:** In a spreadsheet, integrate $f(x)=x^2$ from 0 to 1 using step sizes 0.1, 0.05, and 0.01. Compare errors with the exact value $1/3$ and plot error against step size.
+- **Floating-point representation:** In a programming language or spreadsheet, evaluate repeated addition of 0.1, compare with exact decimal expectations, and test whether a tolerance is more appropriate than direct equality.
+- **Iterative convergence:** Implement or simulate bisection for a simple root. Record interval width and function value at each step, and distinguish stopping criteria.
+- **Physics sandbox:** Use a reputable browser simulation without changing device security settings. Compare outputs under different solver step or iteration settings, treating visual behavior as a prompt for verification rather than proof.
+- **Random-seed reproducibility:** Run one Monte Carlo calculation with a recorded seed and then with new seeds. Separate reproducibility of one run from sampling variability across runs.
 
 ## 6. Model-building prompts
 
-- **Population Dynamics**: Build a simple discrete model of a rabbit population. Let $P_n$ be the population in year $n$. Assume the population grows by $10\%$ each year, but $50$ rabbits are eaten by foxes. The discrete equation is $P_{n+1} = P_n + 0.10 P_n - 50$. Start with $P_0 = 1000$ and calculate the population for the next 10 years. What happens if you change the initial population to $400$?
-- **Cooling Coffee**: Newton's Law of Cooling states that the rate of heat loss is proportional to the temperature difference between the object and its surroundings. Write a finite difference equation to model the temperature of a cup of coffee over time. Choose a time step $\Delta t$ and a cooling constant $k$. Calculate the temperature minute by minute.
+- **Discrete cooling:** Starting from
+
+  $$\frac{dT}{dt}=-k(T-T_a),$$
+
+  derive forward Euler:
+
+  $$T_{n+1}=T_n-k\Delta t(T_n-T_a).$$
+
+  Explore how behavior changes with $k\Delta t$ and identify unstable or non-physical results.
+- **Population update:** Analyze
+
+  $$P_{n+1}=P_n+0.10P_n-50.$$
+
+  Determine the equilibrium and explain why the model becomes physically inappropriate if it predicts a negative population.
+- **Verification case:** Choose an equation with a known analytical solution and design a grid-refinement study for a numerical approximation.
+- **Validation plan:** Define which physical observations, uncertainty ranges, and acceptance criteria would be needed to validate a cooling simulation.
+- **Complexity comparison:** Compare linear search and binary search, stating the precondition required for binary search.
 
 ## 7. Self-explanation questions
 
-- Explain the difference between truncation error and round-off error in your own words.
-- Why is it impossible to simulate the exact trajectory of every molecule in a glass of water, and how do numerical methods bypass this problem?
-- If a simulation perfectly matches the results of a physical experiment, does that mean the mathematical model is a perfect representation of reality? Why or why not?
+- How do modelling, discretization, iterative, floating-point, sampling, and implementation errors differ?
+- What is the difference between a problem being ill-conditioned and an algorithm being unstable?
+- Why can a small residual fail to imply a small solution error?
+- How do code verification, solution verification, and validation differ?
+- What information is needed to reproduce a stochastic simulation?
+- Why is Big-O notation insufficient for predicting actual runtime?
 
 ## 8. Transfer questions
 
-- How do the principles of discretisation apply to digital audio recording? What are the equivalents of $\Delta t$ and round-off error in an MP3 file?
-- In financial risk management, banks use Monte Carlo simulations to predict the probability of massive portfolio losses. How is this similar to, and different from, using Monte Carlo methods to calculate the area of a circle?
+- What are the equivalents of time sampling, amplitude quantization, and compression error in digital audio?
+- How can a numerical weather forecast be useful even when one detailed trajectory becomes unpredictable?
+- Why can a machine-learning surrogate fail when the original physical solver would remain valid?
+- How should an engineering team decide between one high-resolution run and many lower-resolution uncertainty scenarios?
+- Which parts of a simulation workflow should be independently checked before a safety-relevant decision?
 
 ## 9. Suggested learning paths
 
-- To understand the mathematics of discretisation: Study Taylor series expansions and basic numerical calculus (Euler's method for differential equations).
-- To understand algorithmic implementation: Learn a programming language like Python and write a script to solve the 1D heat equation using finite differences.
-- To understand computational complexity: Study Big O notation and the difference between polynomial ($O(n^2)$) and exponential ($O(2^n)$) time algorithms.
+- **Algorithms and complexity:** Data structures, correctness, invariants, Big-O analysis, and computability.
+- **Numerical analysis:** Floating-point arithmetic, conditioning, root finding, linear algebra, quadrature, and differential equations.
+- **Scientific software:** Testing, version control, dependency management, documentation, and reproducible environments.
+- **Simulation evidence:** Verification, validation, uncertainty quantification, sensitivity, and benchmark design.
+- **High-performance computing:** Parallel decomposition, memory hierarchy, communication, scaling, and energy-to-solution.
 
 ## 10. Reasoning notes
 
-When evaluating any computational claim (e.g., "Our AI model predicts a 20% increase in traffic"), always ask:
-1. What are the underlying mathematical equations?
-2. What is the spatial and temporal resolution of the data?
-3. What assumptions were made to simplify the model?
-4. Has this specific simulation framework been validated against historical, real-world data? 
-Never accept a simulation output as ground truth; it is always an approximation bounded by its discretisation and assumptions.
+Before trusting a computational result, ask:
+
+1. What question and quantity of interest were defined?
+2. Which mathematical model and boundary conditions were used?
+3. How was the problem discretized?
+4. What are the conditioning and stability properties?
+5. Were code tests and reference solutions used?
+6. Were mesh, time-step, and solver-tolerance studies performed?
+7. How were floating-point, stochastic, and parameter uncertainties handled?
+8. Which data were used for calibration and which for validation?
+9. Can the run be reproduced from code, inputs, environment, and configuration?
+10. Is the intended decision inside the validated domain?
+
+A simulation output is evidence generated by a chain of models and computations. Trust comes from testing that chain, not from numerical detail or visual realism alone.

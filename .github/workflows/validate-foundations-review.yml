@@ -1,0 +1,62 @@
+name: Validate Phase 6 foundations
+
+on:
+  pull_request:
+    branches:
+      - main
+      - agent/phase-5-source-repair
+    paths:
+      - 'foundations/**'
+      - 'sources/source-ledger.md'
+      - 'sources/foundations-review-sources.json'
+      - 'scripts/apply_foundations_review_sources.py'
+      - 'scripts/validate_foundations_review.py'
+      - 'reports/phase-6-foundations-review.md'
+      - 'reports/phase-6-foundations-sources.json'
+      - 'INDEX.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-foundations-review.yml'
+  push:
+    branches:
+      - agent/phase-6-foundations-review
+    paths:
+      - 'foundations/**'
+      - 'sources/source-ledger.md'
+      - 'sources/foundations-review-sources.json'
+      - 'scripts/apply_foundations_review_sources.py'
+      - 'scripts/validate_foundations_review.py'
+      - 'reports/phase-6-foundations-review.md'
+      - 'reports/phase-6-foundations-sources.json'
+      - 'INDEX.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-foundations-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed review
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Phase 5 source foundation
+        run: |
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Verify Phase 6 reviewed source additions
+        run: python3 scripts/apply_foundations_review_sources.py --check
+
+      - name: Validate Foundations scientific review
+        run: python3 scripts/validate_foundations_review.py
+
+      - name: Run repository structural validator
+        run: python3 scripts/validate_repo.py

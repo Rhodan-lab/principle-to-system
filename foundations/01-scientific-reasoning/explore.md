@@ -3,10 +3,10 @@ title: "Exploring scientific reasoning and causality"
 slug: 01-scientific-reasoning-explore
 module: "Module 01"
 domain: foundations
-status: draft
+status: reviewed
 prerequisites: []
 connections: [02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics, 06-matter-quantum]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-25
 content_license: CC-BY-4.0
 ---
 
@@ -14,67 +14,94 @@ content_license: CC-BY-4.0
 
 ## 1. Observation prompts
 
-*   **The Correlation Hunt:** Spend a day observing news headlines or social media posts that claim a scientific finding. How many of these claims are based on observational correlations versus controlled experiments? Look for phrases like "linked to," "associated with," or "may cause."
-*   **Everyday Confounding:** Observe a common phenomenon in your daily life, such as traffic congestion or your own energy levels. Identify at least three variables that might influence this phenomenon. Can you identify a potential confounding variable that affects both a suspected cause and the observed effect?
-*   **Mechanism Mapping:** Choose a simple mechanical device (like a bicycle or a mechanical clock) or a biological process (like a plant growing towards light). Trace the causal chain from the initial input to the final output. What are the intermediate steps?
+- **Claim-language audit:** Examine several science headlines. Classify phrases such as “associated with,” “predicts,” “increases,” and “causes.” Does the wording match the study design described in the article?
+- **Everyday confounding:** Choose a familiar outcome such as travel time, plant growth, or classroom temperature. List variables that might influence both a suspected cause and the outcome.
+- **Measurement-chain map:** Choose a thermometer, scale, bicycle brake, or other safe system. Trace how an input becomes an observation or output, and mark where information could be lost or distorted.
+- **Alternative explanations:** For one observation, write at least three explanations that make different predictions. Identify an observation that would discriminate among them.
 
 ## 2. Prediction questions
 
-*   If a new study finds a strong positive correlation between the number of books in a household and the academic performance of the children living there, does this mean that simply buying more books will improve a child's grades? What other factors might explain this correlation?
-*   Suppose a pharmaceutical company develops a new drug for a disease and tests it only on patients who volunteer for the trial. If the drug shows a positive effect, can we confidently predict it will have the same effect on the general population? Why or why not?
-*   If a scientific theory makes a prediction that is subsequently confirmed by observation, does this prove the theory is true? What if the theory makes a prediction that is contradicted by observation?
+- A study finds that households with more books tend to have children with higher school performance. What interventions could produce the association besides purchasing books?
+- A voluntary online survey reports that a study method improves grades. How could self-selection, prior achievement, or incomplete follow-up affect the result?
+- A theory correctly predicts one observation. What competing theories might make the same prediction, and what additional test could distinguish them?
+- An experiment finds a small average effect. What information would you need before applying the result to a different population or setting?
 
 ## 3. Worked reasoning examples
 
-**Example: The Case of the Spurious Correlation**
+### Example: a common-cause explanation
 
-*   **Observation:** A researcher notices a strong positive correlation between the number of storks nesting in a village and the number of human babies born in that village over a ten-year period.
-*   **Hypothesis 1 (Causal):** Storks deliver babies. (This is a known myth, but we treat it as a hypothesis for the sake of the example).
-*   **Hypothesis 2 (Confounding):** There is a common cause influencing both variables.
-*   **Reasoning:** We must look for a confounding variable. Consider the size of the village. A larger village will have more houses (providing more nesting sites for storks) and a larger human population (resulting in more births).
-*   **Conclusion:** The correlation is spurious. The size of the village is a confounding variable that causes both an increase in storks and an increase in babies. Controlling for village size would likely eliminate the correlation between storks and babies.
+**Observation:** Larger towns have more public parks and more bus routes.
+
+**Premature causal claim:** Adding bus routes creates parks.
+
+**Alternative model:** Population size and municipal budget influence both the number of routes and the number of parks.
+
+A simple DAG is
+
+```text
+population and budget → bus routes
+population and budget → public parks
+```
+
+Comparing towns only by raw route and park counts mixes the variables of interest with town size. A better analysis might compare per-capita values, include relevant covariates, study a policy change, or use a design that creates a defensible comparison group. Even then, the target causal question must be stated precisely.
+
+### Example: prediction is not intervention
+
+A model may predict exam performance from previous scores, attendance, and study time. High predictive accuracy does not show that forcing every student to increase one measured variable will produce the model’s predicted change. The predictor may be a marker of other conditions, the intervention may be defined poorly, or the relationship may differ outside the observed range.
 
 ## 4. Thought experiments
 
-*   **The Perfect Experiment:** Imagine you have unlimited resources and the ability to control any variable without ethical constraints. Design an experiment to definitively determine whether a specific diet causes a specific health outcome. What variables would you control? How would you assign participants? What would be the limitations of even this "perfect" experiment?
-*   **The Counterfactual World:** Consider a major historical event (e.g., the invention of the printing press). Construct a counterfactual scenario: what would the world look like today if that event had not occurred? What causal chains would have been broken or altered? How does this exercise highlight the difficulty of establishing causality in complex historical or social systems?
+- **Ethically constrained experiment:** Design the strongest ethical study you can for testing whether a new teaching technique improves understanding. Consider assignment, consent, comparison groups, outcome measurement, unequal access, and what should happen if early evidence suggests harm or clear benefit.
+- **Counterfactual ambiguity:** Consider a historical technology such as the printing press. List several plausible pathways through which it affected society. Which counterfactual claims can be tested with historical evidence, and which remain too underdetermined?
+- **Same data, different graphs:** Draw two causal graphs that could both generate a correlation between exercise and well-being. What additional measurement or design would distinguish them?
 
 ## 5. Household and browser-based explorations
 
-*   **Spurious Correlations Website:** Visit Tyler Vigen's "Spurious Correlations" website (or search for similar examples online). Examine the graphs showing strong correlations between completely unrelated variables (e.g., US spending on science and suicides by hanging). Use these examples to practice explaining why correlation does not equal causation.
-*   **Simulating Confounding:** Use a spreadsheet program (like Excel or Google Sheets) to generate three columns of random numbers: A, B, and C. Make column A the "confounder." Create column B by adding column A to some random noise. Create column C by adding column A to some different random noise. Now, calculate the correlation between B and C. You will likely find a correlation, even though B does not cause C and C does not cause B.
+- **Neutral spurious correlations:** Find two unrelated time series that both trend upward, such as the number of mobile subscriptions and the number of published digital photographs. Explain how common trends, changing population size, or time itself can create a high correlation.
+- **Simulating confounding:** In a spreadsheet, generate a variable $A$. Create $B=A+\epsilon_B$ and $C=A+\epsilon_C$ using independent noise terms. Calculate the correlation between $B$ and $C$, then examine the correlation after accounting for $A$.
+- **Reproducibility check:** Exchange a small spreadsheet analysis with a classmate using the same input data. Record every formula and processing step needed for both of you to obtain the same result.
+- **Replication design:** Propose how a new group could collect fresh data to address the same question while avoiding dependence on the original dataset.
 
 ## 6. Model-building prompts
 
-*   **Draw a DAG:** Choose a complex social or biological issue (e.g., obesity, climate change, economic inequality). Draw a Directed Acyclic Graph (DAG) representing the potential causal relationships between at least five key variables. Identify any potential confounding variables or feedback loops.
-*   **Formalise a Hypothesis:** Take a common belief (e.g., "drinking coffee improves concentration") and formalise it into a testable hypothesis. Define the variables clearly, specify the expected direction of the effect, and outline the conditions under which the hypothesis could be falsified.
+- **Draw a DAG:** Choose a manageable question about plant growth, traffic delay, or study habits. Include exposure, outcome, common causes, mediators, and possible selection variables. Do not include a feedback loop in one static DAG; represent time explicitly if feedback matters.
+- **Specify an estimand:** Rewrite “Does coffee improve concentration?” as a precise comparison including population, amount, timing, comparator, outcome measure, and time horizon.
+- **Competing mechanisms:** Build two mechanism diagrams for the same observation and list one expected observation unique to each model.
+- **Sensitivity map:** Identify which unmeasured variable would most threaten a proposed conclusion and describe how strong its relationships would need to be to change the conclusion.
 
 ## 7. Self-explanation questions
 
-*   Explain the difference between a necessary cause and a sufficient cause, providing an example of each.
-*   Why is randomisation considered the "gold standard" in experimental design? What specific problem does it solve?
-*   In your own words, explain Karl Popper's concept of falsifiability. Why did he argue that it is the defining characteristic of science?
+- What is the difference between association, prediction, and a causal effect?
+- Why can random assignment support a causal comparison, and what problems can remain after assignment?
+- Why is falsifiability useful but insufficient as a complete definition of science?
+- How do reproducibility and replicability differ?
+- Why is a mechanism helpful for explanation but not a substitute for a valid comparison?
 
 ## 8. Transfer questions
 
-*   How can the principles of causal inference be applied to improve the design of public policies or social interventions?
-*   In the field of artificial intelligence, how might an understanding of causality improve the robustness and interpretability of machine learning models?
-*   How do the challenges of establishing causality in medicine differ from the challenges in economics or sociology?
+- How should a public-policy team distinguish a forecasting model from a model of policy intervention?
+- How could causal assumptions improve the design of an AI decision-support system?
+- Why might an effect estimated in one school, ecosystem, or machine fail to transfer to another?
+- How can measurement error create, weaken, or reverse an apparent causal relationship?
 
 ## 9. Suggested learning paths
 
-*   **Path 1: The Philosophy of Science:** Dive deeper into the epistemological foundations of science. Read works by Karl Popper, Thomas Kuhn, and Imre Lakatos to understand how scientific theories are developed, tested, and sometimes overthrown.
-*   **Path 2: The Mathematics of Causality:** Explore the formal frameworks for causal inference. Study Judea Pearl's work on Directed Acyclic Graphs (DAGs) and the *do*-calculus, or Donald Rubin's potential outcomes framework.
-*   **Path 3: Experimental Design in Practice:** Learn how to design and analyse experiments in specific fields, such as clinical trials in medicine or A/B testing in software development.
+- **Evidence and explanation:** Study competing accounts of scientific explanation, severe testing, mechanisms, and theory comparison.
+- **Experimental and observational design:** Learn randomization, blocking, sampling, natural experiments, longitudinal studies, and sensitivity analysis.
+- **Formal causality:** Study potential outcomes, causal DAGs, identification, and intervention notation.
+- **Open and reproducible research:** Learn versioned analysis, transparent reporting, computational reproducibility, and independent replication.
 
 ## 10. Reasoning notes
 
-When engaging with scientific claims, always ask:
+When evaluating a scientific claim, ask:
 
-1.  What is the specific causal claim being made?
-2.  What is the evidence supporting this claim? Is it observational or experimental?
-3.  Have potential confounding variables been adequately controlled for?
-4.  Is the proposed mechanism plausible?
-5.  Is the hypothesis falsifiable? What evidence would prove it wrong?
+1. What exactly is the population, intervention or exposure, comparator, outcome, and time horizon?
+2. How were units selected, measured, included, and followed?
+3. What alternative explanations are compatible with the data?
+4. Which assumptions convert an association into a causal estimate?
+5. What is the effect magnitude and uncertainty, not merely the p-value?
+6. Can the computation be reproduced from the data and methods?
+7. Has the question been examined with new data, different methods, or independent investigators?
+8. What evidence would reduce confidence in the claim?
 
-Remember that scientific knowledge is always provisional and subject to revision in light of new evidence. A healthy skepticism, combined with a rigorous understanding of causal inference, is the best defense against misinformation and flawed reasoning.
+Scientific skepticism is not automatic rejection. It is the disciplined practice of matching confidence to evidence, assumptions, and uncertainty.
