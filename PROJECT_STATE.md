@@ -4,96 +4,120 @@
 
 ## Current phase
 
-**Repository-wide scientific and editorial audit in progress.**
+**Material foundation expansion complete; repository-wide module audit remains in progress.**
 
-The full content architecture exists: 20 modules with 60 learner-facing files, 7 crosscutting concepts, 6 pathways, 3 knowledge maps, a source ledger, and a repository validator. This is a complete first draft, not yet a fully reviewed release.
+The repository now contains two coordinated layers:
 
-A module may be marked **Complete** only after its three learner-facing files have passed scientific review, source verification, metadata and link checks, and strict repository validation.
+1. a structurally complete first draft of 20 core modules and synthesis materials;
+2. a reviewed applied-material foundation for system explanation, failure analysis, investigation, and design.
+
+The applied layer is material-first Markdown, not a software product. Its purpose is to establish reusable educational architecture and high-quality exemplar content before any optional interface is considered.
 
 ## Content inventory
 
-- 20 modules and 60 core learner files are present.
-- 7 crosscutting concepts are present.
-- 6 end-to-end pathways are present.
-- 3 Mermaid knowledge maps are present.
-- A central source ledger is present.
-- A standard-library-only validator is present.
+### Core layer
 
-Presence does not imply review completion. `INDEX.md` is the source of truth for module review status.
+- 20 modules and 60 learner-facing files
+- 7 crosscutting concepts
+- 6 end-to-end pathways
+- 3 Mermaid knowledge maps
+- legacy source ledger
+- repository validator
 
-## Review status
+All 20 modules remain **Draft** pending the systematic scientific and editorial audit recorded in [`AUDIT.md`](AUDIT.md).
 
-All 20 modules are currently **Draft** pending systematic review.
+### Applied-material layer
 
-Review order follows the dependency graph:
+- shared learning contract in `experiences/`
+- 4 family standards
+- 4 reusable templates
+- 4 reviewed exemplars:
+  - domestic refrigerator system dossier
+  - feedback-instability failure pattern
+  - room-cooling investigation
+  - passive-cooler design challenge
+- normalized experience-source ledger
+- dedicated strict validator
+- GitHub Actions workflow for relevant changes
 
-1. Foundations: Modules 01–05
-2. Physical science: Modules 06–12
-3. Life and Earth systems: Modules 13–16
-4. Technology: Modules 17–20
-5. Crosscutting concepts, pathways, and maps
-6. Repository-wide terminology, links, and source reconciliation
+## Status meanings
 
-## Validation status
+- **Draft** — content exists but has not completed focused review.
+- **Reviewed** — claims, sources, structure, safety, metadata, equations, and links received a focused review.
+- **Complete** — reviewed content also passes the applicable strict release gate and has no unresolved review findings.
+- **Blocked** — progress depends on a recorded unresolved issue.
 
-`scripts/validate_repo.py` has been hardened to check:
+The four applied exemplars are **Reviewed**, not Complete. Independent review and successful CI are still required before a release claim.
 
-- required repository and module files;
-- frontmatter syntax and required fields;
-- slug syntax and uniqueness;
-- canonical module identifiers and prerequisite consistency;
-- exact section headings;
-- explicit principle-to-system chains;
-- relative links and repository-boundary escapes;
-- agreement between learner-file status and `INDEX.md`;
-- source-ledger row structure and weak-source warnings;
-- strict release readiness with `--strict`.
+## Validation
 
-The repository is **not currently release-ready**. Known metadata and source-ledger defects must be repaired before strict validation can pass.
+### Core audit
 
-## Known blocking issues
+```bash
+python3 scripts/validate_repo.py
+python3 scripts/validate_repo.py --strict
+```
 
-1. Several learner files contain malformed slug values introduced while resolving duplicate slugs, such as a quoted slug followed by `-technology` outside the quotes.
-2. Many `connections` values use identifiers that do not correspond to canonical module IDs.
-3. Some file `domain` values describe the file role rather than the module’s subject domain.
-4. The source ledger contains concatenated entries that must be split into one source per Markdown table row.
-5. Several modules rely on encyclopedia or weak secondary sources where the source policy calls for primary literature, standards, consensus reports, or strong textbooks.
-6. Module status previously said Complete even though learner-file frontmatter remained Draft.
-7. Structural validation does not substitute for scientific review of claims, equations, units, assumptions, safety, and trade-offs.
-8. The validation workflow still needs to be added under `.github/workflows/` by an actor with workflow permission.
+The core repository is not yet release-ready because known legacy metadata and source-ledger defects remain.
 
-## Definition of reviewed
+### Applied materials
 
-A module can move from Draft to Reviewed only when all three files satisfy the following:
+```bash
+python3 scripts/validate_experiences.py
+python3 scripts/validate_experiences.py --strict
+```
 
-- causal explanations are scientifically accurate and appropriately scoped;
-- equations, symbols, sign conventions, and SI units are correct;
-- assumptions, approximations, system boundaries, scales, and failure conditions are explicit;
-- sources have been opened and verified, and ledger entries are valid;
-- prerequisites and connections use canonical repository identifiers;
-- relative links resolve;
-- exploration activities are safe, free, and age-appropriate;
-- unnecessary repetition, exam framing, unsupported claims, and padding are removed.
+The experience validator checks:
 
-## Definition of complete
+- required family, exemplar, and template files;
+- frontmatter fields and experience types;
+- valid unique slugs;
+- canonical module, concept, and experience identifiers;
+- required family-specific headings;
+- at least one displayed quantitative model;
+- explicit safety language for investigations and challenges;
+- direct source URLs;
+- internal links;
+- normalized source-ledger rows and coverage.
 
-A module can move from Reviewed to Complete only when:
+`.github/workflows/validate-experiences.yml` runs the strict gate on relevant pull requests and pushes to `main`.
 
-- no unresolved scientific or editorial review comments remain;
-- all three learner files have `status: complete` and a current `last_reviewed` date;
-- its pathways, maps, and crosscutting links remain consistent;
-- `python3 scripts/validate_repo.py --strict` passes repository-wide.
+## Source state
+
+The legacy [`sources/source-ledger.md`](sources/source-ledger.md) still requires normalization. New applied materials are recorded in [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), which uses one source per row and exactly eight columns.
+
+This separation preserves provenance without pretending the older ledger is repaired.
+
+## Remaining core blockers
+
+1. Repair malformed slug values in original learner files.
+2. Normalize original `domain`, `prerequisites`, and `connections` metadata.
+3. Split concatenated legacy source rows.
+4. Replace weak module sources with policy-compliant references.
+5. Review Modules 01–20 in dependency order.
+6. Reconcile pathways, concepts, maps, and terminology against reviewed modules.
+7. Pass repository-wide strict validation.
+
+## Applied-material expansion rules
+
+New materials must:
+
+1. begin from the correct file in `templates/`;
+2. use canonical identifiers;
+3. include a meaningful quantitative model;
+4. state boundaries, assumptions, uncertainty, failure modes, and trade-offs;
+5. keep all activities optional and safe;
+6. add inspected sources to the normalized experience ledger;
+7. pass `python3 scripts/validate_experiences.py --strict`.
 
 ## Next highest-priority actions
 
-1. Repair malformed frontmatter and normalize canonical identifiers across all 60 learner files.
-2. Normalize the source ledger to exactly one source per row.
-3. Run the validator and resolve all structural errors.
-4. Review Modules 01–05 scientifically and editorially, then update their statuses only after review.
-5. Continue through Modules 06–20 in dependency order.
-6. Reconcile pathways, concepts, and maps against the reviewed modules.
-7. Add the GitHub Actions validation workflow and require strict validation for release-oriented pull requests.
+1. Run and review the applied-material CI result.
+2. Obtain independent scientific review of the four exemplars.
+3. Expand each family only after the exemplar pattern proves stable.
+4. Continue the original module metadata and source repair in dependency order.
+5. Avoid building software until the material architecture and review workflow are mature.
 
 ## Continuation instructions
 
-Read `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, this file, and `AUDIT.md`. Work on a branch, keep each pull request focused, update sources and `last_reviewed` dates with factual changes, and do not change a module’s status until its review criteria are met.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, and this file. Keep module-audit work separate from applied-material expansion. Never mark content Complete solely because the file exists or because structural validation passes.
