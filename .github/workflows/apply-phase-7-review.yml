@@ -50,8 +50,7 @@ jobs:
             reports/phase-6-foundations-review.md \
             reports/phase-6-foundations-sources.json \
             scripts/apply_foundations_review_sources.py \
-            scripts/validate_foundations_review.py \
-            .github/workflows/validate-phase-6-foundations.yml
+            scripts/validate_foundations_review.py
 
       - name: Apply reviewed source registries
         run: |
@@ -112,7 +111,6 @@ jobs:
             sources/source-ledger.md sources/foundations-review-sources.json \
             reports/phase-6-foundations-review.md reports/phase-6-foundations-sources.json \
             reports/phase-7-physical-science-sources.json \
-            scripts/apply_foundations_review_sources.py scripts/validate_foundations_review.py \
-            .github/workflows/validate-phase-6-foundations.yml
+            scripts/apply_foundations_review_sources.py scripts/validate_foundations_review.py
           git commit -m 'content: integrate reviewed Foundations and Physical Science layers'
           git push origin HEAD:agent/phase-7-physical-science-review
