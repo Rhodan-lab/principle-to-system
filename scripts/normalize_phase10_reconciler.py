@@ -73,6 +73,7 @@ FULL_STATUS = '''## Repository status on the Phase 10 branch
 - Phase 9 Technology review implemented and validated on draft PR #10 before that pull request was merged.
 - Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
 - The Phase 9 central-ledger transition was 131 → 143 records.
+- Phase 10 Synthesis reconciliation is the current branch-stage audit label.
 - Permanent CI is read-only.
 - no core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
 '''
@@ -122,6 +123,7 @@ def main() -> int:
         "Modules 01–20: **Reviewed**",
         "131 → 143 records",
         "**143 records**",
+        "Phase 10 Synthesis reconciliation",
         "Permanent CI is read-only",
         "no core module is Complete",
     ):
