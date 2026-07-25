@@ -8,6 +8,9 @@ on:
       - 'scripts/apply_phase7_physical_science_review.py'
       - 'scripts/run_phase7_review.py'
       - '.github/workflows/apply-phase-7-review.yml'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
