@@ -36,12 +36,12 @@ jobs:
         run: python3 scripts/apply_phase8_review_sources.py --write
 
       - name: Apply coordinated twelve-file review
-        run: python3 scripts/apply_phase8_life_earth_review.py --write
+        run: python3 scripts/finalize_phase8_review.py --write
 
       - name: Verify source and content idempotence
         run: |
           python3 scripts/apply_phase8_review_sources.py --check
-          python3 scripts/apply_phase8_life_earth_review.py --check
+          python3 scripts/finalize_phase8_review.py --check
 
       - name: Validate Phase 8 review contract
         id: phase8
