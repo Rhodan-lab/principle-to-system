@@ -1,0 +1,237 @@
+{
+  "baseline_records": 23,
+  "records_before": 109,
+  "records_removed": [
+    {
+      "title": "The Book of Why: The New Science of Cause and Effect",
+      "locator": "https://en.wikipedia.org/wiki/The_Book_of_Why",
+      "modules": "04-probability-statistics"
+    },
+    {
+      "title": "Verification and Validation in Computational Science and Engineering",
+      "locator": "ISBN: 978-0913692214",
+      "modules": "05-computation-algorithms"
+    },
+    {
+      "title": "Schr\u00f6dinger equation",
+      "locator": "https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "Standard Model",
+      "locator": "https://en.wikipedia.org/wiki/Standard_Model",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "The quantum mechanical model of the atom",
+      "locator": "https://www.khanacademy.org/science/physics/quantum-physics/quantum-numbers-and-orbitals/a/the-quantum-mechanical-model-of-the-atom",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "Electromagnetic induction",
+      "locator": "https://en.wikipedia.org/wiki/Electromagnetic_induction",
+      "modules": "10-electricity-magnetism"
+    },
+    {
+      "title": "HyperPhysics: Electricity and Magnetism",
+      "locator": "http://hyperphysics.phy-astr.gsu.edu/hbase/emcon.html",
+      "modules": "10-electricity-magnetism"
+    },
+    {
+      "title": "Maxwell's equations",
+      "locator": "https://en.wikipedia.org/wiki/Maxwell%27s_equations",
+      "modules": "10-electricity-magnetism"
+    },
+    {
+      "title": "Fiber-Optic Communication Systems (4th ed.)",
+      "locator": "ISBN: 978-0470505113",
+      "modules": "11-waves-signals"
+    },
+    {
+      "title": "Optics (5th ed.)",
+      "locator": "ISBN: 978-0133977226",
+      "modules": "11-waves-signals"
+    },
+    {
+      "title": "Bioenergetics",
+      "locator": "https://en.wikipedia.org/wiki/Bioenergetics",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Cellular respiration",
+      "locator": "https://en.wikipedia.org/wiki/Cellular_respiration",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Enzyme kinetics",
+      "locator": "https://en.wikipedia.org/wiki/Enzyme_kinetics",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Membrane transport",
+      "locator": "https://en.wikipedia.org/wiki/Membrane_transport",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Discovery of DNA structure and function: Watson and Crick",
+      "locator": "http://www.nature.com/scitable/topicpage/discovery-of-dna-structure-and-function-watson-397",
+      "modules": "14-dna-evolution"
+    },
+    {
+      "title": "Major molecular events of DNA replication",
+      "locator": "http://www.nature.com/scitable/topicpage/major-molecular-events-of-dna-replication-413",
+      "modules": "14-dna-evolution"
+    },
+    {
+      "title": "Integrated circuit",
+      "locator": "https://en.wikipedia.org/wiki/Integrated_circuit",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Moore's law",
+      "locator": "https://en.wikipedia.org/wiki/Moore%27s_law",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Semiconductor device",
+      "locator": "https://en.wikipedia.org/wiki/Semiconductor_device",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Transistor",
+      "locator": "https://en.wikipedia.org/wiki/Transistor",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Computer Networking: A Top-Down Approach",
+      "locator": "Pearson",
+      "modules": "19-software-ai"
+    },
+    {
+      "title": "Operating System Concepts",
+      "locator": "Wiley",
+      "modules": "19-software-ai"
+    }
+  ],
+  "records_added": [
+    {
+      "title": "Introduction to Modeling and Simulation",
+      "locator": "https://ocw.mit.edu/courses/3-021j-introduction-to-modeling-and-simulation-spring-2012/",
+      "modules": "03-mathematical-models"
+    },
+    {
+      "title": "Principles of Applied Mathematics",
+      "locator": "https://ocw.mit.edu/courses/18-311-principles-of-applied-mathematics-spring-2014/",
+      "modules": "03-mathematical-models"
+    },
+    {
+      "title": "The Book of Why: The New Science of Cause and Effect",
+      "locator": "https://www.hachettebookgroup.com/titles/judea-pearl/the-book-of-why/9780465097616/",
+      "modules": "04-probability-statistics"
+    },
+    {
+      "title": "Verification and Validation in Computational Science and Engineering",
+      "locator": "https://hero.epa.gov/reference/156915/",
+      "modules": "05-computation-algorithms"
+    },
+    {
+      "title": "The Standard Model",
+      "locator": "https://home.cern/science/physics/standard-model/",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "Development of Quantum Theory",
+      "locator": "https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "Atomic Spectroscopy Databases",
+      "locator": "https://www.nist.gov/pml/atomic-spectroscopy-databases",
+      "modules": "06-matter-quantum"
+    },
+    {
+      "title": "Physics II: Electricity and Magnetism",
+      "locator": "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/",
+      "modules": "10-electricity-magnetism"
+    },
+    {
+      "title": "Maxwell's Equations and Electromagnetic Waves",
+      "locator": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves",
+      "modules": "10-electricity-magnetism"
+    },
+    {
+      "title": "Fiber-Optic Communication Systems",
+      "locator": "https://doi.org/10.1002/9780470918524",
+      "modules": "11-waves-signals"
+    },
+    {
+      "title": "Optics, 5th edition",
+      "locator": "https://www.pearson.com/en-us/subject-catalog/p/optics/P200000006793/9780133977226",
+      "modules": "11-waves-signals"
+    },
+    {
+      "title": "Regulation of Cellular Respiration",
+      "locator": "https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Protein Function",
+      "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26911/",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Principles of Membrane Transport",
+      "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26815/",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Electron-Transport Chains and Their Proton Pumps",
+      "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26904/",
+      "modules": "13-cells-bioenergetics"
+    },
+    {
+      "title": "Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid",
+      "locator": "https://doi.org/10.1038/171737a0",
+      "modules": "14-dna-evolution"
+    },
+    {
+      "title": "DNA Replication Mechanisms",
+      "locator": "https://www.ncbi.nlm.nih.gov/books/NBK26850/",
+      "modules": "14-dna-evolution"
+    },
+    {
+      "title": "Semiconductors",
+      "locator": "https://www.nist.gov/semiconductors",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Integrated Microelectronic Devices",
+      "locator": "https://ocw.mit.edu/courses/6-720j-integrated-microelectronic-devices-spring-2007/",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Moore's Law",
+      "locator": "https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "The Nobel Prize in Physics 1956",
+      "locator": "https://www.nobelprize.org/prizes/physics/1956/summary/",
+      "modules": "18-semiconductors-electronics"
+    },
+    {
+      "title": "Computer Networking: A Top-Down Approach",
+      "locator": "https://www.pearson.com/en-us/subject-catalog/p/computer-networking-a-top-down-approach/P200000013385",
+      "modules": "19-software-ai"
+    },
+    {
+      "title": "Operating System Concepts, 10th Edition",
+      "locator": "https://uat.store.wiley.com/en-us/operating-system-concepts-10th-edition-p-9781119320913",
+      "modules": "19-software-ai"
+    }
+  ],
+  "baseline_already_present": [],
+  "records_after": 110,
+  "replacement_locators_declared": 22,
+  "replacement_locators_matched": 22
+}

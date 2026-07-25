@@ -1,0 +1,54 @@
+name: Validate Phase 5 sources
+
+on:
+  push:
+    branches:
+      - main
+      - agent/phase-5-source-repair
+    paths:
+      - 'PROJECT_STATE.md'
+      - 'scripts/normalize_source_ledger.py'
+      - 'scripts/apply_verified_source_baseline.py'
+      - 'sources/source-ledger.md'
+      - 'sources/verified-source-baseline.json'
+      - 'reports/phase-5-source-audit.json'
+      - 'reports/phase-5-source-replacements.json'
+      - '.github/workflows/phase-5-source-repair.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'PROJECT_STATE.md'
+      - 'scripts/normalize_source_ledger.py'
+      - 'scripts/apply_verified_source_baseline.py'
+      - 'sources/source-ledger.md'
+      - 'sources/verified-source-baseline.json'
+      - 'reports/phase-5-source-audit.json'
+      - 'reports/phase-5-source-replacements.json'
+      - '.github/workflows/phase-5-source-repair.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-5-sources-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed result
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify normalized source structure and coverage
+        run: python3 scripts/normalize_source_ledger.py --check --strict
+
+      - name: Verify inspected replacements are applied
+        run: python3 scripts/apply_verified_source_baseline.py --check
