@@ -32,6 +32,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Apply direct reviewed sources
+        run: python3 scripts/apply_phase7_review_sources.py --write
+
       - name: Apply reviewed physical-science content
         id: transform
         shell: bash
@@ -53,18 +56,20 @@ jobs:
         if: steps.transform.outputs.status != '0'
         run: exit 1
 
-      - name: Verify idempotent reviewed state
-        run: python3 scripts/run_phase7_review.py --check
+      - name: Verify source and content idempotence
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/run_phase7_review.py --check
 
-      - name: Commit reviewed files
+      - name: Commit reviewed files and source records
         shell: bash
         run: |
           if git diff --quiet; then
-            echo 'No Phase 7 content changes remain.'
+            echo 'No Phase 7 changes remain.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add science/06-matter-quantum science/07-chemical-bonding science/08-energy-thermodynamics science/09-motion-forces science/10-electricity-magnetism science/11-waves-signals science/12-fluids-materials INDEX.md
-          git commit -m 'content: review physical science modules 06-12'
+          git add science/06-matter-quantum science/07-chemical-bonding science/08-energy-thermodynamics science/09-motion-forces science/10-electricity-magnetism science/11-waves-signals science/12-fluids-materials INDEX.md sources/source-ledger.md reports/phase-7-physical-science-sources.json
+          git commit -m 'content: strengthen Phase 7 review and sources'
           git push origin HEAD:agent/phase-7-physical-science-review
