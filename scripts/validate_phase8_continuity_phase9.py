@@ -51,7 +51,7 @@ def check_artifacts(result: phase8.Result) -> None:
     state_path = ROOT / "PROJECT_STATE.md"
     state = state_path.read_text(encoding="utf-8") if state_path.exists() else ""
     for marker in (
-        "Phase 8 Life and Earth Systems review",
+        "Phase 8 — Life and Earth Systems Modules 13–16",
         "Modules 13–16: **Reviewed**",
         "Modules 17–20: **Reviewed**",
         "**143 records**",
