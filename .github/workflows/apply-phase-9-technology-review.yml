@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Normalize transformer literals
+      - name: Normalize transformer source
         run: python3 scripts/normalize_phase9_transformer_literals.py --write
 
       - name: Apply reviewed source records
@@ -82,7 +82,25 @@ jobs:
           python3 scripts/validate_phase8_continuity_phase9.py
 
       - name: Validate Phase 9 review contract
-        run: python3 scripts/validate_phase9_technology_review.py
+        id: phase9
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase9_technology_review.py > phase9-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase9-validation.log
+          exit 0
+
+      - name: Upload Phase 9 validation diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase9-validation-diagnostics
+          path: phase9-validation.log
+
+      - name: Stop on Phase 9 validation errors
+        if: steps.phase9.outputs.status != '0'
+        run: exit 1
 
       - name: Validate repository structure
         run: python3 scripts/validate_repo.py
