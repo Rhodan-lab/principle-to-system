@@ -1,0 +1,53 @@
+name: Apply Phase 7 physical science review
+
+on:
+  push:
+    branches:
+      - agent/phase-7-physical-science-review
+    paths:
+      - 'scripts/apply_phase7_physical_science_review.py'
+      - 'scripts/run_phase7_review.py'
+      - '.github/workflows/apply-phase-7-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-7-review
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 7 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-7-physical-science-review
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply reviewed physical-science content
+        run: python3 scripts/run_phase7_review.py --write
+
+      - name: Verify idempotent reviewed state
+        run: python3 scripts/run_phase7_review.py --check
+
+      - name: Commit reviewed files
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No Phase 7 content changes remain.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add science/06-matter-quantum science/07-chemical-bonding science/08-energy-thermodynamics science/09-motion-forces science/10-electricity-magnetism science/11-waves-signals science/12-fluids-materials INDEX.md
+          git commit -m 'content: review physical science modules 06-12'
+          git push origin HEAD:agent/phase-7-physical-science-review
