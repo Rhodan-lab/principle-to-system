@@ -74,7 +74,7 @@ FULL_STATUS = '''## Repository status on the Phase 10 branch
 - Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
 - The Phase 9 central-ledger transition was 131 → 143 records.
 - Permanent CI is read-only.
-- No core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
+- no core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
 '''
 
 OLD_LEDGER_HEADER = 'cells[0].lower() in {"module", "---"}'
