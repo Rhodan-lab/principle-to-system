@@ -1,11 +1,11 @@
 ---
 title: "Materials Science, Fabrication, and Manufacturing"
-slug: "17-materials-manufacturing"-explore
-module: "Module 17: Materials science, fabrication, and manufacturing"
-domain: "technology"
+slug: 17-materials-manufacturing-explore
+module: "Module 17"
+domain: technology
 status: draft
-prerequisites: ["06-matter-quantum", "07-chemical-bonding", "12-fluids-materials"]
-connections: ["18-solid-mechanics", "19-thermodynamics", "20-manufacturing-systems"]
+prerequisites: [06-matter-quantum, 07-chemical-bonding, 12-fluids-materials]
+connections: [18-semiconductors-electronics]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

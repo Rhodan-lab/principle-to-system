@@ -1,11 +1,11 @@
 ---
 title: "Explore: Probability, Statistics, and Data Interpretation"
-slug: "04-probability-statistics-explore"
+slug: 04-probability-statistics-explore
 module: "Module 04"
-domain: "foundations"
+domain: foundations
 status: draft
-prerequisites: ["01-scientific-reasoning", "03-mathematical-models"]
-connections: ["05-information-theory", "06-systems-thinking"]
+prerequisites: [01-scientific-reasoning, 03-mathematical-models]
+connections: [05-computation-algorithms, 15-ecosystems-complex-systems, 19-software-ai]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

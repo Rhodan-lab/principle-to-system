@@ -1,11 +1,11 @@
 ---
 title: "Energy, Heat, Entropy, and Thermodynamics"
-slug: "08-energy-thermodynamics"
-module: "Module 08: Energy, heat, entropy, and thermodynamics"
-domain: "science"
+slug: 08-energy-thermodynamics
+module: "Module 08"
+domain: science
 status: draft
-prerequisites: ["03-mathematical-models", "06-matter-quantum"]
-connections: ["09-fluid-dynamics", "10-electromagnetism", "12-chemical-kinetics"]
+prerequisites: [03-mathematical-models, 06-matter-quantum]
+connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

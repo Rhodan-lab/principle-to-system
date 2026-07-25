@@ -1,11 +1,11 @@
 ---
 title: "Exploring Measurement and Uncertainty"
-slug: "02-measurement-uncertainty-explore"
-module: "Module 02: Measurement, units, error, and uncertainty"
-domain: "foundations"
+slug: 02-measurement-uncertainty-explore
+module: "Module 02"
+domain: foundations
 status: draft
-prerequisites: ["01-scientific-reasoning"]
-connections: ["03-kinematics-dynamics"]
+prerequisites: [01-scientific-reasoning]
+connections: [06-matter-quantum]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

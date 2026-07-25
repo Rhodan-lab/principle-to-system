@@ -1,11 +1,11 @@
 ---
 title: "Software, Information, Networks, and AI Foundations"
-slug: "19-software-ai"-explore
-module: "Module 19: Software, information, networks, and AI foundations"
-domain: "technology"
+slug: 19-software-ai-explore
+module: "Module 19"
+domain: technology
 status: draft
-prerequisites: ["04-probability-statistics", "05-computation-algorithms", "18-semiconductors-electronics"]
-connections: []
+prerequisites: [04-probability-statistics, 05-computation-algorithms, 18-semiconductors-electronics]
+connections: [20-sensors-control-infrastructure]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

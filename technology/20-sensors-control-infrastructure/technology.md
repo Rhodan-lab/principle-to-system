@@ -1,10 +1,10 @@
 ---
 title: "Engineering Automation and Resilient Infrastructure"
-slug: "20-sensors-control-infrastructure-tech"
-module: "Module 20: Sensors, control, automation, robotics, energy, and infrastructure"
-domain: "technology"
+slug: 20-sensors-control-infrastructure-technology
+module: "Module 20"
+domain: technology
 status: draft
-prerequisites: ["10-electricity-magnetism", "11-waves-signals", "18-semiconductors-electronics", "19-software-ai"]
+prerequisites: [10-electricity-magnetism, 11-waves-signals, 18-semiconductors-electronics, 19-software-ai]
 connections: []
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0

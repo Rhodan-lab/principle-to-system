@@ -1,11 +1,11 @@
 ---
 title: "Exploring Thermodynamics"
-slug: "08-energy-thermodynamics-explore"
-module: "Module 08: Energy, heat, entropy, and thermodynamics"
-domain: "science"
+slug: 08-energy-thermodynamics-explore
+module: "Module 08"
+domain: science
 status: draft
-prerequisites: ["08-energy-thermodynamics", "08-energy-thermodynamics-tech"]
-connections: ["09-fluid-dynamics"]
+prerequisites: [03-mathematical-models, 06-matter-quantum]
+connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

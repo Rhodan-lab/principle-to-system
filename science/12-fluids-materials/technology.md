@@ -1,11 +1,11 @@
 ---
 title: "Engineering with Fluids and Materials"
-slug: "12-fluids-materials-tech"
-module: "Module 12: Fluids, material properties, and structural behaviour"
-domain: "technology"
+slug: 12-fluids-materials-technology
+module: "Module 12"
+domain: science
 status: draft
-prerequisites: ["12-fluids-materials"]
-connections: ["16-manufacturing-processes", "17-structural-engineering", "18-aerospace-systems"]
+prerequisites: [03-mathematical-models, 08-energy-thermodynamics, 09-motion-forces]
+connections: [16-earth-planetary, 17-materials-manufacturing]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

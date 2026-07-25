@@ -1,11 +1,11 @@
 ---
 title: "Mathematical Models, Quantities, Vectors, and Scale"
-slug: "03-mathematical-models"
-module: "Module 03: Mathematical models, quantities, vectors, and scale"
-domain: "foundations"
+slug: 03-mathematical-models
+module: "Module 03"
+domain: foundations
 status: draft
-prerequisites: ["01-scientific-reasoning"]
-connections: ["04-classical-mechanics", "05-thermodynamics", "06-electromagnetism"]
+prerequisites: [01-scientific-reasoning]
+connections: [04-probability-statistics, 05-computation-algorithms, 06-matter-quantum, 08-energy-thermodynamics, 09-motion-forces, 10-electricity-magnetism, 11-waves-signals, 12-fluids-materials]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

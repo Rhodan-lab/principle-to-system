@@ -1,11 +1,11 @@
 ---
 title: "Engineering Chemical Reactions: Batteries and Catalytic Converters"
-slug: "07-chemical-bonding-technology"
-module: "Module 07: Chemical bonding, molecular interactions, and reactions"
-domain: "technology"
+slug: 07-chemical-bonding-technology
+module: "Module 07"
+domain: science
 status: draft
-prerequisites: ["07-chemical-bonding"]
-connections: ["08-thermodynamics", "09-materials-science"]
+prerequisites: [06-matter-quantum]
+connections: [13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

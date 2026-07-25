@@ -1,11 +1,11 @@
 ---
 title: "Measurement Systems and Calibration"
-slug: "02-measurement-uncertainty-technology"
-module: "Module 02: Measurement, units, error, and uncertainty"
-domain: "technology"
+slug: 02-measurement-uncertainty-technology
+module: "Module 02"
+domain: foundations
 status: draft
-prerequisites: ["01-scientific-reasoning"]
-connections: ["03-kinematics-dynamics"]
+prerequisites: [01-scientific-reasoning]
+connections: [06-matter-quantum]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

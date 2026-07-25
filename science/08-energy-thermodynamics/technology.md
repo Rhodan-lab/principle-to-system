@@ -1,11 +1,11 @@
 ---
 title: "Thermodynamic Systems and Heat Engines"
-slug: "08-energy-thermodynamics-tech"
-module: "Module 08: Energy, heat, entropy, and thermodynamics"
-domain: "technology"
+slug: 08-energy-thermodynamics-technology
+module: "Module 08"
+domain: science
 status: draft
-prerequisites: ["08-energy-thermodynamics"]
-connections: ["09-fluid-dynamics", "11-materials-science"]
+prerequisites: [03-mathematical-models, 06-matter-quantum]
+connections: [12-fluids-materials, 13-cells-bioenergetics, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

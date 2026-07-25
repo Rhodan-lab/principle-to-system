@@ -1,11 +1,11 @@
 ---
 title: "Motion, Forces, Momentum, Rotation, and Gravitation"
-slug: "09-motion-forces"
-module: "Module 09: Motion, forces, momentum, rotation, and gravitation"
-domain: "science"
+slug: 09-motion-forces
+module: "Module 09"
+domain: science
 status: draft
-prerequisites: ["03-mathematical-models"]
-connections: ["10-thermodynamics", "11-electromagnetism", "12-quantum-mechanics"]
+prerequisites: [03-mathematical-models]
+connections: [11-waves-signals, 12-fluids-materials, 16-earth-planetary]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---

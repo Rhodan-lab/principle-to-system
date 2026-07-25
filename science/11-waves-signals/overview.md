@@ -1,11 +1,11 @@
 ---
 title: "Oscillations, Waves, Sound, Optics, and Signals"
-slug: "11-waves-signals"
-module: "Module 11: Oscillations, waves, sound, optics, and signals"
-domain: "science"
+slug: 11-waves-signals
+module: "Module 11"
+domain: science
 status: draft
-prerequisites: ["03-mathematical-models", "09-motion-forces"]
-connections: ["12-electromagnetism", "14-quantum-mechanics", "16-communication-systems"]
+prerequisites: [03-mathematical-models, 09-motion-forces]
+connections: [20-sensors-control-infrastructure]
 last_reviewed: 2026-07-24
 content_license: CC-BY-4.0
 ---
