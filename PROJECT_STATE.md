@@ -1,91 +1,99 @@
 # Project State
 
-> Last updated: 2026-07-24
+> Last updated: 2026-07-25
 
 ## Current phase
 
-**Complete.** All mandatory deliverables are committed to GitHub. The repository is fully functional and resumable.
+**Repository-wide scientific and editorial audit in progress.**
 
-## Completed modules
+The full content architecture exists: 20 modules with 60 learner-facing files, 7 crosscutting concepts, 6 pathways, 3 knowledge maps, a source ledger, and a repository validator. This is a complete first draft, not yet a fully reviewed release.
 
-All 20 modules (60 core files):
+A module may be marked **Complete** only after its three learner-facing files have passed scientific review, source verification, metadata and link checks, and strict repository validation.
 
-1. Scientific reasoning, causality, and explanation
-2. Measurement, units, error, and uncertainty
-3. Mathematical models, quantities, vectors, and scale
-4. Probability, statistics, and data interpretation
-5. Computation, algorithms, numerical methods, and simulation
-6. Matter, atoms, electron behaviour, and quantum foundations
-7. Chemical bonding, molecular interactions, and reactions
-8. Energy, heat, entropy, and thermodynamics
-9. Motion, forces, momentum, rotation, and gravitation
-10. Electricity, magnetism, fields, and circuits
-11. Oscillations, waves, sound, optics, and signals
-12. Fluids, material properties, and structural behaviour
-13. Cells, membranes, enzymes, metabolism, and bioenergetics
-14. DNA, gene expression, inheritance, and evolution
-15. Ecosystems, feedback, networks, and complex systems
-16. Earth, atmosphere, oceans, climate, and planetary systems
-17. Materials science, fabrication, and manufacturing
-18. Semiconductors, electronics, and computer hardware
-19. Software, information, networks, and AI foundations
-20. Sensors, control, automation, robotics, energy, and infrastructure
+## Content inventory
 
-## Modules in progress
+- 20 modules and 60 core learner files are present.
+- 7 crosscutting concepts are present.
+- 6 end-to-end pathways are present.
+- 3 Mermaid knowledge maps are present.
+- A central source ledger is present.
+- A standard-library-only validator is present.
 
-None.
+Presence does not imply review completion. `INDEX.md` is the source of truth for module review status.
 
-## Completed pathways
+## Review status
 
-All 6 pathways:
+All 20 modules are currently **Draft** pending systematic review.
 
-1. Atoms to computers
-2. Fields to electric power
-3. Waves to global communication
-4. Chemistry to materials and batteries
-5. Biology to biotechnology
-6. Data to AI and automation
+Review order follows the dependency graph:
 
-## Crosscutting concepts
-
-All 7 complete:
-
-1. Patterns
-2. Cause and effect
-3. Scale, proportion, and quantity
-4. Systems and models
-5. Energy and matter
-6. Structure and function
-7. Stability and change
-
-## Knowledge maps
-
-All 3 complete:
-
-1. Foundations map
-2. Science-to-technology map
-3. Complete dependency map
-
-## Source-ledger status
-
-97 entries recorded across all 20 modules.
+1. Foundations: Modules 01–05
+2. Physical science: Modules 06–12
+3. Life and Earth systems: Modules 13–16
+4. Technology: Modules 17–20
+5. Crosscutting concepts, pathways, and maps
+6. Repository-wide terminology, links, and source reconciliation
 
 ## Validation status
 
-`scripts/validate_repo.py` passes with 0 errors, 0 warnings.
+`scripts/validate_repo.py` has been hardened to check:
 
-## Unresolved problems
+- required repository and module files;
+- frontmatter syntax and required fields;
+- slug syntax and uniqueness;
+- canonical module identifiers and prerequisite consistency;
+- exact section headings;
+- explicit principle-to-system chains;
+- relative links and repository-boundary escapes;
+- agreement between learner-file status and `INDEX.md`;
+- source-ledger row structure and weak-source warnings;
+- strict release readiness with `--strict`.
 
-- `.github/workflows/validate.yml` could not be pushed due to GitHub App permissions (workflows scope). The file exists locally and can be added manually by the repository owner or via the GitHub web interface.
+The repository is **not currently release-ready**. Known metadata and source-ledger defects must be repaired before strict validation can pass.
 
-## Next highest-priority action
+## Known blocking issues
 
-If continuing development:
-1. Add the GitHub Actions workflow file via the GitHub web UI (paste contents of `.github/workflows/validate.yml` from local).
-2. Expand source ledger entries with additional high-quality references.
-3. Review module content for scientific accuracy and cross-link completeness.
-4. Consider adding worked numerical examples to `explore.md` files.
+1. Several learner files contain malformed slug values introduced while resolving duplicate slugs, such as a quoted slug followed by `-technology` outside the quotes.
+2. Many `connections` values use identifiers that do not correspond to canonical module IDs.
+3. Some file `domain` values describe the file role rather than the module’s subject domain.
+4. The source ledger contains concatenated entries that must be split into one source per Markdown table row.
+5. Several modules rely on encyclopedia or weak secondary sources where the source policy calls for primary literature, standards, consensus reports, or strong textbooks.
+6. Module status previously said Complete even though learner-file frontmatter remained Draft.
+7. Structural validation does not substitute for scientific review of claims, equations, units, assumptions, safety, and trade-offs.
+8. The validation workflow still needs to be added under `.github/workflows/` by an actor with workflow permission.
+
+## Definition of reviewed
+
+A module can move from Draft to Reviewed only when all three files satisfy the following:
+
+- causal explanations are scientifically accurate and appropriately scoped;
+- equations, symbols, sign conventions, and SI units are correct;
+- assumptions, approximations, system boundaries, scales, and failure conditions are explicit;
+- sources have been opened and verified, and ledger entries are valid;
+- prerequisites and connections use canonical repository identifiers;
+- relative links resolve;
+- exploration activities are safe, free, and age-appropriate;
+- unnecessary repetition, exam framing, unsupported claims, and padding are removed.
+
+## Definition of complete
+
+A module can move from Reviewed to Complete only when:
+
+- no unresolved scientific or editorial review comments remain;
+- all three learner files have `status: complete` and a current `last_reviewed` date;
+- its pathways, maps, and crosscutting links remain consistent;
+- `python3 scripts/validate_repo.py --strict` passes repository-wide.
+
+## Next highest-priority actions
+
+1. Repair malformed frontmatter and normalize canonical identifiers across all 60 learner files.
+2. Normalize the source ledger to exactly one source per row.
+3. Run the validator and resolve all structural errors.
+4. Review Modules 01–05 scientifically and editorially, then update their statuses only after review.
+5. Continue through Modules 06–20 in dependency order.
+6. Reconcile pathways, concepts, and maps against the reviewed modules.
+7. Add the GitHub Actions validation workflow and require strict validation for release-oriented pull requests.
 
 ## Continuation instructions
 
-Clone the repository, read this file, and continue from the next highest-priority action above. All standards are defined in `CONTENT_GUIDE.md` and `SOURCE_POLICY.md`. Run `python3 scripts/validate_repo.py` to verify structural integrity before committing.
+Read `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, this file, and `AUDIT.md`. Work on a branch, keep each pull request focused, update sources and `last_reviewed` dates with factual changes, and do not change a module’s status until its review criteria are met.
