@@ -1,0 +1,39 @@
+name: Validate applied materials
+
+on:
+  pull_request:
+    paths:
+      - 'experiences/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+      - 'templates/**'
+      - 'sources/experience-source-ledger.md'
+      - 'scripts/validate_experiences.py'
+      - '.github/workflows/validate-experiences.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experiences/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+      - 'templates/**'
+      - 'sources/experience-source-ledger.md'
+      - 'scripts/validate_experiences.py'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate applied-material layer
+        run: python3 scripts/validate_experiences.py --strict
