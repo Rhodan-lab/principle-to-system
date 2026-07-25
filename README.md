@@ -1,8 +1,10 @@
 # Principle to System
 
-**Learn how foundational science becomes technology.**
+**Learn how foundational science becomes technology—and how to reason with the systems that result.**
 
-Principle to System is an open-source knowledge repository for curious independent learners. It explains how scientific understanding is built, and how that understanding is progressively transformed into the engineered systems that shape the modern world. Every learning module follows the same explanatory arc:
+Principle to System is an open-source knowledge repository for curious independent learners. It explains how scientific understanding is built, how it becomes engineered technology, and how real systems can be investigated, redesigned, and understood through their failures.
+
+Core modules follow this arc:
 
 ```text
 observation
@@ -14,59 +16,104 @@ observation
 → limitation and trade-off
 ```
 
-This is not a textbook, an exam course, or an encyclopaedia of disconnected facts. It is a connected map of causal explanations: why phenomena happen, how they are modelled, and how engineers exploit them.
+Applied materials continue it:
+
+```text
+notice a system
+→ choose a boundary
+→ identify flows and state variables
+→ propose competing mechanisms
+→ build the smallest useful model
+→ test it against evidence
+→ redesign under constraints
+→ explain remaining uncertainty
+```
+
+This is not an exam course or an encyclopaedia of disconnected facts. It is a connected map of causal explanations and reasoning practices.
 
 ## Who this is for
 
-Independent learners who want to understand *why* technology works, not merely *that* it works. No formal enrolment, prerequisites beyond curiosity, or assessment framework is assumed. The material uses clear international English and meaningful mathematics, with all symbols and units defined where they appear.
+Independent learners who want to understand *why* technology works, not merely *that* it works. No grades or formal enrolment are assumed. Mathematics is used where it improves explanation, with symbols, units, assumptions, and model limits made explicit.
 
-## How the content is organised
-
-The repository contains 20 learning modules grouped into three content folders, plus synthesis layers that connect them.
+## Repository structure
 
 | Folder | Contents |
 | --- | --- |
-| `foundations/` | Modules 01–05: reasoning, measurement, mathematics, probability, and computation — the tools of science |
-| `science/` | Modules 06–16: the natural sciences, from quantum matter to planetary systems |
-| `technology/` | Modules 17–20: materials, electronics, software, and engineered infrastructure |
-| `concepts/` | Seven crosscutting concepts (patterns, cause and effect, scale, systems, energy and matter, structure and function, stability and change) |
-| `pathways/` | Six end-to-end science-to-technology pathways (e.g. atoms → computers) |
-| `maps/` | Three Mermaid knowledge maps with labelled dependency relationships |
-| `sources/` | The central source ledger recording every reference used |
-| `scripts/` | The repository validator |
+| `foundations/` | Modules 01–05: reasoning, measurement, mathematics, probability, and computation |
+| `science/` | Modules 06–16: natural science from quantum matter to planetary systems |
+| `technology/` | Modules 17–20: materials, electronics, software, control, and infrastructure |
+| `concepts/` | Seven crosscutting ideas used across disciplines |
+| `pathways/` | Six end-to-end science-to-technology chains |
+| `maps/` | Dependency and enabling-relationship maps |
+| `experiences/` | Shared rules and navigation for applied materials |
+| `system-dossiers/` | Reverse-engineering complete technologies |
+| `failure-atlas/` | Recurring causal failure patterns and redesign strategies |
+| `investigations/` | Safe model-comparison inquiries with uncertainty |
+| `design-challenges/` | Engineering decisions under measurable constraints |
+| `templates/` | Reusable authoring structures for the four experience families |
+| `sources/` | Legacy module ledger and normalized experience-source ledger |
+| `scripts/` | Module and experience validators |
 
-Every module directory contains exactly three learner-facing files:
+Every core module contains `overview.md`, `technology.md`, and `explore.md`. Applied materials use family-specific standards and templates.
 
-| File | Purpose |
-| --- | --- |
-| `overview.md` | Central questions, phenomena, concepts, mechanisms, quantities, mathematical models, assumptions, scales, misconceptions, connections, and sources |
-| `technology.md` | How the module's science is engineered into components and systems, including explicit principle-to-system chains, constraints, failure modes, and trade-offs |
-| `explore.md` | Safe observation prompts, prediction questions, worked reasoning examples, thought experiments, and self-directed learning paths |
+## Four ways to learn
 
-## How to begin learning
+### 1. Foundations upward
 
-1. Open [`INDEX.md`](INDEX.md) to see all modules, their prerequisites, and their status.
-2. If you are new to scientific reasoning, start with [`foundations/01-scientific-reasoning/overview.md`](foundations/01-scientific-reasoning/overview.md).
-3. If you want a goal-directed route, pick a pathway in [`pathways/`](pathways/) — for example [`pathways/atoms-to-computers.md`](pathways/atoms-to-computers.md) — and follow the module prerequisites it lists.
-4. Use the maps in [`maps/`](maps/) to see how everything depends on everything else.
+Open [`INDEX.md`](INDEX.md), begin with scientific reasoning, and follow prerequisites toward a technology module.
 
-## How to navigate dependencies
+### 2. Goal-directed pathways
 
-Each module's YAML frontmatter lists its `prerequisites` and `connections`. The [`INDEX.md`](INDEX.md) table summarises these, and [`maps/complete-dependency-map.md`](maps/complete-dependency-map.md) shows the full labelled dependency graph. Prerequisites are recommendations for smooth understanding, not gates: every file defines the ideas it relies on well enough to be read on its own.
+Choose a route in [`pathways/`](pathways/), such as [`atoms-to-computers.md`](pathways/atoms-to-computers.md).
 
-## How to contribute
+### 3. Reverse-engineer a system
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). In short: follow the structure defined in [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), cite sources according to [`SOURCE_POLICY.md`](SOURCE_POLICY.md), run `python3 scripts/validate_repo.py` before submitting, and keep explanations causal, accurate, and free of padding.
+Start with [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md). Trace energy, matter, and information flows; remove a component mentally; predict the result; compare alternative architectures.
+
+### 4. Explain, diagnose, investigate, design
+
+1. [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md)
+2. [`failure-atlas/feedback-instability.md`](failure-atlas/feedback-instability.md)
+3. [`investigations/room-cooling.md`](investigations/room-cooling.md)
+4. [`design-challenges/passive-cooler.md`](design-challenges/passive-cooler.md)
+
+The same thermodynamic theme is viewed through explanation, failure, evidence, and design.
+
+## Content status
+
+File presence does not imply review completion. Module status is tracked in [`INDEX.md`](INDEX.md); repository blockers and review order are tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md) and [`AUDIT.md`](AUDIT.md).
+
+The initial applied-material exemplars have completed a focused source, safety, structure, and metadata review. Their status is `reviewed`, not `complete`, because repository-wide strict validation and independent scientific review are still required for a release claim.
+
+## Validation
+
+Core repository audit:
+
+```bash
+python3 scripts/validate_repo.py
+python3 scripts/validate_repo.py --strict
+```
+
+Applied-material layer:
+
+```bash
+python3 scripts/validate_experiences.py
+python3 scripts/validate_experiences.py --strict
+```
+
+GitHub Actions runs strict applied-material validation when relevant files change.
+
+## Sources
+
+Module sources remain in [`sources/source-ledger.md`](sources/source-ledger.md), which is undergoing normalization. New applied materials use the machine-readable [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), with one source per eight-column row.
+
+## Contributing
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/) and pass strict experience validation.
 
 ## Licensing
 
-This repository uses two licences, deliberately kept distinct:
+- Code and scripts: [Apache License 2.0](LICENSE)
+- Original educational content: [CC BY 4.0](LICENSE-CONTENT)
 
-- **Code and scripts** (everything in `scripts/` and `.github/`) are licensed under the [Apache License 2.0](LICENSE).
-- **Original educational content** (all Markdown learning materials) is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CONTENT).
-
-When reusing content, attribute "Principle to System contributors" and link back to this repository. See [`CITATION.cff`](CITATION.cff) for citation metadata.
-
-## Project status
-
-The live status of every module, pathway, and validation run is tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md), which is kept current so the project remains resumable at any time.
+When reusing content, attribute “Principle to System contributors” and link to this repository. See [`CITATION.cff`](CITATION.cff).
