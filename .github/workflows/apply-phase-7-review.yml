@@ -115,29 +115,14 @@ jobs:
       - name: Commit integrated reviewed layers
         shell: bash
         run: |
-          if git diff --quiet; then
+          rm -f phase7-transform.log integrated-review-validation.log
+          if git diff --quiet && test -z "$(git status --short)"; then
             echo 'No integrated review changes remain.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add \
-            foundations/01-scientific-reasoning \
-            foundations/02-measurement-uncertainty \
-            foundations/03-mathematical-models \
-            foundations/04-probability-statistics \
-            foundations/05-computation-algorithms \
-            science/06-matter-quantum \
-            science/07-chemical-bonding \
-            science/08-energy-thermodynamics \
-            science/09-motion-forces \
-            science/10-electricity-magnetism \
-            science/11-waves-signals \
-            science/12-fluids-materials \
-            INDEX.md PROJECT_STATE.md \
-            sources/source-ledger.md sources/foundations-review-sources.json \
-            reports/phase-6-foundations-review.md reports/phase-6-foundations-sources.json \
-            reports/phase-7-physical-science-sources.json \
-            scripts/apply_foundations_review_sources.py scripts/validate_foundations_review.py
+          git add -A
+          git status --short
           git commit -m 'content: integrate reviewed Foundations and Physical Science layers'
           git push origin HEAD:agent/phase-7-physical-science-review
