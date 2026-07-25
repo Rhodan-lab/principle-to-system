@@ -1,15 +1,6 @@
 name: Normalize Phase 4 metadata
 
 on:
-  push:
-    branches:
-      - agent/phase-4-metadata-normalization
-    paths:
-      - 'scripts/normalize_module_metadata.py'
-      - 'foundations/**'
-      - 'science/**'
-      - 'technology/**'
-      - '.github/workflows/normalize-phase-4-metadata.yml'
   pull_request:
     branches:
       - main
