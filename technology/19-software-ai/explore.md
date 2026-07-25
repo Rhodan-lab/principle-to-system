@@ -26,19 +26,11 @@ content_license: CC-BY-4.0
 
 ## 3. Worked reasoning examples
 
-**Problem:** Calculate the Shannon entropy of a fair coin toss and a biased coin toss (where heads has a 90% probability).
+**Problem:** Compare the entropy of a fair binary source with a source where one outcome has probability $0.9$.
 
-**Reasoning:**
-For a fair coin, the probabilities are $P(Heads) = 0.5$ and $P(Tails) = 0.5$.
-Using the entropy formula: $H = -(0.5 \log_2 0.5 + 0.5 \log_2 0.5)$
-$H = -(-0.5 - 0.5) = 1$ bit.
-This means one bit of information is required to communicate the result of a fair coin toss.
-
-For the biased coin, $P(Heads) = 0.9$ and $P(Tails) = 0.1$.
-$H = -(0.9 \log_2 0.9 + 0.1 \log_2 0.1)$
-$H \approx -(0.9 \times -0.152 + 0.1 \times -3.32)$
-$H \approx -(-0.1368 - 0.332) = 0.469$ bits.
-The entropy is lower because the outcome is more predictable; we are less uncertain about the result before the toss occurs.
+For probabilities $p$ and $1-p$,
+$$H=-p\log_2p-(1-p)\log_2(1-p).$$
+The fair source has $H=1$ bit per symbol. The $0.9/0.1$ source has approximately $0.469$ bit per symbol. These are ensemble averages under the stated model. One isolated binary outcome still needs a representation agreed by sender and receiver; entropy bounds expected code length across repeated or block-coded symbols rather than assigning a fractional physical bit to one event.
 
 ## 4. Thought experiments
 
@@ -55,17 +47,14 @@ The entropy is lower because the outcome is more predictable; we are less uncert
 
 ## 6. Model-building prompts
 
-Construct a simple physical model of a network using string and cups, but introduce a "router" (a person in the middle who must receive a message from one cup and pass it to another specific cup based on an address). How does adding more nodes and routers increase the complexity of ensuring the message reaches the correct destination?
-
-Design a simple decision tree (a basic form of machine learning model) on paper to classify whether you should take an umbrella outside. What are the input features (e.g., is it cloudy? is the forecast calling for rain?), and what are the decision thresholds?
+- Build a paper packet-routing model with addressed cards, several nodes, two possible routes, a queue, a dropped packet, and a routing update. Record which behavior belongs to forwarding, routing, transport retry, and application semantics.
+- Design a small decision tree for a low-stakes fictional choice. Define inputs, missing values, thresholds, target, cost of each error, validation examples, and an abstain path rather than treating the tree as an objective decision-maker.
 
 ## 7. Self-explanation questions
 
-Explain why a compressed file (like a .zip) cannot usually be compressed significantly a second time. Relate this to the concept of entropy.
-
-Describe the difference between the Transport layer (TCP) and the Network layer (IP) in the internet protocol stack. Why are both necessary?
-
-Explain the concept of "gradient descent" in neural network training using the analogy of a person trying to find the lowest point in a hilly landscape while blindfolded.
+- Explain why an already compressed file often changes little or grows under another compressor. Include algorithm mismatch, headers, finite length, and the difference between measured file structure and source-model entropy.
+- Compare IP best-effort delivery with TCP's reliable ordered byte stream and with UDP or QUIC. Which guarantees still belong to the application?
+- Improve the “blindfolded hill” analogy for gradient descent by adding local slope, noisy estimates, step size, constraints, flat directions, saddles, and multiple basins. Which aspects of high-dimensional optimisation remain hidden by the analogy?
 
 ## 8. Transfer questions
 
@@ -75,11 +64,10 @@ The concept of caching (storing frequently accessed data closer to the processor
 
 ## 9. Suggested learning paths
 
-To deepen your understanding of information theory, begin with Claude Shannon's original 1948 paper, "A Mathematical Theory of Communication." While mathematically dense, the introduction provides profound conceptual clarity.
-
-For networking, explore the concept of packet switching versus circuit switching. Understand why the internet was designed around packet switching to ensure resilience.
-
-To understand machine learning practically, explore introductory tutorials on building simple neural networks using Python libraries like TensorFlow or PyTorch. Focus on understanding the shape of the data as it passes through the layers.
+- **Information:** Begin with probability and coding examples before reading selected parts of Shannon's paper; distinguish theorem assumptions from implementation.
+- **Networks:** Study layering, packet forwarding, routing, transports, naming, congestion, security, and application semantics. Packet switching supports statistical sharing and alternate paths but does not by itself guarantee resilience.
+- **Software systems:** Connect operating systems, databases, distributed failure models, testing, security, and recovery.
+- **Machine learning and AI:** Start with simple reproducible models and datasets. Add train/validation/test separation, calibration, distribution shift, privacy, threat models, documentation, and human oversight before increasing model complexity.
 
 ## 10. Reasoning notes
 

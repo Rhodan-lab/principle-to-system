@@ -36,8 +36,8 @@ content_license: CC-BY-4.0
 
 ## 4. Thought experiments
 
-*   **The Perfect Crystal:** Imagine a macroscopic block of metal (say, 1 cm$^3$) that is a single, perfect crystal with absolutely zero defects (no vacancies, no dislocations, no grain boundaries). How would its theoretical yield strength compare to a normal piece of the same metal? If you applied a stress exceeding this theoretical strength, how would the material fail?
-*   **The Infinite Wire:** Imagine drawing a copper wire through progressively smaller dies to reduce its diameter. As you cold-work the wire, its dislocation density increases, and it becomes stronger but more brittle. Is there a theoretical limit to how much you can cold-work the wire before it shatters? What microscopic mechanism dictates this limit?
+- **Defect-free-crystal model:** Compare the ideal shear strength of a defect-free lattice with the much lower stress at which dislocations move in an annealed engineering crystal. Why do surfaces, interfaces, thermal fluctuations, and nucleation make a macroscopic perfect crystal an idealisation rather than a realizable test object?
+- **Repeated wire drawing:** Model how area reduction, dislocation structure, texture, residual stress, surface damage, intermediate annealing, and die friction change strength and ductility. Why is there no single universal “shatter limit” determined only by dislocation density?
 
 ## 5. Household and browser-based explorations
 
@@ -53,14 +53,14 @@ content_license: CC-BY-4.0
 
 ## 7. Self-explanation questions
 
-*   Explain why a blacksmith heats a horseshoe before hammering it into shape, rather than hammering it cold. Use the concepts of thermal energy, dislocation mobility, and strain hardening in your explanation.
-*   Describe the difference between elastic deformation and plastic deformation at the atomic level. What happens to the atomic bonds in each case?
-*   Why are ceramics generally much more brittle than metals? Relate your answer to the nature of ionic/covalent bonding versus metallic bonding and the mobility of dislocations.
+- Explain why hot working can reduce required flow stress and enable recovery or recrystallisation, while also introducing oxidation, grain growth, temperature gradients, or dimensional challenges.
+- Distinguish elastic strain, recoverable anelasticity, plasticity, damage, and fracture. Which descriptions belong at atomic, defect, microstructural, and continuum scales?
+- Ceramics cover glasses, single crystals, polycrystals, porous bodies, composites, and transformation-toughened materials. Explain why limited slip, flaws, interfaces, residual stress, environment, and toughening mechanisms matter more than the slogan “covalent bonds make ceramics brittle.”
 
 ## 8. Transfer questions
 
-*   The principles of phase transformations and precipitation hardening are used to strengthen aluminum alloys for airplanes. How might similar principles of controlling microstructural phases be applied to the design of advanced concrete mixtures for skyscrapers?
-*   Additive manufacturing (3D printing) builds parts layer by layer, resulting in rapid heating and cooling cycles. How might this unique thermal history affect the final microstructure and mechanical properties of a 3D-printed metal part compared to a cast part of the same geometry?
+- Precipitation hardening controls nanoscale phases in selected alloys. Compare this with hydration, supplementary cementitious reactions, aggregate interfaces, porosity, and reinforcement in concrete. Which ideas transfer, and which mechanisms are fundamentally different?
+- For an additively manufactured and a cast metal part of the same nominal alloy and geometry, list the thermal-history, orientation, porosity, surface, residual-stress, heat-treatment, and inspection evidence needed before comparing properties.
 
 ## 9. Suggested learning paths
 

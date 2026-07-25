@@ -12,30 +12,24 @@ content_license: CC-BY-4.0
 
 ## 1. Scientific principles used
 
-The engineering of modern electronics relies on the quantum mechanical band theory of solids, specifically the ability to manipulate the band gap and charge carrier concentration of semiconductor materials through doping. The fundamental principle is the control of electrical conductivity via external electric fields (the field effect) or injected currents, allowing a semiconductor junction to act as a variable resistor, a one-way valve (diode), or an amplifier/switch (transistor).
+Electronics uses quantum and statistical descriptions of solids, electrostatics, carrier transport, electromagnetism, thermodynamics, materials science, and circuit theory. Doping is one method of controlling carrier populations; heterostructures, gates, contacts, geometry, strain, defects, illumination, temperature, and phase also matter. Diodes and transistors implement nonlinear current–voltage and charge–voltage relations; “one-way valve,” “variable resistor,” and “perfect switch” are limited circuit analogies.
 
 ## 2. The engineering problem
 
-The core engineering problem in computing hardware is how to perform complex logical operations and store vast amounts of information quickly, reliably, and efficiently. Early computers used mechanical relays or vacuum tubes, which were large, fragile, power-hungry, and prone to failure. The challenge was to create a solid-state switch that was microscopic, consumed minimal power, generated little heat, and could be manufactured in massive quantities at low cost. Furthermore, these billions of switches needed to be interconnected reliably without manual wiring.
+Hardware engineering must realise specified computation, memory, communication, sensing, or power-conversion functions within limits on correctness, delay, energy, temperature, area, manufacturability, yield, reliability, cost, supply, and lifecycle impact. Device scaling is only one strategy. Architecture, memory hierarchy, interconnect, packaging, accelerators, redundancy, software, and workload mapping determine whether device capability becomes useful system performance.
 
 ## 3. Main components
 
-*   **Silicon Wafer:** The foundational substrate, a highly purified, single-crystal slice of silicon.
-*   **Transistors (MOSFETs):** The active switching elements. Each consists of a source, drain, and gate.
-*   **Logic Gates:** Combinations of transistors wired together to perform basic Boolean logic operations (AND, OR, NOT, NAND, NOR).
-*   **Memory Cells:** Circuits designed to store a single bit of data (0 or 1). Static RAM (SRAM) uses multiple transistors to hold a state, while Dynamic RAM (DRAM) uses a transistor and a capacitor.
-*   **Interconnects:** Microscopic layers of metal (usually copper or aluminium) wiring that connect the transistors and logic gates.
-*   **Dielectric Layers:** Insulating materials (like silicon dioxide) used to separate conducting layers and form the gate insulator in MOSFETs.
+- **Substrates and active materials:** Silicon is widespread, but compound semiconductors, wide-band-gap materials, thin films, and heterogeneous integration serve different functions.
+- **Devices:** MOSFETs, diodes, bipolar devices, memory elements, photonic devices, sensors, and power devices use different structures and operating regimes.
+- **Interconnect and dielectrics:** Conductors, barriers, vias, insulators, and interfaces connect and isolate devices while adding resistance, capacitance, inductance, stress, and failure modes.
+- **Circuits and architecture:** Standard cells, analog blocks, memories, clocking, power delivery, processors, accelerators, and interfaces organise device behaviour.
+- **Package and board:** Mechanical support, cooling, power, signal escape, protection, test access, and external connections extend beyond the die.
+- **Manufacturing and test:** Crystal growth, deposition, patterning, doping, etching, cleaning, planarisation, metrology, inspection, packaging, and electrical test create and screen the product.
 
 ## 4. How the components interact
 
-The fundamental interaction is the construction of logic gates from transistors. In Complementary Metal-Oxide-Semiconductor (CMOS) technology, logic gates are built using pairs of p-type and n-type MOSFETs. 
-
-For example, a NOT gate (inverter) consists of one p-MOSFET and one n-MOSFET connected in series between the power supply voltage and ground. The input signal is connected to the gates of both transistors. 
-*   When the input is high (Logic 1), the n-MOSFET turns on (conducts) and the p-MOSFET turns off (insulates). The output is pulled to ground (Logic 0).
-*   When the input is low (Logic 0), the p-MOSFET turns on and the n-MOSFET turns off. The output is pulled to the supply voltage (Logic 1).
-
-These logic gates are then interconnected to form more complex circuits like adders, multiplexers, and ultimately, the Arithmetic Logic Unit (ALU) of a processor.
+In a CMOS inverter, complementary devices share an input and drive an output node. Input-voltage ranges, transistor sizing, load capacitance, supply, temperature, leakage, and process variation determine transfer characteristic, delay, energy, and noise margin. “On” and “off” describe useful operating regions, not perfect conduction and insulation. Gates combine into sequential and combinational circuits, but processors also require clocks, memories, interconnect, power delivery, I/O, verification, firmware, and software.
 
 ## 5. Matter, energy, force, or information flow
 
@@ -46,15 +40,7 @@ These logic gates are then interconnected to form more complex circuits like add
 
 ## 6. System architecture
 
-The architecture of a modern processor (CPU) is a hierarchy of abstraction:
-1.  **Device Level:** Individual MOSFETs fabricated on the silicon substrate.
-2.  **Circuit Level:** Transistors combined into logic gates and memory cells.
-3.  **Functional Unit Level:** Logic gates combined into ALUs, registers, and control units.
-4.  **Microarchitecture Level:** The arrangement of functional units to execute a specific instruction set architecture (ISA), including pipelines, cache memory hierarchy (L1, L2, L3), and branch prediction logic.
-5.  **System Level:** The CPU integrated with main memory (RAM), storage controllers, and input/output interfaces on a motherboard.
-
-**Explicit Principle-to-System Chain:**
-Quantum Mechanics (Pauli Exclusion Principle) $\rightarrow$ Band Theory of Solids (Band Gap) $\rightarrow$ Semiconductor Doping (n-type/p-type) $\rightarrow$ p-n Junctions and Depletion Regions $\rightarrow$ Electric Field Control of Conductivity (Field Effect) $\rightarrow$ MOSFET Transistor $\rightarrow$ CMOS Inverter (NOT Gate) $\rightarrow$ NAND Gate $\rightarrow$ Half Adder $\rightarrow$ Arithmetic Logic Unit (ALU) $\rightarrow$ Central Processing Unit (CPU) $\rightarrow$ Computer System.
+One useful hierarchy is material and interface → device → circuit → functional block → microarchitecture → instruction-set interface → software-visible system. The mapping is many-to-many: one physical principle supports several devices, one logic function has several circuit implementations, and one instruction set can have many microarchitectures. Analog, mixed-signal, memory, photonic, power, and sensor systems do not follow one CPU-centred chain. Verification and metrology connect every level back to requirements.
 
 ## 7. Design constraints
 
@@ -71,10 +57,12 @@ No single metric describes processor performance. Report workload, precision, co
 
 ## 9. Reliability and failure modes
 
-*   **Electromigration:** The momentum of flowing electrons can physically move metal atoms in the interconnects over time, creating voids (open circuits) or hillocks (short circuits).
-*   **Time-Dependent Dielectric Breakdown (TDDB):** The gate oxide can degrade over time due to the constant electric field, eventually shorting the gate to the channel.
-*   **Thermal Cycling:** Repeated heating and cooling causes mechanical stress due to mismatched coefficients of thermal expansion between different materials, leading to cracking or delamination.
-*   **Single-Event Upsets (Soft Errors):** High-energy cosmic rays or alpha particles can strike a memory cell, generating enough electron-hole pairs to flip a bit from 0 to 1 or vice versa, causing a temporary data error.
+- **Interconnect degradation:** Current density, temperature, stress, microstructure, interfaces, and geometry influence electromigration and related void or extrusion formation.
+- **Dielectric and interface degradation:** Electric field, temperature, defects, charge trapping, and time contribute to breakdown and threshold drift.
+- **Bias and hot-carrier ageing:** Operating bias can create or activate defects and change device parameters.
+- **Thermomechanical damage:** Temperature gradients and cycling interact with package geometry, solder, underfill, dielectrics, and coefficients of thermal expansion.
+- **Radiation and transient faults:** Ionising particles or electrical transients can disturb stored or computed state without permanent damage; sensitivity depends on technology, node, circuit, environment, and protection.
+- **Systematic and random defects:** Design errors, process excursions, contamination, variation, and test escape require prevention, screening, redundancy, correction, and field monitoring.
 
 ## 10. Safety principles
 

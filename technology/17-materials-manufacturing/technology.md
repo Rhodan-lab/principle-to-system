@@ -14,11 +14,11 @@ content_license: CC-BY-4.0
 
 ## 1. Scientific principles used
 
-Manufacturing technologies rely on the fundamental principles of thermodynamics, kinetics, and solid mechanics to transform raw materials into functional components. Thermodynamics dictates the equilibrium phases present at specific temperatures and compositions, guiding processes like casting and heat treatment. Kinetics governs the rates of phase transformations and diffusion, which are critical for controlling microstructures during cooling or surface hardening. Solid mechanics principles, particularly plastic deformation and fracture mechanics, underpin forming operations (like forging and rolling) and subtractive processes (like machining). The interaction of energy sources (lasers, electron beams) with matter is central to advanced techniques like additive manufacturing and thin-film deposition.
+Manufacturing combines thermodynamics, kinetics, transport, mechanics, chemistry, electromagnetism, and measurement science. Thermodynamics constrains equilibrium and driving forces but does not determine rate. Kinetics describes nucleation, growth, diffusion, reaction, and relaxation. Mechanics relates stress, deformation, contact, fracture, vibration, and machine dynamics. Heat, mass, momentum, charge, and information transfer couple the energy source, tool, feedstock, atmosphere, fixture, sensor, and controller.
 
 ## 2. The engineering problem
 
-The core engineering problem in manufacturing is how to reliably, efficiently, and economically transform raw materials into complex, precise geometries while simultaneously achieving the specific mechanical, thermal, or electrical properties required for the component's function. This involves navigating complex trade-offs. For example, a material that is easy to machine (highly machinable) may lack the required high-temperature strength for a turbine blade. A process that produces near-net-shape components (like casting) might result in internal porosity, whereas a process that ensures high structural integrity (like forging) may require extensive and costly subsequent machining. The challenge is to select the optimal combination of material and process to meet design constraints within cost and time limits.
+The problem is to produce a defined population of components that satisfies geometry, material state, surface condition, function, safety, reliability, traceability, throughput, cost, and lifecycle requirements despite variation in feedstock, equipment, environment, measurement, and operation. There is rarely one universally optimal route. Casting, forming, machining, additive processing, joining, coating, and heat treatment create different defect populations and economic trade-offs; qualification must be tied to the actual design and process window.
 
 ## 3. Main components
 
@@ -31,14 +31,14 @@ A typical manufacturing system, regardless of the specific process, generally in
 
 ## 4. How the components interact
 
-In a subtractive process like CNC machining, the control system directs the kinematic system to move a rotating cutting tool (energy source/tooling) against a stationary or rotating workpiece (feedstock). The mechanical force shears away material, generating heat that must be managed by coolants. In an additive process like Laser Powder Bed Fusion (L-PBF), the control system directs a laser (energy source) across a thin layer of metal powder (feedstock). The laser melts the powder according to a digital cross-section, fusing it to the layer below. A recoater mechanism (kinematic system) then spreads a new layer of powder, and the cycle repeats. The interaction between the laser power, scanning speed, and powder characteristics determines the melt pool dynamics and the final part's density and microstructure.
+A manufacturing route links prepared feedstock, tooling or an energy-delivery system, motion and handling, process environment, sensing, control, metrology, and disposition. In machining, tool geometry, speed, feed, workholding, coolant or dry-cutting strategy, machine dynamics, and tool wear influence force, temperature, surface integrity, and dimensional error. In laser powder-bed fusion, powder condition, layer deposition, atmosphere, beam parameters, scan strategy, thermal history, supports, and recoating interact; melt-pool signals alone do not prove final density or mechanical performance. Inspection and destructive validation are needed to connect process observations with accepted product quality.
 
 ## 5. Matter, energy, force, or information flow
 
-*   **Matter Flow:** Raw materials enter the system, undergo physical or chemical transformations (melting, solidification, plastic deformation, material removal), and exit as finished parts and waste (chips, scrap, un-sintered powder).
-*   **Energy Flow:** Electrical energy is converted into thermal energy (heating elements, lasers) or mechanical work (motors, hydraulics). This energy is transferred to the workpiece to effect the transformation. Significant energy is also dissipated as waste heat.
-*   **Force Flow:** In forming and machining, massive mechanical forces are transmitted from the machine frame, through the tooling, and into the workpiece to overcome the material's yield strength or shear strength.
-*   **Information Flow:** Digital design files (CAD) are translated into machine instructions (G-code). Sensors feed real-time data (temperature, position, vibration) back to the control system, which adjusts the energy and kinematic inputs to maintain process stability.
+- **Matter:** Feedstock becomes product, recyclable return, process consumables, emissions, chips, support material, slag, sludge, off-specification material, or retained contamination.
+- **Energy:** Electrical, chemical, optical, thermal, hydraulic, or mechanical inputs are transferred and dissipated across the machine, workpiece, environment, and utilities.
+- **Loads:** Forces, moments, pressure, and contact tractions pass through tools, fixtures, frames, bearings, and workpieces; local stress and deformation need not follow a simple one-dimensional path.
+- **Information:** Requirements, geometry, material identity, machine state, calibration, process data, inspection, nonconformance, and disposition records form a controlled information chain. G-code is one possible machine representation, not a universal manufacturing language.
 
 ## 6. System architecture
 
@@ -54,10 +54,11 @@ A digital thread can connect requirements, material lots, process parameters, ma
 
 ## 7. Design constraints
 
-*   **Material Compatibility:** Not all materials can be processed by all methods. For example, highly brittle ceramics cannot be cold-forged; they must be sintered from powders.
-*   **Geometric Complexity:** Machining struggles with deep, narrow internal channels, whereas additive manufacturing excels at them. Conversely, additive manufacturing often requires support structures for overhanging features.
-*   **Tolerances and Surface Finish:** Machining and grinding can achieve micron-level tolerances and mirror finishes, while casting and additive manufacturing typically require post-processing to achieve similar precision.
-*   **Production Volume:** Die casting requires expensive steel molds, making it economical only for high volumes. Additive manufacturing requires no tooling, making it ideal for low-volume or custom parts.
+- **Processability:** A route must match material state, chemistry, rheology, temperature range, atmosphere, joining response, and damage tolerance.
+- **Geometry and access:** Internal passages, thin walls, overhangs, tool reach, fixturing, powder removal, support removal, and inspection access constrain feasible shapes.
+- **Accuracy and surface integrity:** Capability depends on machine, process, material, feature size, orientation, thermal history, measurement, and post-processing; no process owns one universal tolerance class.
+- **Volume and change rate:** Tooling cost, setup, cycle time, material utilisation, automation, qualification, and design stability determine economics. Additive manufacturing can still require fixtures, supports, build plates, and post-processing.
+- **Qualification and supply:** Material lots, parameter changes, software versions, maintenance, operators, suppliers, and test methods require configuration control.
 
 ## 8. Performance and efficiency
 
@@ -65,11 +66,7 @@ Performance is multi-objective: conformance, yield, capability, throughput, avai
 
 ## 9. Reliability and failure modes
 
-Manufacturing defects compromise component reliability.
-*   **Casting:** Prone to shrinkage cavities (voids formed as the liquid cools and contracts) and gas porosity (trapped bubbles).
-*   **Forging:** Can suffer from surface cracking if deformed too quickly or at the wrong temperature, or internal laps/folds if the material flow is improper.
-*   **Machining:** Tool wear can lead to out-of-tolerance dimensions and poor surface finish. Excessive heat generation can cause thermal damage or induce residual tensile stresses in the surface, reducing fatigue life.
-*   **Additive Manufacturing:** Susceptible to lack-of-fusion defects (if laser power is insufficient), keyhole porosity (if laser power is too high), and severe residual stresses due to rapid heating and cooling cycles, which can cause part distortion or cracking during the build.
+Defects and variation arise from coupled mechanisms rather than one parameter alone. Casting failures can involve filling, gas, inclusions, shrinkage, segregation, mould reactions, and residual stress. Forming can produce laps, cracks, texture, springback, nonuniform strain, and tooling damage. Machining can create dimensional error, burrs, altered layers, chatter, tensile residual stress, or thermal damage. Additive failures can involve feedstock variation, recoating, lack of fusion, keyhole instability, contamination, support failure, residual stress, distortion, and anisotropy. A defect's significance depends on location, size, orientation, detectability, load, environment, and acceptance rule.
 
 ## 10. Safety principles
 

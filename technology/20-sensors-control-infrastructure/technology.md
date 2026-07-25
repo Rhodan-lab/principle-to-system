@@ -14,26 +14,20 @@ content_license: CC-BY-4.0
 
 ## 1. Scientific principles used
 
-The engineering of automated systems and energy infrastructure relies on several core scientific principles:
-- **Electromagnetism:** The basis for electric motors (actuators) and generators, converting electrical energy to mechanical motion and vice versa via magnetic fields.
-- **Thermodynamics:** Governs the efficiency of power generation (e.g., steam turbines) and the thermal management of electronic control systems.
-- **Solid-State Physics:** Enables the creation of semiconductor devices, which are the foundation of microprocessors (controllers), power electronics (inverters), and many sensors (e.g., photovoltaic cells, piezoresistive strain gauges).
-- **Signal Theory:** The mathematical foundation for filtering noise from sensor data and transmitting information across control networks.
+Automation and infrastructure combine mechanics, electromagnetism, thermodynamics, transport, signal processing, estimation, control, computation, communication, human factors, and reliability engineering. Semiconductor devices support controllers, interfaces, power conversion, and many sensor readouts; photovoltaic cells are energy-conversion devices unless deliberately used as photodetectors. Each principle applies through a model with stated scale and operating limits.
 
 ## 2. The engineering problem
 
-The central engineering problem is to design systems that can operate autonomously, precisely, and reliably in dynamic environments, while managing the flow of energy and information at scale. 
-
-In robotics, the problem is achieving precise physical manipulation despite friction, inertia, and external disturbances. In energy infrastructure, the problem is maintaining a continuous, instantaneous balance between electricity generation and consumption across a vast geographical area, especially as intermittent renewable sources replace dispatchable fossil fuel generators [1].
+The problem is to deliver a defined physical service within constraints on safety, stability, accuracy, energy, time, availability, security, maintainability, cost, and human authority despite disturbances, uncertainty, failures, and changing conditions. In power systems, electrical energy production, storage, transfer, conversion, and demand must remain dynamically compatible with network and equipment limits; “generation must equal consumption instantaneously” is an incomplete accounting shorthand.
 
 ## 3. Main components
 
-A modern automated system or smart grid consists of several key components:
-- **Sensors (Transducers):** Devices that measure physical quantities (temperature, voltage, position, frequency) and convert them into electrical signals. Examples include encoders on robot joints or Phasor Measurement Units (PMUs) on the power grid.
-- **Signal Conditioning Circuitry:** Amplifiers, filters, and Analog-to-Digital Converters (ADCs) that prepare raw sensor signals for processing.
-- **Controllers:** Microprocessors, Programmable Logic Controllers (PLCs), or distributed computer networks that execute control algorithms (like PID or state-space models) to determine the necessary action based on sensor data.
-- **Actuators:** Devices that convert control signals into physical action. Examples include servo motors in robots, or massive circuit breakers and smart inverters in the power grid.
-- **Communication Networks:** The nervous system that connects sensors, controllers, and actuators, ranging from local fieldbuses (like CAN bus) to wide-area fiber optic networks.
+- **Measurement chain:** sensing element, excitation where required, analogue front end, filtering, conversion, timestamp, calibration, diagnostics, and communication.
+- **Estimator and controller:** software or hardware that combines measurements, models, references, constraints, and supervisory mode.
+- **Actuator and energy path:** drive, valve, motor, converter, breaker, heater, or other mechanism with amplitude, rate, thermal, and energy limits.
+- **Plant and environment:** the physical process, load, network, disturbances, and human interaction.
+- **Protection and safety:** independent trips, limits, guards, brakes, relief, alarms, emergency systems, and procedures.
+- **Communication and operations:** local buses, wide-area links, clocks, identity, cybersecurity controls, operators, maintenance, and recovery resources.
 
 ## 4. How the components interact
 
@@ -41,9 +35,7 @@ A sensor and signal chain produce measurements with calibration, noise, delay, a
 
 ## 5. Matter, energy, force, or information flow
 
-- **Information Flow:** Dominates the sensor-to-controller and controller-to-actuator pathways. It must be low-latency and high-reliability.
-- **Energy Flow:** Dominates the actuator-to-environment pathway (e.g., electrical energy converted to mechanical force by a robot arm) and the entire power grid architecture (generation to transmission to distribution to consumption).
-- **Force:** The physical output of actuators, used to manipulate matter in robotics and industrial automation.
+Measurements and commands carry information with stated timing, integrity, availability, and uncertainty requirements; not every loop needs the lowest possible latency. Energy flows through sources, storage, converters, networks, actuators, loads, losses, and the environment. Forces and moments act through mechanical structures and contacts. Material flows may matter in thermal, fluid, chemical, transport, and industrial plants. A control diagram that omits the energy or material path can hide saturation and hazard.
 
 ## 6. System architecture
 
@@ -62,10 +54,12 @@ Generation, transmission, distribution, distributed energy resources, storage, d
 
 ## 7. Design constraints
 
-- **Latency:** In control systems, delayed information is old information. High latency can cause a feedback loop to become unstable and oscillate wildly.
-- **Bandwidth:** The communication network must handle the data volume from thousands of sensors, especially in smart grids.
-- **Harsh Environments:** Industrial sensors and grid infrastructure must withstand extreme temperatures, vibration, electromagnetic interference (EMI), and weather.
-- **Cost vs. Precision:** High-precision sensors and actuators are expensive. Engineers must determine the minimum acceptable precision for a given task.
+- **Timing:** Sampling, computation, communication, actuation, jitter, and clock synchronisation must fit the plant and hazard timescales.
+- **Observability and diagnostics:** Sensor placement, calibration, redundancy, and fault detection determine which states and failures can be inferred.
+- **Control authority:** Actuator amplitude, rate, energy, dead zone, backlash, and thermal limits constrain achievable performance.
+- **Environment and compatibility:** Temperature, vibration, moisture, corrosion, radiation, electromagnetic interference, and installation affect equipment and signals.
+- **Safety and security:** Independent protection, access control, segmentation, safe states, fail-operational needs, and recovery must coexist with availability.
+- **Economics and governance:** Precision, redundancy, maintenance, staffing, regulation, interoperability, supply, and lifecycle cost shape the architecture.
 
 ## 8. Performance and efficiency
 
@@ -92,8 +86,10 @@ Infrastructure lifecycle assessment includes extraction, manufacturing, land and
 
 ## 12. Connections to other technologies
 
-- **Artificial Intelligence:** Machine learning is increasingly used for predictive maintenance (analyzing sensor data to predict when a machine will fail) and for optimizing complex grid operations.
-- **Telecommunications:** 5G and fiber-optic networks provide the low-latency backbone required for wide-area smart grid control and remote robotic operation.
+- **Data and AI systems:** May support forecasting, anomaly detection, maintenance, or decision support, but require validated data, uncertainty, monitoring, cybersecurity, and human authority.
+- **Telecommunications and timing:** Fibre, radio, wired fieldbuses, and dedicated operational networks serve different latency, coverage, availability, and security requirements; no single generation of mobile technology is universally required.
+- **Power electronics and storage:** Convert and buffer energy while adding controls, limits, harmonics, thermal behaviour, and protection requirements.
+- **Manufacturing and metrology:** Build, calibrate, inspect, maintain, and replace the physical components of automation and infrastructure.
 
 ## Phase 9 review boundaries and validity limits
 

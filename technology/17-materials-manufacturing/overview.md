@@ -14,11 +14,13 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How do the microscopic arrangements of atoms determine the macroscopic properties of materials? How can we manipulate these structures through thermal and mechanical processing to achieve desired characteristics? Furthermore, how do we transform raw materials into complex, functional components through various fabrication and manufacturing techniques?
+How do composition and structure across atomic, microscopic, and component scales influence measured properties and performance? How do thermal, mechanical, chemical, and electromagnetic processes alter those structures? How should engineers select a material, manufacturing route, inspection plan, and lifecycle strategy when variability, defects, safety, cost, repair, and failure consequence all matter?
 
 ## 2. Observable phenomena
 
-When a blacksmith heats a piece of iron, quenches it in water, and tempers it, the metal transforms from soft and malleable to hard and brittle, and finally to tough and resilient. This macroscopic change in mechanical properties is a direct result of microscopic phase transformations and microstructural evolution. Similarly, the distinct behaviors of a flexible rubber band, a rigid ceramic coffee mug, and a lightweight carbon-fiber bicycle frame arise from their fundamentally different atomic bonding and structural arrangements. In manufacturing, the precise shaping of a turbine blade through investment casting or the layer-by-layer construction of a titanium implant via additive manufacturing demonstrate how material properties dictate processing methods and vice versa.
+Nominally similar alloys can exhibit different hardness, ductility, residual stress, corrosion response, and fatigue life after different thermal or mechanical histories. Diffraction peaks, micrographs, indentation records, tensile curves, and fracture surfaces provide different evidence about structure and behaviour; none alone determines service performance.
+
+Manufacturing leaves measurable signatures. Casting can produce segregation, shrinkage, and texture; forming changes shape, orientation, and residual stress; machining changes geometry and surface integrity; joining creates interfaces and heat-affected regions; additive processes create layerwise thermal histories. Whether a signature is acceptable depends on the component, load, environment, inspection method, and qualification basis.
 
 ## 3. Essential concepts
 
@@ -56,39 +58,40 @@ In steels and other alloys, thermal history controls diffusion, nucleation, grow
 ## 6. Mathematical models and equations
 
 **Bragg condition:**
-$$n\lambda = 2d\sin\theta$$
-This relates wavelength, lattice-plane spacing, and scattering angle for elastic diffraction under the stated geometry; peak position and intensity also depend on structure, texture, instrument response, and sample condition.
+$$n\lambda=2d_{hkl}\sin\theta.$$
+Here $d_{hkl}$ is the spacing of the selected lattice-plane family. The relation assumes elastic diffraction and a stated geometry; peak position, width, and intensity also depend on structure factor, texture, strain, crystallite size, instrument response, and sample preparation.
 
 **Empirical Hall–Petch relation:**
-$$\sigma_y = \sigma_0 + k_y d^{-1/2}$$
-The coefficients and useful grain-size range must be fitted for a specified material and processing state. Extrapolation to nanoscale grains is not generally valid.
+$$\sigma_y=\sigma_0+k_y d_g^{-1/2}.$$
+The coefficients and useful grain-size range must be fitted for a specified material, microstructure, temperature, strain rate, and test method. Extrapolation outside the fitted regime is not justified.
 
-**Lever rule:** For an equilibrium binary two-phase region with tie-line endpoint compositions $C_\alpha$ and $C_\beta$,
-$$W_\alpha=\frac{C_\beta-C_0}{C_\beta-C_\alpha},\qquad W_\beta=\frac{C_0-C_\alpha}{C_\beta-C_\alpha}.$$
-The compositions must use one consistent basis, and the result gives equilibrium phase fractions rather than morphology.
+**Lever rule:** For an equilibrium binary two-phase region with tie-line endpoints $C_\alpha$ and $C_\beta$,
+$$W_\alpha=\frac{C_\beta-C_0}{C_\beta-C_\alpha},\qquad
+W_\beta=\frac{C_0-C_\alpha}{C_\beta-C_\alpha}.$$
+All compositions must use one basis. The result gives equilibrium phase fractions, not phase shape, size, connectivity, or transformation rate.
 
 **Diffusion:**
-$$J=-D\nabla C,\qquad \frac{\partial C}{\partial t}=\nabla\cdot(D\nabla C).$$
-The familiar $D\nabla^2C$ form additionally assumes spatially uniform scalar diffusivity; chemical-potential gradients and multicomponent coupling may require more general models.
+$$\mathbf J=-D\nabla C,\qquad
+\frac{\partial C}{\partial t}=\nabla\!\cdot(D\nabla C).$$
+The second expression is a concentration-based model. Spatially varying, anisotropic, multicomponent, reactive, or non-ideal systems may require tensor diffusivity and chemical-potential gradients.
 
 ## 7. Definitions of symbols and units
 
-*   $n$: Order of reflection (dimensionless integer)
-*   $\lambda$: Wavelength of incident X-rays (m, typically expressed in nm or Å)
-*   $d$: Interplanar spacing between crystallographic planes (m)
-*   $\theta$: Angle of incidence/diffraction (radians or degrees)
-*   $\sigma_y$: Yield strength (Pa or MPa)
-*   $\sigma_0$: Friction stress, representing the overall resistance of the crystal lattice to dislocation movement (Pa or MPa)
-*   $k_y$: Strengthening coefficient, specific to each material (Pa$\cdot$m$^{1/2}$)
-*   $d$: Average grain diameter (m)
-*   $W_L, W_\alpha$: Mass fractions of the liquid and alpha phases, respectively (dimensionless)
-*   $C_0$: Overall alloy composition (wt%)
-*   $C_L, C_\alpha$: Compositions of the liquid and alpha phases at the tie line ends (wt%)
-*   $J$: Diffusion flux, the mass (or number of atoms) diffusing through a unit cross-sectional area per unit time (kg/(m$^2\cdot$s) or atoms/(m$^2\cdot$s))
-*   $D$: Diffusion coefficient or diffusivity (m$^2$/s)
-*   $C$: Concentration (kg/m$^3$ or atoms/m$^3$)
-*   $x$: Position or distance (m)
-*   $t$: Time (s)
+- $n$: diffraction order, dimensionless integer.
+- $\lambda$: incident wavelength, m.
+- $d_{hkl}$: spacing of the selected lattice-plane family, m.
+- $\theta$: Bragg angle under the stated convention, rad or degrees.
+- $\sigma_y$: measured yield or proof stress, Pa.
+- $\sigma_0$: fitted Hall–Petch intercept, Pa; its physical interpretation is model-dependent.
+- $k_y$: fitted Hall–Petch coefficient, Pa$\,\text{m}^{1/2}$.
+- $d_g$: specified grain-size measure, m.
+- $W_\alpha,W_\beta$: phase fractions on the chosen mass or mole basis, dimensionless.
+- $C_0,C_\alpha,C_\beta$: overall and tie-line compositions on one consistent basis.
+- $\mathbf J$: diffusion flux, amount per area per time.
+- $D$: scalar diffusivity in the simple model, m$^2$/s.
+- $C$: concentration on a stated basis.
+- $\nabla$: spatial-gradient operator, m$^{-1}$ when acting on a dimensionless field.
+- $t$: time, s.
 
 ## 8. Assumptions and approximations
 

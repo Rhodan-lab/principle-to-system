@@ -14,7 +14,7 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How can physical states reliably represent, transmit, and transform abstract information? How do isolated computing machines coordinate to form global networks? How can algorithms learn patterns from data to perform tasks without explicit programming, and how can such systems be aligned with human intent?
+How can physical states encode and transform abstract information with stated reliability, latency, and resource use? How do independently operated systems communicate across trust and failure boundaries? How can data-driven models support defined tasks, and how should their validity, uncertainty, rights, security, human oversight, and social consequences be governed across deployment?
 
 ## 2. Observable phenomena
 
@@ -80,17 +80,18 @@ is a computational component, not a biological neuron model or evidence of cogni
 
 ## 7. Definitions of symbols and units
 
-- $H(X)$: Shannon entropy, measured in bits.
-- $P(x_i)$: Probability of outcome $x_i$, dimensionless.
-- $C$: Channel capacity, measured in bits per second (bps).
-- $B$: Bandwidth, measured in hertz (Hz).
-- $S$: Signal power, measured in watts (W).
-- $N$: Noise power, measured in watts (W).
-- $w$: Weight in a neural network, dimensionless.
-- $\alpha$: Learning rate, dimensionless.
-- $L$: Loss function, units depend on the specific function (e.g., squared error).
-- $b$: Bias term in a neural network, dimensionless.
-- $f$: Activation function (e.g., Sigmoid, ReLU), dimensionless.
+- $H(X)$: Shannon entropy of random variable $X$, bits when base-2 logarithms are used.
+- $p(x)$: probability mass assigned to outcome $x$, dimensionless.
+- $C$: capacity of the stated channel model, bit/s.
+- $B$: channel bandwidth in the Shannon–Hartley model, Hz.
+- $S,N$: average signal and noise powers over the stated bandwidth, W; $S/N$ is dimensionless.
+- $\theta_k$: parameter vector at iteration $k$; units depend on parameterisation.
+- $\widehat{\nabla L}(\theta_k)$: exact, stochastic, or approximate loss-gradient estimate with units of loss per parameter.
+- $\alpha_k$: step size; units must make the update dimensionally consistent.
+- $\mathbf x,\mathbf w$: input and weight vectors with model-dependent units.
+- $b$: bias or intercept with units compatible with $\mathbf w^{\mathsf T}\mathbf x$.
+- $f$: activation or response function.
+- $y$: model output with task-dependent units or interpretation.
 
 ## 8. Assumptions and approximations
 
@@ -103,9 +104,7 @@ is a computational component, not a biological neuron model or evidence of cogni
 
 ## 9. Spatial and temporal scales
 
-The spatial scales of these systems span many orders of magnitude. They range from nanometer-scale transistors executing logic gates, to millimeter-scale silicon chips running operating systems, to global-scale fiber-optic networks spanning thousands of kilometers across ocean floors.
-
-Temporal scales are similarly vast. Operations range from picoseconds for the clock cycles of modern processors, to milliseconds for network latency across continents, to days or even months for the training time required to optimize the billions of parameters in large language models.
+Computing spans device and package dimensions, boards and data centres, local and wide-area networks, and global organisational dependencies. Time scales span hardware switching and propagation, operating-system scheduling, storage and network delay, user interaction, model training, deployment monitoring, patching, incident response, and archival retention. Values vary by technology and workload; neither transistor dimensions nor parameter count determines one universal latency or training duration.
 
 ## 10. Common misconceptions
 
@@ -117,9 +116,10 @@ Temporal scales are similarly vast. Operations range from picoseconds for the cl
 
 ## 11. Connections to other modules
 
-- **04-probability-statistics:** Provides the mathematical foundation for information theory (entropy) and machine learning (probabilistic models, expected loss).
-- **05-computation-algorithms:** Defines the theoretical limits of what can be computed and the efficiency of the algorithms used in operating systems, networking, and AI.
-- **18-semiconductors-electronics:** Describes the physical hardware (transistors, memory, processors) upon which all software, networks, and AI systems are built.
+- **04-probability-statistics:** Supports uncertainty models, estimation, experimental design, calibration, causal questions, and evaluation.
+- **05-computation-algorithms:** Provides models of computation, complexity, numerical limits, data structures, optimisation, verification, and algorithm design.
+- **18-semiconductors-electronics:** Describes much of the physical substrate of contemporary digital computing, memory, networking, and accelerators while leaving room for photonic, quantum, and other architectures.
+- **20-sensors-control-infrastructure:** Connects software and AI to measurement, actuation, timing, safety, operational technology, and human authority in physical systems.
 
 ## Phase 9 review boundaries and validity limits
 

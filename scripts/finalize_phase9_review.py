@@ -362,11 +362,11 @@ REQUIRED_FINAL_MARKERS = {
     "technology/18-semiconductors-electronics/overview.md": ("N_D,N_A", "instruction rate cannot be inferred"),
     "technology/18-semiconductors-electronics/technology.md": ("many-to-many", "Radiation and transient faults"),
     "technology/18-semiconductors-electronics/explore.md": ("do not intentionally overheat", "matching component counts"),
-    "technology/19-software-ai/overview.md": ("\theta_k", "photonic, quantum"),
+    "technology/19-software-ai/overview.md": (r"\theta_k", "photonic, quantum"),
     "technology/19-software-ai/technology.md": ("idempotency", "right-sized hardware"),
     "technology/19-software-ai/explore.md": ("ensemble averages", "Packet switching supports statistical sharing"),
     "technology/20-sensors-control-infrastructure/overview.md": ("A,B,C,D,E", "not one single"),
-    "technology/20-sensors-control-infrastructure/technology.md": ("Photovoltaic cells are energy-conversion devices", "no single generation"),
+    "technology/20-sensors-control-infrastructure/technology.md": ("photovoltaic cells are energy-conversion devices", "no single generation"),
     "technology/20-sensors-control-infrastructure/explore.md": ("grid net load", "model singular"),
 }
 
@@ -381,6 +381,7 @@ def transform(path, module):
         if target == rel:
             text = phase9.replace_numbered_section(text, number, replacement)
             notes.append(f"final section {number}")
+    text = phase9.insert_boundaries(text, module)
     path.write_text(text.rstrip() + "\n", encoding="utf-8")
     return text, notes
 

@@ -14,11 +14,11 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How do engineered systems measure physical variables, estimate state, compute constrained actions, and affect their environment to meet stated objectives? How can we mathematically model and control dynamic systems to ensure stability and precision? Furthermore, how do these principles scale up to manage massive, distributed networks like the electrical power grid, ensuring resilience and reliability in the face of intermittent renewable energy sources and complex demand patterns?
+How do engineered systems measure variables, estimate hidden state, choose constrained actions, and verify physical response? Under what models and operating regions are stability, performance, safety, and robustness claims valid? How do these ideas scale to infrastructure in which variable resources, stored energy, networks, markets, protection, operators, cybersecurity, maintenance, and recovery interact?
 
 ## 2. Observable phenomena
 
-In daily life, these principles manifest when a thermostat maintains a room's temperature, a drone stabilizes itself against wind gusts, or a robotic arm precisely welds a car chassis. On a larger scale, we observe the continuous availability of electricity despite fluctuating demand and the variable output of solar and wind farms. We see automated manufacturing lines producing goods with minimal human intervention, and smart grids rerouting power autonomously to isolate faults and prevent blackouts.
+A thermostat cycles or modulates equipment while room temperature responds slowly. A robot rejects some disturbances but exhibits delay, compliance, saturation, and residual error. A grid maintains service through continuous coordination of generation, storage, demand, networks, controls, protection, and operators; faults can be isolated, but no smart-grid function guarantees blackout prevention. Observations must distinguish commanded state, measured state, estimated state, physical state, and service outcome.
 
 ## 3. Essential concepts
 
@@ -68,12 +68,18 @@ Three-phase, unbalanced, distorted, and converter-dominated systems require the 
 
 ## 7. Definitions of symbols and units
 
-- $t$: Time, measured in seconds (s).
-- $\tau$: Variable of integration for time, measured in seconds (s).
-- $K_p, K_i, K_d$: Tuning parameters for a PID controller. Units depend on the specific process being controlled.
-- $j$: The imaginary unit, where $j^2 = -1$.
-- $V_{rms}$: Root-mean-square voltage, measured in Volts (V).
-- $I_{rms}$: Root-mean-square current, measured in Amperes (A).
+- $t,\tau$: time and integration variable, s.
+- $e(t)$: reference-minus-measurement error under the stated sign convention, units of the controlled variable.
+- $u(t)$: controller output, actuator command, or manipulated variable with system-specific units.
+- $K_p,K_i,K_d$: gains whose units make proportional, integral, and derivative terms compatible with $u$.
+- $\mathbf x,\mathbf u,\mathbf w$: state, input, and disturbance vectors with component-specific units.
+- $\mathbf y,\mathbf v$: output and measurement-noise vectors with component-specific units.
+- $A,B,C,D,E$: state-space matrices with units determined by the selected states, inputs, outputs, and time unit.
+- $\underline S$: complex power under the stated sinusoidal convention, VA.
+- $P,Q$: active and reactive power, W and var.
+- $\underline V_{rms},\underline I_{rms}$: RMS voltage and current phasors, V and A.
+- $\phi$: voltage-current phase difference for the simple sinusoidal scalar form, rad.
+- $j$: imaginary unit, $j^2=-1$.
 
 ## 8. Assumptions and approximations
 
@@ -86,8 +92,7 @@ Three-phase, unbalanced, distorted, and converter-dominated systems require the 
 
 ## 9. Spatial and temporal scales
 
-- **Temporal:** Control loops in robotics and power electronics operate at microsecond to millisecond scales. Mechanical systems (like heating a room) operate on scales of minutes to hours. Grid frequency control operates in milliseconds to seconds, while energy market dispatch operates in hours to days.
-- **Spatial:** Sensors operate at the microscale (MEMS accelerometers). Robotics operate at the human scale (meters). Power grids span continental scales (thousands of kilometers).
+Sensor physics can occur within microscopic structures while installations span machines, buildings, cities, regions, and interconnected grids. Time scales range from power-electronic switching, sampling, and protection through mechanical motion, thermal processes, dispatch, maintenance, asset ageing, and recovery. Required response time is architecture- and hazard-specific; “grid control” is not one single millisecond-to-second loop.
 
 ## 10. Common misconceptions
 
@@ -99,10 +104,10 @@ Three-phase, unbalanced, distorted, and converter-dominated systems require the 
 
 ## 11. Connections to other modules
 
-- **10-electricity-magnetism:** Provides the foundation for how sensors (like Hall effect sensors) and actuators (like electric motors) function.
-- **11-waves-signals:** Essential for understanding signal conditioning, filtering noise from sensor data, and AC power transmission.
-- **18-semiconductors-electronics:** Explains the microprocessors that execute control algorithms and the power electronics that drive actuators and interface renewable energy with the grid.
-- **19-software-ai:** Modern control systems increasingly use machine learning for system identification, predictive maintenance, and complex decision-making in robotics.
+- **10-electricity-magnetism:** Supports fields, machines, power conversion, grounding, electromagnetic compatibility, and many transducers.
+- **11-waves-signals:** Supports sampling, filtering, communication, spectral analysis, timing, and signal integrity.
+- **18-semiconductors-electronics:** Provides sensing elements, embedded processors, memory, interfaces, power devices, and communication hardware.
+- **19-software-ai:** Provides algorithms, operating systems, networks, data systems, security, and model evaluation; machine learning is optional and must remain inside validated safety and authority boundaries.
 
 ## Phase 9 review boundaries and validity limits
 

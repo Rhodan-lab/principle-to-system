@@ -14,11 +14,11 @@ content_license: CC-BY-4.0
 
 ## 1. Scientific principles used
 
-The engineering of modern computing systems relies on several foundational scientific principles. Information theory, specifically Shannon entropy and channel capacity, dictates the theoretical limits of data compression and transmission over noisy channels. The principles of probability and statistics underpin machine learning algorithms, allowing systems to infer patterns from noisy or incomplete data. Calculus, particularly the chain rule, is the mathematical engine behind backpropagation, enabling the optimization of complex neural networks. Finally, the physics of semiconductors governs the physical layer of all these systems, dictating the speed, power consumption, and miniaturization limits of the underlying hardware.
+Information theory bounds compression and communication for stated probabilistic models. Probability, statistics, optimisation, numerical analysis, and experimental design support inference and evaluation but do not guarantee deployment validity. Logic, automata, complexity, programming-language semantics, distributed-systems models, cryptography, human factors, and semiconductor physics constrain different layers of a computing system.
 
 ## 2. The engineering problem
 
-The core engineering problem is how to build reliable, scalable, and intelligent systems out of inherently unreliable and limited physical components. Specifically, engineers must figure out how to transmit data across the globe without errors despite physical noise, how to allow multiple independent programs to share a single processor without interfering with each other, how to store and retrieve massive amounts of structured data efficiently, and how to design algorithms that can learn complex tasks from data rather than requiring explicit, brittle rules.
+The problem is to provide a defined service under limits on correctness, availability, latency, throughput, privacy, security, safety, energy, cost, maintainability, and accountability despite hardware faults, software defects, hostile inputs, changing data, dependency failures, and human use. “Reliable,” “scalable,” and “intelligent” require measurable service-level and task definitions rather than being treated as intrinsic system properties.
 
 ## 3. Main components
 
@@ -31,7 +31,7 @@ The core engineering problem is how to build reliable, scalable, and intelligent
 
 ## 4. How the components interact
 
-These components interact through well-defined interfaces and protocols. An application running on an operating system makes system calls to request resources (like opening a file or sending data over a network). When sending data, the OS network stack formats the data according to TCP/IP protocols, breaking it into packets. These packets are transmitted via physical network interfaces to routers, which use routing tables to forward the packets toward their destination. If the application is querying a database, it sends a SQL command over the network to the RDBMS, which parses the query, accesses the storage engine to retrieve the data, and sends the result back. In an AI context, an application might send data to a trained neural network model hosted on a server, which processes the input through its layers of weights and biases to return a prediction.
+Applications use operating-system and runtime interfaces, local libraries, storage, network transports, identity services, databases, queues, and external APIs according to a particular architecture. A request may use TCP, UDP, or QUIC; data may be relational, document, object, stream, graph, or file based. An AI-enabled service may combine retrieval, deterministic rules, one or more models, tools, policy checks, human review, logging, monitoring, and fallback. Interface contracts, authentication, schema, timing, retries, idempotency, provenance, and failure semantics must be explicit.
 
 ## 5. Matter, energy, force, or information flow
 
@@ -63,13 +63,14 @@ Use a lifecycle risk process: define context and affected people, map hazards an
 
 ## 11. Environmental and lifecycle considerations
 
-The environmental impact of computing is significant. Data centers consume massive amounts of electricity for computation and cooling. The manufacturing of semiconductors involves toxic chemicals and significant water usage. E-waste is a major global challenge, as hardware rapidly becomes obsolete. The lifecycle of software involves continuous updates and patching to address security vulnerabilities and changing requirements, requiring ongoing engineering effort long after the initial deployment.
+Computing impacts depend on device manufacture, hardware lifetime, electricity source, utilisation, cooling, water, data movement, software efficiency, retraining, serving, storage, network infrastructure, and end-of-life treatment. Data-centre and model claims require a stated facility, workload, location, time, and accounting boundary. Security updates can extend useful life, while unsupported software, incompatible requirements, or inefficient workloads can drive replacement. Repair, reuse, longer support, efficient algorithms, right-sized hardware, and responsible recycling involve technical and organisational trade-offs.
 
 ## 12. Connections to other technologies
 
-- **Cloud Computing:** Relies entirely on virtualization (OS concepts), networking, and distributed databases to provide scalable resources on demand.
-- **Autonomous Vehicles:** Integrates real-time operating systems, computer vision (deep learning), and sensor networks to navigate physical environments.
-- **Cryptography:** Uses complex algorithms and information theory to secure data transmission across public networks.
+- **Cloud and distributed computing:** Combine virtualisation or containers where useful with physical hosts, networks, storage, identity, orchestration, observability, and organisational controls.
+- **Cyber-physical systems:** Couple software decisions to sensors, actuators, timing, protection, operators, and physical consequences.
+- **Cryptography and security engineering:** Use mathematical constructions together with key management, implementation, protocols, identity, access control, usability, monitoring, and recovery.
+- **Data and AI systems:** Depend on governance, provenance, evaluation, deployment controls, human oversight, and incident response as well as models and computation.
 
 ## Phase 9 review boundaries and validity limits
 

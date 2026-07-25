@@ -20,9 +20,9 @@ content_license: CC-BY-4.0
 
 ## 2. Prediction questions
 
-- If a PID controller is managing the temperature of an oven, and the derivative gain ($K_d$) is set too high, what will happen to the temperature when you open the door briefly and close it?
-- As more households install rooftop solar panels, what happens to the demand on the centralized power grid during the middle of a sunny day? What happens when the sun sets?
-- If a robotic arm is programmed to move a heavy payload quickly, what physical forces must the control system account for to prevent the arm from overshooting its target position?
+- In a simulated temperature loop, increase derivative gain while varying sensor noise, derivative filtering, door-disturbance size, sampling, and actuator saturation. Which outcomes are actually determined by $K_d$ alone?
+- As rooftop solar increases, distinguish customer demand from grid net load. Predict midday and evening effects only after weather, orientation, storage, tariffs, feeder constraints, and geographic diversity are specified.
+- For a simulated robotic arm carrying a payload, identify inertia, gravity, friction, compliance, resonance, actuator limits, structural loads, trajectory, uncertainty, and safety constraints before predicting overshoot.
 
 ## 3. Worked reasoning examples
 
@@ -36,8 +36,8 @@ content_license: CC-BY-4.0
 
 ## 4. Thought experiments
 
-- **The Perfectly Rigid Robot:** Imagine a robotic arm made of a material that is infinitely stiff and has zero mass. How would the control algorithms for this robot differ from a real-world robot made of aluminum and steel? What physical phenomena (like inertia and resonance) would you no longer need to model?
-- **The Island Grid:** Imagine a small island powered entirely by one large wind turbine and one large battery bank. If the wind suddenly stops, trace the sequence of events and control signals required to keep the lights on without a flicker.
+- **Ideal rigid massless arm:** Removing inertia and flexibility also removes important energy storage and dynamics, potentially making the model singular or physically meaningless. Which controller questions disappear, and which limits—actuator, sensing, timing, geometry, and contact—remain?
+- **Islanded power system:** Given a wind profile, battery power and energy limits, inverter controls, reserve policy, load priorities, and protection settings, trace several possible responses to lost wind. Why can no controller promise “no flicker” without adequate stored energy, power capacity, network support, and validated transitions?
 
 ## 5. Household and browser-based explorations
 
@@ -47,8 +47,9 @@ content_license: CC-BY-4.0
 
 ## 6. Model-building prompts
 
-- **State-Space Representation:** Try to write the state-space matrices ($\mathbf{A}$, $\mathbf{B}$, $\mathbf{C}$, $\mathbf{D}$) for a simple mass-spring-damper system. Let the state vector $\mathbf{x}$ consist of position and velocity. How does changing the spring constant or damping coefficient alter the $\mathbf{A}$ matrix?
-- **Feedback Diagram:** Draw a block diagram of a closed-loop control system for a drone maintaining a specific altitude. Include blocks for the desired altitude, the controller, the motors (actuators), the drone's physical dynamics (plant), and the altimeter (sensor). Show where the error signal is calculated.
+- Derive a mass–spring–damper state-space model after defining state order, input force, measured output, sign convention, and units. Check matrix dimensions, eigenvalues, controllability, and how parameter uncertainty changes predictions.
+- Draw a drone-altitude architecture including reference, estimator, controller, motor drive, vehicle dynamics, altimeter, delay, disturbance, saturation, protection, operator authority, and emergency mode. Distinguish the error signal from the full estimated state.
+- Build a grid-service diagram that separates energy adequacy, active-power balance, voltage, frequency, thermal limits, protection, communication, markets, operators, and restoration.
 
 ## 7. Self-explanation questions
 

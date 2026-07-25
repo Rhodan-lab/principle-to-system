@@ -12,7 +12,7 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-How can we control the flow of electricity with such precision that it can represent information, perform logic, and store memory? Why do certain materials act as insulators under some conditions and conductors under others? How do we manipulate the atomic structure of these materials to create microscopic switches, and how can billions of these switches be integrated into a single chip to form the foundation of modern computing?
+How do material states, interfaces, fields, and carrier populations create controllable electronic behaviour? How are device characteristics converted into noise-tolerant logic, memory, sensing, communication, and power conversion? How do fabrication, metrology, architecture, packaging, software, workload, and reliability determine system performance beyond the behaviour of one transistor?
 
 ## 2. Observable phenomena
 
@@ -70,12 +70,19 @@ A long-channel square-law MOSFET model can be useful pedagogically, but modern d
 
 ## 7. Definitions of symbols and units
 
-*   $E_g$: Band gap energy, measured in electron-volts ($\text{eV}$). $1 \text{ eV} \approx 1.602 \times 10^{-19} \text{ J}$.
-*   $k_B$: Boltzmann constant, $1.38 \times 10^{-23} \text{ J/K}$.
-*   $T$: Absolute temperature, measured in Kelvin ($\text{K}$).
-*   $e$: Elementary charge, $1.602 \times 10^{-19} \text{ C}$.
-*   $\mu_e, \mu_h$: Electron and hole mobility, measured in $\text{m}^2/(\text{V}\cdot\text{s})$.
-*   $C_{ox}$: Oxide capacitance per unit area, measured in Farads per square metre ($\text{F/m}^2$).
+- $E_g$: band-gap energy, J or eV.
+- $E_F$: Fermi level or electron chemical potential under equilibrium, J or eV.
+- $k_B$: Boltzmann constant, exactly $1.380649\times10^{-23}$ J/K.
+- $T$: absolute temperature, K.
+- $q$: elementary charge magnitude, exactly $1.602176634\times10^{-19}$ C.
+- $n,p$: free electron and hole concentrations, m$^{-3}$.
+- $n_i$: intrinsic carrier concentration under the stated model, m$^{-3}$.
+- $N_c,N_v$: effective densities of states, m$^{-3}$.
+- $N_D,N_A$: activated donor and acceptor concentrations in the ideal junction model, m$^{-3}$.
+- $\mu_n,\mu_p$: electron and hole mobility in the stated transport regime, m$^2$/(V$\,$s).
+- $\sigma$: electrical conductivity, S/m.
+- $V_{bi}$: modelled built-in potential, V.
+- $V_{th}$: extraction- and compact-model-dependent threshold voltage, V.
 
 ## 8. Assumptions and approximations
 
@@ -87,8 +94,7 @@ A long-channel square-law MOSFET model can be useful pedagogically, but modern d
 
 ## 9. Spatial and temporal scales
 
-*   **Spatial:** Semiconductor physics operates at the atomic scale (nanometres, $10^{-9} \text{ m}$). The band gap arises from the spacing of atoms in the crystal lattice. Modern MOSFET transistors have feature sizes (like gate length) on the order of a few nanometres. An integrated circuit chip, however, is on the macroscopic scale (millimetres to centimetres), containing billions of these nanoscale devices.
-*   **Temporal:** The movement of charge carriers across a transistor channel happens on the scale of picoseconds ($10^{-12} \text{ s}$) to nanoseconds ($10^{-9} \text{ s}$). This allows modern processors to operate at clock frequencies of several gigahertz ($\text{GHz}$), performing billions of switching operations per second.
+Electronic structure begins at atomic and unit-cell scales, while depletion widths, channels, interconnects, vias, packages, boards, and systems span nanometres to metres. Industrial node names do not directly specify one physical dimension. Characteristic times range from carrier scattering and dielectric response through device switching, interconnect propagation, memory access, clock periods, thermal transients, ageing, and product lifetimes. A processor's instruction rate cannot be inferred from transistor transit time or clock frequency alone.
 
 ## 10. Common misconceptions
 

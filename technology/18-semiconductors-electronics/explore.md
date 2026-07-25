@@ -12,9 +12,9 @@ content_license: CC-BY-4.0
 
 ## 1. Observation prompts
 
-*   Examine a modern smartphone or laptop. Identify the areas that become warmest during heavy use. What does this heat distribution suggest about the location and power consumption of the main processor compared to other components like the battery or screen?
-*   Look closely at a solar panel (if accessible) or a high-quality photograph of one. Notice the grid of thin metal lines on the surface. Why are these lines necessary, and why do they only cover a small fraction of the surface area rather than the whole panel?
-*   Observe the behaviour of an LED light bulb when it is turned on and off. Does it fade out slowly like an incandescent bulb, or does it switch off instantly? What does this imply about the mechanism of light generation?
+- Use built-in telemetry during ordinary use only; do not intentionally overheat or stress a device. Compare reported temperature, power, utilisation, brightness, charging, and workload while recognising that sensor placement and software estimates limit interpretation.
+- Study a manufacturer diagram or safe photograph of a photovoltaic module. Identify cells, busbars, fingers, encapsulation, bypass elements, and shading trade-offs without touching installed electrical equipment.
+- Compare recorded LED and incandescent turn-off transients. Driver capacitance, phosphor persistence, thermal inertia, and camera exposure can affect the observation, so turn-off appearance alone does not identify one emission mechanism.
 
 ## 2. Prediction questions
 
@@ -34,9 +34,9 @@ content_license: CC-BY-4.0
 
 ## 4. Thought experiments
 
-*   **The Mechanical Computer:** Imagine trying to build a modern smartphone processor using mechanical relays (electromagnetically operated switches) instead of microscopic transistors. If a relay is $1 \text{ cm}^3$ in volume, how large would a 10-billion-relay processor be? How much power would it consume to physically move those metal contacts billions of times per second?
-*   **The Perfect Insulator:** Suppose you could create a material with an infinitely large band gap. Would it be possible to dope this material to make it a semiconductor? Why or why not?
-*   **The Shrinking Limit:** Imagine continuing to shrink transistors until the gate oxide is only one atom thick. What quantum mechanical phenomena would dominate the behaviour of the transistor, and why would the classical models of field-effect conductivity break down?
+- **Relay scaling model:** Given a specified relay volume, switching time, coil energy, contact life, and component count, calculate size, delay, power, and reliability. Which assumptions fail when extrapolated to a processor?
+- **Large-gap limit:** Increase band-gap energy in a model while keeping defects, contacts, fields, and dopants specified. Why does “infinite band gap” leave the model's physical domain rather than define a manufacturable perfect insulator?
+- **Ultrathin gate stack:** As dimensions approach atomic scales, discuss tunnelling, interface states, variability, quantum confinement, electrostatics, reliability, and the limits of a classical long-channel model.
 
 ## 5. Household and browser-based explorations
 
@@ -47,9 +47,9 @@ content_license: CC-BY-4.0
 
 ## 6. Model-building prompts
 
-*   Using physical objects (like marbles, coins, or drawn symbols), create a visual model of a p-n junction. Show the p-type side with excess "holes" and the n-type side with excess "electrons". Demonstrate what happens at the boundary to form the depletion region.
-*   Draw a diagram showing the energy bands (valence and conduction) for a conductor, a semiconductor, and an insulator. Add arrows to represent the thermal excitation of electrons across the band gap at room temperature for each material.
-*   Construct a truth table for a NAND gate (NOT AND). Then, using only NAND gates in a logic simulator, try to build an inverter (NOT gate) and an AND gate. This demonstrates that NAND is a "universal gate" from which any logic circuit can be built.
+- Build a charge-accounting model of an abrupt p–n junction. Represent ionised dopants, reduced mobile-carrier density, electric field, and potential separately; do not portray holes as empty beads that simply disappear at the boundary.
+- Compare schematic band diagrams for a metal, intrinsic semiconductor, doped semiconductor, and insulator under stated temperature and equilibrium conditions. Mark Fermi level and explain why a class label is not determined by band gap alone.
+- Construct NAND-based Boolean functions in a simulator, then add propagation delay, fan-out, unknown state, or noise-margin constraints to separate logical universality from a physical implementation.
 
 ## 7. Self-explanation questions
 
@@ -59,9 +59,9 @@ content_license: CC-BY-4.0
 
 ## 8. Transfer questions
 
-*   The principles of p-n junctions are used in solar cells to convert light into electricity. How might these same principles be applied to create a sensor that detects specific chemical molecules in the air?
-*   If we reach the physical limits of shrinking silicon transistors (the end of Moore's law), what alternative physical mechanisms or materials might be used to continue increasing computing power? (Consider quantum computing, optical computing, or carbon nanotubes).
-*   How does the architecture of the human brain, with its billions of interconnected neurons, compare and contrast with the architecture of a modern CPU with its billions of interconnected transistors?
+- Compare a photovoltaic junction with a chemical or biological field-effect sensor. Which parts of the transduction chain involve carrier generation, surface potential, selective chemistry, amplification, calibration, and interference?
+- Instead of one “end of Moore's law,” identify separate limits and opportunities in devices, interconnect, memory, packaging, architecture, algorithms, photonics, quantum systems, and economics.
+- Compare an artificial neural-network computation graph with biological neural tissue only at explicitly chosen levels such as connectivity, dynamics, learning signal, energy, and embodiment. Why do matching component counts not establish functional or cognitive equivalence?
 
 ## 9. Suggested learning paths
 
@@ -71,7 +71,7 @@ content_license: CC-BY-4.0
 
 ## 10. Reasoning notes
 
-When reasoning about semiconductors, it is crucial to maintain the distinction between the macroscopic behaviour of the device (voltage, current, logic state) and the microscopic quantum phenomena that enable it (band gaps, carrier mobility, depletion regions). A common pitfall is trying to apply classical mechanics (like billiard balls bouncing through a pipe) to electrons in a crystal lattice; the wave nature of electrons and the concept of energy bands are essential for accurate causal explanations. Furthermore, always consider the scale: a single transistor's behaviour is governed by physics, but the behaviour of a billion transistors is governed by architecture and statistical reliability.
+Separate electronic structure from semiclassical transport, device behaviour from compact models, Boolean function from circuit voltage, and transistor count from system performance. Classical circuit and transport models remain useful within validated regimes; quantum theory does not replace every engineering abstraction. State temperature, bias, geometry, statistics, contacts, measurement, and uncertainty before extending a device explanation to an integrated system.
 
 ## Phase 9 review boundaries and validity limits
 
