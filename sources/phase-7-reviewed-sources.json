@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Magnetic Resonance Imaging (MRI)",
+    "author": "National Institute of Biomedical Imaging and Bioengineering",
+    "date": "n.d.",
+    "locator": "https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri",
+    "type": "Government Scientific Agency",
+    "modules": "06-matter-quantum",
+    "accessed": "2026-07-26",
+    "relevance": "Official explanation of MRI magnetization, radiofrequency excitation, signal detection, imaging, and safety context."
+  },
+  {
+    "title": "Designing Advanced Scanning Probe Microscopy Instruments",
+    "author": "National Institute of Standards and Technology",
+    "date": "n.d.",
+    "locator": "https://www.nist.gov/programs-projects/designing-advanced-scanning-probe-microscopy-instruments",
+    "type": "Government Scientific Agency",
+    "modules": "06-matter-quantum",
+    "accessed": "2026-07-26",
+    "relevance": "Official description of scanning tunnelling microscopy, tunnelling current, feedback, atomic-scale measurement, and instrument constraints."
+  },
+  {
+    "title": "Automobile Emissions Overview",
+    "author": "United States Environmental Protection Agency",
+    "date": "n.d.",
+    "locator": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P10001KF.TXT",
+    "type": "Government Technical Publication",
+    "modules": "07-chemical-bonding",
+    "accessed": "2026-07-26",
+    "relevance": "Official overview of three-way catalytic converters and conversion of carbon monoxide, hydrocarbons, and nitrogen oxides."
+  },
+  {
+    "title": "The International System of Units (SI), 9th edition",
+    "author": "Bureau International des Poids et Mesures",
+    "date": "2019",
+    "locator": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf",
+    "type": "Primary Standard",
+    "modules": "10-electricity-magnetism",
+    "accessed": "2026-07-26",
+    "relevance": "Authoritative revised-SI definitions and the post-2019 status of electromagnetic constants including vacuum permeability."
+  },
+  {
+    "title": "Bernoulli and Newton",
+    "author": "NASA Glenn Research Center",
+    "date": "n.d.",
+    "locator": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/bernoulli-and-newton/",
+    "type": "Government Technical Education",
+    "modules": "12-fluids-materials",
+    "accessed": "2026-07-26",
+    "relevance": "Official explanation connecting pressure distributions, Bernoulli relations, momentum change, and aerodynamic force."
+  }
+]

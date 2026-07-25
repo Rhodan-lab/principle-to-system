@@ -3,10 +3,10 @@ title: "Motion, Forces, Momentum, Rotation, and Gravitation"
 slug: 09-motion-forces
 module: "Module 09"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models]
 connections: [11-waves-signals, 12-fluids-materials, 16-earth-planetary]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -53,7 +53,7 @@ The causal structure of classical mechanics is deterministic and local (excludin
 | Impulse | $\vec{J}$ | $\text{N}\cdot\text{s}$ | Vector | Change in momentum. |
 | Torque | $\vec{\tau}$ | $\text{N}\cdot\text{m}$ | Vector | Rotational equivalent of force. |
 | Angular Momentum | $\vec{L}$ | $\text{kg}\cdot\text{m}^2/\text{s}$ | Vector | Rotational equivalent of momentum. |
-| Moment of Inertia | $I$ | $\text{kg}\cdot\text{m}^2$ | Scalar | Resistance to angular acceleration. |
+| Moment of Inertia | $I$ or $\mathbf{I}$ | $\text{kg}\cdot\text{m}^2$ | Scalar about a fixed axis; tensor generally | Relates angular momentum or torque to rotational motion for a defined geometry and axis. |
 
 # 6. Mathematical models and equations
 
@@ -106,7 +106,7 @@ where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointin
 - **Point Mass Approximation:** Extended objects are often treated as point masses located at their center of mass, ignoring internal structure and rotation.
 - **Rigid Body Assumption:** In rotational dynamics, objects are assumed to not deform under stress, meaning the distance between any two points in the object remains constant.
 - **Inertial Reference Frames:** Newton's laws strictly apply only in non-accelerating frames. In accelerating frames, "fictitious" forces (like the Coriolis or centrifugal force) must be introduced.
-- **Non-Relativistic Speeds:** Classical mechanics assumes velocities are much less than the speed of light ($v \ll c$). At relativistic speeds, mass and momentum definitions must be modified.
+- **Non-Relativistic Speeds:** Classical mechanics assumes velocities are much less than the speed of light ($v \ll c$). At relativistic speeds, invariant mass remains the same while momentum and energy follow relativistic rather than Newtonian formulas.
 - **Macroscopic Scale:** The models assume objects are large enough that quantum mechanical effects (like the uncertainty principle) are negligible.
 - **Constant Gravity:** Near the Earth's surface, gravitational acceleration $g$ is often approximated as constant ($9.81 \, \text{m/s}^2$), ignoring the $1/r^2$ dependence.
 
@@ -125,13 +125,23 @@ where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointin
 # 11. Connections to other modules
 
 - **03-mathematical-models:** Provides the calculus and vector algebra necessary to formulate kinematics and dynamics.
-- **10-thermodynamics:** Connects macroscopic mechanical energy to microscopic kinetic energy (heat) and introduces non-conservative forces like friction.
-- **11-electromagnetism:** Introduces another fundamental force (electromagnetic) that obeys the same kinematic and dynamic frameworks but has different causal origins.
-- **12-quantum-mechanics:** Defines the limits of classical mechanics at the atomic scale, where deterministic trajectories are replaced by probability amplitudes.
+- **08-energy-thermodynamics:** Connects macroscopic mechanical energy to microscopic kinetic energy (heat) and introduces non-conservative forces like friction.
+- **10-electricity-magnetism:** Introduces another fundamental force (electromagnetic) that obeys the same kinematic and dynamic frameworks but has different causal origins.
+- **06-matter-quantum:** Defines the limits of classical mechanics at the atomic scale, where deterministic trajectories are replaced by probability amplitudes.
+
+## Phase 7 review boundaries and validity limits
+
+- Newton's second law is fundamentally ΣF_ext = dp/dt. The familiar ma form requires constant mass in an inertial frame.
+- Mass is an invariant measure in modern relativity; relativistic momentum and energy, not “relativistic mass,” replace the low-speed formulas as speed approaches c.
+- Moment of inertia is generally a tensor. Treating it as a scalar is valid only for rotation about a specified principal or fixed axis.
+- Third-law force pairs act on different bodies. Momentum conservation follows from the external-force balance for the chosen system; internal-force cancellation must be justified for the model used.
+- Newtonian gravity is an accurate weak-field, low-speed approximation. General relativity is required for strong fields, high precision, or relativistic motion.
 
 # 12. Sources
 
-- [1] OpenStax. (2016). *University Physics Volume 1*. OpenStax. https://openstax.org/details/books/university-physics-volume-1
-- [2] Feynman, R. P., Leighton, R. B., & Sands, M. (1963). *The Feynman Lectures on Physics, Vol. I: Mainly Mechanics, Radiation, and Heat*. Addison-Wesley. https://www.feynmanlectures.caltech.edu/
-- [3] MIT OpenCourseWare. (2016). *8.01SC Classical Mechanics*. Massachusetts Institute of Technology. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
-- [4] NASA. (2025). *Basics of Space Flight: Chapter 3: Gravity & Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
+
+
+1. OpenStax. *University Physics Volume 1*. https://openstax.org/details/books/university-physics-volume-1
+2. MIT OpenCourseWare. *8.01SC Classical Mechanics*. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
+3. NASA. *Basics of Space Flight: Gravity and Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
+4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume I*. https://www.feynmanlectures.caltech.edu/

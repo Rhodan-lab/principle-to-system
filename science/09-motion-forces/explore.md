@@ -3,16 +3,16 @@ title: "Exploring Motion and Forces"
 slug: 09-motion-forces-explore
 module: "Module 09"
 domain: science
-status: draft
+status: reviewed
 prerequisites: [03-mathematical-models]
-connections: [03-mathematical-models, 11-waves-signals, 12-fluids-materials, 16-earth-planetary]
-last_reviewed: 2026-07-24
+connections: [11-waves-signals, 12-fluids-materials, 16-earth-planetary]
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 # 1. Observation prompts
 
-Look around your environment and identify instances of motion and the forces causing them. Observe a door swinging on its hinges; where is the force applied, and how does the distance from the hinge affect the ease of opening it? Watch a vehicle accelerate from a stoplight; how does the vehicle's mass seem to relate to its acceleration compared to a bicycle? Notice the trajectory of a tossed object, such as a set of keys; does it follow a straight line or a curve, and what forces are acting on it while it is in the air?
+Look around your environment and identify instances of motion and the forces causing them. Observe a door swinging on its hinges; where is the force applied, and how does the distance from the hinge affect the ease of opening it? Watch a vehicle accelerate from a stoplight; how does the vehicle's mass seem to relate to its acceleration compared to a bicycle? Use a slow-motion video of a soft foam ball released over a clear area. Does its centre follow a straight line or a curve, and what forces act after release?
 
 # 2. Prediction questions
 
@@ -20,36 +20,34 @@ If you drop a heavy book and a single sheet of paper simultaneously from the sam
 
 # 3. Worked reasoning examples
 
-**Example: The Physics of a Car Crash**
+**Example: Stopping a low-speed cart**
 
-Consider a car of mass $m = 1500 \, \text{kg}$ traveling at a velocity $v = 20 \, \text{m/s}$ (about $45 \, \text{mph}$) that collides with a rigid wall and comes to a complete stop in $t = 0.1 \, \text{s}$. We want to find the average force exerted on the car during the impact.
+Consider a laboratory cart of mass $m = 1.5 \, \text{kg}$ moving at $v = 2.0 \, \text{m/s}$ that is brought to rest by a padded bumper over $t = 0.20 \, \text{s}$. We want the average horizontal force on the cart.
 
-First, we calculate the initial momentum of the car:
-$$ p_{\text{initial}} = m \cdot v = 1500 \, \text{kg} \cdot 20 \, \text{m/s} = 30,000 \, \text{kg}\cdot\text{m/s} $$
+First, we calculate the initial momentum of the cart:
+$$ p_{\text{initial}} = m \cdot v = 1.5 \, \text{kg} \cdot 2.0 \, \text{m/s} = 3.0 \, \text{kg}\cdot\text{m/s} $$
 
-The final momentum is zero because the car stops. The change in momentum ($\Delta p$) is therefore $-30,000 \, \text{kg}\cdot\text{m/s}$.
+The final momentum is zero because the cart stops. The change in momentum ($\Delta p$) is therefore $-3.0 \, \text{kg}\cdot\text{m/s}$.
 
 Using the impulse-momentum theorem, the impulse $J$ equals the change in momentum, and impulse is also the average force $F_{\text{avg}}$ multiplied by the time duration $t$:
 $$ J = F_{\text{avg}} \cdot t = \Delta p $$
-$$ F_{\text{avg}} = \frac{\Delta p}{t} = \frac{-30,000 \, \text{kg}\cdot\text{m/s}}{0.1 \, \text{s}} = -300,000 \, \text{N} $$
+$$ F_{\text{avg}} = \frac{\Delta p}{t} = \frac{-3.0 \, \text{kg}\cdot\text{m/s}}{0.20 \, \text{s}} = -15 \, \text{N} $$
 
-The negative sign indicates the force is directed opposite to the car's initial motion. This force is equivalent to the weight of approximately 30 small cars, illustrating why high-speed collisions are so destructive and why crumple zones (which increase the collision time $t$, thereby decreasing $F_{\text{avg}}$) are critical for safety.
+The negative sign indicates the force is directed opposite to the cart's initial motion. The result illustrates that increasing stopping time reduces the magnitude of average force for the same momentum change. Real forces vary during contact, so a force sensor would reveal a time-dependent profile.
 
 # 4. Thought experiments
 
-**Newton's Cannonball**
+**Orbital free-fall simulation**
 
-Imagine a very tall mountain on Earth, reaching above the atmosphere so there is no air resistance. Place a powerful cannon at the peak, aimed perfectly horizontally. If you fire a cannonball at a low speed, it will follow a parabolic path and hit the ground. If you fire it faster, it will travel further before hitting the ground, because the Earth curves away beneath it. 
-
-Now, imagine firing the cannonball at a specific, very high speed. The ball falls toward the Earth due to gravity, but the Earth's surface curves away at the exact same rate that the ball falls. The cannonball is now in continuous free-fall, never hitting the ground. It has achieved orbit. This thought experiment, originally proposed by Isaac Newton, elegantly unifies the physics of falling apples with the orbits of planets.
+Imagine a small test object already above the atmosphere in a simulation. Give it a modest horizontal velocity: gravity curves its path downward until it intersects Earth. Increase the horizontal velocity and the intersection occurs farther away. At the appropriate speed, the object continuously falls toward Earth while the surface curves away beneath it, producing an orbit. How do initial altitude, horizontal speed, and Earth's curvature determine whether the trajectory intersects the surface, forms an ellipse, or escapes?
 
 # 5. Household and browser-based explorations
 
 **Household Exploration: Center of Mass and Stability**
 
-Take a standard broom. Try to balance it horizontally on one finger. You will find that the balance point (the center of mass) is not in the middle of the handle, but much closer to the heavy bristle end. Now, cut the broom exactly at that balance point (conceptually, or use a prop you don't mind breaking). If you weigh the two pieces, will they weigh the same? 
+Take a standard broom. Try to balance it horizontally on one finger. You will find that the balance point (the center of mass) is not in the middle of the handle, but much closer to the heavy bristle end. Without cutting anything, place removable tape markers at the balance point and at estimated centres of mass for the handle and bristle regions. Why can unequal masses balance when their lever arms differ? 
 
-Many people intuitively guess they will weigh the same because they balanced. However, the shorter piece with the bristles is much heavier. It balances the longer, lighter handle because torque ($\tau = r \times F$) depends on both the force (weight) and the distance from the pivot ($r$). The lighter handle has its center of mass further from the pivot, compensating for its lower weight.
+Balance does not imply equal masses. The heavier bristle region can balance the longer, lighter handle because torque ($\tau = r \times F$) depends on both the force (weight) and the distance from the pivot ($r$). The lighter handle has its center of mass further from the pivot, compensating for its lower weight.
 
 **Browser-based Exploration: PhET Interactive Simulations**
 
@@ -73,7 +71,7 @@ Why is it easier to loosen a tight bolt with a long wrench rather than a short o
 
 The principles of momentum conservation apply to rocket propulsion in the vacuum of space. How do these same principles apply to a squid propelling itself through water? What is the "propellant" in the squid's case?
 
-Engineers use gyroscopes to stabilize spacecraft. How does a person riding a bicycle utilize similar principles of rotational dynamics to stay upright?
+A moving bicycle is stabilised mainly through steering geometry, tyre contact forces, and rider control, with wheel angular momentum contributing. How does this differ from an actively controlled spacecraft gyroscope?
 
 # 9. Suggested learning paths
 
@@ -87,9 +85,19 @@ When analyzing mechanical systems, always begin by defining your system boundari
 
 Remember that Newton's Third Law pairs (action-reaction forces) always act on *different* objects; they never cancel each other out on the same free-body diagram. When dealing with rotational motion, carefully define your axis of rotation, as the moment of inertia and torque depend entirely on this choice. Finally, always check the units of your final answer to ensure they are consistent with the physical quantity you are calculating.
 
+## Phase 7 review boundaries and validity limits
+
+- Newton's second law is fundamentally ΣF_ext = dp/dt. The familiar ma form requires constant mass in an inertial frame.
+- Mass is an invariant measure in modern relativity; relativistic momentum and energy, not “relativistic mass,” replace the low-speed formulas as speed approaches c.
+- Moment of inertia is generally a tensor. Treating it as a scalar is valid only for rotation about a specified principal or fixed axis.
+- Third-law force pairs act on different bodies. Momentum conservation follows from the external-force balance for the chosen system; internal-force cancellation must be justified for the model used.
+- Newtonian gravity is an accurate weak-field, low-speed approximation. General relativity is required for strong fields, high precision, or relativistic motion.
+
 # 11. Sources
 
-- [1] OpenStax. (2016). *University Physics Volume 1*. OpenStax. https://openstax.org/details/books/university-physics-volume-1
-- [2] MIT OpenCourseWare. (2016). *8.01SC Classical Mechanics*. Massachusetts Institute of Technology. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
-- [3] NASA. (2025). *Basics of Space Flight: Chapter 3: Gravity & Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
-- [4] Feynman, R. P., Leighton, R. B., & Sands, M. (1963). *The Feynman Lectures on Physics, Vol. I: Mainly Mechanics, Radiation, and Heat*. Addison-Wesley. https://www.feynmanlectures.caltech.edu/
+
+
+1. OpenStax. *University Physics Volume 1*. https://openstax.org/details/books/university-physics-volume-1
+2. MIT OpenCourseWare. *8.01SC Classical Mechanics*. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
+3. NASA. *Basics of Space Flight: Gravity and Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/
+4. Feynman, R. P., Leighton, R. B., and Sands, M. *The Feynman Lectures on Physics, Volume I*. https://www.feynmanlectures.caltech.edu/
