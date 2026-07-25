@@ -85,6 +85,7 @@ When analyzing electromagnetic problems, always clearly define your system bound
 
 ## 11. Sources
 
+
 1. MIT OpenCourseWare. *8.02 Physics II: Electricity and Magnetism*. https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/
 2. OpenStax. *University Physics Volume 2*. https://openstax.org/books/university-physics-volume-2/pages/1-introduction
 3. OpenStax. *Maxwell's Equations and Electromagnetic Waves*. https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves

@@ -133,6 +133,7 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 ## 12. Sources
 
 
+
 1. CERN. *The Standard Model*. https://home.cern/science/physics/standard-model/
 2. OpenStax. *Chemistry 2e: Development of Quantum Theory*. https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory
 3. National Institute of Standards and Technology. *Atomic Spectroscopy Databases*. https://www.nist.gov/pml/atomic-spectroscopy-databases

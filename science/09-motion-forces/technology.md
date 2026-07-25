@@ -71,6 +71,7 @@ Mechanical engineering is deeply interconnected with other technological domains
 # 13. Sources
 
 
+
 1. OpenStax. *University Physics Volume 1*. https://openstax.org/details/books/university-physics-volume-1
 2. MIT OpenCourseWare. *8.01SC Classical Mechanics*. https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/
 3. NASA. *Basics of Space Flight: Gravity and Mechanics*. https://science.nasa.gov/learn/basics-of-space-flight/chapter3-4/

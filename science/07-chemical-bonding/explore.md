@@ -72,6 +72,7 @@ When predicting molecular geometry, always start with a correct Lewis structure.
 
 ## 11. Sources
 
+
 1. OpenStax. *Chemistry 2e*. https://openstax.org/books/chemistry-2e/pages/1-introduction
 2. Whittingham, M. S. (2004). Introduction: Batteries and Fuel Cells. *Chemical Reviews*. https://pubs.acs.org/doi/10.1021/cr020705e
 3. Zhang, J., et al. (2021). Intermolecular and Surface Interactions in Engineering. https://www.sciencedirect.com/science/article/pii/S209580992030360X
