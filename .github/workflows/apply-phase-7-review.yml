@@ -79,11 +79,34 @@ jobs:
         run: exit 1
 
       - name: Verify Phase 6 and Phase 7 reviewed state
+        id: verify
+        shell: bash
         run: |
-          python3 scripts/apply_foundations_review_sources.py --check
-          python3 scripts/validate_foundations_review.py
-          python3 scripts/apply_phase7_review_sources.py --check
-          python3 scripts/finalize_phase7_review.py --check
+          set +e
+          {
+            echo '=== Phase 6 source registry ==='
+            python3 scripts/apply_foundations_review_sources.py --check
+            echo '=== Phase 6 content contract ==='
+            python3 scripts/validate_foundations_review.py
+            echo '=== Phase 7 source registry ==='
+            python3 scripts/apply_phase7_review_sources.py --check
+            echo '=== Phase 7 content contract ==='
+            python3 scripts/finalize_phase7_review.py --check
+          } > integrated-review-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat integrated-review-validation.log
+          exit 0
+
+      - name: Upload combined validation diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-review-validation
+          path: integrated-review-validation.log
+
+      - name: Stop on combined validation errors
+        if: steps.verify.outputs.status != '0'
+        run: exit 1
 
       - name: Commit integrated reviewed layers
         shell: bash
