@@ -93,7 +93,25 @@ jobs:
           python3 scripts/validate_phase9_technology_review.py
 
       - name: Validate Phase 10 synthesis
-        run: python3 scripts/validate_phase10_synthesis.py
+        id: phase10
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase10_synthesis.py > phase10-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase10-validation.log
+          exit 0
+
+      - name: Upload Phase 10 validation diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase10-validation-diagnostics
+          path: phase10-validation.log
+
+      - name: Stop on Phase 10 validation errors
+        if: steps.phase10.outputs.status != '0'
+        run: exit 1
 
       - name: Validate repository and applied materials
         run: |
