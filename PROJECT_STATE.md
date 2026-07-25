@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 8 Life and Earth Systems review implemented on `agent/phase-8-life-earth-review`; validation and pull-request integration remain pending.**
+**Phase 8 Life and Earth Systems review implemented and validated on draft PR #9; independent review and merge remain pending.**
 
 The repository remains a material-first educational foundation. Software is intentionally deferred until the core material, sources, review workflow, and synthesis are mature.
 
@@ -20,7 +20,7 @@ The repository remains a material-first educational foundation. Software is inte
 | 5 | Legacy source-ledger repair | Merged and validated |
 | 6 | Foundations scientific review | Merged and validated through PR #8 |
 | 7 | Physical-science review | Merged and validated through PR #8 |
-| 8 | Life and Earth systems review | Implemented on Phase 8 branch; validation pending |
+| 8 | Life and Earth systems review | Implemented and validated on PR #9; awaiting merge |
 | 9 | Technology review | Next after Phase 8 integration |
 | 10 | Synthesis reconciliation | Initial materials exist; final reconciliation pending |
 | 11 | Controlled material expansion | Seed exemplars complete |
@@ -35,7 +35,7 @@ Current branch order is now clean:
 
 1. `main` contains reviewed Modules 01–12;
 2. `agent/phase-8-life-earth-review` was created directly from the merged `main` state;
-3. Phase 8 will enter `main` through its own focused pull request;
+3. PR #9 carries only the focused Phase 8 review into `main`;
 4. no phase workflow automatically merges pull requests.
 
 ## Content inventory and status
@@ -49,7 +49,7 @@ Current branch order is now clean:
 - normalized central source ledger;
 - reusable metadata, source, and scientific-review validators.
 
-On the Phase 8 branch:
+On PR #9:
 
 - Modules 01–05: **Reviewed**;
 - Modules 06–12: **Reviewed**;
@@ -125,7 +125,7 @@ Phase 7 added five reviewed source records, producing a **121-record** ledger. P
 
 ## Phase 8 result — Life and Earth Systems Modules 13–16
 
-Phase 8 Life and Earth Systems review implemented across all 12 learner-facing files.
+Phase 8 scientifically and editorially reviewed all 12 learner-facing files.
 
 ### Module 13 — Cells and Bioenergetics
 
@@ -135,24 +135,26 @@ Phase 8 Life and Earth Systems review implemented across all 12 learner-facing f
 
 ### Module 14 — DNA and Evolution
 
-- corrected replication fidelity, gene-expression scope, bacterial-versus-eukaryotic replication machinery, mutation, selection, fitness, and PCR limits;
+- corrected replication fidelity, gene-expression scope, bacterial-versus-eukaryotic replication machinery, mutation, selection, Hardy–Weinberg notation, fitness, and PCR limits;
 - replaced sensitive family-trait analysis, household alcohol extraction, and real antibiotic-exposure prompts;
-- clarified that synonymous substitutions can still have functional consequences.
+- clarified that synonymous substitutions can still have functional consequences;
+- replaced stale biotechnology identifiers with canonical computational and systems connections.
 
 ### Module 15 — Ecosystems and Complex Systems
 
 - removed fixed trophic-transfer, carrying-capacity, modularity, wetland-performance, and reliability claims;
-- corrected Lotka–Volterra and logistic-map interpretation;
+- distinguished keystone effect, network degree, biomass, and functional uniqueness;
+- corrected Lotka–Volterra, logistic-map, and signed causal-loop interpretation;
 - reframed closed ecological systems around leakage, accumulation, ageing, and backup requirements;
 - replaced direct standing-water contact and sealed-organism activities.
 
 ### Module 16 — Earth and Planetary Systems
 
 - corrected plate-driving mechanisms, overturning circulation, effective radiative forcing, greenhouse physics, energy-balance models, and climate-projection uncertainty;
-- removed unstable Argo-count and computing-power claims;
+- removed unstable Argo-count, dataset-volume, and computing-power claims;
 - replaced stove heating, permanent-marker, and operational terraforming activities.
 
-Phase 8 adds ten inspected institutional records:
+Phase 8 added ten inspected institutional records:
 
 - NCBI bioenergetics and cell membranes;
 - NHGRI DNA replication, gene expression, and evolution;
@@ -162,7 +164,7 @@ Phase 8 adds ten inspected institutional records:
 - NOAA Argo;
 - USGS *This Dynamic Earth*.
 
-The intended integrated ledger contains **131 records**.
+The integrated ledger contains **131 records**.
 
 Artifacts:
 
@@ -171,7 +173,9 @@ Artifacts:
 - `sources/phase-8-reviewed-sources.json`;
 - `scripts/apply_phase8_review_sources.py`;
 - `scripts/apply_phase8_life_earth_review.py`;
-- `scripts/validate_phase8_life_earth_review.py`.
+- `scripts/finalize_phase8_review.py`;
+- `scripts/validate_phase8_life_earth_review.py`;
+- `.github/workflows/validate-phase-8-life-earth.yml`.
 
 ## Status meanings
 
@@ -196,7 +200,7 @@ python3 scripts/apply_verified_source_baseline.py --check
 
 ```bash
 python3 scripts/apply_foundations_review_sources.py --check
-python3 scripts/validate_foundations_review.py --allow-downstream-reviewed
+python3 scripts/validate_foundations_continuity_phase8.py --allow-downstream-reviewed
 python3 scripts/apply_phase7_review_sources.py --check
 python3 scripts/finalize_phase7_review.py --check
 ```
@@ -205,7 +209,7 @@ python3 scripts/finalize_phase7_review.py --check
 
 ```bash
 python3 scripts/apply_phase8_review_sources.py --check
-python3 scripts/apply_phase8_life_earth_review.py --check
+python3 scripts/finalize_phase8_review.py --check
 python3 scripts/validate_phase8_life_earth_review.py
 python3 scripts/validate_repo.py
 ```
@@ -235,7 +239,7 @@ The review must check materials models, manufacturing process boundaries, semico
 
 ## Remaining core work
 
-1. Complete and review the Phase 8 pull request.
+1. Review and merge PR #9 into `main`.
 2. Obtain independent review of Modules 01–16.
 3. Complete scientific review of Modules 17–20.
 4. Reconcile pathways, concepts, maps, terminology, and links.
