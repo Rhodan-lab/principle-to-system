@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -13,7 +14,7 @@ BOUNDARY_WRITE = (
     '    text = phase9.insert_boundaries(text, module)\n'
     '    path.write_text(text.rstrip() + "\\n", encoding="utf-8")'
 )
-BAD_THETA = '"\\theta_k"'
+THETA_PATTERN = re.compile(r'(?<!r)"\\theta_k"')
 RAW_THETA = 'r"\\theta_k"'
 UPPER_PHOTO = '"Photovoltaic cells are energy-conversion devices"'
 LOWER_PHOTO = '"photovoltaic cells are energy-conversion devices"'
@@ -23,7 +24,7 @@ def normalized(text: str) -> str:
     fixed = text
     if BOUNDARY_WRITE not in fixed:
         fixed = fixed.replace(WRITE_LINE, BOUNDARY_WRITE, 1)
-    fixed = fixed.replace(BAD_THETA, RAW_THETA)
+    fixed = THETA_PATTERN.sub(lambda _match: RAW_THETA, fixed)
     fixed = fixed.replace(UPPER_PHOTO, LOWER_PHOTO)
     return fixed
 
@@ -40,9 +41,9 @@ def main() -> int:
     errors: list[str] = []
     if BOUNDARY_WRITE not in fixed:
         errors.append("boundary reinsertion is missing")
-    if BAD_THETA in fixed:
-        errors.append("theta marker is not raw")
-    if UPPER_PHOTO in fixed:
+    if THETA_PATTERN.search(fixed) or RAW_THETA not in fixed:
+        errors.append("theta marker is not in the required raw form")
+    if UPPER_PHOTO in fixed or LOWER_PHOTO not in fixed:
         errors.append("photovoltaic marker does not match reviewed text")
     try:
         compile(fixed, str(TARGET), "exec")
