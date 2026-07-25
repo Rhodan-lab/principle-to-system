@@ -35,7 +35,25 @@ jobs:
           python3 -m py_compile scripts/validate_phase10_synthesis.py
 
       - name: Apply coordinated synthesis reconciliation
-        run: python3 scripts/apply_phase10_synthesis.py --write
+        id: synthesis
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/apply_phase10_synthesis.py --write > phase10-synthesis.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase10-synthesis.log
+          exit 0
+
+      - name: Upload Phase 10 reconciliation diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase10-synthesis-diagnostics
+          path: phase10-synthesis.log
+
+      - name: Stop on reconciliation errors
+        if: steps.synthesis.outputs.status != '0'
+        run: exit 1
 
       - name: Verify deterministic idempotence
         run: python3 scripts/apply_phase10_synthesis.py --check
