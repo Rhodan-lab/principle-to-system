@@ -56,7 +56,9 @@ jobs:
         run: python3 scripts/apply_foundations_review_sources.py --check
 
       - name: Validate Foundations scientific review
-        run: python3 scripts/validate_foundations_review.py
+        # This Phase 7 branch preserves the strict Phase 6 content contract while
+        # allowing later modules to advance from Draft to Reviewed.
+        run: python3 scripts/validate_foundations_review.py --allow-downstream-reviewed
 
       - name: Run repository structural validator
         run: python3 scripts/validate_repo.py
