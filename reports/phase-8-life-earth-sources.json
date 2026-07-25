@@ -1,9 +1,8 @@
 {
   "generated": "2026-07-26",
   "registry_records": 10,
-  "ledger_records_before": 131,
-  "records_added": [],
-  "already_present": [
+  "ledger_records_before": 121,
+  "records_added": [
     "https://www.ncbi.nlm.nih.gov/books/NBK9911/",
     "https://www.ncbi.nlm.nih.gov/books/NBK9928/",
     "https://www.genome.gov/genetics-glossary/DNA-Replication",
@@ -15,6 +14,7 @@
     "https://www.aoml.noaa.gov/argo/",
     "https://pubs.usgs.gov/gip/dynamic/dynamic.html"
   ],
+  "already_present": [],
   "ledger_records_after": 131,
   "errors": []
 }
