@@ -52,10 +52,16 @@ jobs:
             scripts/apply_foundations_review_sources.py \
             scripts/validate_foundations_review.py
 
-      - name: Apply reviewed source registries
+      - name: Apply and verify Phase 6 reviewed sources
         run: |
           python3 scripts/apply_foundations_review_sources.py --write
-          python3 scripts/apply_phase7_review_sources.py --write
+          python3 scripts/apply_foundations_review_sources.py --check
+
+      - name: Validate restored Phase 6 content contract
+        run: python3 scripts/validate_foundations_review.py
+
+      - name: Apply Phase 7 reviewed sources
+        run: python3 scripts/apply_phase7_review_sources.py --write
 
       - name: Apply final reviewed physical-science content
         id: transform
@@ -78,16 +84,14 @@ jobs:
         if: steps.transform.outputs.status != '0'
         run: exit 1
 
-      - name: Verify Phase 6 and Phase 7 reviewed state
+      - name: Verify final Phase 7 reviewed state
         id: verify
         shell: bash
         run: |
           set +e
           {
-            echo '=== Phase 6 source registry ==='
+            echo '=== Phase 6 source registry remains applied ==='
             python3 scripts/apply_foundations_review_sources.py --check
-            echo '=== Phase 6 content contract ==='
-            python3 scripts/validate_foundations_review.py
             echo '=== Phase 7 source registry ==='
             python3 scripts/apply_phase7_review_sources.py --check
             echo '=== Phase 7 content contract ==='
