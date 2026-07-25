@@ -1,0 +1,37 @@
+name: Repair Phase 7 ancestry
+
+on:
+  push:
+    branches:
+      - agent/phase-7-physical-science-review
+    paths:
+      - '.github/workflows/repair-phase-7-ancestry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 7 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-7-physical-science-review
+          fetch-depth: 0
+
+      - name: Add Phase 6 as a parent without changing content
+        shell: bash
+        run: |
+          git fetch origin agent/phase-6-foundations-review
+          if git merge-base --is-ancestor origin/agent/phase-6-foundations-review HEAD; then
+            echo 'Phase 6 is already an ancestor.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git merge --strategy=ours --no-ff origin/agent/phase-6-foundations-review \
+            -m 'chore: establish Phase 6 ancestry for Phase 7'
+          git push origin HEAD:agent/phase-7-physical-science-review
