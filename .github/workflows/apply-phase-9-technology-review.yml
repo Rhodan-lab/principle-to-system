@@ -38,12 +38,12 @@ jobs:
       - name: Apply reviewed source records
         run: python3 scripts/apply_phase9_review_sources.py --write
 
-      - name: Apply coordinated twelve-file review
+      - name: Apply final coordinated twelve-file review
         id: transform
         shell: bash
         run: |
           set +e
-          python3 scripts/apply_phase9_technology_review.py --write > phase9-transform.log 2>&1
+          python3 scripts/finalize_phase9_review.py --write > phase9-transform.log 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
           cat phase9-transform.log
@@ -63,7 +63,7 @@ jobs:
         run: |
           python3 scripts/normalize_phase9_transformer_literals.py --check
           python3 scripts/apply_phase9_review_sources.py --check
-          python3 scripts/apply_phase9_technology_review.py --check
+          python3 scripts/finalize_phase9_review.py --check
 
       - name: Validate Foundations continuity
         run: |
@@ -115,5 +115,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m 'content: complete Phase 9 Technology review'
+          git commit -m 'content: finalize Phase 9 Technology review'
           git push origin HEAD:agent/phase-9-technology-review
