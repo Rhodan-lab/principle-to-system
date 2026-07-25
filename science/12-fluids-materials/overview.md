@@ -40,7 +40,7 @@ A **solid** resists shear stress by deforming up to a point and then holding its
 ## 4. Mechanisms and causal chains
 
 ### Energy Conservation in Fluid Flow
-In a steady, incompressible, frictionless flow along a streamline, the total mechanical energy of the fluid is conserved. This is expressed by Bernoulli's principle. As a fluid moves through a constriction, its velocity must increase to conserve mass (continuity equation). Because kinetic energy increases, the pressure energy must decrease to conserve total energy. For a specified streamline with negligible losses and no added shaft work, continuity and the energy equation relate area, velocity, pressure, and elevation. A constriction often raises speed, but the pressure response depends on the complete boundary conditions. Aerodynamic lift requires the full pressure and shear distribution and momentum deflection, not Bernoulli's equation alone [1].
+For a specified steady-flow model, conservation of mass and the mechanical-energy equation relate area, density, velocity, pressure, elevation, shaft work, and losses. For a specified streamline with negligible losses and no added shaft work, continuity and the energy equation relate area, velocity, pressure, and elevation. A constriction often raises speed, but the pressure response depends on the complete boundary conditions. Aerodynamic lift requires the full pressure and shear distribution and momentum deflection, not Bernoulli's equation alone [1].
 
 ### Viscous Dissipation
 Real fluids possess viscosity. When fluid layers move at different velocities, intermolecular forces create friction between the layers. This shear stress transfers momentum from faster layers to slower ones, dissipating mechanical energy into thermal energy. In pipes, this causes a pressure drop along the length of the flow, requiring a pump to maintain movement [2].
@@ -114,7 +114,7 @@ where $E$ is Young's modulus and $\gamma_s$ is the surface energy per unit area 
 
 ## 8. Assumptions and approximations
 
-- **Continuum Assumption:** Both fluids and solids are treated as continuous media, ignoring their discrete atomic structure. This is valid when the physical dimensions of the system are much larger than the mean free path of the molecules.
+- **Continuum Assumption:** Both fluids and solids are treated as continuous media, ignoring their discrete atomic structure. This is valid when characteristic lengths are large compared with the molecular, granular, or microstructural scales relevant to the constitutive model.
 - **Incompressibility:** In Bernoulli's equation and the continuity equation, liquids (and gases at low Mach numbers, typically $< 0.3$) are assumed to have constant density.
 - **Inviscid Flow:** Bernoulli's equation assumes zero viscosity, meaning no energy is lost to friction. This is a significant approximation and is only valid outside the boundary layer where viscous effects are negligible.
 - **Linear Elasticity:** Hooke's law assumes that deformations are small and that the material returns exactly to its original shape. It fails once the yield point is reached.
@@ -130,7 +130,7 @@ where $E$ is Young's modulus and $\gamma_s$ is the surface energy per unit area 
 ## 10. Common misconceptions
 
 - **Misconception:** Bernoulli's principle alone explains aerodynamic lift.
-  **Correction:** While Bernoulli's equation relates pressure and velocity, it does not explain *why* the air moves faster over the top of a wing. A complete explanation requires Newton's laws, the Coanda effect, and the downward deflection of the airflow (downwash).
+  **Correction:** While Bernoulli's equation relates pressure and velocity, it does not explain *why* the air moves faster over the top of a wing. A complete analysis uses the velocity field and boundary conditions to obtain surface pressure and shear, whose integrated force corresponds to the momentum change of the airflow.
 - **Misconception:** Strong materials are always tough.
   **Correction:** Strength is the ability to withstand stress without yielding or breaking, while toughness is the ability to absorb energy before fracturing. Glass is very strong in compression but extremely brittle (low toughness).
 - **Misconception:** Fluids only exert pressure downwards.

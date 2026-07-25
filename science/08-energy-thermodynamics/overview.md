@@ -14,7 +14,7 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-Why does a hot cup of coffee always cool down, but a cold cup never spontaneously heats up? Why can we never build a machine that runs forever without consuming fuel? How does the microscopic motion of countless invisible particles translate into the macroscopic forces that drive engines, weather systems, and life itself? Thermodynamics is the study of energy, its transformations, and the fundamental limits on how it can be used. It answers these questions by establishing the universal rules governing heat, work, and the inevitable progression of systems toward disorder.
+Why does a hot cup of coffee always cool down, but a cold cup never spontaneously heats up? Why can we never build a machine that runs forever without consuming fuel? How does the microscopic motion of countless invisible particles translate into the macroscopic forces that drive engines, weather systems, and life itself? Thermodynamics is the study of energy, its transformations, and the fundamental limits on how it can be used. It answers these questions by establishing the universal rules governing heat, work, and the constraints imposed by energy conservation, entropy production, and equilibrium.
 
 ## 2. Observable phenomena
 
@@ -22,7 +22,7 @@ The principles of thermodynamics manifest in everyday phenomena. When ice melts 
 
 ## 3. Essential concepts
 
-**Energy** is the capacity of a physical system to perform work. It exists in many forms, including kinetic (motion), potential (position or configuration), thermal (microscopic kinetic energy), and chemical (energy stored in molecular bonds).
+**Energy** is a conserved state quantity used to account for changes and transfers in physical systems. Kinetic, potential, internal, electromagnetic, and chemical contributions are bookkeeping categories; chemical energy is not simply energy stored in individual bonds.
 
 **Heat** is the transfer of thermal energy between systems due to a temperature difference. It is not a substance contained within an object, but a process of energy in transit.
 
@@ -32,7 +32,7 @@ The principles of thermodynamics manifest in everyday phenomena. When ice melts 
 
 **Entropy** is a state function defined macroscopically through reversible heat transfer and statistically through probability distributions over microstates. It is related to energy dispersal and multiplicity, but is not simply visual disorder.
 
-**Free Energy** (such as Gibbs or Helmholtz free energy) is the portion of a system's internal energy that is available to perform thermodynamic work at a constant temperature. It determines whether a process will occur spontaneously.
+**Thermodynamic potentials** such as Helmholtz and Gibbs free energy combine state variables for specified environmental constraints. Their changes provide equilibrium and direction criteria only when those constraints and allowed work modes are stated.
 
 **Phase Transitions** are transformations of a thermodynamic system from one phase or state of matter to another (e.g., solid to liquid, liquid to gas) characterised by abrupt changes in physical properties, driven by the competition between internal energy and entropy.
 
@@ -58,9 +58,9 @@ The causal chains of energy transformation are governed by four fundamental laws
 | Internal Energy | $U$ | Joule ($\text{J}$) | Total microscopic kinetic and potential energy of a system. |
 | Heat | $Q$ | Joule ($\text{J}$) | Energy transferred due to a temperature difference. |
 | Work | $W$ | Joule ($\text{J}$) | Energy transferred by macroscopic forces. |
-| Temperature | $T$ | Kelvin ($\text{K}$) | Measure of average microscopic kinetic energy. |
-| Entropy | $S$ | Joule per Kelvin ($\text{J/K}$) | Measure of the number of accessible microstates. |
-| Enthalpy | $H$ | Joule ($\text{J}$) | Total heat content of a system ($H = U + pV$). |
+| Temperature | $T$ | Kelvin ($\text{K}$) | Thermodynamic state variable that determines thermal equilibrium and heat-transfer direction. |
+| Entropy | $S$ | Joule per Kelvin ($\text{J/K}$) | State function defined thermodynamically and statistically. |
+| Enthalpy | $H$ | Joule ($\text{J}$) | State function $H=U+pV$, useful in constant-pressure energy balances. |
 | Gibbs Free Energy | $G$ | Joule ($\text{J}$) | Energy available to do non-expansion work at constant $T$ and $p$. |
 | Thermal Conductivity | $k$ | Watt per metre-Kelvin ($\text{W/(m}\cdot\text{K)}$) | Material property indicating ability to conduct heat. |
 | Heat Capacity | $C$ | Joule per Kelvin ($\text{J/K}$) | Energy required to raise the temperature of a system by $1\text{ K}$. |
@@ -89,17 +89,17 @@ Where $\dot{Q}_{\text{cond}}$ is the rate of heat transfer ($\text{W}$), $k$ is 
 
 **Stefan-Boltzmann Law of Thermal Radiation:**
 $$ \dot{Q}_{\text{net}} \approx \varepsilon \sigma A (T^4-T_{\text{sur}}^4) $$
-Where $\dot{Q}_{\text{rad}}$ is the radiated power, $\varepsilon$ is the emissivity of the surface ($0 \le \varepsilon \le 1$), $\sigma$ is the Stefan-Boltzmann constant, $A$ is the surface area, and $T$ is the absolute temperature.
+Where $\dot{Q}_{\text{net}}$ is the approximate net radiative heat-transfer rate, $\varepsilon$ is the emissivity of the surface ($0 \le \varepsilon \le 1$), $\sigma$ is the Stefan-Boltzmann constant, $A$ is the surface area, and $T$ is the absolute temperature.
 
 ### Free Energy and Phase Transitions
 The Gibbs free energy ($G$) is crucial for processes occurring at constant temperature and pressure:
 $$ G = H - TS $$
-Where $H$ is enthalpy, $T$ is temperature, and $S$ is entropy. A process is spontaneous if the change in Gibbs free energy is negative ($\Delta G < 0$). During a phase transition (like ice melting at $0^\circ\text{C}$), the two phases are in equilibrium, and $\Delta G = 0$. The transition is driven by the balance between minimizing enthalpy (favoring the solid state) and maximizing entropy (favoring the liquid state).
+Where $H$ is enthalpy, $T$ is temperature, and $S$ is entropy. At constant temperature and pressure, with composition and allowed non-expansion work specified, a negative $\Delta G$ gives the thermodynamic direction away from equilibrium but not the rate. During a phase transition (like ice melting at $0^\circ\text{C}$), the two phases are in equilibrium, and $\Delta G = 0$. The transition is driven by the balance between minimizing enthalpy (favoring the solid state) and maximizing entropy (favoring the liquid state).
 
 ### Carnot Efficiency
 The maximum theoretical efficiency ($\eta_{\text{Carnot}}$) of a heat engine operating between a hot reservoir at temperature $T_H$ and a cold reservoir at temperature $T_C$ is:
 $$ \eta_{\text{Carnot}} = 1 - \frac{T_C}{T_H} $$
-This demonstrates that no heat engine can be $100\%$ efficient unless the cold reservoir is at absolute zero, which is practically impossible.
+This bound applies to a reversible engine between ideal reservoirs. Reaching absolute zero is unattainable, and every real engine also generates entropy.
 
 ## 7. Definitions of symbols and units
 
@@ -138,16 +138,16 @@ Thermodynamics bridges the microscopic and macroscopic worlds.
 ## 10. Common misconceptions
 
 *   **Misconception:** "Heat rises." **Correction:** Hot *fluids* (like air or water) rise due to buoyancy because they are less dense than the surrounding cooler fluid (convection). Heat itself transfers in all directions from hot to cold.
-*   **Misconception:** "Cold flows into a room when a window is opened." **Correction:** Cold is not a substance; it is the absence of thermal energy. Heat flows *out* of the warm room into the cold exterior.
-*   **Misconception:** "Entropy means things always get messy." **Correction:** While often likened to "disorder," entropy is strictly a measure of the number of accessible microstates. A system can spontaneously become more structurally ordered (like water freezing into an ice crystal) if it releases enough heat to increase the entropy of its surroundings by a greater amount.
-*   **Misconception:** "Energy is used up." **Correction:** Energy is never destroyed (First Law); it is simply converted into less useful forms, typically low-temperature thermal energy, increasing the entropy of the universe (Second Law).
+*   **Misconception:** "Cold flows into a room when a window is opened." **Correction:** Cold is not a substance. Energy is transferred from the warmer region to the cooler region according to the relevant conduction, convection, and radiation processes.
+*   **Misconception:** "Entropy means things always get messy." **Correction:** While often likened to "disorder," entropy is a state function whose statistical expression depends on the probability distribution over microstates. A system can spontaneously become more structurally ordered (like water freezing into an ice crystal) if it releases enough heat to increase the entropy of its surroundings by a greater amount.
+*   **Misconception:** "Energy is used up." **Correction:** Energy is never destroyed (First Law); its ability to deliver useful work can decrease as entropy is generated; this loss of work potential is described by exergy destruction (Second Law).
 
 ## 11. Connections to other modules
 
 *   **03-mathematical-models:** Provides the calculus and statistical frameworks necessary to derive thermodynamic equations and understand probability distributions of microstates.
 *   **06-matter-quantum:** Explains the atomic and molecular structures that store internal energy and dictate properties like heat capacity and thermal conductivity.
-*   **09-fluid-dynamics:** Essential for understanding convection, the behavior of working fluids in engines, and atmospheric thermodynamics.
-*   **12-chemical-kinetics:** Relies on thermodynamics (specifically free energy) to determine whether chemical reactions will occur spontaneously and where equilibrium lies.
+*   **12-fluids-materials:** Essential for understanding convection, the behavior of working fluids in engines, and atmospheric thermodynamics.
+*   **07-chemical-bonding:** Relies on thermodynamics (specifically free energy) to determine whether chemical reactions will occur spontaneously and where equilibrium lies.
 
 ## Phase 7 review boundaries and validity limits
 

@@ -20,7 +20,7 @@ content_license: CC-BY-4.0
 
 - If you tighten the string of a guitar (increasing the tension), will the frequency of the sound it produces when plucked increase, decrease, or stay the same? Why?
 - Imagine a sound wave travelling from air into water. The speed of sound in water is roughly four times faster than in air. Will the frequency of the sound wave change? Will the wavelength change?
-- If you shine a red laser pointer and a blue laser pointer through the same glass prism, which beam will bend (refract) more?
+- In a ray-optics simulation using the same prism material, which wavelength—red or blue—has the larger refractive index and bends more?
 
 ## 3. Worked reasoning examples
 

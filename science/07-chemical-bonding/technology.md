@@ -13,12 +13,12 @@ content_license: CC-BY-4.0
 # Engineering Chemical Reactions: Batteries and Catalytic Converters
 
 ## 1. Scientific principles used
-The engineering of chemical systems relies heavily on the principles of electrochemistry, reaction kinetics, and catalysis. Electrochemistry governs the interconversion of chemical and electrical energy through redox (reduction-oxidation) reactions, where the transfer of electrons between chemical species is harnessed to do electrical work. Reaction kinetics dictates the rate at which these transformations occur, while catalysis provides mechanisms to lower the activation energy of specific reactions, thereby accelerating them without the catalyst being consumed.
+The engineering of chemical systems relies heavily on the principles of electrochemistry, reaction kinetics, and catalysis. Electrochemistry governs the interconversion of chemical and electrical energy through redox (reduction-oxidation) reactions, where the transfer of electrons between chemical species is harnessed to do electrical work. Reaction kinetics dictates the rate at which these transformations occur, while catalysis provides alternative reaction mechanisms with different activation barriers; the catalyst participates in elementary steps and is regenerated overall.
 
 ## 2. The engineering problem
 Engineers face two distinct but related challenges in chemical technology: energy storage and emission control. 
 For energy storage, the problem is how to design a portable, reversible system that can store recoverable electrochemical free energy in composition and electrode states and release it on demand with high efficiency and energy density. This is the domain of battery engineering.
-For emission control, the problem is how to rapidly and efficiently convert toxic byproducts of combustion (such as carbon monoxide, nitrogen oxides, and unburned hydrocarbons) into harmless gases before they are released into the atmosphere, operating within the constraints of a moving vehicle's exhaust system. This is the domain of catalytic converter engineering.
+For emission control, the problem is how to rapidly and efficiently convert regulated combustion pollutants such as carbon monoxide, nitrogen oxides, and unburned hydrocarbons into less harmful products; carbon dioxide remains a greenhouse gas before they are released into the atmosphere, operating within the constraints of a moving vehicle's exhaust system. This is the domain of catalytic converter engineering.
 
 ## 3. Main components
 **Lithium-Ion Battery:**
@@ -35,7 +35,7 @@ For emission control, the problem is how to rapidly and efficiently convert toxi
 ## 4. How the components interact
 In a lithium-ion battery, during discharge, lithium ions de-intercalate from the graphite anode, travel through the electrolyte and separator, and intercalate into the cathode. Simultaneously, electrons flow through the external circuit from the anode to the cathode, powering the device. During charging, an external voltage forces the reverse process.
 
-In a catalytic converter, hot exhaust gases flow through the honeycomb structure. The high surface area ensures maximum contact between the gases and the catalytic metals. The rhodium catalyzes the reduction of nitrogen oxides ($\text{NO}_x$) to nitrogen ($\text{N}_2$) and oxygen ($\text{O}_2$). The platinum and palladium catalyze the oxidation of carbon monoxide ($\text{CO}$) and hydrocarbons to carbon dioxide ($\text{CO}_2$) and water ($\text{H}_2\text{O}$).
+In a catalytic converter, hot exhaust gases flow through the honeycomb structure. The high surface area ensures maximum contact between the gases and the catalytic metals. The rhodium catalyzes the reduction of nitrogen oxides ($\text{NO}_x$), primarily toward nitrogen ($\text{N}_2$) under controlled exhaust composition. The platinum and palladium catalyze the oxidation of carbon monoxide ($\text{CO}$) and hydrocarbons to carbon dioxide ($\text{CO}_2$) and water ($\text{H}_2\text{O}$).
 
 ## 5. Matter, energy, force, or information flow
 **Battery:** The primary flow is energy (electrical to chemical during charging, chemical to electrical during discharging) and matter (lithium ions moving internally, electrons moving externally). The driving force is the electrochemical potential difference between the anode and cathode materials.
@@ -55,7 +55,7 @@ In a catalytic converter, hot exhaust gases flow through the honeycomb structure
 - **Catalytic Converters:** Must operate effectively over a wide range of temperatures and gas flow rates. They are constrained by the availability and cost of precious metals. The catalyst can be "poisoned" by impurities like lead or sulfur, which bind irreversibly to the active sites.
 
 ## 8. Performance and efficiency
-Battery performance is measured by specific energy ($\text{Wh/kg}$), specific power ($\text{W/kg}$), and cycle life (number of charge/discharge cycles before significant degradation). Efficiency is typically high (over 90%) but is reduced by internal resistance (joule heating).
+Battery performance is measured by specific energy ($\text{Wh/kg}$), specific power ($\text{W/kg}$), and cycle life (number of charge/discharge cycles before significant degradation). Round-trip and coulombic efficiencies depend on cell chemistry, temperature, current, state of charge, ageing, and the measurement boundary; internal resistance converts some energy to heat.
 Catalytic converter performance is measured by conversion efficiency (percentage of toxic gases neutralized). Well-controlled modern converters can achieve high conversion after light-off, but performance depends on temperature, air–fuel ratio, ageing, and pollutant species once they reach their operating temperature ("light-off" temperature, typically around $300^\circ\text{C}$).
 
 ## 9. Reliability and failure modes

@@ -12,7 +12,7 @@ content_license: CC-BY-4.0
 
 ## 1. The central questions
 
-What is the fundamental nature of matter? How do the smallest constituents of the universe interact to form the stable structures we observe? Why do atoms absorb and emit light only at specific, discrete frequencies? These questions drive the study of quantum mechanics and atomic structure. Classical physics, which describes the continuous motion of macroscopic objects, fails to explain the behaviour of matter at the atomic and subatomic scales. Instead, the universe at its most fundamental level operates according to quantum principles, where energy, momentum, and angular momentum are often restricted to discrete values, and particles exhibit both wave-like and particle-like properties.
+What is the fundamental nature of matter? How do the smallest constituents of the universe interact to form the stable structures we observe? Why do atoms absorb and emit light only at specific, discrete frequencies? These questions drive the study of quantum mechanics and atomic structure. Classical physics, which describes the continuous motion of macroscopic objects, fails to explain the behaviour of matter at the atomic and subatomic scales. Instead, quantum states determine probability amplitudes for measurement outcomes; some observables have discrete spectra in bound systems, and quantum entities do not obey a purely classical particle-or-wave description.
 
 ## 2. Observable phenomena
 
@@ -39,9 +39,9 @@ The structure of matter emerges from the interactions of fundamental particles g
 
 **From Quarks to Nuclei:** Quantum chromodynamics describes gluons binding quarks inside nucleons. A residual strong interaction between nucleons, together with quantum structure and the balance of nuclear and electrostatic energies, permits some nuclei to be stable.
 
-**From Nuclei to Atoms:** The electromagnetic force, mediated by photons, binds negatively charged electrons to the positively charged nucleus. The behaviour of these electrons is governed by the Schrödinger equation. Because the electrons are confined to the electrical potential well of the nucleus, their allowed energy states are quantised.
+**From Nuclei to Atoms:** The electromagnetic interaction binds negatively charged electrons to the positively charged nucleus. The behaviour of these electrons is governed by the Schrödinger equation. Because the electrons are confined to the electrical potential well of the nucleus, their allowed energy states are quantised.
 
-**Electron Configuration and Periodicity:** As electrons are added to an atom, they fill available orbitals in order of increasing energy (Aufbau principle). The Pauli exclusion principle ensures that each orbital can hold a maximum of two electrons (with opposite spins). This filling order, combined with the quantised energy levels, determines the chemical properties of the elements, leading directly to the periodic trends observed in the periodic table (e.g., atomic radius, ionisation energy, electronegativity).
+**Electron Configuration and Periodicity:** As electrons are added to an atom, approximate orbital-filling rules organise many ground-state configurations, with known exceptions caused by electron correlation and near-degenerate energies. The Pauli exclusion principle ensures that each orbital can hold a maximum of two electrons (with opposite spins). This filling order, combined with the quantised energy levels, determines the chemical properties of the elements, leading directly to the periodic trends observed in the periodic table (e.g., atomic radius, ionisation energy, electronegativity).
 
 **Spectroscopy:** When an electron transitions from a higher energy state to a lower one, the atom emits a photon with an energy exactly equal to the difference between the two states. Conversely, an atom can absorb a photon of that exact energy, promoting an electron to a higher state. This causal chain explains the discrete lines in atomic spectra.
 
@@ -78,11 +78,11 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 ## 7. Definitions of symbols and units
 
 - $E$: Energy (Joules, $\text{J}$, or Electron-volts, $\text{eV}$)
-- $h$: Planck constant ($6.626 \times 10^{-34} \text{ J}\cdot\text{s}$)
-- $\hbar$: Reduced Planck constant, $h / (2\pi)$ ($1.055 \times 10^{-34} \text{ J}\cdot\text{s}$)
+- $h$: Planck constant (exactly $6.62607015 \times 10^{-34} \text{ J}\cdot\text{s}$)
+- $\hbar$: Reduced Planck constant, $h/(2\pi)$ (approximately $1.054571817 \times 10^{-34} \text{ J}\cdot\text{s}$)
 - $\nu$: Frequency (Hertz, $\text{Hz}$ or $\text{s}^{-1}$)
 - $\lambda$: Wavelength (Metres, $\text{m}$)
-- $c$: Speed of light in a vacuum ($3.00 \times 10^8 \text{ m/s}$)
+- $c$: Speed of light in vacuum (exactly $299\,792\,458 \text{ m/s}$)
 - $p$: Momentum ($\text{kg}\cdot\text{m/s}$)
 - $m$: Mass ($\text{kg}$)
 - $v$: Velocity ($\text{m/s}$)
@@ -90,8 +90,8 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 - $\psi$: Wavefunction (Probability amplitude, units depend on dimensionality, e.g., $\text{m}^{-3/2}$ for 3D)
 - $\nabla^2$: Laplacian operator (Spatial second derivative, $\text{m}^{-2}$)
 - $V$: Potential energy ($\text{J}$)
-- $\Delta x$: Uncertainty in position ($\text{m}$)
-- $\Delta p$: Uncertainty in momentum ($\text{kg}\cdot\text{m/s}$)
+- $\Delta x$: Standard deviation of position outcomes for the prepared state ($\text{m}$)
+- $\Delta p$: Standard deviation of momentum outcomes for the prepared state ($\text{kg}\cdot\text{m/s}$)
 
 ## 8. Assumptions and approximations
 
@@ -110,7 +110,7 @@ $$ \Delta x \Delta p \ge \frac{\hbar}{2} $$
 - **Misconception:** Electrons orbit the nucleus like planets orbit the sun.
   **Correction:** Electrons exist in probability clouds (orbitals) and do not have defined trajectories.
 - **Misconception:** The observer effect in quantum mechanics requires a conscious human observer.
-  **Correction:** "Observation" in quantum mechanics simply means interaction with a macroscopic measuring device, which causes wavefunction collapse or decoherence; consciousness is not required.
+  **Correction:** Measurement is a physical interaction that correlates a system with an apparatus and environment; decoherence explains loss of observable interference, while collapse language depends on the interpretive or operational framework. Consciousness is not required.
 - **Misconception:** Wave-particle duality means a particle is sometimes a wave and sometimes a particle.
   **Correction:** Quantum entities are neither classical waves nor classical particles; they are a unique type of entity that exhibits properties of both depending on how they are measured.
 - **Misconception:** Quantum-field vacuum diagrams show literal particles continuously appearing and disappearing.

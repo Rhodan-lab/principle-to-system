@@ -18,8 +18,8 @@ content_license: CC-BY-4.0
 - Notice how a drop of water beads up on a waxy leaf or a freshly waxed car, but spreads out flat on clean glass. What does this indicate about the polarity of the water molecules compared to the wax and the glass?
 
 ## 2. Prediction questions
-- If you were to replace the hydrogen atoms in water ($\text{H}_2\text{O}$) with a heavier element from the same group, like sulfur to make hydrogen sulfide ($\text{H}_2\text{S}$), would you expect the boiling point to increase or decrease? Why?
-- Consider a reaction where a solid piece of metal reacts with a gas. If you grind the solid metal into a fine powder, how will the rate of the reaction change? What kinetic principle explains this?
+- If you were to replace oxygen in water ($\text{H}_2\text{O}$) with the heavier group-16 element sulfur to form hydrogen sulfide ($\text{H}_2\text{S}$), would you expect the boiling point to increase or decrease? Why?
+- Consider a reaction where a solid piece of metal reacts with a gas. If otherwise identical samples have smaller particle size and therefore greater exposed area, how will the reaction rate change? What kinetic principle explains this?
 - If a reversible exothermic reaction is at equilibrium, and you suddenly increase the temperature of the system, in which direction will the equilibrium shift to compensate?
 
 ## 3. Worked reasoning examples

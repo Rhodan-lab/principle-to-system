@@ -58,11 +58,11 @@ In a hydraulic system, a pump increases the pressure energy of a fluid. This flu
 - **Weight vs. Strength:** Especially in aerospace and automotive engineering, materials must have a high specific strength (strength-to-weight ratio).
 - **Cost and Manufacturability:** Titanium is strong and light but expensive and difficult to machine. Steel is cheap and isotropic but heavy.
 - **Corrosion and Environment:** Materials must resist chemical degradation. Fluids must not corrode their containers.
-- **Fatigue Limit:** Structures subjected to cyclic loading (like an aircraft pressurising and depressurising) must be designed so that operating stresses do not cause microscopic cracks to grow over time.
+- **Fatigue and damage tolerance:** Cyclic loading can grow cracks below yield stress. Some materials show an endurance limit over a specified test regime, while others require finite-life and crack-growth assessment.
 
 ## 8. Performance and efficiency
 
-Efficiency in fluid systems is often dictated by minimising viscous losses. Smooth pipe interiors and laminar flow regimes reduce the energy required for pumping. In structural systems, performance is measured by the ability to carry loads with minimal material. This is achieved by placing material only where stresses are highest (e.g., the flanges of an I-beam) and using composite materials tailored to the specific directional loads of the application.
+Efficiency in fluid systems is often dictated by minimising viscous losses. Pumping power depends on required flow rate, geometry, roughness, viscosity, fittings, and flow regime; engineers minimise irreversible head loss subject to performance constraints. In structural systems, performance is measured by the ability to carry loads with minimal material. This is achieved by placing material only where stresses are highest (e.g., the flanges of an I-beam) and using composite materials tailored to the specific directional loads of the application.
 
 ## 9. Reliability and failure modes
 

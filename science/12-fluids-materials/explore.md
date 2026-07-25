@@ -20,7 +20,7 @@ content_license: CC-BY-4.0
 
 ## 2. Prediction questions
 
-- If you hold two sheets of paper vertically, parallel to each other and a few centimetres apart, and blow air strongly between them, will the sheets move apart, move together, or stay still?
+- If you hold two sheets of paper vertically, parallel to each other and a few centimetres apart, and direct a gentle airflow between them, will the sheets move apart, move together, or stay still?
 - If you have a thick rubber band and a thin rubber band of the same length, and you hang the same weight from both, which will stretch more? Why, in terms of stress and strain?
 - In a fracture simulation, place an identical surface flaw on the tensile side and compressive side of a bent specimen. Which orientation produces the larger opening stress at the crack tip?
 
@@ -55,14 +55,14 @@ content_license: CC-BY-4.0
 
 ## 7. Self-explanation questions
 
-- Explain in your own words why a fluid accelerating through a narrow pipe must experience a drop in pressure, assuming no energy is added by a pump.
+- Explain in your own words under which assumptions a speed increase through a narrowing is accompanied by lower static pressure, and when pumps, elevation, losses, or compressibility change that conclusion, assuming no energy is added by a pump.
 - Why does a crack in a material cause it to fail at a much lower overall stress than the material's theoretical strength?
 - What is the physical difference between a material that is "stiff" (high Young's modulus) and a material that is "strong" (high yield strength)?
 
 ## 8. Transfer questions
 
 - How do the principles of fluid viscosity apply to the design of motor oil for car engines operating at different temperatures?
-- If bone is a composite material made of flexible collagen fibres and brittle calcium phosphate crystals, how does this structure prevent your legs from shattering when you jump?
+- If bone is a composite material made of flexible collagen fibres and brittle calcium phosphate crystals, how does this hierarchical structure combine stiffness, toughness, and damage resistance under ordinary loading?
 - How does the concept of stress concentration at a crack tip explain why it is easier to tear a piece of paper if you make a small cut in the edge first?
 
 ## 9. Suggested learning paths
@@ -75,7 +75,7 @@ content_license: CC-BY-4.0
 
 - When applying Bernoulli's equation, always verify the assumptions: is the flow steady? Is it incompressible? Are viscous losses negligible? If the answer to any of these is no, the simple form of the equation will yield incorrect results.
 - Remember that stress is not a force, but a force *distribution*. A small force applied to a microscopic area (like a pinprick) can create a massive stress, exceeding the material's yield strength.
-- The distinction between elastic and plastic deformation is fundamental. Elasticity is about atomic bonds stretching; plasticity is about atomic planes sliding past one another.
+- The distinction between elastic and plastic deformation is fundamental. Elasticity is reversible deformation described by a constitutive response; plasticity is irreversible deformation produced by mechanisms such as dislocation motion in crystals, molecular rearrangement in polymers, or damage in composites.
 
 ## Phase 7 review boundaries and validity limits
 

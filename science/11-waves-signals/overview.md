@@ -50,7 +50,7 @@ In optics, the mechanism of refraction (bending of light) occurs because phase v
 - **Angular frequency ($\omega$)**: The rate of change of the phase of a sinusoidal waveform.
 - **Wavelength ($\lambda$)**: The spatial period of the wave; the distance over which the wave's shape repeats.
 - **Wave speed ($v$)**: The speed at which the wave propagates through space.
-- **Phase ($\phi$)**: The position of a point in time (instant) on a waveform cycle.
+- **Phase ($\phi$)**: The angular coordinate locating a sinusoidal oscillation within its cycle relative to a reference.
 
 ## 6. Mathematical models and equations
 
@@ -64,7 +64,7 @@ $$ x(t) = A \cos(\omega_0 t + \phi) $$
 When a damping force proportional to velocity ($F_d = -b \frac{dx}{dt}$) is present:
 $$ m\frac{d^2x}{dt^2} + b\frac{dx}{dt} + kx = 0 $$
 For underdamped systems, the solution is an exponentially decaying oscillation:
-$$ x(t) = A_0 e^{-\frac{b}{2m}t} \cos(\omega_d t + \phi) $$
+$$ x(t) = A_0 e^{-\frac{b}{2m}t} \cos(\omega_d t + \phi), \qquad \omega_d=\sqrt{\frac{k}{m}-\left(\frac{b}{2m}\right)^2}. $$
 
 **The Wave Equation:**
 The propagation of a one-dimensional non-dispersive wave is described by the linear wave equation:
@@ -120,7 +120,7 @@ Wave phenomena span an enormous range of scales.
 - **Misconception:** Sound travels faster in air than in solids because air is less dense.
   **Correction:** Sound generally travels much faster in solids than in gases because solids have a much higher elastic modulus (stiffness), which dominates the effect of their higher density.
 - **Misconception:** Destructive interference destroys energy.
-  **Correction:** Energy is conserved. When waves interfere destructively in one region, they interfere constructively in another, redistributing the energy in space.
+  **Correction:** Energy is conserved. Local cancellation of displacement or field amplitude does not destroy energy; the energy balance depends on flux, reflection, storage, and the complete boundary conditions.
 
 ## 11. Connections to other modules
 

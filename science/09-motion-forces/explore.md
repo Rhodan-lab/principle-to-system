@@ -24,14 +24,14 @@ If you drop a heavy book and a single sheet of paper simultaneously from the sam
 
 Consider a laboratory cart of mass $m = 1.5 \, \text{kg}$ moving at $v = 2.0 \, \text{m/s}$ that is brought to rest by a padded bumper over $t = 0.20 \, \text{s}$. We want the average horizontal force on the cart.
 
-First, we calculate the initial momentum of the car:
+First, we calculate the initial momentum of the cart:
 $$ p_{\text{initial}} = m \cdot v = 1.5 \, \text{kg} \cdot 2.0 \, \text{m/s} = 3.0 \, \text{kg}\cdot\text{m/s} $$
 
-The final momentum is zero because the car stops. The change in momentum ($\Delta p$) is therefore $-3.0 \, \text{kg}\cdot\text{m/s}$.
+The final momentum is zero because the cart stops. The change in momentum ($\Delta p$) is therefore $-3.0 \, \text{kg}\cdot\text{m/s}$.
 
 Using the impulse-momentum theorem, the impulse $J$ equals the change in momentum, and impulse is also the average force $F_{\text{avg}}$ multiplied by the time duration $t$:
 $$ J = F_{\text{avg}} \cdot t = \Delta p $$
-$$ F_{\text{avg}} = \frac{\Delta p}{t} = \frac{-3.0 \, \text{kg}\cdot\text{m/s}}{0.1 \, \text{s}} = -300,000 \, \text{N} $$
+$$ F_{\text{avg}} = \frac{\Delta p}{t} = \frac{-3.0 \, \text{kg}\cdot\text{m/s}}{0.20 \, \text{s}} = -15 \, \text{N} $$
 
 The negative sign indicates the force is directed opposite to the car's initial motion. The result illustrates that increasing stopping time reduces the magnitude of average force for the same momentum change. Real forces vary during contact, so a force sensor would reveal a time-dependent profile.
 
@@ -49,7 +49,7 @@ Now, imagine firing the cannonball at a specific, very high speed. The ball fall
 
 Take a standard broom. Try to balance it horizontally on one finger. You will find that the balance point (the center of mass) is not in the middle of the handle, but much closer to the heavy bristle end. Without cutting anything, place removable tape markers at the balance point and at estimated centres of mass for the handle and bristle regions. Why can unequal masses balance when their lever arms differ? 
 
-Many people intuitively guess they will weigh the same because they balanced. However, the shorter piece with the bristles is much heavier. It balances the longer, lighter handle because torque ($\tau = r \times F$) depends on both the force (weight) and the distance from the pivot ($r$). The lighter handle has its center of mass further from the pivot, compensating for its lower weight.
+Balance does not imply equal masses. The heavier bristle region can balance the longer, lighter handle because torque ($\tau = r \times F$) depends on both the force (weight) and the distance from the pivot ($r$). The lighter handle has its center of mass further from the pivot, compensating for its lower weight.
 
 **Browser-based Exploration: PhET Interactive Simulations**
 
@@ -73,7 +73,7 @@ Why is it easier to loosen a tight bolt with a long wrench rather than a short o
 
 The principles of momentum conservation apply to rocket propulsion in the vacuum of space. How do these same principles apply to a squid propelling itself through water? What is the "propellant" in the squid's case?
 
-Engineers use gyroscopes to stabilize spacecraft. How does a person riding a bicycle utilize similar principles of rotational dynamics to stay upright?
+A moving bicycle is stabilised mainly through steering geometry, tyre contact forces, and rider control, with wheel angular momentum contributing. How does this differ from an actively controlled spacecraft gyroscope?
 
 # 9. Suggested learning paths
 

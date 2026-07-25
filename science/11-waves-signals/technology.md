@@ -39,7 +39,7 @@ The interaction forms a continuous principle-to-system chain:
 1. **Information to Electrical Signal:** A microphone or computer generates a time-varying electrical voltage representing data.
 2. **Electrical to Optical (Modulation):** This voltage drives a modulator that rapidly varies the intensity of a laser beam. The continuous wave is now a signal.
 3. **Propagation (Total Internal Reflection):** The modulated light enters the optical fibre. Because the core has a higher refractive index than the cladding, light striking the boundary at a shallow angle undergoes total internal reflection, propagating as guided electromagnetic modes determined by the core–cladding index profile.
-4. **Amplification (Stimulated Emission):** As the light travels hundreds of kilometres, it attenuates. It passes through an EDFA, where a secondary "pump" laser excites erbium ions. When the weak signal photons pass by, they stimulate the ions to emit identical photons, amplifying the wave optically.
+4. **Amplification (Stimulated Emission):** As the light travels hundreds of kilometres, it attenuates. It passes through an EDFA, where a secondary "pump" laser excites erbium ions. The signal stimulates emission into the guided optical modes, coherently amplifying the field while adding unavoidable amplifier noise.
 5. **Optical to Electrical (Transduction):** At the destination, the light strikes a photodiode. The energy of the photons excites electrons, creating a current proportional to the light intensity.
 6. **Signal Processing:** The electrical signal is filtered, amplified, and decoded to reconstruct the original data.
 
@@ -59,7 +59,7 @@ Modern optical networks use **Wavelength-Division Multiplexing (WDM)**. Instead 
 
 ## 8. Performance and efficiency
 
-The performance of a communication system is often measured by its **bandwidth** (data rate, e.g., Terabits per second) and **latency** (time delay). Fibre optics offer exceptionally high bandwidth and low latency compared to copper cables. Reliability is measured in part by the **Bit Error Rate (BER)**—the fraction of bits received incorrectly. Advanced modulation schemes (like Quadrature Amplitude Modulation, QAM) pack more bits into each symbol, increasing efficiency but requiring higher signal-to-noise ratios.
+The performance of a communication system is often measured by its available channel bandwidth and achievable data rate (distinct quantities linked by modulation, coding, and signal-to-noise ratio) and **latency** (time delay). Fibre optics offer exceptionally high bandwidth and low latency compared to copper cables. Reliability is measured in part by the **Bit Error Rate (BER)**—the fraction of bits received incorrectly. Advanced modulation schemes (like Quadrature Amplitude Modulation, QAM) pack more bits into each symbol, increasing efficiency but requiring higher signal-to-noise ratios.
 
 ## 9. Reliability and failure modes
 

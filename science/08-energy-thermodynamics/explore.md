@@ -15,13 +15,13 @@ content_license: CC-BY-4.0
 ## 1. Observation prompts
 
 *   **The Condensation Ring:** Place a glass of ice water on a table on a warm, humid day. Observe the water droplets forming on the outside of the glass. Where did this water come from? What phase transition is occurring, and is heat being absorbed or released by the water vapor during this process?
-*   **The Bicycle Pump:** Vigorously pump up a bicycle tire. Feel the base of the pump cylinder. Why does it feel warm? Which thermodynamic mechanism is responsible for this temperature increase?
+*   **Compression observation:** Use a teacher-approved hand pump normally and within its rated pressure, or use a gas-properties simulation. Compare slow and rapid compression without blocking outlets or touching parts that become hot.
 *   **The Melting Ice Cube:** Place an ice cube on a metal pan and another on a plastic cutting board at room temperature. Which one melts faster? Why, given that both surfaces are at the same temperature?
 
 ## 2. Prediction questions
 
 *   If you leave the door of your kitchen refrigerator open in a perfectly insulated room, will the average temperature of the room increase, decrease, or stay the same over time?
-*   Consider a sealed, rigid container half-filled with liquid water and half with water vapor, sitting at room temperature. If you heat the container, what will happen to the pressure inside, and why?
+*   In a simulation of a rigid closed vessel containing liquid and vapour, predict how equilibrium pressure changes with temperature. Why would heating a sealed real container be unsafe?
 *   If you stir a cup of coffee vigorously for a long time, will its temperature increase, decrease, or remain exactly the same (assuming perfect insulation from the room)?
 
 ## 3. Worked reasoning examples
@@ -70,7 +70,7 @@ content_license: CC-BY-4.0
 
 ## 10. Reasoning notes
 
-When analyzing thermodynamic systems, always begin by clearly defining the **system boundary**. Is the system open (mass can cross the boundary), closed (only energy can cross), or isolated (neither mass nor energy can cross)? The form of the First and Second Laws you use depends entirely on this choice. Next, identify all energy interactions (heat and work) crossing the boundary. Finally, remember that while energy is always conserved, the *quality* of that energy (its ability to do work) is constantly degrading due to the generation of entropy.
+When analyzing thermodynamic systems, always begin by clearly defining the **system boundary**. Is the system open (mass can cross the boundary), closed (only energy can cross), or isolated (neither mass nor energy can cross)? The form of the First and Second Laws you use depends entirely on this choice. Next, identify all energy interactions (heat and work) crossing the boundary. Finally, energy is conserved, but irreversible entropy generation destroys exergy—the maximum useful work available relative to a specified environment.
 
 ## Phase 7 review boundaries and validity limits
 
