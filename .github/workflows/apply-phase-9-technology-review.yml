@@ -32,6 +32,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Normalize transformer literals
+        run: python3 scripts/normalize_phase9_transformer_literals.py --write
+
       - name: Apply reviewed source records
         run: python3 scripts/apply_phase9_review_sources.py --write
 
@@ -58,6 +61,7 @@ jobs:
 
       - name: Verify source and content idempotence
         run: |
+          python3 scripts/normalize_phase9_transformer_literals.py --check
           python3 scripts/apply_phase9_review_sources.py --check
           python3 scripts/apply_phase9_technology_review.py --check
 
