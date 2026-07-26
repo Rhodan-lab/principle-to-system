@@ -1,0 +1,61 @@
+{
+  "affected_principia_artifacts": [
+    {
+      "artifact_id": "principia:failure-pattern:feedback-instability",
+      "artifact_revision": 1,
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-entity-deprecated"
+    },
+    {
+      "artifact_id": "principia:investigation:room-cooling",
+      "artifact_revision": 1,
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-entity-deprecated"
+    },
+    {
+      "artifact_id": "principia:system-dossier:refrigerator",
+      "artifact_revision": 1,
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-entity-deprecated"
+    }
+  ],
+  "atlas_entity": {
+    "id": "concept:en:feedback",
+    "lifecycle_status": "deprecated",
+    "revision": 1,
+    "staleness": "current"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-atlas-offline-lifecycle-event/0.3",
+  "event_id": "principia-atlas:lifecycle-event:thermal-control:0001",
+  "event_type": "atlas-lifecycle-impact",
+  "live": false,
+  "mode": "offline-event-protocol",
+  "previous_event_sha256": null,
+  "protocol_id": "principia-atlas:offline-event-protocol:thermal-control",
+  "sequence": 1,
+  "source_checkpoint": {
+    "atlas_governance_merge_commit": "9370cc746e9756e433ac3772d56d079c9803b144",
+    "atlas_implementation_merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+    "phase16_merge_commit": "c493bf879a7945f9991e13592d42424138a0879b",
+    "phase16_pull_request": 20,
+    "phase16_record_merge_commit": "44410d47d318c5aaedb7716e4ef3bdefae09b442",
+    "phase16_record_pull_request": 21,
+    "phase16_release_path": "release/phase-16-offline-multi-artifact-pilot.json",
+    "phase16_release_sha256": "169996dbde9e081150bbe4a5a430f8d005a23d8810cc1f69451bfe183bb8e999",
+    "receipt_chain_head_sequence": 1,
+    "receipt_chain_head_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+    "receipt_chain_path": "integration/principia-atlas/pilot/thermal-control.receipt-chain.v02.json"
+  }
+}
