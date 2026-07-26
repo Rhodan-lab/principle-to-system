@@ -4,7 +4,7 @@
 > Principia repository: `Rhodan-lab/principle-to-system`  
 > Atlas repository inspected read-only: `Rhodan-lab/Atlas`  
 > Integration mode: compatibility preparation only  
-> Live dependency: prohibited during this phase
+> No live dependency is permitted during this phase
 
 ## Purpose
 
@@ -22,6 +22,8 @@ Atlas already supports optional opaque `external_dependents` in `atlas-review-co
 ## Repository boundary preserved
 
 Atlas remains unchanged.
+
+No status crosses the boundary automatically.
 
 - Atlas owns source, evidence, claim, concept, model, synthesis, provenance, exact revision, review, lifecycle, staleness, translation lineage, and promotion governance.
 - Principia owns causal explanation, pedagogy, pathways, systems, failure analysis, investigations, and design experiences.
@@ -102,8 +104,10 @@ Validation requires known dishonest or premature paths to fail:
 python3 scripts/validate_experiences.py --strict
 python3 scripts/export_principia_atlas_dependents.py --check
 python3 scripts/validate_principia_atlas_bridge.py
+python3 scripts/validate_principia_atlas_audit.py
 python3 scripts/validate_repo.py
 python3 scripts/validate_phase10_synthesis.py
+python3 scripts/validate_phase10_audit.py
 ```
 
 The permanent workflow must use `contents: read`, must not clone Atlas, and must not write, push, merge, or modify lifecycle status.
@@ -118,7 +122,7 @@ Phase 11A is ready when:
 - Phase 10 and experience validation remain green;
 - CI is read-only;
 - Atlas remains independent and unchanged;
-- no live dependency exists.
+- No live dependency exists.
 
 ## Next work
 
