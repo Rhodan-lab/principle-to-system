@@ -28,6 +28,7 @@ jobs:
 
       - name: Finalize and verify state
         run: |
+          # This transaction is branch-only and removed after the state commit.
           python3 scripts/finalize_phase15_state.py --write
           python3 scripts/finalize_phase15_state.py --check
           python3 scripts/generate_phase15_offline_pilot.py --check
