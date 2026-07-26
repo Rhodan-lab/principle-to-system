@@ -20,7 +20,7 @@ REPLACEMENTS: dict[Path, tuple[tuple[str, str], ...]] = {
         ),
     ),
     PHASE12: (
-        ('        "non-live compatibility fixture",', '        "non-live bridge candidate",'),
+        ('    "non-live compatibility fixture",', '    "non-live bridge candidate",'),
         (
             '''    if bridge.get("mode") != "compatibility-fixture" or bridge.get("live") is not False:
         result.error("bridge fixture must remain non-live")''',
