@@ -4,6 +4,8 @@ slug: system-dossier-[slug]
 domain: experience
 experience_type: system-dossier
 status: draft
+artifact_revision: 1
+release_status: draft
 prerequisites: []
 connections: []
 last_reviewed: YYYY-MM-DD
@@ -31,4 +33,4 @@ Define every symbol, unit, assumption, and validity limit.
 ## 14. Unresolved questions
 ## 15. Sources and module links
 
-Use directly inspected sources. Separate factual claims from estimates and design judgments.
+Use directly inspected sources. Separate factual claims from estimates and design judgments. `status` records pedagogical maturity; `release_status` records publication readiness. Neither inherits Atlas knowledge status.
