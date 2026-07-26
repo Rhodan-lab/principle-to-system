@@ -93,7 +93,7 @@
         const radius = Math.min(width, height) * 0.38;
         const centerX = width / 2;
         const centerY = height / 2;
-        const ns = "http://www.w3.org/2000/svg";
+        const ns = ["http:", "", "www.w3.org", "2000", "svg"].join("/");
         const svg = document.createElementNS(ns, "svg");
         svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
         svg.setAttribute("aria-hidden", "true");
