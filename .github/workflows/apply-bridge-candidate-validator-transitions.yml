@@ -41,16 +41,36 @@ jobs:
           python-version: '3.12'
 
       - name: Apply deterministic candidate transitions
+        id: transition
+        shell: bash
         run: |
-          python3 scripts/apply_bridge_candidate_validator_transitions.py --write
-          python3 scripts/apply_bridge_candidate_validator_transitions.py --check
-          python3 scripts/finalize_bridge_candidate_records.py --write
-          python3 scripts/finalize_bridge_candidate_records.py --check
-          python3 -m py_compile \
-            scripts/apply_bridge_candidate_validator_transitions.py \
-            scripts/finalize_bridge_candidate_records.py \
-            scripts/validate_phase11b_expansion.py \
-            scripts/validate_phase12_release_candidate.py
+          set +e
+          {
+            python3 scripts/apply_bridge_candidate_validator_transitions.py --write &&
+            python3 scripts/apply_bridge_candidate_validator_transitions.py --check &&
+            python3 scripts/finalize_bridge_candidate_records.py --write &&
+            python3 scripts/finalize_bridge_candidate_records.py --check &&
+            python3 -m py_compile \
+              scripts/apply_bridge_candidate_validator_transitions.py \
+              scripts/finalize_bridge_candidate_records.py \
+              scripts/validate_phase11b_expansion.py \
+              scripts/validate_phase12_release_candidate.py
+          } > bridge-candidate-transition.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat bridge-candidate-transition.log
+          exit 0
+
+      - name: Upload bridge transition diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-candidate-transition-diagnostics
+          path: bridge-candidate-transition.log
+
+      - name: Stop on transition errors
+        if: steps.transition.outputs.status != '0'
+        run: exit 1
 
       - name: Commit candidate transitions
         shell: bash
