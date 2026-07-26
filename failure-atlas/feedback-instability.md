@@ -46,7 +46,7 @@ small error
 
 The chain establishes a mechanism that can produce oscillation. It does not by itself establish instability. The resulting motion may decay, remain bounded, settle into a limit cycle, grow, or cross an operational limit depending on the plant, controller, nonlinearities, initial state, disturbance, and definition of stability.
 
-## 5. Minimum continuous-time model
+## 5. Minimum model: continuous-time thermal plant
 
 A thermal plant can be approximated by
 
@@ -70,9 +70,9 @@ It produces
 1, 0, -1, -1, 0, 1, 1, 0, ...
 ```
 
-The ordered state pair returns after six steps, so the orbit is exactly periodic with period 6. It is also bounded. This model therefore demonstrates that delayed correction can generate oscillation; it does **not** demonstrate that the orbit is unstable, that delay always causes instability, or that a real physical system will follow this recurrence.
+The ordered state pair returns after six steps, so the orbit is exactly periodic with period 6. It is also bounded. This model therefore demonstrates that delayed correction can generate oscillation; it does not demonstrate that the orbit is unstable, that delay always causes instability, or that a real physical system will follow this recurrence.
 
-## 7. Detection and classification
+## 7. Detection delay and classification
 
 Averages can hide oscillatory behaviour. Useful observations include amplitude, period, damping or growth rate, phase, operating limits, and response to a small perturbation.
 
