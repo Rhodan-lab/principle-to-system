@@ -61,8 +61,9 @@ Independent learners who want to understand *why* technology works, not merely *
 | `templates/` | Reusable authoring structures for the four experience families |
 | `contracts/principia-atlas/` | Versioned Principia-side compatibility contracts |
 | `integration/principia-atlas/` | Non-live bridge manifests, deterministic exports, and invalid fixtures |
+| `release/` | Phase 12 candidate scope, terminology, equations, lifecycle scenarios, and pilot readiness |
 | `sources/` | Normalized module and experience source ledgers |
-| `scripts/` | Module, experience, synthesis, expansion, and compatibility validators |
+| `scripts/` | Module, experience, synthesis, expansion, compatibility, and release validators |
 
 Every core module contains `overview.md`, `technology.md`, and `explore.md`. Applied materials use family-specific standards and templates.
 
@@ -109,9 +110,31 @@ The sixteen applied-material artifacts have completed focused source, safety, st
 Applied experiences also carry:
 
 - `artifact_revision` — the exact Principia revision exposed to dependency reporting;
-- `release_status` — publication readiness, currently `draft` for all Phase 11B artifacts.
+- `release_status` — publication readiness, currently `draft` for every experience.
 
-Pedagogical review, release readiness, and Atlas knowledge status are separate decisions. Phase 12 is the earliest release gate.
+Pedagogical review, release readiness, and Atlas knowledge status are separate decisions.
+
+## Phase 12 release candidate
+
+[`release/phase-12-release-candidate.json`](release/phase-12-release-candidate.json) defines `principia-material-foundation-rc1`.
+
+RC1 evaluates:
+
+- 20 core modules and 60 learner-facing files;
+- 16 synthesis files;
+- 4 complete routes and 16 Reviewed experiences;
+- 143 core source records and 28 experience-source records;
+- terminology, equation, accessibility, lifecycle, revision-impact, and compatibility contracts.
+
+The repository state is intentionally:
+
+```yaml
+repository_release_state: candidate-hold
+experience_release_status: draft
+live_atlas_integration: false
+```
+
+A green Phase 12 validator establishes machine-checkable conformance only. It cannot grant independent scientific, editorial, accessibility, safety, attribution, release-owner, or Atlas-side approval.
 
 ## Safety boundaries
 
@@ -130,7 +153,7 @@ mode: compatibility-fixture
 live: false
 ```
 
-Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories. Phase 11B does not activate that bridge.
+Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories. Phase 12 tests bounded readiness but does not activate the bridge.
 
 ## Validation
 
@@ -156,7 +179,13 @@ python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
 ```
 
-GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, expansion, and compatibility validation. Compatibility and Phase 11B CI are read-only and do not import Atlas.
+Phase 12 release candidate:
+
+```bash
+python3 scripts/validate_phase12_release_candidate.py
+```
+
+GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, expansion, compatibility, and release-candidate validation. Compatibility, Phase 11B, and Phase 12 CI are read-only and do not import Atlas.
 
 ## Sources
 
@@ -164,7 +193,7 @@ Reviewed module sources are recorded in [`sources/source-ledger.md`](sources/sou
 
 ## Contributing
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/), enter the machine-readable experience inventory, and pass strict expansion validation. Bridgeable artifacts must use positive exact `artifact_revision` values and explicit `release_status`.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), [`SOURCE_POLICY.md`](SOURCE_POLICY.md), and [`release/README.md`](release/README.md). New applied materials must begin from the appropriate file in [`templates/`](templates/), enter the machine-readable experience inventory, and pass strict expansion validation. Bridgeable artifacts must use positive exact `artifact_revision` values and explicit `release_status`.
 
 ## Licensing
 
