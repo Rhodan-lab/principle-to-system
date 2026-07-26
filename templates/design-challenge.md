@@ -4,6 +4,8 @@ slug: design-challenge-[slug]
 domain: experience
 experience_type: design-challenge
 status: draft
+artifact_revision: 1
+release_status: draft
 prerequisites: []
 connections: []
 last_reviewed: YYYY-MM-DD
@@ -27,4 +29,4 @@ content_license: CC-BY-4.0
 ## 13. Evidence that could change the decision
 ## 14. Sources and module links
 
-Require at least three genuinely different concepts. Do not collapse all trade-offs into one score unless weights are stated and justified.
+Require at least three genuinely different concepts. Do not collapse all trade-offs into one score unless weights are stated and justified. `status` records pedagogical maturity; `release_status` records publication readiness. Neither inherits Atlas knowledge status.
