@@ -4,6 +4,8 @@ slug: investigation-room-cooling
 domain: experience
 experience_type: investigation
 status: reviewed
+artifact_revision: 1
+release_status: draft
 prerequisites: [02-measurement-uncertainty, 03-mathematical-models, 08-energy-thermodynamics]
 connections: [04-probability-statistics, system-dossier-refrigerator, design-challenge-passive-cooler]
 last_reviewed: 2026-07-25

@@ -1,0 +1,13 @@
+{
+  "id": "principia:failure-pattern:feedback-instability",
+  "kind": "principia-artifact",
+  "repository": "Rhodan-lab/principle-to-system",
+  "revision": 1,
+  "role": "load-bearing",
+  "depends_on": [
+    "claim:en:model-oscillation-does-not-prove-real-system",
+    "concept:en:feedback",
+    "concept:en:oscillation",
+    "model:en:delayed-correction-recurrence"
+  ]
+}

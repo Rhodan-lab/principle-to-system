@@ -1,0 +1,9 @@
+{
+  "contract": "principia-atlas-invalid-fixture/0.1",
+  "base_manifest": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+  "expected_error_codes": ["live-dependency"],
+  "patch": {
+    "mode": "live",
+    "live": true
+  }
+}

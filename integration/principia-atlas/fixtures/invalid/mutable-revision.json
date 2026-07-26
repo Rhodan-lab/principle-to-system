@@ -1,0 +1,19 @@
+{
+  "contract": "principia-atlas-invalid-fixture/0.1",
+  "base_manifest": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+  "expected_error_codes": ["dependency-revision"],
+  "patch": {
+    "atlas": {
+      "dependencies": [
+        {
+          "id": "model:en:delayed-correction-recurrence",
+          "revision": "latest",
+          "entity_type": "model",
+          "role": "load-bearing",
+          "use": "model",
+          "change_policy": "revalidate"
+        }
+      ]
+    }
+  }
+}

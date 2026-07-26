@@ -45,6 +45,34 @@ notice a system
 7. Do not use grades, streaks, or competitive ranking.
 8. End with unresolved questions and evidence that could change the conclusion.
 
+## Identity and status separation
+
+Each authored experience has four independent identity or lifecycle fields:
+
+| Field | Meaning | Authority |
+| --- | --- | --- |
+| `slug` | Stable Principia artifact identity within its experience family | Principia |
+| `artifact_revision` | Positive exact revision for dependency-relevant meaning | Principia |
+| `status` | Pedagogical maturity | Principia |
+| `release_status` | Publication readiness | Principia |
+
+`status: reviewed` does not imply `release_status: released`. Neither field copies or inherits Atlas knowledge status.
+
+The initial seed artifacts use `artifact_revision: 1` and `release_status: draft`. A dependency-relevant change must increment the artifact revision before a bridge manifest can be updated.
+
+## Principia & Atlas compatibility
+
+[`contracts/principia-atlas/0.1/`](../contracts/principia-atlas/0.1/) defines a future-safe, one-way compatibility boundary. Principia can describe exact-revision Atlas dependencies and export an opaque external-dependent record without importing Atlas or treating Atlas lifecycle state as Principia status.
+
+During Atlas Phase 1, compatibility manifests are fixtures only:
+
+```yaml
+mode: compatibility-fixture
+live: false
+```
+
+The current feedback-instability fixture demonstrates the boundary but does not activate a live cross-repository dependency.
+
 ## Initial route
 
 1. [The Domestic Refrigerator](../system-dossiers/refrigerator.md)

@@ -1,0 +1,71 @@
+name: Validate Principia Atlas Compatibility
+
+on:
+  push:
+    branches:
+      - agent/phase-11a-principia-atlas-compatibility
+    paths:
+      - 'contracts/principia-atlas/**'
+      - 'integration/principia-atlas/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+      - 'experiences/**'
+      - 'templates/**'
+      - 'reports/phase-11a-*'
+      - 'scripts/export_principia_atlas_dependents.py'
+      - 'scripts/validate_principia_atlas_bridge.py'
+      - 'scripts/validate_principia_atlas_audit.py'
+      - 'README.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-principia-atlas-compatibility.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-principia-atlas-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia compatibility branch
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile compatibility validators
+        run: |
+          python3 -m py_compile scripts/export_principia_atlas_dependents.py
+          python3 -m py_compile scripts/validate_principia_atlas_bridge.py
+          python3 -m py_compile scripts/validate_principia_atlas_audit.py
+
+      - name: Validate deterministic Atlas export
+        run: python3 scripts/export_principia_atlas_dependents.py --check
+
+      - name: Validate Principia Atlas bridge
+        run: python3 scripts/validate_principia_atlas_bridge.py
+
+      - name: Validate experience identity and safety
+        run: python3 scripts/validate_experiences.py --strict
+
+      - name: Validate reviewed synthesis continuity
+        run: |
+          python3 scripts/validate_phase10_synthesis.py
+          python3 scripts/validate_phase10_audit.py
+
+      - name: Validate repository structure
+        run: python3 scripts/validate_repo.py
+
+      - name: Validate compatibility audit and workflow immutability
+        run: python3 scripts/validate_principia_atlas_audit.py

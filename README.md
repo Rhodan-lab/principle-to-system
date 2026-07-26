@@ -2,7 +2,14 @@
 
 **Learn how foundational science becomes technology—and how to reason with the systems that result.**
 
-Principle to System is an open-source knowledge repository for curious independent learners. It explains how scientific understanding is built, how it becomes engineered technology, and how real systems can be investigated, redesigned, and understood through their failures.
+Principle to System is the current repository identity and the future product identity **Principia**. It is an open-source knowledge repository for curious independent learners. It explains how scientific understanding is built, how it becomes engineered technology, and how real systems can be investigated, redesigned, and understood through their failures.
+
+Principia is being prepared to work beside the separate [`Rhodan-lab/Atlas`](https://github.com/Rhodan-lab/Atlas) repository as a future **Principia & Atlas** product:
+
+- Principia owns causal explanation, pedagogy, pathways, systems, investigations, failure analysis, and design experiences.
+- Atlas owns structured knowledge identity, evidence, provenance, exact revision, review, lifecycle, staleness, translation lineage, and promotion governance.
+- Neither repository inherits the other's status automatically.
+- The repositories remain independently buildable and independently validatable.
 
 Core modules follow this arc:
 
@@ -52,8 +59,10 @@ Independent learners who want to understand *why* technology works, not merely *
 | `investigations/` | Safe model-comparison inquiries with uncertainty |
 | `design-challenges/` | Engineering decisions under measurable constraints |
 | `templates/` | Reusable authoring structures for the four experience families |
+| `contracts/principia-atlas/` | Versioned Principia-side compatibility contracts |
+| `integration/principia-atlas/` | Non-live bridge manifests, deterministic exports, and invalid fixtures |
 | `sources/` | Legacy module ledger and normalized experience-source ledger |
-| `scripts/` | Module and experience validators |
+| `scripts/` | Module, experience, synthesis, and compatibility validators |
 
 Every core module contains `overview.md`, `technology.md`, and `explore.md`. Applied materials use family-specific standards and templates.
 
@@ -80,11 +89,31 @@ Start with [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md).
 
 The same thermodynamic theme is viewed through explanation, failure, evidence, and design.
 
-## Content status
+## Content and artifact status
 
 File presence does not imply review completion. Module status is tracked in [`INDEX.md`](INDEX.md); repository blockers and review order are tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md) and [`AUDIT.md`](AUDIT.md).
 
-The initial applied-material exemplars have completed a focused source, safety, structure, and metadata review. Their status is `reviewed`, not `complete`, because repository-wide strict validation and independent scientific review are still required for a release claim.
+The initial applied-material exemplars have completed a focused source, safety, structure, and metadata review. Their pedagogical `status` is `reviewed`, not `complete`.
+
+Applied experiences also carry:
+
+- `artifact_revision` — the exact Principia revision exposed to dependency reporting;
+- `release_status` — publication readiness, currently `draft` for the seed artifacts.
+
+Pedagogical review, release readiness, and Atlas knowledge status are separate decisions.
+
+## Principia & Atlas compatibility
+
+[`contracts/principia-atlas/0.1/`](contracts/principia-atlas/0.1/) defines `principia-atlas-bridge/0.1`. It allows Principia to declare exact-revision Atlas dependencies and generate the opaque external-dependent shape already supported by Atlas coverage reporting.
+
+The current integration remains a non-live fixture:
+
+```yaml
+mode: compatibility-fixture
+live: false
+```
+
+Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories.
 
 ## Validation
 
@@ -102,7 +131,15 @@ python3 scripts/validate_experiences.py
 python3 scripts/validate_experiences.py --strict
 ```
 
-GitHub Actions runs focused metadata, source, scientific-review, synthesis, and applied-material validation. The Phase 10 canonical synthesis graph is validated against Modules 01–20.
+Principia & Atlas compatibility:
+
+```bash
+python3 scripts/export_principia_atlas_dependents.py --check
+python3 scripts/validate_principia_atlas_bridge.py
+python3 scripts/validate_principia_atlas_audit.py
+```
+
+GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, and compatibility validation. Compatibility CI is read-only and does not import Atlas.
 
 ## Sources
 
@@ -110,7 +147,7 @@ Reviewed module sources are recorded in the normalized [`sources/source-ledger.m
 
 ## Contributing
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/) and pass strict experience validation.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/) and pass strict experience validation. Bridgeable artifacts must also use positive exact `artifact_revision` values and explicit `release_status`.
 
 ## Licensing
 
