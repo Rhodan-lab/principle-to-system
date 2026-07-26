@@ -106,15 +106,20 @@ def main() -> int:
 
     state = (ROOT / "PROJECT_STATE.md").read_text(encoding="utf-8")
     for marker in (
-        "Principia–Atlas bridge candidate",
+        "Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16",
+        "| 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |",
+        "PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`",
         "model:en:delayed-correction-recurrence@2",
         "mode: bridge-candidate",
         "live: false",
         "Atlas remains unchanged",
         "status remains separate",
+        "Atlas Phase 2 may now consume",
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing bridge-candidate marker: {marker}")
+    if "Active; exact-revision validation pending" in state:
+        errors.append("PROJECT_STATE.md still reports bridge validation as pending")
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for marker in (
@@ -143,7 +148,7 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print("Principia–Atlas audit passed: exact-revision candidate, separate status authority, Atlas unchanged, and read-only CI.")
+    print("Principia–Atlas audit passed: merged exact-revision candidate, separate status authority, Atlas unchanged, and read-only CI.")
     return 0
 
 
