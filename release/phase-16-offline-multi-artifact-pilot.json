@@ -67,9 +67,10 @@
   "validation": {
     "status": "success",
     "pull_request": 20,
-    "candidate_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
-    "tested_head_commit": "d37674490f054241ef08ccf7a644247b444fa874",
-    "merge_commit": "c493bf879a7945f9991e13592d42424138a0879b"
+    "tested_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
+    "validated_record_head_commit": "d37674490f054241ef08ccf7a644247b444fa874",
+    "merge_commit": null,
+    "integration_merge_commit": "c493bf879a7945f9991e13592d42424138a0879b"
   },
   "next_gate": "offline-event-protocol-candidate",
   "live_activation_permitted": false
