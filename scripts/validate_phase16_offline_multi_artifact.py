@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Phase 16 offline multi-artifact receipts and recovery behavior."""
+"""Validate the Phase 16 offline multi-artifact candidate."""
 from __future__ import annotations
 
 import copy
@@ -29,23 +29,18 @@ from generate_phase16_offline_multi_artifact import (
 )
 
 MANIFEST_EXPORTS = {
-    ROOT / "integration/principia-atlas/manifests/feedback-instability.fixture.json": (
-        ROOT / "integration/principia-atlas/exports/feedback-instability.external-dependent.fixture.json"
-    ),
-    ROOT / "integration/principia-atlas/manifests/refrigerator.fixture.json": (
-        ROOT / "integration/principia-atlas/exports/refrigerator.external-dependent.fixture.json"
-    ),
-    ROOT / "integration/principia-atlas/manifests/room-cooling.fixture.json": (
-        ROOT / "integration/principia-atlas/exports/room-cooling.external-dependent.fixture.json"
-    ),
+    ROOT / "integration/principia-atlas/manifests/feedback-instability.fixture.json":
+        ROOT / "integration/principia-atlas/exports/feedback-instability.external-dependent.fixture.json",
+    ROOT / "integration/principia-atlas/manifests/refrigerator.fixture.json":
+        ROOT / "integration/principia-atlas/exports/refrigerator.external-dependent.fixture.json",
+    ROOT / "integration/principia-atlas/manifests/room-cooling.fixture.json":
+        ROOT / "integration/principia-atlas/exports/room-cooling.external-dependent.fixture.json",
 }
-
 ARTIFACT_PATHS = {
     "principia:failure-pattern:feedback-instability": ROOT / "failure-atlas/feedback-instability.md",
     "principia:investigation:room-cooling": ROOT / "investigations/room-cooling.md",
     "principia:system-dossier:refrigerator": ROOT / "system-dossiers/refrigerator.md",
 }
-
 RELEASE_PATH = ROOT / "release/phase-16-offline-multi-artifact-pilot.json"
 REPORT_PATH = ROOT / "reports/phase-16-offline-multi-artifact-pilot.md"
 WORKFLOW_PATH = ROOT / ".github/workflows/validate-phase-16-offline-multi-artifact.yml"
@@ -60,14 +55,9 @@ EXPECTED_RECOVERY = {
     "valid-next-checkpoint": (True, "accepted-recovery-checkpoint", None),
     "partial-batch": (False, "rejected", "E-BATCH-ATOMICITY"),
     "export-digest-corruption": (False, "rejected", "E-BATCH-DIGEST"),
-    "status-inheritance-injection": (
-        False,
-        "rejected",
-        "E-BATCH-STATUS-INHERITANCE",
-    ),
+    "status-inheritance-injection": (False, "rejected", "E-BATCH-STATUS-INHERITANCE"),
     "live-activation": (False, "rejected", "E-BATCH-LIVE-FROZEN"),
 }
-
 EXPECTED_IMPACT = {
     "claim-current": (3, {"block-release"}),
     "feedback-deprecated": (3, {"revalidate"}),
@@ -80,21 +70,16 @@ EXPECTED_IMPACT = {
 
 def parse_frontmatter(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
+    if not text.startswith("---\n") or "\n---\n" not in text[4:]:
         raise ValueError(f"E-P16-FRONTMATTER:{path.relative_to(ROOT)}")
     end = text.find("\n---\n", 4)
-    if end < 0:
-        raise ValueError(f"E-P16-FRONTMATTER:{path.relative_to(ROOT)}")
     result: dict[str, object] = {}
     for raw in text[4:end].splitlines():
         if ":" not in raw:
             continue
         key, value = raw.split(":", 1)
         scalar = value.strip().strip('"').strip("'")
-        if scalar.isdigit():
-            result[key.strip()] = int(scalar)
-        else:
-            result[key.strip()] = scalar
+        result[key.strip()] = int(scalar) if scalar.isdigit() else scalar
     return result
 
 
@@ -104,9 +89,7 @@ def validate_manifest_export_pairs() -> None:
         export = load_json(export_path)
         if manifest.get("mode") != "bridge-candidate" or manifest.get("live") is not False:
             raise ValueError(f"E-P16-MANIFEST-LIVE:{manifest_path.name}")
-        expected = render(build_export(manifest))
-        actual = export_path.read_text(encoding="utf-8")
-        if actual != expected:
+        if export_path.read_text(encoding="utf-8") != render(build_export(manifest)):
             raise ValueError(f"E-P16-EXPORT-STALE:{export_path.name}")
         artifact = manifest.get("principia")
         if not isinstance(artifact, Mapping):
@@ -118,12 +101,14 @@ def validate_manifest_export_pairs() -> None:
         if ARTIFACT_PATHS[str(artifact_id)] != ROOT / artifact_path:
             raise ValueError(f"E-P16-MANIFEST-PATH:{manifest_path.name}")
         metadata = parse_frontmatter(ROOT / artifact_path)
-        if metadata.get("artifact_revision") != artifact.get("artifact_revision"):
-            raise ValueError(f"E-P16-MANIFEST-REVISION:{manifest_path.name}")
-        if metadata.get("status") != artifact.get("pedagogical_status"):
-            raise ValueError(f"E-P16-MANIFEST-PEDAGOGY:{manifest_path.name}")
-        if metadata.get("release_status") != artifact.get("release_status"):
-            raise ValueError(f"E-P16-MANIFEST-RELEASE:{manifest_path.name}")
+        comparisons = (
+            ("artifact_revision", "artifact_revision", "REVISION"),
+            ("pedagogical_status", "status", "PEDAGOGY"),
+            ("release_status", "release_status", "RELEASE"),
+        )
+        for manifest_key, metadata_key, code in comparisons:
+            if artifact.get(manifest_key) != metadata.get(metadata_key):
+                raise ValueError(f"E-P16-MANIFEST-{code}:{manifest_path.name}")
         validate_export(str(artifact_id), export)
 
 
@@ -144,26 +129,21 @@ def validate_batch_payload(batch: Mapping[str, Any]) -> None:
         raise ValueError("E-P16-BATCH-ATOMICITY")
     observed_ids = []
     for item in inputs:
-        if not isinstance(item, Mapping):
+        if not isinstance(item, Mapping) or item.get("artifact_id") not in EXPORT_PATHS:
             raise ValueError("E-P16-BATCH-INPUT")
-        artifact_id = item.get("artifact_id")
-        if artifact_id not in EXPORT_PATHS:
-            raise ValueError("E-P16-BATCH-INPUT")
-        path = EXPORT_PATHS[str(artifact_id)]
+        artifact_id = str(item["artifact_id"])
+        path = EXPORT_PATHS[artifact_id]
         if item.get("export_path") != path.relative_to(ROOT).as_posix():
             raise ValueError("E-P16-BATCH-PATH")
         if item.get("export_sha256") != sha256_file(path):
             raise ValueError("E-P16-BATCH-DIGEST")
-        expected_count = len(EXPECTED_DEPENDENCIES[str(artifact_id)])
-        if item.get("dependency_count") != expected_count:
+        if item.get("dependency_count") != len(EXPECTED_DEPENDENCIES[artifact_id]):
             raise ValueError("E-P16-BATCH-DEPENDENCY-COUNT")
-        observed_ids.append(str(artifact_id))
+        observed_ids.append(artifact_id)
     if observed_ids != sorted(EXPORT_PATHS):
         raise ValueError("E-P16-BATCH-ORDER")
     snapshot = batch.get("atlas_snapshot")
-    if not isinstance(snapshot, Mapping):
-        raise ValueError("E-P16-BATCH-SNAPSHOT")
-    if snapshot.get("sha256") != sha256_file(SNAPSHOT_PATH):
+    if not isinstance(snapshot, Mapping) or snapshot.get("sha256") != sha256_file(SNAPSHOT_PATH):
         raise ValueError("E-P16-BATCH-SNAPSHOT")
 
 
@@ -193,11 +173,9 @@ def validate_receipt_payload(receipt: Mapping[str, Any], batch: Mapping[str, Any
         raise ValueError("E-P16-RECEIPT-COUNT")
     ids = []
     for record in records:
-        if not isinstance(record, Mapping):
+        if not isinstance(record, Mapping) or record.get("id") not in EXPECTED_DEPENDENCIES:
             raise ValueError("E-P16-RECEIPT-RECORD")
-        artifact_id = record.get("id")
-        if artifact_id not in EXPECTED_DEPENDENCIES:
-            raise ValueError("E-P16-RECEIPT-RECORD")
+        artifact_id = str(record["id"])
         if record.get("contract") != "atlas-external-dependent/0.1":
             raise ValueError("E-P16-RECEIPT-RECORD-CONTRACT")
         if record.get("source_contract") != "principia-atlas-external-dependent/0.2":
@@ -212,19 +190,20 @@ def validate_receipt_payload(receipt: Mapping[str, Any], batch: Mapping[str, Any
             for item in dependencies
             if isinstance(item, Mapping)
         }
-        if observed != EXPECTED_DEPENDENCIES[str(artifact_id)]:
+        if observed != EXPECTED_DEPENDENCIES[artifact_id]:
             raise ValueError("E-P16-RECEIPT-DEPENDENCIES")
         if any(item.get("resolution") != "current" for item in dependencies):
             raise ValueError("E-P16-RECEIPT-RESOLUTION")
-        ids.append(str(artifact_id))
+        ids.append(artifact_id)
     if ids != sorted(EXPECTED_DEPENDENCIES):
         raise ValueError("E-P16-RECEIPT-ORDER")
     authority = receipt.get("authority")
     if not isinstance(authority, Mapping):
         raise ValueError("E-P16-RECEIPT-AUTHORITY")
-    for key in ("automatic_status_change", "automatic_release_action", "repository_mutation"):
-        if authority.get(key) is not False:
-            raise ValueError("E-P16-RECEIPT-AUTHORITY")
+    if any(authority.get(key) is not False for key in (
+        "automatic_status_change", "automatic_release_action", "repository_mutation"
+    )):
+        raise ValueError("E-P16-RECEIPT-AUTHORITY")
 
 
 def validate_chain(chain: Mapping[str, Any], receipt: Mapping[str, Any]) -> None:
@@ -241,7 +220,9 @@ def validate_chain(chain: Mapping[str, Any], receipt: Mapping[str, Any]) -> None
     entry = entries[0]
     if not isinstance(entry, Mapping):
         raise ValueError("E-P16-CHAIN-ENTRY")
-    if entry.get("sequence") != 1 or entry.get("receipt_sha256") != digest or entry.get("previous_receipt_sha256") is not None:
+    if entry.get("sequence") != 1 or entry.get("receipt_sha256") != digest:
+        raise ValueError("E-P16-CHAIN-ENTRY")
+    if entry.get("previous_receipt_sha256") is not None:
         raise ValueError("E-P16-CHAIN-ENTRY")
 
 
@@ -257,12 +238,18 @@ def validate_impact(matrix: Mapping[str, Any]) -> None:
     for scenario in scenarios:
         if not isinstance(scenario, Mapping):
             raise ValueError("E-P16-IMPACT-SCENARIO")
-        if scenario.get("automatic_status_change") is not False or scenario.get("automatic_release_action") is not False:
+        if scenario.get("automatic_status_change") is not False:
+            raise ValueError("E-P16-IMPACT-AUTHORITY")
+        if scenario.get("automatic_release_action") is not False:
             raise ValueError("E-P16-IMPACT-AUTHORITY")
         dependents = scenario.get("external_dependents")
         if not isinstance(dependents, list):
             raise ValueError("E-P16-IMPACT-DEPENDENTS")
-        actions = {str(item.get("effective_action")) for item in dependents if isinstance(item, Mapping)}
+        actions = {
+            str(item.get("effective_action"))
+            for item in dependents
+            if isinstance(item, Mapping)
+        }
         observed[str(scenario.get("scenario_id"))] = (len(dependents), actions)
     if observed != EXPECTED_IMPACT:
         raise ValueError("E-P16-IMPACT-POLICY")
@@ -280,9 +267,10 @@ def validate_recovery(matrix: Mapping[str, Any], receipt: Mapping[str, Any]) -> 
         raise ValueError("E-P16-RECOVERY-HEAD")
     if head.get("sequence") != 1 or head.get("receipt_sha256") != sha256_document(receipt):
         raise ValueError("E-P16-RECOVERY-HEAD")
-    for key in ("automatic_status_change", "automatic_release_action", "repository_mutation"):
-        if matrix.get(key) is not False:
-            raise ValueError("E-P16-RECOVERY-AUTHORITY")
+    if any(matrix.get(key) is not False for key in (
+        "automatic_status_change", "automatic_release_action", "repository_mutation"
+    )):
+        raise ValueError("E-P16-RECOVERY-AUTHORITY")
     scenarios = matrix.get("scenarios")
     if not isinstance(scenarios, list) or len(scenarios) != len(EXPECTED_RECOVERY):
         raise ValueError("E-P16-RECOVERY-SCENARIOS")
@@ -290,7 +278,9 @@ def validate_recovery(matrix: Mapping[str, Any], receipt: Mapping[str, Any]) -> 
     for scenario in scenarios:
         if not isinstance(scenario, Mapping):
             raise ValueError("E-P16-RECOVERY-SCENARIO")
-        observed[str(scenario.get("scenario_id"))] = (scenario.get("accepted"), scenario.get("outcome"), scenario.get("error_code"))
+        observed[str(scenario.get("scenario_id"))] = (
+            scenario.get("accepted"), scenario.get("outcome"), scenario.get("error_code")
+        )
     if observed != EXPECTED_RECOVERY:
         raise ValueError("E-P16-RECOVERY-POLICY")
 
@@ -327,18 +317,9 @@ def validate_negative_paths(batch: Mapping[str, Any], receipt: Mapping[str, Any]
 
 def validate_records(errors: list[str]) -> None:
     required = [
-        SNAPSHOT_PATH,
-        BATCH_PATH,
-        RECEIPT_PATH,
-        CHAIN_PATH,
-        IMPACT_PATH,
-        RECOVERY_PATH,
-        RELEASE_PATH,
-        REPORT_PATH,
-        WORKFLOW_PATH,
-        PROJECT_STATE_PATH,
-        README_PATH,
-        *MANIFEST_EXPORTS.keys(),
+        SNAPSHOT_PATH, BATCH_PATH, RECEIPT_PATH, CHAIN_PATH, IMPACT_PATH,
+        RECOVERY_PATH, RELEASE_PATH, REPORT_PATH, WORKFLOW_PATH,
+        PROJECT_STATE_PATH, README_PATH, *MANIFEST_EXPORTS.keys(),
         *MANIFEST_EXPORTS.values(),
     ]
     for path in required:
@@ -359,22 +340,45 @@ def validate_records(errors: list[str]) -> None:
         validate_negative_paths(batch, receipt)
     except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         errors.append(str(exc))
+
     release = load_json(RELEASE_PATH)
-    for key, expected in (("phase", 16), ("state", "offline-multi-artifact-validated"), ("mode", "offline-multi-artifact-pilot"), ("live", False)):
+    expected_release = {
+        "phase": 16,
+        "state": "offline-multi-artifact-candidate",
+        "mode": "offline-multi-artifact-pilot",
+        "live": False,
+    }
+    for key, expected in expected_release.items():
         if release.get(key) != expected:
             errors.append(f"release/phase-16 record has invalid {key}")
+
     state = PROJECT_STATE_PATH.read_text(encoding="utf-8")
-    for marker in ("Phase 16 — Offline Multi-Artifact Integration Pilot", "offline-multi-artifact-validated", "live: false", "Atlas PR #21"):
+    for marker in (
+        "Phase 16 — Offline Multi-Artifact Integration Pilot",
+        "offline-multi-artifact-candidate",
+        "live: false",
+        "Atlas PR #21",
+    ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 16 marker: {marker}")
+
     report = REPORT_PATH.read_text(encoding="utf-8")
-    for marker in ("principia-atlas-offline-batch-receipt/0.2", "9370cc746e9756e433ac3772d56d079c9803b144", "No live cross-repository call"):
+    for marker in (
+        "principia-atlas-offline-batch-receipt/0.2",
+        "9370cc746e9756e433ac3772d56d079c9803b144",
+        "No live cross-repository call",
+    ):
         if marker not in report:
             errors.append(f"Phase 16 report missing marker: {marker}")
+
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
     if "contents: read" not in workflow:
         errors.append("Phase 16 workflow must use contents: read")
-    forbidden = ("contents" + ": write", "git " + "push", "git " + "commit", "pull_request" + "_target", "repository: Rhodan-lab/Atlas", "curl ", "wget ")
+    forbidden = (
+        "contents" + ": write", "git " + "push", "git " + "commit",
+        "pull_request" + "_target", "repository: Rhodan-lab/Atlas",
+        "curl ", "wget ",
+    )
     for token in forbidden:
         if token in workflow:
             errors.append(f"Phase 16 workflow contains forbidden token: {token}")
@@ -390,7 +394,11 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print("Phase 16 passed: three exact-revision external dependents, atomic receipt v0.2, version chain, mixed lifecycle impact, deterministic recovery, status separation, and live=false.")
+    print(
+        "Phase 16 candidate passed: three exact-revision external dependents, "
+        "atomic receipt v0.2, receipt chain, mixed lifecycle impact, deterministic "
+        "recovery, status separation, and live=false."
+    )
     return 0
 
 
