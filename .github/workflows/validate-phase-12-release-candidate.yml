@@ -114,7 +114,25 @@ jobs:
           python3 scripts/validate_principia_atlas_audit.py
 
       - name: Validate strict repository structure
-        run: python3 scripts/validate_repo.py --strict
+        id: strict_repository
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_repo.py --strict > strict-repository-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat strict-repository-validation.log
+          exit 0
+
+      - name: Upload strict repository diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict-repository-validation-diagnostics
+          path: strict-repository-validation.log
+
+      - name: Stop on strict repository errors
+        if: steps.strict_repository.outputs.status != '0'
+        run: exit 1
 
       - name: Validate Phase 12 release candidate
         id: release_candidate
