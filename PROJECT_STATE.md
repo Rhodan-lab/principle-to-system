@@ -112,6 +112,20 @@ release_status: draft
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
+## Phase 11B result — Controlled Material Expansion
+
+The applied-material layer contains:
+
+- 4 complete routes;
+- 16 Reviewed artifacts;
+- 4 system dossiers;
+- 4 failure patterns;
+- 4 investigations;
+- 4 design challenges;
+- 28 records in the experience-source ledger.
+
+All experience artifacts remain `artifact_revision: 1` and `release_status: draft`.
+
 ## Phase 12 result — Release Candidate RC1
 
 `release/phase-12-release-candidate.json` defines `principia-material-foundation-rc1`.
@@ -168,6 +182,7 @@ No automatic status change, release action, repository mutation, or network call
 
 ```bash
 python3 scripts/finalize_phase15_state.py --check
+python3 scripts/validate_phase15_postmerge_record.py
 python3 scripts/generate_phase15_offline_pilot.py --check
 python3 scripts/validate_phase15_offline_pilot.py
 python3 scripts/finalize_bridge_candidate_records.py --check
