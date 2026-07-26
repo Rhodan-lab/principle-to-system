@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20; merge remains pending.**
+**Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20; the PR remains unmerged.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -36,7 +36,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 13 | Software foundation | Merged and validated through PR #15 |
 | 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
 | 15 | Offline integration pilot | Merged and validated through PR #18 |
-| 16 | Offline multi-artifact integration pilot | Implemented and validated on draft PR #20; merge pending |
+| 16 | Offline multi-artifact integration pilot | Implemented and validated on draft PR #20; unmerged |
 
 ## Integration topology
 
@@ -209,7 +209,7 @@ The pilot pins Atlas PR #20 implementation and the accepted Atlas PR #21 governa
 
 The lifecycle matrix tests fan-out across one or three Principia artifacts depending on the Atlas entity. The recovery matrix tests duplicate replay, stale or skipped sequence, wrong predecessor, valid next checkpoint, partial batch, digest corruption, status inheritance, and attempted live activation.
 
-The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed all applicable Phase 5–16, compatibility, release-candidate, and software workflows. Merge remains a separate explicit action.
+The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed all applicable Phase 5–16, compatibility, release-candidate, and software workflows. Repository integration remains a separate explicit action.
 
 ## Validation
 
@@ -236,8 +236,8 @@ python3 -m unittest discover -s software/tests -v
 python3 scripts/validate_phase13_software.py
 ```
 
-All applicable workflows passed on the exact candidate head before the validated record was written. The validated-record head must also remain green before merge.
+All applicable workflows passed on the exact candidate head before the validated record was written. The validated-record head must also remain green before integration.
 
 ## Next phase
 
-After Phase 16 is merged, the next bounded gate is an **offline event-protocol candidate** that models digest-bound lifecycle events and acknowledgements without activating network synchronization. Live integration remains disabled and requires a distinct future contract transition.
+After Phase 16 is integrated, the next bounded gate is an **offline event-protocol candidate** that models digest-bound lifecycle events and acknowledgements without activating network synchronization. Live integration remains disabled and requires a distinct future contract transition.
