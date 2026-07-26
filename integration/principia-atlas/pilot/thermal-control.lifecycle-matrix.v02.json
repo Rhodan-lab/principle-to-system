@@ -1,0 +1,184 @@
+{
+  "contract": "principia-atlas-offline-multi-impact-matrix/0.2",
+  "live": false,
+  "mode": "offline-multi-artifact-pilot",
+  "pilot_id": "principia-atlas:offline-multi-artifact:thermal-control",
+  "scenarios": [
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "revision": 1,
+        "staleness": "current",
+        "status": "draft"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "principia-declared-policy"
+        },
+        {
+          "artifact_id": "principia:investigation:room-cooling",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "principia-declared-policy"
+        },
+        {
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "principia-declared-policy"
+        }
+      ],
+      "scenario_id": "claim-current"
+    },
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "concept:en:feedback",
+        "revision": 1,
+        "staleness": "current",
+        "status": "deprecated"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-entity-deprecated"
+        },
+        {
+          "artifact_id": "principia:investigation:room-cooling",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-entity-deprecated"
+        },
+        {
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-entity-deprecated"
+        }
+      ],
+      "scenario_id": "feedback-deprecated"
+    },
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "concept:en:oscillation",
+        "revision": 1,
+        "staleness": "confirmed-stale",
+        "status": "draft"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-staleness-confirmed-stale"
+        },
+        {
+          "artifact_id": "principia:investigation:room-cooling",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-staleness-confirmed-stale"
+        },
+        {
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "revalidate",
+          "reason": "atlas-staleness-confirmed-stale"
+        }
+      ],
+      "scenario_id": "oscillation-confirmed-stale"
+    },
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "model:en:delayed-correction-recurrence",
+        "revision": 2,
+        "staleness": "current",
+        "status": "draft"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "inspect",
+          "reason": "principia-declared-policy"
+        }
+      ],
+      "scenario_id": "model-current"
+    },
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "model:en:delayed-correction-recurrence",
+        "revision": 2,
+        "staleness": "current",
+        "status": "retracted"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "inspect",
+          "effective_action": "block-release",
+          "reason": "atlas-entity-retracted"
+        }
+      ],
+      "scenario_id": "model-retracted"
+    },
+    {
+      "automatic_release_action": false,
+      "automatic_status_change": false,
+      "entity": {
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "revision": 1,
+        "staleness": "current",
+        "status": "retracted"
+      },
+      "external_dependents": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "atlas-entity-retracted"
+        },
+        {
+          "artifact_id": "principia:investigation:room-cooling",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "atlas-entity-retracted"
+        },
+        {
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "artifact_revision": 1,
+          "declared_action": "block-release",
+          "effective_action": "block-release",
+          "reason": "atlas-entity-retracted"
+        }
+      ],
+      "scenario_id": "claim-retracted"
+    }
+  ]
+}
