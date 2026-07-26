@@ -4,6 +4,8 @@ slug: failure-pattern-[slug]
 domain: experience
 experience_type: failure-pattern
 status: draft
+artifact_revision: 1
+release_status: draft
 prerequisites: []
 connections: []
 last_reviewed: YYYY-MM-DD
@@ -26,4 +28,4 @@ content_license: CC-BY-4.0
 ## 12. Questions for investigation
 ## 13. Sources and module links
 
-Do not reduce failure to one careless person. Show interacting physical, informational, organisational, and timing causes where relevant.
+Do not reduce failure to one careless person. Show interacting physical, informational, organisational, and timing causes where relevant. `status` records pedagogical maturity; `release_status` records publication readiness. Neither inherits Atlas knowledge status.
