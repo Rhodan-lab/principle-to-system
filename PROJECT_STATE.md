@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Principia–Atlas bridge candidate active on `agent/bridge-candidate-delayed-correction-r2`; progression is governed by machine gates and live integration remains disabled.**
+**Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16; ready for Atlas Phase 2 importer testing while live integration remains disabled.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -32,11 +32,11 @@ The repository remains a material-first educational foundation. Its future produ
 | 11B | Controlled material expansion | Merged and validated through PR #13 |
 | 12 | Release candidate | Merged and validated through PR #14 |
 | 13 | Software foundation | Merged and validated through PR #15 |
-| 14 | Principia–Atlas bridge candidate | Active; exact-revision validation pending |
+| 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
 
 ## Integration topology
 
-PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`. PR #15 was merged into `main` at commit `fa9807fcdb649692d9670701211e155ecff21258`.
+PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`. PR #15 was merged into `main` at commit `fa9807fcdb649692d9670701211e155ecff21258`. PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`.
 
 Main therefore contains:
 
@@ -45,10 +45,11 @@ Main therefore contains:
 - seven reviewed crosscutting concepts;
 - three reviewed knowledge maps;
 - four complete applied-learning routes with sixteen Reviewed artifacts;
-- the non-live `principia-atlas-bridge/0.1` compatibility foundation;
-- the Phase 13 content-native software foundation.
+- the `principia-atlas-bridge/0.1` compatibility foundation;
+- the Phase 13 content-native software foundation;
+- the non-live exact-revision bridge candidate for the Atlas Phase 2 importer.
 
-Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was merged through PR #15 and provides the content-native static software layer. The bridge-candidate branch was created directly from that integrated state and changes only Principia-side materials, exact-revision manifests, deterministic exports, governance records, tests, and read-only CI.
+Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was merged through PR #15 and provides the content-native static software layer. Phase 14 was merged through PR #16 and provides the validated exact-revision importer candidate. The candidate changes only Principia-side materials, manifests, exports, governance records, tests, and read-only CI.
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -218,7 +219,7 @@ python3 scripts/validate_principia_atlas_audit.py
 python3 scripts/validate_phase12_release_candidate.py
 ```
 
-The exact draft PR #14 head passes metadata, source, scientific-review, synthesis, applied-material, compatibility, strict-repository, accessibility, terminology, equation, revision-impact, and workflow-immutability gates. The permanent Phase 12 workflow uses `contents: read`, preserves diagnostics, and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
+The exact PR #16 head passed source, scientific-review, synthesis, applied-material, compatibility, strict-repository, release-candidate, software, revision-impact, deterministic-export, and workflow-immutability gates before merge. Permanent CI remains read-only and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
 
 ## Phase 13 machine-only authority
 
@@ -236,7 +237,7 @@ The former Phase 12 human-authority language is retained only in historical reco
 
 ## Next phase
 
-After the bridge-candidate gate passes and its pull request is merged, Atlas Phase 2 may consume the committed `principia-atlas-external-dependent/0.2` file through its own importer. Live calls remain a later, separate contract transition.
+Atlas Phase 2 may now consume the committed `principia-atlas-external-dependent/0.2` file through its own read-only importer. Importer acceptance remains Atlas-owned. Live calls require a later, separate contract transition.
 
 ## Continuation instructions
 
