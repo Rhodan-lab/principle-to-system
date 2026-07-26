@@ -6,12 +6,14 @@ on:
       - agent/bridge-candidate-delayed-correction-r2
     paths:
       - 'scripts/apply_bridge_candidate_validator_transitions.py'
+      - 'scripts/finalize_bridge_candidate_records.py'
       - '.github/workflows/apply-bridge-candidate-validator-transitions.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'scripts/apply_bridge_candidate_validator_transitions.py'
+      - 'scripts/finalize_bridge_candidate_records.py'
       - '.github/workflows/apply-bridge-candidate-validator-transitions.yml'
   workflow_dispatch:
 
@@ -38,22 +40,31 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Apply deterministic validator transitions
+      - name: Apply deterministic candidate transitions
         run: |
           python3 scripts/apply_bridge_candidate_validator_transitions.py --write
           python3 scripts/apply_bridge_candidate_validator_transitions.py --check
-          python3 -m py_compile scripts/validate_phase11b_expansion.py scripts/validate_phase12_release_candidate.py
+          python3 scripts/finalize_bridge_candidate_records.py --write
+          python3 scripts/finalize_bridge_candidate_records.py --check
+          python3 -m py_compile \
+            scripts/apply_bridge_candidate_validator_transitions.py \
+            scripts/finalize_bridge_candidate_records.py \
+            scripts/validate_phase11b_expansion.py \
+            scripts/validate_phase12_release_candidate.py
 
-      - name: Commit inherited validator transitions
+      - name: Commit candidate transitions
         shell: bash
         run: |
           if git diff --quiet; then
-            echo 'No validator transitions remain.'
+            echo 'No candidate transitions remain.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/validate_phase11b_expansion.py scripts/validate_phase12_release_candidate.py
-          git commit -m 'bridge: align inherited validators with candidate state'
+          git add \
+            scripts/validate_phase11b_expansion.py \
+            scripts/validate_phase12_release_candidate.py \
+            PROJECT_STATE.md README.md AUDIT.md release/README.md
+          git commit -m 'bridge: finalize non-live exact-revision candidate'
           git pull --rebase origin agent/bridge-candidate-delayed-correction-r2
           git push origin HEAD:agent/bridge-candidate-delayed-correction-r2
