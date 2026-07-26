@@ -17,8 +17,10 @@ on:
       - 'release/phase-12-revision-impact.json'
       - 'release/phase-12-pilot-readiness.json'
       - 'release/phase-12-terminology.json'
+      - 'release/README.md'
       - 'reports/principia-atlas-*'
       - 'scripts/export_principia_atlas_dependents.py'
+      - 'scripts/finalize_bridge_candidate_records.py'
       - 'scripts/validate_principia_atlas_bridge.py'
       - 'scripts/validate_principia_atlas_audit.py'
       - 'scripts/validate_phase11b_expansion.py'
@@ -56,12 +58,16 @@ jobs:
       - name: Compile bridge and inherited validators
         run: |
           python3 -m py_compile scripts/export_principia_atlas_dependents.py
+          python3 -m py_compile scripts/finalize_bridge_candidate_records.py
           python3 -m py_compile scripts/validate_principia_atlas_bridge.py
           python3 -m py_compile scripts/validate_principia_atlas_audit.py
           python3 -m py_compile scripts/validate_phase11b_expansion.py
           python3 -m py_compile scripts/validate_phase12_release_candidate.py
           python3 -m py_compile scripts/validate_phase13_software.py
           python3 -m py_compile software/tests/test_bridge_candidate.py
+
+      - name: Validate finalized candidate records
+        run: python3 scripts/finalize_bridge_candidate_records.py --check
 
       - name: Validate deterministic exact-revision export
         run: python3 scripts/export_principia_atlas_dependents.py --check
