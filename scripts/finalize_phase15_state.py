@@ -58,7 +58,13 @@ FINAL_MARKERS = (
 )
 
 
+def is_finalized(text: str) -> bool:
+    return all(marker in text for marker in FINAL_MARKERS)
+
+
 def transformed(text: str) -> str:
+    if is_finalized(text):
+        return text
     result = text
     for old, new in REPLACEMENTS:
         if old in result:
