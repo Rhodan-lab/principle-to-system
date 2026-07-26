@@ -44,12 +44,14 @@ jobs:
       - name: Commit finalized audit record
         shell: bash
         run: |
+          git restore .github/workflows/validate-phase-12-release-candidate.yml || true
           if git diff --quiet; then
             echo 'No validation-record changes remain.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add PROJECT_STATE.md README.md AUDIT.md reports/phase-12-release-candidate.md release/phase-12-pilot-readiness.json scripts/validate_phase12_release_candidate.py .github/workflows/validate-phase-12-release-candidate.yml
+          git add PROJECT_STATE.md README.md AUDIT.md reports/phase-12-release-candidate.md release/phase-12-pilot-readiness.json scripts/validate_phase12_release_candidate.py
           git commit -m 'release: finalize Phase 12 automated validation record'
+          git pull --rebase origin agent/phase-12-release-candidate
           git push origin HEAD:agent/phase-12-release-candidate
