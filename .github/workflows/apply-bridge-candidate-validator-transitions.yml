@@ -1,0 +1,52 @@
+name: Apply Bridge Candidate Validator Transitions
+
+on:
+  push:
+    branches:
+      - agent/bridge-candidate-delayed-correction-r2
+    paths:
+      - 'scripts/apply_bridge_candidate_validator_transitions.py'
+      - '.github/workflows/apply-bridge-candidate-validator-transitions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-bridge-candidate-validator-transitions
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out bridge candidate branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/bridge-candidate-delayed-correction-r2
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply deterministic validator transitions
+        run: |
+          python3 scripts/apply_bridge_candidate_validator_transitions.py --write
+          python3 scripts/apply_bridge_candidate_validator_transitions.py --check
+          python3 -m py_compile scripts/validate_phase11b_expansion.py scripts/validate_phase12_release_candidate.py
+
+      - name: Commit inherited validator transitions
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No validator transitions remain.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/validate_phase11b_expansion.py scripts/validate_phase12_release_candidate.py
+          git commit -m 'bridge: align inherited validators with candidate state'
+          git push origin HEAD:agent/bridge-candidate-delayed-correction-r2
