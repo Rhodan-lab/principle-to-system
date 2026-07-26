@@ -6,13 +6,13 @@ experience_type: index
 status: reviewed
 prerequisites: []
 connections: [concept-systems-and-models, concept-structure-and-function]
-last_reviewed: 2026-07-25
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 # System Dossiers
 
-A system dossier reverse-engineers one technology across levels of explanation. It must show why each component exists, what flows through it, what model predicts its behaviour, and what prevents the system from being ideal.
+A system dossier reverse-engineers one technology across levels of explanation. It shows why each component exists, what flows through it, which models predict its behaviour, and what prevents the system from being ideal.
 
 ## Required structure
 
@@ -34,6 +34,11 @@ A system dossier reverse-engineers one technology across levels of explanation. 
 
 Use [`templates/system-dossier.md`](../templates/system-dossier.md) for new dossiers.
 
-## Initial dossier
+## Reviewed dossiers
 
-- [The Domestic Refrigerator](refrigerator.md)
+- [The Domestic Refrigerator](refrigerator.md) — thermal-control route
+- [A Solar–Battery Microgrid](solar-battery-microgrid.md) — resilient-energy route
+- [A Drinking-Water Treatment and Distribution Network](drinking-water-network.md) — water-infrastructure route
+- [A Web Request Through a Distributed Service](web-service-request.md) — distributed-information route
+
+Every authored dossier remains `release_status: draft` until the Phase 12 release gate. The canonical four-route inventory is [`experiences/phase-11b-inventory.json`](../experiences/phase-11b-inventory.json).
