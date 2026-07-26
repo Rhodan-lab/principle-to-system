@@ -1,0 +1,21 @@
+{
+  "contract": "principia-atlas-offline-event-log/0.3",
+  "entries": [
+    {
+      "ack_path": "integration/principia-atlas/pilot/thermal-control.lifecycle-event-ack.v03.json",
+      "ack_sha256": "d67249dfeed09ca0cf8cbf8515bab59236b73cb0c5ff7d80517b8ac87efa1256",
+      "decision": "accepted-for-offline-impact-recording",
+      "event_path": "integration/principia-atlas/pilot/thermal-control.lifecycle-event.v03.json",
+      "event_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+      "previous_event_sha256": null,
+      "sequence": 1
+    }
+  ],
+  "head_ack_sha256": "d67249dfeed09ca0cf8cbf8515bab59236b73cb0c5ff7d80517b8ac87efa1256",
+  "head_event_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+  "head_sequence": 1,
+  "live": false,
+  "mode": "offline-event-protocol",
+  "protocol_id": "principia-atlas:offline-event-protocol:thermal-control",
+  "source_receipt_chain_head_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562"
+}
