@@ -6,7 +6,7 @@ experience_type: index
 status: reviewed
 prerequisites: []
 connections: [02-measurement-uncertainty, 03-mathematical-models, 04-probability-statistics]
-last_reviewed: 2026-07-25
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -31,6 +31,11 @@ Investigations turn observations into evidence without pretending that one datas
 
 Use [`templates/investigation.md`](../templates/investigation.md).
 
-## Initial investigation
+## Reviewed investigations
 
-- [How Does a Room Cool?](room-cooling.md)
+- [How Does a Room Cool?](room-cooling.md) — thermal-control route
+- [How Does Partial Shading Change Solar Output?](solar-shading.md) — resilient-energy route
+- [How Does Filter Loading Change Flow Resistance?](filter-loading.md) — water-infrastructure route
+- [How Does Queueing Delay Grow Near Capacity?](queue-delay-near-capacity.md) — distributed-information route
+
+All investigations use safe observation, public or hypothetical data, or offline simulation. They remain `release_status: draft` until Phase 12. The canonical inventory is [`experiences/phase-11b-inventory.json`](../experiences/phase-11b-inventory.json).
