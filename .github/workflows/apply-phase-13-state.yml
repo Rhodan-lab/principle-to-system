@@ -50,4 +50,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add PROJECT_STATE.md README.md AUDIT.md release/README.md
           git commit -m 'governance: activate machine-only Phase 13 progression'
+          git pull --rebase origin agent/phase-13-software-foundation
           git push origin HEAD:agent/phase-13-software-foundation
