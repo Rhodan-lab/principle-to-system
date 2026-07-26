@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the Phase 16 offline multi-artifact candidate."""
+"""Validate the Phase 16 offline multi-artifact pilot."""
 from __future__ import annotations
 
 import copy
@@ -344,20 +344,34 @@ def validate_records(errors: list[str]) -> None:
     release = load_json(RELEASE_PATH)
     expected_release = {
         "phase": 16,
-        "state": "offline-multi-artifact-candidate",
+        "state": "offline-multi-artifact-validated",
         "mode": "offline-multi-artifact-pilot",
         "live": False,
     }
     for key, expected in expected_release.items():
         if release.get(key) != expected:
             errors.append(f"release/phase-16 record has invalid {key}")
+    validation = release.get("validation")
+    if not isinstance(validation, Mapping):
+        errors.append("release/phase-16 validation record is missing")
+    else:
+        expected_validation = {
+            "status": "success",
+            "pull_request": 20,
+            "tested_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
+            "merge_commit": None,
+        }
+        for key, expected in expected_validation.items():
+            if validation.get(key) != expected:
+                errors.append(f"release/phase-16 validation has invalid {key}")
 
     state = PROJECT_STATE_PATH.read_text(encoding="utf-8")
     for marker in (
         "Phase 16 — Offline Multi-Artifact Integration Pilot",
-        "offline-multi-artifact-candidate",
+        "offline-multi-artifact-validated",
         "live: false",
         "Atlas PR #21",
+        "67d6ec98c51188dabcffd48dad968a83653ea584",
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 16 marker: {marker}")
@@ -366,6 +380,7 @@ def validate_records(errors: list[str]) -> None:
     for marker in (
         "principia-atlas-offline-batch-receipt/0.2",
         "9370cc746e9756e433ac3772d56d079c9803b144",
+        "67d6ec98c51188dabcffd48dad968a83653ea584",
         "No live cross-repository call",
     ):
         if marker not in report:
@@ -395,9 +410,9 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
     print(
-        "Phase 16 candidate passed: three exact-revision external dependents, "
-        "atomic receipt v0.2, receipt chain, mixed lifecycle impact, deterministic "
-        "recovery, status separation, and live=false."
+        "Phase 16 passed: three exact-revision external dependents, atomic receipt "
+        "v0.2, receipt chain, mixed lifecycle impact, deterministic recovery, "
+        "status separation, and live=false."
     )
     return 0
 
