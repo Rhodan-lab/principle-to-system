@@ -7,7 +7,9 @@
 > Mode: `offline-multi-artifact-pilot`  
 > Live: `false`  
 > Pull request: #20  
-> Exact tested head: `67d6ec98c51188dabcffd48dad968a83653ea584`
+> Candidate head: `67d6ec98c51188dabcffd48dad968a83653ea584`  
+> Final tested head: `d37674490f054241ef08ccf7a644247b444fa874`  
+> Merge commit: `c493bf879a7945f9991e13592d42424138a0879b`
 
 ## Purpose
 
@@ -138,6 +140,7 @@ python3 scripts/export_principia_atlas_dependents.py \
   --check
 python3 scripts/generate_phase16_offline_multi_artifact.py --check
 python3 scripts/validate_phase16_offline_multi_artifact.py
+python3 scripts/validate_phase16_postmerge_record.py
 python3 -m unittest software.tests.test_phase16_offline_multi_artifact -v
 ```
 
@@ -145,7 +148,7 @@ The permanent workflow also runs Phase 15 post-merge validation, bridge and audi
 
 ## Validation result
 
-The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed every applicable workflow together:
+The final tested head `d37674490f054241ef08ccf7a644247b444fa874` passed every applicable workflow together:
 
 - Phase 5 Sources;
 - Phase 6 Foundations;
@@ -160,6 +163,6 @@ The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed every
 - Phase 15 Offline Pilot;
 - Phase 16 Offline Multi-Artifact.
 
-The Phase 16 state is therefore `offline-multi-artifact-validated`. Merge remains a separate explicit repository action.
+PR #20 was merged into `main` at `c493bf879a7945f9991e13592d42424138a0879b`. Phase 16 is therefore integrated and remains `offline-multi-artifact-validated`.
 
-Live activation is not part of Phase 16. A later event protocol or live bridge requires a distinct contract transition and separate machine gates.
+Live activation is not part of Phase 16. The next bounded gate is the offline event-protocol candidate, which must remain digest-bound, repository-separate, and `live: false`.
