@@ -4,6 +4,8 @@ slug: system-dossier-refrigerator
 domain: experience
 experience_type: system-dossier
 status: reviewed
+artifact_revision: 1
+release_status: draft
 prerequisites: [08-energy-thermodynamics, 12-fluids-materials, 20-sensors-control-infrastructure]
 connections: [17-materials-manufacturing, concept-energy-and-matter, concept-systems-and-models, failure-pattern-feedback-instability, investigation-room-cooling, design-challenge-passive-cooler]
 last_reviewed: 2026-07-25
