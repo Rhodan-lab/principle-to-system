@@ -1,0 +1,61 @@
+{
+  "schema": "principia-machine-governance/0.1",
+  "phase": "13",
+  "generated": "2026-07-26",
+  "baseline": {
+    "candidate": "principia-material-foundation-rc1",
+    "merge_commit": "824fa2d4774647203222ab9198fc25ad4b11cda5",
+    "pedagogical_status": "reviewed",
+    "experience_release_status": "draft"
+  },
+  "authority": {
+    "mode": "machine-only",
+    "human_review_required": false,
+    "automatic_merge": false,
+    "automatic_publication": false,
+    "failure_behavior": "block-progression"
+  },
+  "transition": {
+    "from": "candidate-hold",
+    "to": "machine-gated-development",
+    "material_promotion": false,
+    "software_foundation_allowed": true,
+    "reason": "The material baseline passed the complete repository validation chain and the project owner directed continuation without a human-review gate."
+  },
+  "software_scope": {
+    "implementation": "dependency-free-static-reference-site",
+    "content_source": "repository-markdown-and-json",
+    "generated_outputs": [
+      "html-navigation",
+      "module-pages",
+      "experience-pages",
+      "search-index",
+      "content-catalog",
+      "dependency-graph",
+      "deterministic-build-manifest"
+    ],
+    "network_fetch_during_build": false,
+    "content_duplication": false,
+    "atlas_live_integration": false
+  },
+  "machine_gates": [
+    "phase-12-continuity",
+    "strict-repository-validation",
+    "frontmatter-and-content-ingestion",
+    "html-escaping-and-link-safety",
+    "catalog-count-consistency",
+    "deterministic-build",
+    "search-index-completeness",
+    "dependency-graph-integrity",
+    "unit-tests",
+    "workflow-immutability"
+  ],
+  "promotion_policy": {
+    "software_state_on_success": "foundation-validated",
+    "software_state_on_failure": "blocked",
+    "core_status_change": "none",
+    "experience_status_change": "none",
+    "atlas_status_inheritance": false,
+    "live_integration_activation": false
+  }
+}

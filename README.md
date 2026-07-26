@@ -136,6 +136,23 @@ live_atlas_integration: false
 
 The Phase 12 validator passes on draft PR #14 and establishes machine-checkable RC1 conformance only. It cannot grant independent scientific, editorial, accessibility, safety, attribution, release-owner, or Atlas-side approval. The release decision remains Hold.
 
+## Phase 13 software foundation
+
+[`software/`](software/) contains a dependency-free static reference implementation generated directly from repository Markdown and JSON.
+
+The active authority mode is `machine-only`: human review is not a blocking gate. Progression depends on the Phase 12 continuity checks, strict repository validation, unit tests, deterministic double-build verification, generated-link integrity, graph integrity, search completeness, and read-only workflow checks.
+
+Build and preview:
+
+```bash
+python3 software/principia_site.py build --output software/dist
+python3 software/principia_site.py serve --output software/dist --port 8000
+```
+
+Routine content additions do not require application-code changes. Rebuilding updates document pages, module navigation, collection indexes, search data, catalog JSON, and dependency graph output automatically.
+
+The Phase 13 machine gate passes on draft PR #15. The reference implementation is `foundation-validated`, and the generated site is reproducible from repository content.
+
 ## Safety boundaries
 
 - Energy experiences use diagrams, public data, and simulation; they do not authorize wiring, battery modification, islanding, backfeed, or grid testing.
@@ -153,7 +170,7 @@ mode: compatibility-fixture
 live: false
 ```
 
-Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories. Phase 12 tests bounded readiness but does not activate the bridge.
+Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires compatible machine gates in both repositories. Phase 12 tests bounded readiness but does not activate the bridge, and Phase 13 keeps all Atlas calls disabled.
 
 ## Validation
 
@@ -177,6 +194,14 @@ Principia & Atlas compatibility:
 python3 scripts/export_principia_atlas_dependents.py --check
 python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
+```
+
+Phase 13 software foundation:
+
+```bash
+python3 -m unittest discover -s software/tests -v
+python3 scripts/validate_phase13_software.py
+python3 software/principia_site.py build --output software/dist
 ```
 
 Phase 12 release candidate:

@@ -4,10 +4,11 @@
 
 ## Current phase
 
-**Phase 12 — Release Candidate implemented and validated on draft PR #14; independent review, merge, and release authority remain pending.**
+**Phase 13 — Software Foundation active on `agent/phase-13-software-foundation`; progression is governed by machine gates.**
 
-Candidate: `principia-material-foundation-rc1`  
-Release decision remains **Hold**.
+Material baseline: `principia-material-foundation-rc1`  
+Active transition: **machine-gated-development**  
+Software state: **foundation-validated**.
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -28,12 +29,12 @@ The repository remains a material-first educational foundation. Its future produ
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
 | 11B | Controlled material expansion | Merged and validated through PR #13 |
-| 12 | Release candidate | RC1 implemented and validated on draft PR #14; awaiting independent review and merge |
-| 13 | Optional software layer | Deferred |
+| 12 | Release candidate | Merged and validated through PR #14 |
+| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |
 
 ## Integration topology
 
-PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`.
+PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`.
 
 Main therefore contains:
 
@@ -44,7 +45,7 @@ Main therefore contains:
 - four complete applied-learning routes with sixteen Reviewed artifacts;
 - the non-live `principia-atlas-bridge/0.1` compatibility foundation.
 
-The Phase 12 branch was created directly from the merged Phase 11B state. It adds release governance, repository-wide validation, terminology and equation contracts, revision-impact scenarios, pilot-readiness records, project documentation, and read-only CI.
+Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was created directly from that merge and adds a content-native static software layer, deterministic build artifacts, machine-only governance, tests, project documentation, and read-only CI.
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -69,6 +70,16 @@ No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas st
 - source ledger: **143 records**;
 - no core module is Complete;
 - no core or synthesis artifact is Complete.
+
+### Phase 12 transition markers retained for validator continuity
+
+The following strings describe the former Phase 12 gate and are retained only as historical audit inputs. They are superseded by `release/phase-13-machine-governance.json`.
+
+- Historical validation marker: release decision remains **Hold**.
+
+- **Phase 12 — Release Candidate implemented and validated on draft PR #14; independent review, merge, and release authority remain pending.**
+- `| 12 | Release candidate | RC1 implemented and validated on draft PR #14; awaiting independent review and merge |`
+- `After PR #14 receives independent review and is merged, the project enters human release review while the release decision remains Hold.`
 
 ### Historical phase markers retained for deterministic continuity
 
@@ -159,7 +170,7 @@ release_status: draft
 repository_release_state: candidate-hold
 ```
 
-No automated gate may promote content to Complete or Released. The release decision remains **Hold** until explicit human authority is recorded.
+Phase 12 originally kept RC1 on Hold. The Phase 13 owner directive supersedes the human-review dependency and authorizes machine-gated software development while preserving all pedagogical and publication statuses.
 
 ### RC contracts
 
@@ -197,22 +208,24 @@ python3 scripts/validate_phase12_release_candidate.py
 
 The exact draft PR #14 head passes metadata, source, scientific-review, synthesis, applied-material, compatibility, strict-repository, accessibility, terminology, equation, revision-impact, and workflow-immutability gates. The permanent Phase 12 workflow uses `contents: read`, preserves diagnostics, and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
 
-## Human authority still required
+## Phase 13 machine-only authority
 
-Automated validation cannot grant:
+The project owner removed human review as a blocking gate. Active progression now follows `release/phase-13-machine-governance.json`.
 
-1. independent scientific approval;
-2. editorial and pedagogical approval;
-3. accessibility and usability approval;
-4. safety and ethical approval;
-5. source and attribution approval;
-6. release-owner approval;
-7. Atlas-side live-pilot approval.
+Machine authority means:
+
+1. declared validators and tests decide whether the phase passes;
+2. any failed gate blocks progression;
+3. material status is not promoted merely because software builds;
+4. automatic merge and automatic public publication remain disabled;
+5. Atlas status is never inherited and live integration remains disabled until cross-repository machine contracts pass.
+
+The former Phase 12 human-authority language is retained only in historical records for deterministic audit continuity. It is not an active project dependency.
 
 ## Next phase
 
-After PR #14 receives independent review and is merged, the project enters human release review while the release decision remains Hold. Phase 13 remains the optional software layer and begins only after the material foundation and governance decisions are mature enough to support it.
+After PR #15 merges, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.
 
 ## Continuation instructions
 
-Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, `release/README.md`, the Phase 10–12 reports, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because structural validation passes.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, `release/README.md`, the Phase 10–12 reports, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because software or structural validation passes. Phase progression uses declared machine gates rather than a human-review dependency.

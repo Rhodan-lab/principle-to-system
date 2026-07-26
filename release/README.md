@@ -1,6 +1,6 @@
 # Principia Release Governance
 
-This directory defines release-candidate governance for the material-first Principia repository. It does not publish software and does not convert automated validation into scientific, editorial, ethical, accessibility, legal, or release authority.
+This directory defines machine-readable material and software governance for Principia. Phase 12 records the validated material candidate; Phase 13 authorizes continued software development through declared machine gates without changing material status or activating publication.
 
 ## Status layers
 
@@ -46,26 +46,30 @@ The Phase 12 validator may verify:
 
 A validator pass means only that the committed repository conforms to these machine-checkable rules.
 
-## Human authority gate
+## Phase 13 machine-only authority
 
-Release still requires explicit recorded decisions for:
+`phase-13-machine-governance.json` supersedes the former human-review blocking policy for active development.
 
-1. independent scientific review;
-2. editorial and pedagogical review;
-3. accessibility and usability review;
-4. safety and ethical review where applicable;
-5. source and attribution review;
-6. release-owner approval;
-7. Atlas-side approval before any live cross-repository pilot.
+```yaml
+authority_mode: machine-only
+human_review_required: false
+automatic_merge: false
+automatic_publication: false
+failure_behavior: block-progression
+```
 
-Until those records exist, the repository release decision remains `hold` and experience `release_status` remains `draft`.
+A Phase 13 pass authorizes continued software development only. It does not mark material Complete, release applied experiences, copy Atlas status, or activate live integration.
+
+The Phase 13 machine gate passes on draft PR #15, so the software foundation state is `foundation-validated`.
+
+The machine gate requires Phase 12 continuity, strict repository validation, safe content ingestion, unit tests, deterministic byte-identical builds, catalog and graph integrity, complete local search indexing, generated-link validation, and read-only CI.
 
 ## First bounded integration pilot
 
 The delayed-feedback slice remains the preferred pilot because it already has an exact-revision compatibility fixture. The pilot may become live only after:
 
 - Atlas exits its direct-integration freeze;
-- Principia approves a live manifest;
+- Principia's live-manifest machine gate passes;
 - Atlas accepts the external dependent;
 - revision, staleness, deprecation, retraction, and recovery behavior pass end to end;
 - neither repository imports the other repository’s status.
