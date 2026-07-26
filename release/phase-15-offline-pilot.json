@@ -7,6 +7,9 @@
   "live": false,
   "principia": {
     "repository": "Rhodan-lab/principle-to-system",
+    "pull_request": 18,
+    "head_commit": "6353aa4d05f48e7247ce0323e4a29183c3a28495",
+    "merge_commit": "beeb4d6d4e71d1d08698a000e720fc88fc730ebc",
     "artifact_id": "principia:failure-pattern:feedback-instability",
     "artifact_revision": 1,
     "export_contract": "principia-atlas-external-dependent/0.2",

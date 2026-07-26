@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - agent/phase-15-offline-integration-pilot
+      - agent/finalize-phase-15-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-15-offline-pilot.json'
       - 'reports/phase-15-offline-integration-pilot.md'
       - 'scripts/generate_phase15_offline_pilot.py'
       - 'scripts/validate_phase15_offline_pilot.py'
+      - 'scripts/validate_phase15_postmerge_record.py'
       - 'scripts/finalize_phase15_state.py'
       - 'software/tests/test_phase15_offline_pilot.py'
       - 'PROJECT_STATE.md'
@@ -42,6 +44,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase15_offline_pilot.py
           python3 -m py_compile scripts/validate_phase15_offline_pilot.py
+          python3 -m py_compile scripts/validate_phase15_postmerge_record.py
           python3 -m py_compile scripts/finalize_phase15_state.py
           python3 -m py_compile scripts/export_principia_atlas_dependents.py
           python3 -m py_compile scripts/validate_principia_atlas_bridge.py
@@ -64,6 +67,7 @@ jobs:
           }
           {
             run_check python3 scripts/finalize_phase15_state.py --check
+            run_check python3 scripts/validate_phase15_postmerge_record.py
             run_check python3 scripts/generate_phase15_offline_pilot.py --check
             run_check python3 scripts/validate_phase15_offline_pilot.py
             run_check python3 scripts/finalize_bridge_candidate_records.py --check
