@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export a Principia bridge manifest to Atlas's opaque external-dependent shape."""
+"""Export a Principia bridge manifest to a deterministic Atlas importer candidate."""
 from __future__ import annotations
 
 import argparse
@@ -30,35 +30,66 @@ def build_export(manifest: dict[str, object]) -> dict[str, object]:
     export_policy = manifest.get("export")
     if not isinstance(principia, dict) or not isinstance(atlas, dict) or not isinstance(export_policy, dict):
         raise ValueError("manifest is missing principia, atlas, or export objects")
+
+    mode = manifest.get("mode")
+    live = manifest.get("live")
+    if mode not in {"compatibility-fixture", "bridge-candidate"}:
+        raise ValueError("manifest mode must be compatibility-fixture or bridge-candidate")
+    if live is not False:
+        raise ValueError("bridge export requires live=false")
+
     dependencies = atlas.get("dependencies")
     if not isinstance(dependencies, list):
         raise ValueError("atlas.dependencies must be a list")
 
-    ids: list[str] = []
+    exact_dependencies: list[dict[str, object]] = []
     for index, dependency in enumerate(dependencies):
-        if not isinstance(dependency, dict) or not isinstance(dependency.get("id"), str):
-            raise ValueError(f"atlas.dependencies[{index}] is missing a string id")
-        ids.append(dependency["id"])
+        if not isinstance(dependency, dict):
+            raise ValueError(f"atlas.dependencies[{index}] must be an object")
+        required = ("id", "revision", "entity_type", "role", "use", "change_policy")
+        if any(key not in dependency for key in required):
+            raise ValueError(f"atlas.dependencies[{index}] is incomplete")
+        entity_id = dependency.get("id")
+        revision = dependency.get("revision")
+        if not isinstance(entity_id, str):
+            raise ValueError(f"atlas.dependencies[{index}].id must be a string")
+        if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+            raise ValueError(f"atlas.dependencies[{index}].revision must be a positive integer")
+        exact_dependencies.append({key: dependency[key] for key in required})
+
+    exact_dependencies.sort(key=lambda item: (str(item["id"]), int(item["revision"])))
+    ids = [str(item["id"]) for item in exact_dependencies]
 
     artifact_id = principia.get("artifact_id")
     repository = principia.get("repository")
     revision = principia.get("artifact_revision")
+    export_schema = export_policy.get("schema")
     kind = export_policy.get("kind")
     role = export_policy.get("role")
+    exact_revisions = export_policy.get("exact_revisions")
     if not isinstance(artifact_id, str) or not isinstance(repository, str):
         raise ValueError("principia artifact identity is incomplete")
     if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
         raise ValueError("principia artifact_revision must be a positive integer")
+    if export_schema != "principia-atlas-external-dependent/0.2":
+        raise ValueError("export schema must be principia-atlas-external-dependent/0.2")
     if not isinstance(kind, str) or not isinstance(role, str):
         raise ValueError("export kind and role must be strings")
+    if exact_revisions is not True:
+        raise ValueError("export exact_revisions must be true")
 
     return {
+        "contract": export_schema,
         "id": artifact_id,
         "kind": kind,
         "repository": repository,
         "revision": revision,
         "role": role,
+        "bridge_mode": mode,
+        "live": False,
+        "atlas_content_contract": atlas.get("content_contract"),
         "depends_on": sorted(set(ids)),
+        "depends_on_exact": exact_dependencies,
     }
 
 
@@ -86,9 +117,8 @@ def main() -> int:
     if args.write:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(expected, encoding="utf-8")
-        print(f"Wrote Atlas external-dependent export: {output_path.relative_to(ROOT)}")
+        print(f"Wrote Atlas external-dependent candidate: {output_path.relative_to(ROOT)}")
         return 0
-
     try:
         actual = output_path.read_text(encoding="utf-8")
     except OSError as exc:
