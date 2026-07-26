@@ -1,0 +1,44 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false
+  },
+  "contract": "principia-offline-event-protocol-candidate/0.3",
+  "contracts": {
+    "acknowledgement": "principia-atlas-offline-event-ack/0.3",
+    "event": "principia-atlas-offline-lifecycle-event/0.3",
+    "event_log": "principia-atlas-offline-event-log/0.3",
+    "recovery": "principia-atlas-offline-event-recovery/0.3"
+  },
+  "digests": {
+    "ack": "d67249dfeed09ca0cf8cbf8515bab59236b73cb0c5ff7d80517b8ac87efa1256",
+    "event": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+    "event_log": "09d3bf3976992ee9811916082e2f789a855c42819508f5dea2ddfc1add2d053c",
+    "recovery_matrix": "b32db461ebbb2079f07cf7feab297a11d79dd26e36edeb70b231f41d100974bd"
+  },
+  "id": "principia-atlas-offline-event-protocol-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-event-protocol",
+  "next_gate": "offline-event-stream-scaling",
+  "phase": 17,
+  "principia_baseline": {
+    "phase16_merge_commit": "c493bf879a7945f9991e13592d42424138a0879b",
+    "phase16_pull_request": 20,
+    "phase16_record_merge_commit": "44410d47d318c5aaedb7716e4ef3bdefae09b442",
+    "phase16_record_pull_request": 21,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "source_checkpoint": {
+    "receipt_chain_head_sequence": 1,
+    "receipt_chain_head_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562"
+  },
+  "state": "offline-event-protocol-validated",
+  "validation": {
+    "status": "candidate-awaiting-exact-head-ci"
+  }
+}
