@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 11A — Principia & Atlas Compatibility Foundation implemented on `agent/phase-11a-principia-atlas-compatibility`; branch validation and pull-request review remain pending.**
+**Phase 11A — Principia & Atlas Compatibility Foundation implemented on draft PR #12; coordinated validation and independent review remain pending.**
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -23,7 +23,7 @@ The repository remains a material-first educational foundation. Its future produ
 | 8 | Life and Earth systems review | Merged and validated through PR #9 |
 | 9 | Technology review | Merged and validated through PR #10 |
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
-| 11A | Principia & Atlas compatibility foundation | Implemented on focused branch; validation pending |
+| 11A | Principia & Atlas compatibility foundation | Implemented on draft PR #12; coordinated validation pending |
 | 11B | Controlled material expansion | Pending compatibility foundation |
 | 12 | Release candidate | Not started |
 | 13 | Optional software layer | Deferred |
@@ -36,24 +36,44 @@ The Phase 11A branch was created directly from that merged state. It modifies on
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
-## Current reviewed foundation
+## Reviewed foundation and historical continuity
 
+### Foundations Modules 01–05
+
+- Modules 01–05: **Reviewed**;
+
+### Physical Science Modules 06–12
+
+- Modules 06–12: **Reviewed**;
+
+### Phase 8 — Life and Earth Systems Modules 13–16
+
+- Modules 13–16: **Reviewed**;
+
+### Phase 9 Technology review
+
+- Modules 17–20: **Reviewed**;
 - Modules 01–20: **Reviewed**;
-- 6 pathways: **Reviewed**;
-- 7 crosscutting concepts: **Reviewed**;
-- 3 knowledge maps: **Reviewed**;
 - source ledger: **143 records**;
+- no core module is Complete;
 - no core or synthesis artifact is Complete.
 
-## Historical continuity record
+### Historical phase markers retained for deterministic continuity
 
 - Phase 9 Technology review implemented and validated on draft PR #10 before that pull request was merged.
 - Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
 - The Phase 9 central-ledger transition was 131 → 143 records.
 - Historical Phase 10 marker: `Phase 10 Synthesis Reconciliation implemented and validated on draft PR #11`.
 - Phase 10 Synthesis reconciliation was subsequently merged through PR #11.
-- Permanent Phase 10 CI remains read-only.
-- no core module is Complete; synthesis artifacts remain Reviewed pending Phase 12.
+- Permanent CI is read-only.
+
+### Reconciled synthesis layer
+
+- 6 pathways: **Reviewed**;
+- 7 crosscutting concepts: **Reviewed**;
+- 3 knowledge maps: **Reviewed**.
+
+Reviewed means focused reconciliation has checked metadata, canonical identifiers, links, prerequisite direction, terminology, equations, claims, limitations, and status consistency. It does not mean independently certified or release-ready.
 
 ## Phase 11A result — Principia & Atlas Compatibility Foundation
 
@@ -114,7 +134,7 @@ python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
 ```
 
-The permanent compatibility workflow must use `contents: read`. It may validate Principia files and stored fixtures, but it may not clone Atlas, write files, push commits, merge pull requests, or change lifecycle status.
+The permanent compatibility workflow uses `contents: read`. It may validate Principia files and stored fixtures, but it may not clone Atlas, write files, push commits, merge pull requests, or change lifecycle status.
 
 ## Next phase
 
