@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - agent/phase-11a-principia-atlas-compatibility
+      - agent/bridge-candidate-delayed-correction-r2
     paths:
       - 'contracts/principia-atlas/**'
       - 'integration/principia-atlas/**'
@@ -13,12 +14,20 @@ on:
       - 'design-challenges/**'
       - 'experiences/**'
       - 'templates/**'
-      - 'reports/phase-11a-*'
+      - 'release/phase-12-revision-impact.json'
+      - 'release/phase-12-pilot-readiness.json'
+      - 'release/phase-12-terminology.json'
+      - 'reports/principia-atlas-*'
       - 'scripts/export_principia_atlas_dependents.py'
       - 'scripts/validate_principia_atlas_bridge.py'
       - 'scripts/validate_principia_atlas_audit.py'
+      - 'scripts/validate_phase11b_expansion.py'
+      - 'scripts/validate_phase12_release_candidate.py'
+      - 'scripts/validate_phase13_software.py'
+      - 'software/tests/test_bridge_candidate.py'
       - 'README.md'
       - 'PROJECT_STATE.md'
+      - 'AUDIT.md'
       - '.github/workflows/validate-principia-atlas-compatibility.yml'
   pull_request:
     branches:
@@ -36,7 +45,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Principia compatibility branch
+      - name: Check out Principia bridge candidate
         uses: actions/checkout@v4
 
       - name: Configure Python
@@ -44,28 +53,61 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Compile compatibility validators
+      - name: Compile bridge and inherited validators
         run: |
           python3 -m py_compile scripts/export_principia_atlas_dependents.py
           python3 -m py_compile scripts/validate_principia_atlas_bridge.py
           python3 -m py_compile scripts/validate_principia_atlas_audit.py
+          python3 -m py_compile scripts/validate_phase11b_expansion.py
+          python3 -m py_compile scripts/validate_phase12_release_candidate.py
+          python3 -m py_compile scripts/validate_phase13_software.py
+          python3 -m py_compile software/tests/test_bridge_candidate.py
 
-      - name: Validate deterministic Atlas export
+      - name: Validate deterministic exact-revision export
         run: python3 scripts/export_principia_atlas_dependents.py --check
 
-      - name: Validate Principia Atlas bridge
+      - name: Validate Principia Atlas bridge candidate
         run: python3 scripts/validate_principia_atlas_bridge.py
 
-      - name: Validate experience identity and safety
-        run: python3 scripts/validate_experiences.py --strict
+      - name: Validate bridge audit and separate status authority
+        run: python3 scripts/validate_principia_atlas_audit.py
+
+      - name: Validate applied-material identity and safety
+        run: |
+          python3 scripts/validate_experiences.py --strict
+          python3 scripts/validate_phase11b_expansion.py
 
       - name: Validate reviewed synthesis continuity
         run: |
           python3 scripts/validate_phase10_synthesis.py
           python3 scripts/validate_phase10_audit.py
 
-      - name: Validate repository structure
-        run: python3 scripts/validate_repo.py
+      - name: Validate strict repository
+        run: python3 scripts/validate_repo.py --strict
 
-      - name: Validate compatibility audit and workflow immutability
-        run: python3 scripts/validate_principia_atlas_audit.py
+      - name: Validate material release candidate
+        run: python3 scripts/validate_phase12_release_candidate.py
+
+      - name: Run software and bridge regression tests
+        run: python3 -m unittest discover -s software/tests -v
+
+      - name: Validate software foundation
+        run: python3 scripts/validate_phase13_software.py
+
+      - name: Verify workflow immutability
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/validate-principia-atlas-compatibility.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'contents' + ': write',
+              'git ' + 'push',
+              'git ' + 'commit',
+              'pull_request' + '_target',
+              'repository: Rhodan-lab/' + 'Atlas',
+          )
+          assert 'contents: read' in workflow
+          for token in forbidden:
+              assert token not in workflow, token
+          PY
