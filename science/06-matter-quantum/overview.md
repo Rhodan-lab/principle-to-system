@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Matter, Atoms, Electron Behaviour, and Quantum Foundations
+
 ## 1. The central questions
 
 What is the fundamental nature of matter? How do the smallest constituents of the universe interact to form the stable structures we observe? Why do atoms absorb and emit light only at specific, discrete frequencies? These questions drive the study of quantum mechanics and atomic structure. Classical physics, which describes the continuous motion of macroscopic objects, fails to explain the behaviour of matter at the atomic and subatomic scales. Instead, quantum states determine probability amplitudes for measurement outcomes; some observables have discrete spectra in bound systems, and quantum entities do not obey a purely classical particle-or-wave description.

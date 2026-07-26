@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Cells, membranes, enzymes, metabolism, and bioenergetics
+
 ## 1. Observation prompts
 
 - Observe a slice of raw potato or apple left exposed to the air. Note the browning process over time. This is an enzyme-catalyzed reaction (polyphenol oxidase). How does the rate of browning change if you coat the slice in lemon juice (acidic) or place it in the refrigerator?

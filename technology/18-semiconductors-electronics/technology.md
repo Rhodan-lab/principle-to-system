@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Semiconductors, electronics, and computer hardware
+
 ## 1. Scientific principles used
 
 Electronics uses quantum and statistical descriptions of solids, electrostatics, carrier transport, electromagnetism, thermodynamics, materials science, and circuit theory. Doping is one method of controlling carrier populations; heterostructures, gates, contacts, geometry, strain, defects, illumination, temperature, and phase also matter. Diodes and transistors implement nonlinear current–voltage and charge–voltage relations; “one-way valve,” “variable resistor,” and “perfect switch” are limited circuit analogies.

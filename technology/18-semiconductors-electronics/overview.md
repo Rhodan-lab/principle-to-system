@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Semiconductors, electronics, and computer hardware
+
 ## 1. The central questions
 
 How do material states, interfaces, fields, and carrier populations create controllable electronic behaviour? How are device characteristics converted into noise-tolerant logic, memory, sensing, communication, and power conversion? How do fabrication, metrology, architecture, packaging, software, workload, and reliability determine system performance beyond the behaviour of one transistor?

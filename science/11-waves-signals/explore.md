@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Oscillations, Waves, Sound, Optics, and Signals
+
 ## 1. Observation prompts
 
 - **The Doppler effect:** Use a reputable recorded demonstration or simulation of a moving source. Compare observed frequency and amplitude without standing near traffic or emergency vehicles.

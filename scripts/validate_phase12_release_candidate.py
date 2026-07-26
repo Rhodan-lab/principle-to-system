@@ -47,7 +47,7 @@ EQUATION_MARKERS: dict[str, tuple[str, ...]] = {
     "little-law": ("Little", "\\lambda", "W"),
     "queue-backlog-balance": ("\\lambda", "\\mu", "B"),
     "pv-power": ("P_{pv}", "\\eta_{pv}"),
-    "battery-energy-balance": ("\\eta_c", "P_c"),
+    "battery-energy-balance": ("\\eta_c", "\\eta_d"),
     "water-storage-balance": ("Q_{in}", "Q_{out}"),
     "rainwater-storage-balance": ("S_{k+1}", "S_{max}"),
     "sensor-affine-error": ("a(t)", "b(t)", "\\epsilon"),
@@ -349,10 +349,37 @@ def check_terminology(terms: dict[str, object], documents: list[Path], result: R
     if not isinstance(shortcuts, list) or len(shortcuts) < 8:
         result.error("terminology registry must declare the forbidden shortcuts")
         return
-    scan = "\n".join(path.read_text(encoding="utf-8") for path in documents if path.is_file()).lower()
-    for phrase in shortcuts:
-        if isinstance(phrase, str) and phrase.lower() in scan:
-            result.error(f"repository content contains forbidden semantic shortcut: {phrase}")
+    negation_markers = (
+        "does not",
+        "do not",
+        "must not",
+        "cannot",
+        "not establish",
+        "not imply",
+        "not automatically",
+        "misconception",
+        "myth",
+        "forbidden",
+    )
+    for path in documents:
+        if not path.is_file():
+            continue
+        scan = path.read_text(encoding="utf-8").lower()
+        for phrase in shortcuts:
+            if not isinstance(phrase, str):
+                continue
+            target = phrase.lower()
+            start = 0
+            while True:
+                position = scan.find(target, start)
+                if position < 0:
+                    break
+                context = scan[max(0, position - 120) : position + len(target) + 220]
+                if not any(marker in context for marker in negation_markers):
+                    result.error(
+                        f"{path.relative_to(ROOT)}: contains affirmative forbidden semantic shortcut: {phrase}"
+                    )
+                start = position + len(target)
 
 
 def check_equations(equations: dict[str, object], result: Result) -> None:

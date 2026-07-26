@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# DNA, Gene Expression, Inheritance, and Evolution
+
 ## 1. The central questions
 
 How is the information required to build and maintain a living organism stored, copied, and transmitted across generations? How does this stored information direct the synthesis of functional molecules within a cell? Furthermore, how do changes in this information over time lead to the diversity of life observed on Earth? These questions form the core of molecular biology, genetics, and evolutionary theory. They address the physical basis of heredity, the mechanisms of gene expression, and the population-level dynamics that drive evolutionary change.
