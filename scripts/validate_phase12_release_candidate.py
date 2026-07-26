@@ -484,6 +484,8 @@ def check_pilot(pilot: dict[str, object], result: Result) -> None:
     for key in ("exact_revision_identity", "status_separation", "deterministic_export", "revision_impact_scenarios"):
         if principia.get(key) is not True:
             result.error(f"pilot Principia readiness `{key}` must be true")
+    if principia.get("release_candidate_gate") != "validated":
+        result.error("pilot must record a validated Principia release-candidate gate")
     if principia.get("human_release_approval") is not False:
         result.error("pilot must record that human release approval is absent")
     for key in ("repository_changed_by_phase_12", "direct_integration_freeze_exited", "external_dependent_accepted", "live_pilot_approval"):

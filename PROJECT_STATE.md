@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 12 — Release Candidate implemented on `agent/phase-12-release-candidate`; coordinated validation, independent review, and release authority remain pending.**
+**Phase 12 — Release Candidate implemented and validated on draft PR #14; independent review, merge, and release authority remain pending.**
 
 Candidate: `principia-material-foundation-rc1`  
 Release decision remains **Hold**.
@@ -28,7 +28,7 @@ The repository remains a material-first educational foundation. Its future produ
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
 | 11B | Controlled material expansion | Merged and validated through PR #13 |
-| 12 | Release candidate | RC1 implemented; coordinated validation pending |
+| 12 | Release candidate | RC1 implemented and validated on draft PR #14; awaiting independent review and merge |
 | 13 | Optional software layer | Deferred |
 
 ## Integration topology
@@ -195,7 +195,7 @@ python3 scripts/validate_principia_atlas_audit.py
 python3 scripts/validate_phase12_release_candidate.py
 ```
 
-The permanent Phase 12 workflow must use `contents: read`, preserve diagnostics, and never clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
+The exact draft PR #14 head passes metadata, source, scientific-review, synthesis, applied-material, compatibility, strict-repository, accessibility, terminology, equation, revision-impact, and workflow-immutability gates. The permanent Phase 12 workflow uses `contents: read`, preserves diagnostics, and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
 
 ## Human authority still required
 
@@ -211,7 +211,7 @@ Automated validation cannot grant:
 
 ## Next phase
 
-After RC1 automated validation, the project enters independent release review. Phase 13 remains the optional software layer and begins only after the material foundation and governance decisions are mature enough to support it.
+After PR #14 receives independent review and is merged, the project enters human release review while the release decision remains Hold. Phase 13 remains the optional software layer and begins only after the material foundation and governance decisions are mature enough to support it.
 
 ## Continuation instructions
 

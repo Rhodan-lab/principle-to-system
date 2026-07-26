@@ -134,7 +134,7 @@ experience_release_status: draft
 live_atlas_integration: false
 ```
 
-A green Phase 12 validator establishes machine-checkable conformance only. It cannot grant independent scientific, editorial, accessibility, safety, attribution, release-owner, or Atlas-side approval.
+The Phase 12 validator passes on draft PR #14 and establishes machine-checkable RC1 conformance only. It cannot grant independent scientific, editorial, accessibility, safety, attribution, release-owner, or Atlas-side approval. The release decision remains Hold.
 
 ## Safety boundaries
 

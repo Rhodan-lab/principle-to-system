@@ -18,7 +18,7 @@
     "status_separation": true,
     "deterministic_export": true,
     "revision_impact_scenarios": true,
-    "release_candidate_gate": "implemented-pending-validation",
+    "release_candidate_gate": "validated",
     "human_release_approval": false
   },
   "atlas_readiness": {

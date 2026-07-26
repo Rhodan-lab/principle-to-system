@@ -5,7 +5,8 @@
 > Base: Phase 11B merged through PR #13 at `223327901b6c1c259350622a00b822511293d516`  
 > Product identity: Principia  
 > Atlas status: separate repository; unchanged  
-> Release decision: **Hold**
+> Release decision: **Hold**  
+> Validation status: implemented and validated on draft PR #14
 
 ## Purpose
 
@@ -115,7 +116,7 @@ Atlas has not been modified by Phase 12. Atlas has not recorded that its direct-
 
 ## Automated gates
 
-The permanent Phase 12 workflow will run:
+The permanent Phase 12 workflow runs:
 
 ```bash
 python3 scripts/validate_repo.py --strict
@@ -129,7 +130,13 @@ python3 scripts/validate_principia_atlas_audit.py
 python3 scripts/validate_phase12_release_candidate.py
 ```
 
-The workflow must use `contents: read`, preserve diagnostics, and never clone Atlas, write files, commit, push, merge, promote status, or activate integration.
+The workflow uses `contents: read`, preserves diagnostics, and cannot clone Atlas, write files, commit, push, merge, promote status, or activate integration.
+
+## Automated validation result
+
+The exact draft PR #14 head passes all inherited Phase 5–11B workflows and the Phase 12 release-candidate workflow. Strict repository validation reports zero warnings and zero errors. RC1 validates 60 core files, 16 synthesis files, 16 draft-release experiences, 143 core sources, 28 experience sources, the ten equation contracts, terminology boundaries, document accessibility heuristics, five revision-impact scenarios, and the non-live pilot record.
+
+Automated conformance does not change the release decision. It remains **Hold**.
 
 ## Human authority still required
 

@@ -208,7 +208,7 @@ Authority granting that transition:
 
 The correct description today is:
 
-> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and an unreleased Phase 12 material release candidate awaiting coordinated automated validation and independent human authority.
+> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and a machine-validated but unreleased Phase 12 material release candidate awaiting independent human authority.
 
 ## Phase 10 synthesis disposition
 
@@ -226,7 +226,7 @@ The correct description today is:
 
 ## Phase 12 release-candidate disposition
 
-- RC1 scope is frozen in `release/phase-12-release-candidate.json`.
+- RC1 scope is frozen in `release/phase-12-release-candidate.json` and automated conformance passes on draft PR #14.
 - The release decision is **Hold**.
 - Automated promotion to Complete or Released is prohibited.
 - The first bounded integration pilot remains conditional and non-live.
