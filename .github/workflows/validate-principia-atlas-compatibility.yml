@@ -66,39 +66,46 @@ jobs:
           python3 -m py_compile scripts/validate_phase13_software.py
           python3 -m py_compile software/tests/test_bridge_candidate.py
 
-      - name: Validate finalized candidate records
-        run: python3 scripts/finalize_bridge_candidate_records.py --check
-
-      - name: Validate deterministic exact-revision export
-        run: python3 scripts/export_principia_atlas_dependents.py --check
-
-      - name: Validate Principia Atlas bridge candidate
-        run: python3 scripts/validate_principia_atlas_bridge.py
-
-      - name: Validate bridge audit and separate status authority
-        run: python3 scripts/validate_principia_atlas_audit.py
-
-      - name: Validate applied-material identity and safety
+      - name: Run complete bridge candidate chain
+        id: candidate_chain
+        shell: bash
         run: |
-          python3 scripts/validate_experiences.py --strict
-          python3 scripts/validate_phase11b_expansion.py
+          set +e
+          status=0
+          run_check() {
+            printf '\n$'
+            printf ' %q' "$@"
+            printf '\n'
+            "$@" || status=1
+          }
+          {
+            run_check python3 scripts/finalize_bridge_candidate_records.py --check
+            run_check python3 scripts/export_principia_atlas_dependents.py --check
+            run_check python3 scripts/validate_principia_atlas_bridge.py
+            run_check python3 scripts/validate_principia_atlas_audit.py
+            run_check python3 scripts/validate_experiences.py --strict
+            run_check python3 scripts/validate_phase11b_expansion.py
+            run_check python3 scripts/validate_phase10_synthesis.py
+            run_check python3 scripts/validate_phase10_audit.py
+            run_check python3 scripts/validate_repo.py --strict
+            run_check python3 scripts/validate_phase12_release_candidate.py
+            run_check python3 -m unittest discover -s software/tests -v
+            run_check python3 scripts/validate_phase13_software.py
+          } > bridge-candidate-validation.log 2>&1
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat bridge-candidate-validation.log
+          exit 0
 
-      - name: Validate reviewed synthesis continuity
-        run: |
-          python3 scripts/validate_phase10_synthesis.py
-          python3 scripts/validate_phase10_audit.py
+      - name: Upload complete bridge candidate diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-candidate-validation-diagnostics
+          path: bridge-candidate-validation.log
 
-      - name: Validate strict repository
-        run: python3 scripts/validate_repo.py --strict
-
-      - name: Validate material release candidate
-        run: python3 scripts/validate_phase12_release_candidate.py
-
-      - name: Run software and bridge regression tests
-        run: python3 -m unittest discover -s software/tests -v
-
-      - name: Validate software foundation
-        run: python3 scripts/validate_phase13_software.py
+      - name: Stop on bridge candidate errors
+        if: steps.candidate_chain.outputs.status != '0'
+        run: exit 1
 
       - name: Verify workflow immutability
         shell: bash
