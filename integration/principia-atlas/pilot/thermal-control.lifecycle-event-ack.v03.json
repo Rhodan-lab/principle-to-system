@@ -1,0 +1,28 @@
+{
+  "ack_id": "principia-atlas:lifecycle-event-ack:thermal-control:0001",
+  "authority": {
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-atlas-offline-event-ack/0.3",
+  "decision": "accepted-for-offline-impact-recording",
+  "event_id": "principia-atlas:lifecycle-event:thermal-control:0001",
+  "event_sequence": 1,
+  "event_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+  "live": false,
+  "mode": "offline-event-protocol",
+  "observed": {
+    "affected_artifact_count": 3,
+    "affected_artifacts_sha256": "9a43b418d3fe7b38b491bacc66b6f934748ad959293e17b4bbd35294134d9627",
+    "atlas_entity": {
+      "id": "concept:en:feedback",
+      "lifecycle_status": "deprecated",
+      "revision": 1,
+      "staleness": "current"
+    },
+    "receipt_chain_head_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562"
+  },
+  "protocol_id": "principia-atlas:offline-event-protocol:thermal-control"
+}
