@@ -1,0 +1,196 @@
+{
+  "atlas_importer": {
+    "accepted_wire_contract": "principia-atlas-external-dependent/0.2",
+    "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+    "governance_finalization": {
+      "head_commit": "c30bebf6a63263da8a4356f6c4dbc85f11a67bc4",
+      "merge_commit": "9370cc746e9756e433ac3772d56d079c9803b144",
+      "mode": "importer-candidate",
+      "pull_request": 21,
+      "state": "accepted"
+    },
+    "implementation": {
+      "merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+      "pull_request": 20,
+      "tested_head_commit": "379d88d620469a749cebb88b0b41d9960e667558"
+    },
+    "operational_record_contract": "atlas-external-dependent/0.1",
+    "repository": "Rhodan-lab/Atlas"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false
+  },
+  "batch_id": "principia-atlas:offline-batch:thermal-control:0001",
+  "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+  "contract": "principia-atlas-offline-batch-receipt/0.2",
+  "live": false,
+  "mode": "offline-multi-artifact-pilot",
+  "previous_receipt_sha256": null,
+  "receipt_id": "principia-atlas:offline-receipt:thermal-control:0001",
+  "result": {
+    "accepted": true,
+    "accepted_count": 3,
+    "atomic": true,
+    "records": [
+      {
+        "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+        "contract": "atlas-external-dependent/0.1",
+        "dependencies": [
+          {
+            "change_policy": "block-release",
+            "entity_type": "claim",
+            "id": "claim:en:model-oscillation-does-not-prove-real-system",
+            "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "load-bearing",
+            "use": "claim-boundary"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:feedback",
+            "key": "concept:en:feedback@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:oscillation",
+            "key": "concept:en:oscillation@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "model",
+            "id": "model:en:delayed-correction-recurrence",
+            "key": "model:en:delayed-correction-recurrence@2",
+            "resolution": "current",
+            "revision": 2,
+            "role": "supporting",
+            "use": "model-boundary"
+          }
+        ],
+        "id": "principia:failure-pattern:feedback-instability",
+        "kind": "principia-artifact",
+        "legacy_id_index_verified": true,
+        "live": false,
+        "mode": "bridge-candidate",
+        "repository": "Rhodan-lab/principle-to-system",
+        "revision": 1,
+        "role": "load-bearing",
+        "source_contract": "principia-atlas-external-dependent/0.2",
+        "source_shape": "depends_on+depends_on_exact",
+        "status_inheritance": "prohibited"
+      },
+      {
+        "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+        "contract": "atlas-external-dependent/0.1",
+        "dependencies": [
+          {
+            "change_policy": "block-release",
+            "entity_type": "claim",
+            "id": "claim:en:model-oscillation-does-not-prove-real-system",
+            "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "load-bearing",
+            "use": "claim-boundary"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:feedback",
+            "key": "concept:en:feedback@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:oscillation",
+            "key": "concept:en:oscillation@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          }
+        ],
+        "id": "principia:investigation:room-cooling",
+        "kind": "principia-artifact",
+        "legacy_id_index_verified": true,
+        "live": false,
+        "mode": "bridge-candidate",
+        "repository": "Rhodan-lab/principle-to-system",
+        "revision": 1,
+        "role": "supporting",
+        "source_contract": "principia-atlas-external-dependent/0.2",
+        "source_shape": "depends_on+depends_on_exact",
+        "status_inheritance": "prohibited"
+      },
+      {
+        "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+        "contract": "atlas-external-dependent/0.1",
+        "dependencies": [
+          {
+            "change_policy": "block-release",
+            "entity_type": "claim",
+            "id": "claim:en:model-oscillation-does-not-prove-real-system",
+            "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "load-bearing",
+            "use": "claim-boundary"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:feedback",
+            "key": "concept:en:feedback@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          },
+          {
+            "change_policy": "inspect",
+            "entity_type": "concept",
+            "id": "concept:en:oscillation",
+            "key": "concept:en:oscillation@1",
+            "resolution": "current",
+            "revision": 1,
+            "role": "supporting",
+            "use": "definition"
+          }
+        ],
+        "id": "principia:system-dossier:refrigerator",
+        "kind": "principia-artifact",
+        "legacy_id_index_verified": true,
+        "live": false,
+        "mode": "bridge-candidate",
+        "repository": "Rhodan-lab/principle-to-system",
+        "revision": 1,
+        "role": "load-bearing",
+        "source_contract": "principia-atlas-external-dependent/0.2",
+        "source_shape": "depends_on+depends_on_exact",
+        "status_inheritance": "prohibited"
+      }
+    ],
+    "rejected_count": 0,
+    "status_inheritance": "prohibited"
+  },
+  "sequence": 1
+}
