@@ -3,9 +3,11 @@
 > Date: 2026-07-26  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Atlas repository modified: no  
-> Candidate state: `offline-multi-artifact-candidate`  
+> State: `offline-multi-artifact-validated`  
 > Mode: `offline-multi-artifact-pilot`  
-> Live: `false`
+> Live: `false`  
+> Pull request: #20  
+> Exact tested head: `67d6ec98c51188dabcffd48dad968a83653ea584`
 
 ## Purpose
 
@@ -141,8 +143,23 @@ python3 -m unittest software.tests.test_phase16_offline_multi_artifact -v
 
 The permanent workflow also runs Phase 15 post-merge validation, bridge and audit checks, strict repository validation, release-candidate validation, all software tests, and the Phase 13 software validator.
 
-## Candidate boundary
+## Validation result
 
-Automated candidate checks must pass before the state may change from `offline-multi-artifact-candidate` to `offline-multi-artifact-validated`. The branch and pull request are not themselves proof of validation.
+The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed every applicable workflow together:
+
+- Phase 5 Sources;
+- Phase 6 Foundations;
+- Phase 7 Physical Science;
+- Phase 8 Life and Earth Systems;
+- Phase 9 Technology;
+- Phase 10 Synthesis;
+- Phase 11B Expansion;
+- Principia–Atlas Compatibility;
+- Phase 12 Release Candidate;
+- Phase 13 Software Foundation;
+- Phase 15 Offline Pilot;
+- Phase 16 Offline Multi-Artifact.
+
+The Phase 16 state is therefore `offline-multi-artifact-validated`. Merge remains a separate explicit repository action.
 
 Live activation is not part of Phase 16. A later event protocol or live bridge requires a distinct contract transition and separate machine gates.
