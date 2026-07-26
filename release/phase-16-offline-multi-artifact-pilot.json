@@ -1,0 +1,72 @@
+{
+  "contract": "principia-offline-multi-artifact-pilot/0.2",
+  "id": "principia-atlas-offline-multi-artifact-thermal-control",
+  "phase": 16,
+  "state": "offline-multi-artifact-candidate",
+  "mode": "offline-multi-artifact-pilot",
+  "live": false,
+  "principia": {
+    "repository": "Rhodan-lab/principle-to-system",
+    "branch": "agent/phase-16-offline-multi-artifact-pilot",
+    "artifacts": [
+      {
+        "id": "principia:failure-pattern:feedback-instability",
+        "revision": 1,
+        "export_sha256": "6d9d232007b5ecc18c6470f5c2e457decfcae1a5be99764be9796b4b24db7047"
+      },
+      {
+        "id": "principia:investigation:room-cooling",
+        "revision": 1,
+        "export_sha256": "6358d9c15e9d41f8d9e6ed04d78f1f55348c10a12856f0f9644b899acfe72e05"
+      },
+      {
+        "id": "principia:system-dossier:refrigerator",
+        "revision": 1,
+        "export_sha256": "a92ddd10e3711c3c1b1f0ee152da1f5b66c036f857cfc27c58f9c0a4d9633b68"
+      }
+    ]
+  },
+  "atlas": {
+    "repository": "Rhodan-lab/Atlas",
+    "implementation_pull_request": 20,
+    "implementation_head_commit": "379d88d620469a749cebb88b0b41d9960e667558",
+    "implementation_merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+    "governance_pull_request": 21,
+    "governance_head_commit": "c30bebf6a63263da8a4356f6c4dbc85f11a67bc4",
+    "governance_merge_commit": "9370cc746e9756e433ac3772d56d079c9803b144",
+    "mode": "importer-candidate",
+    "live": false
+  },
+  "contracts": {
+    "wire": "principia-atlas-external-dependent/0.2",
+    "batch": "principia-atlas-offline-import-batch/0.2",
+    "receipt": "principia-atlas-offline-batch-receipt/0.2",
+    "receipt_chain": "principia-atlas-offline-receipt-chain/0.2",
+    "impact": "principia-atlas-offline-multi-impact-matrix/0.2",
+    "recovery": "principia-atlas-offline-recovery-matrix/0.2"
+  },
+  "digests": {
+    "atlas_snapshot": "255afa6be2e5b1c34f67da29b8f264f1980b2183a5233e9290847a23cc24543a",
+    "batch": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+    "receipt": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+    "receipt_chain": "862e00ccafc4c46de02f857af20cd92e529c58947ef446e325101e2e043afafe",
+    "impact_matrix": "eb0cb45c1c01acd5cced57942a4cd0817fd749ee5bffe889e9df613c77da7c6c",
+    "recovery_matrix": "226a591140b95f4d64eda68982935ee022cb9c813f768cc4762eedb5de87a3dd"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "automatic_status_change": false,
+    "automatic_release_action": false,
+    "repository_mutation": false
+  },
+  "validation": {
+    "status": "pending",
+    "pull_request": null,
+    "tested_head_commit": null,
+    "merge_commit": null
+  },
+  "next_gate": "offline-event-protocol-candidate",
+  "live_activation_permitted": false
+}
