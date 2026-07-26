@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# DNA, Gene Expression, Inheritance, and Evolution
+
 ## 1. Observation prompts
 
 - Use an anonymised or fictional pedigree containing clearly defined single-gene traits. Which inheritance patterns are consistent with the data, and which alternatives remain possible? Avoid inferring sensitive family or health information from appearance.

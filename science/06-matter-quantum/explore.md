@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Exploring Quantum Foundations
+
 ## 1. Observation prompts
 
 - Look at a neon sign or a sodium street lamp. Notice the distinct, pure colour of the light compared to the broad spectrum of an incandescent bulb or the sun. What does this purity suggest about the energy transitions happening inside the gas atoms?

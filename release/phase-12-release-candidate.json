@@ -1,0 +1,77 @@
+{
+  "schema": "principia-release-candidate/0.1",
+  "candidate_id": "principia-material-foundation-rc1",
+  "phase": "12",
+  "generated": "2026-07-26",
+  "base": {
+    "repository": "Rhodan-lab/principle-to-system",
+    "phase_11b_merge_commit": "223327901b6c1c259350622a00b822511293d516"
+  },
+  "scope": {
+    "core_modules": 20,
+    "core_files": 60,
+    "pathways": 6,
+    "crosscutting_concepts": 7,
+    "knowledge_maps": 3,
+    "synthesis_files": 16,
+    "experience_routes": 4,
+    "experience_artifacts": 16,
+    "system_dossiers": 4,
+    "failure_patterns": 4,
+    "investigations": 4,
+    "design_challenges": 4,
+    "core_source_records": 143,
+    "experience_source_records": 28,
+    "bridge_fixtures": 1
+  },
+  "status_policy": {
+    "core_pedagogical_status": "reviewed",
+    "synthesis_pedagogical_status": "reviewed",
+    "experience_pedagogical_status": "reviewed",
+    "experience_artifact_revision": 1,
+    "experience_release_status": "draft",
+    "repository_release_state": "candidate-hold",
+    "complete_allowed": false,
+    "released_allowed": false,
+    "automatic_promotion": false,
+    "atlas_status_inheritance": false,
+    "principia_status_export": false
+  },
+  "contracts": {
+    "synthesis_graph": "synthesis/phase-10-canonical-graph.json",
+    "experience_inventory": "experiences/phase-11b-inventory.json",
+    "bridge_contract": "contracts/principia-atlas/0.1/README.md",
+    "bridge_fixture": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+    "terminology": "release/phase-12-terminology.json",
+    "equations": "release/phase-12-equation-contracts.json",
+    "revision_impact": "release/phase-12-revision-impact.json",
+    "pilot_readiness": "release/phase-12-pilot-readiness.json"
+  },
+  "automated_gates": [
+    "metadata-and-inventory",
+    "source-integrity",
+    "links-and-navigation",
+    "terminology-consistency",
+    "equation-boundaries",
+    "safety-boundaries",
+    "accessibility-heuristics",
+    "revision-and-deprecation-behavior",
+    "principia-atlas-non-live-boundary",
+    "workflow-immutability"
+  ],
+  "human_authority_gates": [
+    "independent-scientific-review",
+    "editorial-and-pedagogical-review",
+    "accessibility-and-usability-review",
+    "safety-and-ethical-review",
+    "source-and-attribution-review",
+    "release-owner-approval",
+    "atlas-side-live-pilot-approval"
+  ],
+  "decision": {
+    "release_decision": "hold",
+    "bounded_pilot_readiness": "conditional",
+    "live_atlas_integration": false,
+    "reason": "Automated repository-wide validation may establish RC conformance, but independent human review and Atlas-side integration authority are not yet recorded."
+  }
+}

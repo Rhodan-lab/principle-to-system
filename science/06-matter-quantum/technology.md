@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Quantum Technologies and Atomic Engineering
+
 ## 1. Scientific principles used
 
 The technologies discussed in this module rely on the fundamental principles of quantum mechanics and atomic structure:

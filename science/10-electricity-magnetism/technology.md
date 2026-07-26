@@ -50,6 +50,18 @@ A large-scale electrical grid is a complex, interconnected architecture comprisi
 4. **Distribution:** Lower-voltage networks delivering power to individual homes and businesses.
 5. **Consumption:** The end-use devices that convert electrical energy into other forms.
 
+
+### Explicit Principle-to-System Chain
+
+```text
+changing magnetic flux and the Lorentz force
+→ induced voltage and force on charges or currents
+→ windings, magnetic cores, insulation, and switching components
+→ generators, transformers, motors, and power converters
+→ measurement, protection, and control
+→ interconnected electrical service within thermal, insulation, and stability limits
+```
+
 ## 7. Design constraints
 
 - **Material Limits:** Conductors have finite resistance, leading to $I^2R$ (Joule) heating losses. Insulators have breakdown voltages; exceeding them causes arcing and failure. Magnetic materials saturate, limiting the maximum magnetic field in transformers and motors.

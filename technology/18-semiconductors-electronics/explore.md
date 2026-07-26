@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Semiconductors, electronics, and computer hardware
+
 ## 1. Observation prompts
 
 - Use built-in telemetry during ordinary use only; do not intentionally overheat or stress a device. Compare reported temperature, power, utilisation, brightness, charging, and workload while recognising that sensor placement and software estimates limit interpretation.

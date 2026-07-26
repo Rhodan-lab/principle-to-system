@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Cells, membranes, enzymes, metabolism, and bioenergetics
+
 ## 1. Scientific principles used
 
 The engineering of biological systems and bio-inspired technologies relies heavily on the principles of bioenergetics, enzyme kinetics, and membrane transport. Key principles include the catalytic lowering of activation energy by enzymes, the selective permeability of lipid bilayers, the generation and utilization of electrochemical gradients (proton motive force), and the coupling of exergonic and endergonic reactions via ATP or other intermediates.

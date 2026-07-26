@@ -71,10 +71,13 @@ jobs:
           python3 scripts/finalize_phase9_review.py --check
           python3 scripts/validate_phase9_technology_review.py
 
-      - name: Verify Phase 9 deterministic idempotence
+      - name: Verify Phase 9 and Phase 12 composed idempotence
         shell: bash
         run: |
           python3 scripts/finalize_phase9_review.py --write
+          if [ -f scripts/apply_phase12_chain_repairs.py ]; then
+            python3 scripts/apply_phase12_chain_repairs.py --write
+          fi
           git diff --exit-code -- \
             technology/17-materials-manufacturing \
             technology/18-semiconductors-electronics \

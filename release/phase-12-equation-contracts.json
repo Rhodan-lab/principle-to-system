@@ -1,0 +1,82 @@
+{
+  "schema": "principia-equation-contracts/0.1",
+  "generated": "2026-07-26",
+  "contracts": [
+    {
+      "id": "little-law",
+      "expression": "L = lambda W",
+      "artifacts": ["system-dossiers/web-service-request.md", "investigations/queue-delay-near-capacity.md"],
+      "required_boundary": "stable long-run system with a consistent population and boundary",
+      "dimensions": "requests = requests/time × time"
+    },
+    {
+      "id": "queue-backlog-balance",
+      "expression": "dB/dt = lambda - mu",
+      "artifacts": ["system-dossiers/web-service-request.md", "failure-atlas/retry-storm-queue-collapse.md"],
+      "required_boundary": "approximate backlog balance while backlog is positive",
+      "dimensions": "requests/time = requests/time - requests/time"
+    },
+    {
+      "id": "pv-power",
+      "expression": "P_pv = G A eta_pv",
+      "artifacts": ["system-dossiers/solar-battery-microgrid.md"],
+      "required_boundary": "operating approximation with irradiance, active area, and condition-dependent efficiency",
+      "dimensions": "W = W/m^2 × m^2 × 1"
+    },
+    {
+      "id": "battery-energy-balance",
+      "expression": "E_next = E + eta_c P_c dt - P_d dt / eta_d",
+      "artifacts": ["system-dossiers/solar-battery-microgrid.md", "design-challenges/resilient-charging-hub.md"],
+      "required_boundary": "declared charging and discharging sign convention with power, state, temperature, and usable-energy constraints",
+      "dimensions": "energy = energy + power × time - power × time"
+    },
+    {
+      "id": "water-storage-balance",
+      "expression": "dV/dt = Q_in - Q_out",
+      "artifacts": ["system-dossiers/drinking-water-network.md"],
+      "required_boundary": "declared storage volume and volumetric-flow boundary",
+      "dimensions": "volume/time = volume/time - volume/time"
+    },
+    {
+      "id": "rainwater-storage-balance",
+      "expression": "S_next = min(S_max, max(0, S + V_in - D - L))",
+      "artifacts": ["design-challenges/nonpotable-rainwater-buffer.md"],
+      "required_boundary": "non-potable storage with explicit overflow, demand, loss, and initial-state assumptions",
+      "dimensions": "volume = volume"
+    },
+    {
+      "id": "sensor-affine-error",
+      "expression": "y = a x + b + epsilon",
+      "artifacts": ["failure-atlas/sensor-drift-hidden-degradation.md"],
+      "required_boundary": "gain drift, offset drift, random error, and an independent reference or process constraint",
+      "dimensions": "measurement units remain consistent after a dimensionless gain and same-unit offset"
+    },
+    {
+      "id": "filter-resistance",
+      "expression": "Delta p = R Q",
+      "artifacts": ["investigations/filter-loading.md"],
+      "required_boundary": "empirical hydraulic resistance for a declared operating regime; not a water-safety claim",
+      "dimensions": "pressure = pressure·time/volume × volume/time"
+    },
+    {
+      "id": "first-order-cooling",
+      "expression": "dT/dt = -k(T - T_environment)",
+      "artifacts": ["investigations/room-cooling.md"],
+      "required_boundary": "lumped-temperature approximation with approximately constant environment and effective coefficient",
+      "dimensions": "temperature/time = 1/time × temperature"
+    },
+    {
+      "id": "refrigerator-cop",
+      "expression": "COP_R = Q_L / W_in",
+      "artifacts": ["system-dossiers/refrigerator.md"],
+      "required_boundary": "same interval and system boundary for useful cooling and work input; COP is not thermal efficiency",
+      "dimensions": "dimensionless = energy/energy"
+    }
+  ],
+  "rules": [
+    "Every equation must identify its variables or units in the artifact or immediate context.",
+    "Every model must state assumptions, operating regime, or interpretation limits.",
+    "Dimensionally valid equations can still be scientifically inapplicable outside their declared boundary.",
+    "A fitted equation does not by itself establish a causal mechanism."
+  ]
+}

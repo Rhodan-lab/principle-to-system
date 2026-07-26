@@ -47,6 +47,18 @@ Engineered ecosystems can be classified by their architectural openness:
 - **Semi-Closed Systems:** Activated sludge wastewater treatment plants. They control the flow of water and the concentration of microbes (by recycling sludge), but are open to the atmosphere. They are compact and fast but energy-intensive.
 - **Closed Systems:** Closed Ecological Life Support Systems (CELSS), such as the Biosphere 2 experiment or the Micro-Ecological Life Support System Alternative (MELiSSA) developed by the European Space Agency. These are hermetically sealed architectures where all matter must be recycled. MELiSSA uses a highly modular architecture with separate, tightly controlled bioreactors for waste degradation, nitrification, and photosynthetic oxygen/food production, connected by precise fluidic loops.
 
+
+### Explicit Principle-to-System Chain
+
+```text
+microbial metabolism, mass conservation, and transport
+→ transformation rates and stoichiometric balances
+→ biofilms, plants, substrates, and controlled bioreactors
+→ hydraulic, nutrient, and atmospheric compartments
+→ sensing, residence-time control, maintenance, and backup barriers
+→ treatment or life-support service within declared open-system limits
+```
+
 ## 7. Design constraints
 
 - **Hydraulic Retention Time (HRT):** The fluid must remain in the system long enough for slow-growing microbes (like nitrifying bacteria) to perform their metabolic functions.

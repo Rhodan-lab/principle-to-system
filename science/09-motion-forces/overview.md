@@ -10,11 +10,13 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
-# 1. The central questions
+# Motion, Forces, Momentum, Rotation, and Gravitation
+
+## 1. The central questions
 
 How do objects move, and what causes their motion to change? Why do some objects remain at rest while others accelerate, rotate, or orbit? How can we predict the future trajectory of a system given its current state and the interactions it experiences? Classical mechanics seeks to answer these questions by establishing a causal framework linking forces to changes in motion, constrained by fundamental conservation laws.
 
-# 2. Observable phenomena
+## 2. Observable phenomena
 
 The principles of classical mechanics are evident across vastly different scales:
 - **Terrestrial motion:** A thrown ball follows a parabolic path; a sliding block eventually stops due to friction; a pendulum swings with a regular period.
@@ -22,7 +24,7 @@ The principles of classical mechanics are evident across vastly different scales
 - **Rotational dynamics:** A spinning ice skater rotates faster when pulling their arms inward; a gyroscope resists changes to its axis of rotation; a wrench amplifies the turning effect of a force.
 - **Gravitational phenomena:** The Moon orbits the Earth; tides rise and fall; apples fall from trees; planets trace elliptical paths around the Sun.
 
-# 3. Essential concepts
+## 3. Essential concepts
 
 - **Kinematics:** The description of motion (position, velocity, acceleration) without regard to its causes.
 - **Dynamics:** The study of the causes of motion, specifically how forces and torques affect the state of a system.
@@ -32,7 +34,7 @@ The principles of classical mechanics are evident across vastly different scales
 - **Conservation Laws:** Fundamental principles stating that certain isolated system properties (total momentum, angular momentum, total energy) remain constant over time.
 - **Reference Frames:** Coordinate systems from which motion is observed and measured. Inertial frames are those in which Newton's first law holds true.
 
-# 4. Mechanisms and causal chains
+## 4. Mechanisms and causal chains
 
 The causal structure of classical mechanics is deterministic and local (excluding the instantaneous action-at-a-distance model of Newtonian gravity, later refined by general relativity).
 - **Force causes acceleration:** A net external force applied to a mass induces an acceleration inversely proportional to that mass (Newton's Second Law). This acceleration changes the object's velocity over time, which in turn changes its position.
@@ -40,7 +42,7 @@ The causal structure of classical mechanics is deterministic and local (excludin
 - **Torque causes angular acceleration:** An off-center force produces a torque, which induces an angular acceleration inversely proportional to the object's moment of inertia, changing its rotational state.
 - **Gravitational attraction:** Mass curves spacetime (or in the classical view, generates a gravitational field), which exerts an attractive force on other masses, causing them to accelerate toward one another or enter stable orbits.
 
-# 5. Important quantities
+## 5. Important quantities
 
 | Quantity | Symbol | SI Unit | Vector/Scalar | Description |
 | :--- | :---: | :---: | :---: | :--- |
@@ -55,7 +57,7 @@ The causal structure of classical mechanics is deterministic and local (excludin
 | Angular Momentum | $\vec{L}$ | $\text{kg}\cdot\text{m}^2/\text{s}$ | Vector | Rotational equivalent of momentum. |
 | Moment of Inertia | $I$ or $\mathbf{I}$ | $\text{kg}\cdot\text{m}^2$ | Scalar about a fixed axis; tensor generally | Relates angular momentum or torque to rotational motion for a defined geometry and axis. |
 
-# 6. Mathematical models and equations
+## 6. Mathematical models and equations
 
 **Kinematics (Constant Acceleration):**
 For an object moving with constant acceleration $\vec{a}$, its velocity $\vec{v}$ and position $\vec{r}$ at time $t$ are:
@@ -82,7 +84,7 @@ The attractive force between two point masses $m_1$ and $m_2$ separated by a dis
 $$ \vec{F}_g = -G \frac{m_1 m_2}{r^2} \hat{r} $$
 where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointing from one mass to the other.
 
-# 7. Definitions of symbols and units
+## 7. Definitions of symbols and units
 
 - $\vec{r}, \vec{r}_0$: Final and initial position vectors ($\text{m}$).
 - $\vec{v}, \vec{v}_0$: Final and initial velocity vectors ($\text{m/s}$).
@@ -101,7 +103,7 @@ where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointin
 - $r$: Distance between centers of mass ($\text{m}$).
 - $\hat{r}$: Unit vector indicating direction.
 
-# 8. Assumptions and approximations
+## 8. Assumptions and approximations
 
 - **Point Mass Approximation:** Extended objects are often treated as point masses located at their center of mass, ignoring internal structure and rotation.
 - **Rigid Body Assumption:** In rotational dynamics, objects are assumed to not deform under stress, meaning the distance between any two points in the object remains constant.
@@ -110,19 +112,19 @@ where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointin
 - **Macroscopic Scale:** The models assume objects are large enough that quantum mechanical effects (like the uncertainty principle) are negligible.
 - **Constant Gravity:** Near the Earth's surface, gravitational acceleration $g$ is often approximated as constant ($9.81 \, \text{m/s}^2$), ignoring the $1/r^2$ dependence.
 
-# 9. Spatial and temporal scales
+## 9. Spatial and temporal scales
 
 - **Spatial Scale:** Classical mechanics accurately describes phenomena ranging from the microscopic (e.g., dust particles, $\sim 10^{-6} \, \text{m}$) to the astronomical (e.g., planetary orbits, $\sim 10^{12} \, \text{m}$). It breaks down at the atomic scale ($\sim 10^{-10} \, \text{m}$).
 - **Temporal Scale:** Applicable to events occurring over fractions of a second (e.g., a bat hitting a baseball, $\sim 10^{-3} \, \text{s}$) to billions of years (e.g., galactic rotation).
 
-# 10. Common misconceptions
+## 10. Common misconceptions
 
 - **"Force is required to maintain motion."** (Aristotelian view). In reality, force is required to *change* motion. An object in motion will remain in motion indefinitely unless acted upon by a net external force (Newton's First Law).
 - **"Heavier objects fall faster than lighter ones."** In a vacuum, all objects accelerate toward Earth at the same rate regardless of mass, because the gravitational force is proportional to mass, but acceleration is inversely proportional to mass, canceling the effect.
 - **"Centrifugal force pulls objects outward in a circle."** Centrifugal force is a fictitious force perceived in a rotating reference frame. In an inertial frame, the only force is the *centripetal* force pulling the object *inward* to maintain circular motion.
 - **"Astronauts in orbit are weightless because there is no gravity in space."** Gravity is very much present in low Earth orbit (only slightly weaker than at the surface). Astronauts feel weightless because they, and their spacecraft, are in continuous free-fall toward Earth.
 
-# 11. Connections to other modules
+## 11. Connections to other modules
 
 - **03-mathematical-models:** Provides the calculus and vector algebra necessary to formulate kinematics and dynamics.
 - **08-energy-thermodynamics:** Connects macroscopic mechanical energy to microscopic kinetic energy (heat) and introduces non-conservative forces like friction.
@@ -137,7 +139,7 @@ where $G$ is the gravitational constant and $\hat{r}$ is the unit vector pointin
 - Third-law force pairs act on different bodies. Momentum conservation follows from the external-force balance for the chosen system; internal-force cancellation must be justified for the model used.
 - Newtonian gravity is an accurate weak-field, low-speed approximation. General relativity is required for strong fields, high precision, or relativistic motion.
 
-# 12. Sources
+## 12. Sources
 
 
 

@@ -52,6 +52,18 @@ Manufacturing architectures combine material preparation, transformation, handli
 
 A digital thread can connect requirements, material lots, process parameters, machine state, inspection, nonconformance, and lifecycle records, but data integrity and configuration control must be demonstrated.
 
+
+### Explicit Principle-to-System Chain
+
+```text
+bonding, phase behaviour, kinetics, transport, and mechanics
+→ process windows and defect mechanisms
+→ feedstock, tooling, energy source, fixture, and atmosphere
+→ controlled transformation, sensing, and metrology
+→ qualified manufacturing route with configuration control
+→ traceable component population under performance and lifecycle constraints
+```
+
 ## 7. Design constraints
 
 - **Processability:** A route must match material state, chemistry, rheology, temperature range, atmosphere, joining response, and damage tolerance.

@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Cells, membranes, enzymes, metabolism, and bioenergetics
+
 ## 1. The central questions
 
 How do living systems acquire and transform energy while exporting entropy and matter to maintain organised, non-equilibrium states? How do physical boundaries and specialized catalysts enable the complex, non-equilibrium chemical reactions required for life? Bioenergetics and cellular metabolism address these questions by examining the flow of energy through biological systems, the role of membranes in compartmentalizing these processes, and the kinetic control exerted by enzymes.

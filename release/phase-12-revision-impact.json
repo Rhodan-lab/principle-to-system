@@ -1,0 +1,77 @@
+{
+  "schema": "principia-revision-impact/0.1",
+  "generated": "2026-07-26",
+  "fixture": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+  "principia_artifact": {
+    "id": "principia:failure-pattern:feedback-instability",
+    "path": "failure-atlas/feedback-instability.md",
+    "artifact_revision": 1,
+    "pedagogical_status": "reviewed",
+    "release_status": "draft"
+  },
+  "scenarios": [
+    {
+      "id": "load-bearing-claim-revised",
+      "atlas_entity": "claim:en:model-oscillation-does-not-prove-real-system",
+      "from_revision": 1,
+      "to_revision": 2,
+      "atlas_event": "revised",
+      "change_policy": "block-release",
+      "expected_principia_action": "block-release-and-revalidate",
+      "expected_release_status": "draft",
+      "automatic_pedagogical_change": false
+    },
+    {
+      "id": "supporting-model-revised",
+      "atlas_entity": "model:en:delayed-correction-recurrence",
+      "from_revision": 1,
+      "to_revision": 2,
+      "atlas_event": "revised",
+      "change_policy": "inspect",
+      "expected_principia_action": "inspect-dependency-and-record-decision",
+      "expected_release_status": "draft",
+      "automatic_pedagogical_change": false
+    },
+    {
+      "id": "supporting-concept-deprecated",
+      "atlas_entity": "concept:en:feedback",
+      "from_revision": 1,
+      "to_revision": 1,
+      "atlas_event": "deprecated",
+      "change_policy": "inspect",
+      "expected_principia_action": "inspect-deprecation-and-select-successor-or-justify-retention",
+      "expected_release_status": "draft",
+      "automatic_pedagogical_change": false
+    },
+    {
+      "id": "load-bearing-claim-retracted",
+      "atlas_entity": "claim:en:model-oscillation-does-not-prove-real-system",
+      "from_revision": 1,
+      "to_revision": 1,
+      "atlas_event": "retracted",
+      "change_policy": "block-release",
+      "expected_principia_action": "block-release-and-open-content-review",
+      "expected_release_status": "draft",
+      "automatic_pedagogical_change": false
+    },
+    {
+      "id": "principia-meaning-changed",
+      "atlas_entity": null,
+      "from_revision": 1,
+      "to_revision": 2,
+      "atlas_event": null,
+      "change_policy": "principia-revision",
+      "expected_principia_action": "increment-artifact-revision-and-regenerate-export-before-acceptance",
+      "expected_release_status": "draft",
+      "automatic_pedagogical_change": false
+    }
+  ],
+  "forbidden_outcomes": [
+    "follow-latest-without-review",
+    "copy-atlas-status",
+    "automatic-release",
+    "automatic-complete",
+    "ignore-load-bearing-retraction",
+    "reuse-stale-export-after-principia-revision"
+  ]
+}

@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Oscillations, Waves, Sound, Optics, and Signals
+
 ## 1. The central questions
 
 How does energy travel through space without the net transport of matter? Why do some systems vibrate at specific frequencies, and how do these vibrations propagate through different media? How can we mathematically describe the diverse phenomena of sound, light, and information-carrying signals using a unified framework?

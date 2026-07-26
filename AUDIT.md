@@ -13,11 +13,11 @@ The initial audit examined the repository contract and representative content ac
 - source-ledger structure and source quality;
 - commit history related to completion claims and slug repair.
 
-This was a repository-level audit, not yet a line-by-line scientific certification of all 60 learner-facing files.
+This began as a repository-level audit rather than a claim that every statement had independent external certification. Phases 6–12 progressively added focused scientific review, synthesis reconciliation, applied-material review, compatibility governance, and release-candidate validation.
 
 ## Central finding
 
-The repository has a strong educational architecture and a complete first-draft inventory. Its principal weakness is that structural completion was previously treated as scientific and editorial completion.
+The repository has a strong educational architecture and a complete reviewed material foundation. Its principal historical weakness was that structural completion was treated as scientific and editorial completion.
 
 The architecture is coherent:
 
@@ -31,7 +31,7 @@ observation
 → limitation and trade-off
 ```
 
-The pathways and crosscutting concepts reinforce this architecture well. The next phase is therefore not a redesign. It is a systematic verification and repair pass that makes the implementation satisfy its own standard.
+The corrective strategy preserved that architecture while making status, evidence, assumptions, model limits, safety, lifecycle, and release authority explicit.
 
 ## Severity levels
 
@@ -47,7 +47,7 @@ The pathways and crosscutting concepts reinforce this architecture well. The nex
 
 **Required resolution:** module status must be computed from the three learner-facing files and may advance only under the definitions in `PROJECT_STATE.md`.
 
-**Resolution:** Modules 01–20 are Reviewed after focused Phase 6–9 review; no module is Complete before the release gate.
+**Resolution:** Modules 01–20 are Reviewed after focused Phase 6–9 review; no module is Complete before explicit release authority.
 
 ### A-002 — Malformed slug values
 
@@ -57,123 +57,139 @@ A previous duplicate-slug repair produced values such as:
 slug: "11-waves-signals"-technology
 ```
 
-This is not a valid quoted scalar under the intended frontmatter contract, even though the former ad-hoc parser accepted it.
+This was not a valid scalar under the intended frontmatter contract.
 
-**Required resolution:** normalize each learner-file slug to a valid unique lowercase kebab-case identifier, for example:
+**Resolution:** learner-file slugs were normalized to valid unique lowercase kebab-case identifiers.
 
-```yaml
-slug: 11-waves-signals-technology
-```
+### A-003 — Source-ledger rows were not consistently machine-readable
 
-### A-003 — Source-ledger rows are not consistently machine-readable
+Some lines contained several sources concatenated into one Markdown table row. A row-count check could not establish source coverage.
 
-Some lines contain several sources concatenated into one Markdown table row. A row-count check therefore cannot establish that the claimed number of sources is valid.
-
-**Required resolution:** use exactly one source per row and exactly eight columns per row.
+**Resolution:** the core ledger uses exactly one source per eight-column row and contains 143 records. The applied-material ledger uses the same shape and contains 28 records.
 
 ### A-004 — Former validator could report false success
 
 The former validator used a permissive frontmatter parser, searched for section keywords anywhere in a file rather than validating headings, did not validate canonical dependency identifiers, and counted ledger lines rather than valid source rows.
 
-**Current action:** the validator has been replaced with a stricter standard-library implementation and a `--strict` release mode.
+**Resolution:** focused standard-library validators now check metadata, scientific-review continuity, canonical graphs, applied experiences, compatibility contracts, release state, and read-only workflow governance.
 
 ## Major findings
 
 ### A-005 — Non-canonical connection identifiers
 
-Several files use identifiers that do not correspond to repository modules, including names that appear to come from an earlier outline.
+Several files used identifiers that did not correspond to repository modules or came from an earlier outline.
 
-**Required resolution:** define one canonical module-ID vocabulary and use it in all `prerequisites` and `connections` lists.
+**Resolution:** canonical module identifiers and the Phase 10 graph govern prerequisites and synthesis dependencies.
 
 ### A-006 — Inconsistent `domain` semantics
 
-Some files use `domain: technology` or `domain: explore` to describe the file role, while the content guide defines domain as the module’s subject grouping.
+Some files used `domain` to describe file role rather than the module’s subject grouping.
 
-**Required resolution:** all three files in a module should share the module domain: `foundations`, `science`, or `technology`.
+**Resolution:** module metadata was normalized, while applied materials use `domain: experience` plus `experience_type`.
 
-### A-007 — Source quality does not consistently meet policy
+### A-007 — Source quality did not consistently meet policy
 
-The policy prioritizes primary literature, reviews, consensus reports, standards, agencies, institutions, societies, and peer-reviewed open textbooks. Some modules instead rely substantially on Wikipedia or weaker summaries; sampled semiconductor material cited only Wikipedia in its local source section.
+Some modules relied substantially on weak summaries.
 
-**Required resolution:** replace weak sources with higher-tier sources and verify every cited source directly before changing factual claims.
+**Resolution:** focused reviews added and normalized institutional, standards-based, consensus, textbook, and primary or review sources. Release review must still inspect attribution and source applicability rather than trusting row count alone.
 
-### A-008 — Scientific explanations require expert tightening
+### A-008 — Scientific explanations required expert tightening
 
-Representative examples include definitions that are valid only under restricted conditions but are written as general definitions, such as temperature described only through average translational kinetic energy, or entropy framed through “disorder.”
+Representative definitions were written outside their valid scope, including simplified temperature, entropy, energy, catalysis, genetics, ecology, climate, electronics, control, and AI claims.
 
-**Required resolution:** review each claim for scope, assumptions, sign convention, units, counterexamples, and model limits.
+**Resolution:** Phases 6–10 added assumptions, sign conventions, units, counterexamples, causal distinctions, and model limits across Modules 01–20 and the synthesis layer.
 
-### A-009 — Repository maps may disagree with file metadata
+### A-009 — Repository maps could disagree with file metadata
 
-The dependency map and index provide a coherent canonical graph, but sampled frontmatter lists diverge from it.
+Dependency maps and file metadata diverged.
 
-**Required resolution:** treat `INDEX.md` and the complete dependency map as the initial canonical graph, then revise both together when scientific review justifies a dependency change.
+**Resolution:** `synthesis/phase-10-canonical-graph.json` defines the direct prerequisite graph and relationship semantics.
 
-### A-010 — Pathways are stronger than some source modules
+### A-010 — Pathways were stronger than some source modules
 
-The pathways often explain abstraction and trade-offs more clearly than the modules they depend on.
+Pathways sometimes explained abstraction and trade-offs more clearly than their source modules.
 
-**Required resolution:** use pathway quality as a benchmark while reviewing module `technology.md` files, avoiding copy-paste duplication.
+**Resolution:** modules were reviewed against pathway quality, then pathways were reconciled back against the reviewed module foundation.
 
 ## Minor findings
 
 ### A-011 — Terminology and capitalization vary
 
-Module titles, headings, identifier names, and domain labels are not fully normalized.
+Module titles, headings, identifiers, and lifecycle language historically varied.
+
+**Current resolution:** metadata and synthesis terminology are normalized; `release/phase-12-terminology.json` adds an RC-level semantic contract. Human editorial review remains required.
 
 ### A-012 — Some cross-links are descriptive rather than navigable
 
-A connection may be named without a relative Markdown link, reducing the repository’s usefulness as a connected map.
+Connections were sometimes named without navigable links.
+
+**Current resolution:** synthesis and applied routes have navigable indexes and release validation checks local Markdown links. Human usability review remains required.
 
 ### A-013 — Completion history obscures review history
 
-Large batches were committed as “complete” without a documented scientific-review trail.
+Large batches were once committed as complete without a documented scientific-review trail.
 
-**Required resolution:** future review pull requests should identify claims corrected, sources opened, equations checked, and remaining caveats.
+**Resolution:** phase-specific reports, exact status policies, deterministic validators, source transitions, compatibility fixtures, and read-only CI preserve review history.
 
 ## Repair sequence
 
 ### Phase 1 — Contract and metadata
 
-1. Harden validation.
-2. Make status claims honest.
-3. Repair frontmatter syntax and unique slugs.
-4. Normalize domains, prerequisites, and connections.
-5. Normalize the source ledger.
-6. Resolve all structural validator errors.
+Completed through Phases 2–5:
+
+1. hardened validation;
+2. made status claims honest;
+3. repaired frontmatter and unique slugs;
+4. normalized domains, prerequisites, and connections;
+5. normalized the source ledger;
+6. resolved structural validator errors.
 
 ### Phase 2 — Foundations review
 
-Review Modules 01–05 in order. These modules define the reasoning, measurement, modeling, probability, and computational language used by every later module.
+Completed in repository Phase 6 for Modules 01–05.
 
 ### Phase 3 — Science review
 
-Review Modules 06–16 in dependency order. Check equations, units, causal mechanisms, scale transitions, conservation principles, and limits of validity.
+Completed in repository Phases 7–8 for Modules 06–16.
 
 ### Phase 4 — Technology review
 
-Review Modules 17–20 against the scientific modules. Ensure that each component and architecture is causally connected to the underlying principle and that constraints, safety, reliability, and lifecycle are substantive.
+Completed in repository Phase 9 for Modules 17–20.
 
 ### Phase 5 — Synthesis reconciliation
 
-**Implemented in repository Phase 10.** Pathways, crosscutting concepts, maps, status, terminology, links, and prerequisite direction are reconciled against reviewed Modules 01–20 and a machine-readable canonical graph.
+Completed in repository Phase 10. Pathways, crosscutting concepts, maps, status, terminology, links, and prerequisite direction are reconciled against reviewed Modules 01–20 and a machine-readable canonical graph.
 
-### Phase 6 — Release gate
+### Phase 6 — Applied material and compatibility
 
-A release candidate must pass:
+Completed through repository Phases 11A–11B:
 
-```bash
-python3 scripts/validate_repo.py --strict
-```
+- exact-revision Principia artifact identity;
+- non-live Principia–Atlas compatibility contract;
+- four complete applied-learning routes;
+- sixteen reviewed, revisioned, draft-release experiences;
+- route-specific source and safety review.
 
-It must also have no unresolved scientific-review findings.
+### Phase 7 — Release candidate
+
+Repository Phase 12 defines `principia-material-foundation-rc1` and adds:
+
+- exact candidate scope;
+- lifecycle and release-hold policy;
+- terminology and equation contracts;
+- document accessibility heuristics;
+- revision, deprecation, and retraction scenarios;
+- bounded Principia–Atlas pilot readiness;
+- strict read-only RC validation.
+
+A validator pass does not remove the human authority gates.
 
 ## Review record template
 
-Use this template in module-focused pull requests:
+Use this template in focused review pull requests:
 
 ```text
-Module:
+Module or artifact:
 Files reviewed:
 Scientific claims corrected:
 Equations and units checked:
@@ -182,19 +198,36 @@ Sources opened and verified:
 Weak sources replaced:
 Links and identifiers repaired:
 Safe explorations checked:
+Accessibility and usability observations:
 Remaining caveats:
 Status transition:
+Authority granting that transition:
 ```
 
 ## Current disposition
 
-The repository is valuable and worth continuing. Its architecture should be preserved. The correct description today is:
+The correct description today is:
 
-> A scientifically reviewed 20-module foundation with a reconciled synthesis layer, awaiting applied-material expansion, independent review, and strict release validation.
+> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and a machine-validated but unreleased Phase 12 material release candidate awaiting independent human authority.
 
 ## Phase 10 synthesis disposition
 
 - A-001 through A-010 have repository-level resolutions or focused review artifacts.
 - A-011 and A-012 are addressed for the synthesis layer through canonical titles, identifiers, navigable links, and edge vocabulary.
 - A-013 is addressed through phase-specific reports, deterministic scripts, and read-only CI.
-- No synthesis document is Complete; final completion remains governed by Phase 12.
+- No synthesis document is Complete; completion remains governed by explicit release authority.
+
+## Phase 11 applied-material and compatibility disposition
+
+- Four complete routes now test the experience model across thermal, energy, water, and distributed-information systems.
+- Every experience is Reviewed with `artifact_revision: 1` and `release_status: draft`.
+- Electrical, public-health, privacy, and live-system boundaries are explicit.
+- The Principia–Atlas fixture remains `live: false` and no status crosses repositories automatically.
+
+## Phase 12 release-candidate disposition
+
+- RC1 scope is frozen in `release/phase-12-release-candidate.json` and automated conformance passes on draft PR #14.
+- The release decision is **Hold**.
+- Automated promotion to Complete or Released is prohibited.
+- The first bounded integration pilot remains conditional and non-live.
+- Independent scientific, editorial, accessibility, safety, attribution, release-owner, and Atlas-side decisions remain required.

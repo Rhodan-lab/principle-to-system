@@ -1,0 +1,76 @@
+{
+  "schema": "principia-terminology/0.1",
+  "generated": "2026-07-26",
+  "terms": [
+    {
+      "term": "reviewed",
+      "meaning": "A focused Principia review has checked the declared scope; the artifact is not automatically complete, released, or independently certified.",
+      "must_not_imply": ["released", "complete", "Atlas-reviewed"]
+    },
+    {
+      "term": "complete",
+      "meaning": "A Principia pedagogical lifecycle state that requires the repository release gate and explicit authority; it is forbidden during RC1.",
+      "must_not_imply": ["Atlas knowledge maturity", "software availability"]
+    },
+    {
+      "term": "release_status",
+      "meaning": "Principia publication readiness, independent of pedagogical status and Atlas knowledge status.",
+      "allowed_rc1_value": "draft"
+    },
+    {
+      "term": "artifact_revision",
+      "meaning": "A positive exact Principia revision that changes when dependency-relevant meaning changes.",
+      "allowed_rc1_value": 1
+    },
+    {
+      "term": "exact revision",
+      "meaning": "A dependency reference to one immutable integer revision, never a mutable label such as latest."
+    },
+    {
+      "term": "model",
+      "meaning": "A purpose-bounded representation with assumptions, variables, parameters, evidence, and limitations; not the system itself."
+    },
+    {
+      "term": "cause",
+      "meaning": "A claim requiring an identification strategy, intervention, mechanism, or other justified causal evidence; correlation alone is insufficient."
+    },
+    {
+      "term": "energy",
+      "meaning": "A conserved accounting quantity whose transfers and stores depend on a declared system boundary; energy is not a material substance and is not simply released by breaking bonds."
+    },
+    {
+      "term": "power",
+      "meaning": "Rate of energy transfer or conversion, measured in watts, distinct from energy measured in joules or watt-hours."
+    },
+    {
+      "term": "efficiency",
+      "meaning": "Useful output divided by declared input for a stated boundary, operating condition, and time interval."
+    },
+    {
+      "term": "resilience",
+      "meaning": "Ability to preserve or recover a defined service under declared disturbances; not a synonym for reliability, redundancy, or autonomy."
+    },
+    {
+      "term": "uncertainty",
+      "meaning": "A quantified or qualitatively bounded limitation on measurement, inference, model, forecast, or decision; not automatically equivalent to ignorance or random error."
+    },
+    {
+      "term": "availability",
+      "meaning": "Fraction of a declared observation interval in which a defined service meets stated conditions; the boundary and excluded events must be explicit."
+    },
+    {
+      "term": "non-live compatibility fixture",
+      "meaning": "A structural Principia–Atlas contract test with live set to false; it creates no operational or lifecycle dependency."
+    }
+  ],
+  "forbidden_shortcuts": [
+    "Atlas reviewed therefore Principia released",
+    "Principia reviewed therefore Atlas reviewed",
+    "validator pass proves scientific truth",
+    "energy is stored in chemical bonds",
+    "correlation proves causation",
+    "redundancy guarantees resilience",
+    "latest Atlas revision",
+    "automatic release promotion"
+  ]
+}

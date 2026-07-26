@@ -1,0 +1,46 @@
+{
+  "schema": "principia-atlas-pilot-readiness/0.1",
+  "generated": "2026-07-26",
+  "pilot_id": "feedback-instability-pilot",
+  "scope": {
+    "principia_artifact": "principia:failure-pattern:feedback-instability",
+    "principia_artifact_revision": 1,
+    "bridge_fixture": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+    "atlas_entities": [
+      "claim:en:model-oscillation-does-not-prove-real-system@1",
+      "model:en:delayed-correction-recurrence@1",
+      "concept:en:feedback@1",
+      "concept:en:oscillation@1"
+    ]
+  },
+  "principia_readiness": {
+    "exact_revision_identity": true,
+    "status_separation": true,
+    "deterministic_export": true,
+    "revision_impact_scenarios": true,
+    "release_candidate_gate": "validated",
+    "human_release_approval": false
+  },
+  "atlas_readiness": {
+    "repository_changed_by_phase_12": false,
+    "direct_integration_freeze_exited": false,
+    "external_dependent_accepted": false,
+    "live_pilot_approval": false
+  },
+  "integration_state": {
+    "mode": "compatibility-fixture",
+    "live": false,
+    "decision": "hold",
+    "earliest_next_action": "Run a separate cross-repository pilot proposal after Atlas exits its integration freeze and both repositories record explicit approval."
+  },
+  "required_end_to_end_tests": [
+    "exact-revision-resolution",
+    "stale-dependency-detection",
+    "deprecation-successor-selection",
+    "load-bearing-retraction-blocks-release",
+    "principia-revision-regenerates-export",
+    "no-status-inheritance",
+    "independent-build-and-validation",
+    "recovery-from-unavailable-repository"
+  ]
+}

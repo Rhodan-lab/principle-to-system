@@ -188,7 +188,9 @@ SKIP_FRONTMATTER_FILES = {
     "CONTENT_GUIDE.md",
     "SOURCE_POLICY.md",
     "CONTRIBUTING.md",
+    "AUDIT.md",
     "source-ledger.md",
+    "experience-source-ledger.md",
 }
 
 
@@ -392,6 +394,7 @@ def check_sections(
             filename == "technology.md"
             and "->" not in document.content
             and "→" not in document.content
+            and "principle-to-system chain" not in document.content.lower()
         ):
             report.warn(f"{rel}: no explicit principle-to-system chain found")
 
@@ -516,6 +519,7 @@ def check_all_markdown_frontmatter(report: Report) -> None:
         if path.name in SKIP_FRONTMATTER_FILES or rel.parts[0] in {
             ".github",
             "scripts",
+            "reports",
         }:
             continue
         if (

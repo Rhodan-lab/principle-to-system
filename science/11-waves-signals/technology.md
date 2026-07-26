@@ -10,6 +10,8 @@ last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
+# Oscillations, Waves, Sound, Optics, and Signals
+
 ## 1. Scientific principles used
 
 The engineering of wave-based technologies relies on several core scientific principles:

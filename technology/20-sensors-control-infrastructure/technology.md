@@ -52,6 +52,18 @@ Measurements and commands carry information with stated timing, integrity, avail
 
 Generation, transmission, distribution, distributed energy resources, storage, demand, markets, communications, protection, and operators form coupled layers. Smart inverters may provide voltage support, frequency response, or grid-forming behavior only when hardware, controls, settings, standards, and system conditions support those functions. Synthetic inertia is not an automatic property of every inverter.
 
+
+### Explicit Principle-to-System Chain
+
+```text
+physical state and transduction
+→ calibrated measurement and state estimation
+→ constrained control decision with timing and uncertainty
+→ power conversion and actuator response
+→ independent protection, diagnostics, and operator authority
+→ resilient physical service under declared disturbances and operating limits
+```
+
 ## 7. Design constraints
 
 - **Timing:** Sampling, computation, communication, actuation, jitter, and clock synchronisation must fit the plant and hazard timescales.
