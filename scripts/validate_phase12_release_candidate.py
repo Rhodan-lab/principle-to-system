@@ -40,7 +40,7 @@ REQUIRED_TERMS = {
     "resilience",
     "uncertainty",
     "availability",
-    "non-live compatibility fixture",
+    "non-live bridge candidate",
 }
 
 EQUATION_MARKERS: dict[str, tuple[str, ...]] = {
@@ -427,8 +427,8 @@ def check_revision_impact(impact: dict[str, object], bridge: dict[str, object], 
     if not isinstance(principia, dict) or not isinstance(atlas, dict):
         result.error("bridge fixture is missing Principia or Atlas sections")
         return
-    if bridge.get("mode") != "compatibility-fixture" or bridge.get("live") is not False:
-        result.error("bridge fixture must remain non-live")
+    if bridge.get("mode") != "bridge-candidate" or bridge.get("live") is not False:
+        result.error("bridge must remain a non-live bridge-candidate")
     dependencies = atlas.get("dependencies")
     if not isinstance(dependencies, list):
         result.error("bridge fixture Atlas dependencies must be a list")
@@ -438,6 +438,27 @@ def check_revision_impact(impact: dict[str, object], bridge: dict[str, object], 
         for dep in dependencies
         if isinstance(dep, dict) and isinstance(dep.get("id"), str)
     }
+    accepted = impact.get("accepted_changes")
+    if not isinstance(accepted, list) or len(accepted) != 1:
+        result.error("revision-impact contract must record exactly one accepted bridge change")
+    else:
+        adoption = accepted[0]
+        if not isinstance(adoption, dict):
+            result.error("accepted bridge change must be an object")
+        else:
+            expected_adoption = {
+                "atlas_entity": "model:en:delayed-correction-recurrence",
+                "from_revision": 1,
+                "to_revision": 2,
+                "inspection_outcome": "adopt-exact-revision",
+                "principia_meaning_changed": False,
+                "principia_artifact_revision_after": 1,
+                "principia_pedagogical_status_after": "reviewed",
+                "principia_release_status_after": "draft",
+            }
+            for key, expected in expected_adoption.items():
+                if adoption.get(key) != expected:
+                    result.error(f"accepted model revision transition `{key}` must equal {expected!r}")
     scenarios = impact.get("scenarios")
     if not isinstance(scenarios, list) or len(scenarios) != 5:
         result.error("revision-impact contract must contain exactly five scenarios")
@@ -481,6 +502,18 @@ def check_pilot(pilot: dict[str, object], result: Result) -> None:
     assert isinstance(scope, dict) and isinstance(principia, dict) and isinstance(atlas, dict) and isinstance(state, dict)
     if scope.get("principia_artifact_revision") != 1:
         result.error("pilot must reference Principia artifact revision 1")
+    if scope.get("export_contract") != "principia-atlas-external-dependent/0.2":
+        result.error("pilot must reference the exact-revision candidate export contract")
+    atlas_entities = scope.get("atlas_entities")
+    if not isinstance(atlas_entities, list) or "model:en:delayed-correction-recurrence@2" not in atlas_entities:
+        result.error("pilot must pin delayed-correction recurrence revision 2")
+    for unchanged in (
+        "claim:en:model-oscillation-does-not-prove-real-system@1",
+        "concept:en:feedback@1",
+        "concept:en:oscillation@1",
+    ):
+        if not isinstance(atlas_entities, list) or unchanged not in atlas_entities:
+            result.error(f"pilot must preserve exact dependency {unchanged}")
     for key in ("exact_revision_identity", "status_separation", "deterministic_export", "revision_impact_scenarios"):
         if principia.get(key) is not True:
             result.error(f"pilot Principia readiness `{key}` must be true")
@@ -491,8 +524,8 @@ def check_pilot(pilot: dict[str, object], result: Result) -> None:
     for key in ("repository_changed_by_phase_12", "direct_integration_freeze_exited", "external_dependent_accepted", "live_pilot_approval"):
         if atlas.get(key) is not False:
             result.error(f"pilot Atlas readiness `{key}` must remain false")
-    if state.get("mode") != "compatibility-fixture" or state.get("live") is not False or state.get("decision") != "hold":
-        result.error("pilot integration state must remain compatibility-fixture, non-live, and hold")
+    if state.get("mode") != "bridge-candidate" or state.get("live") is not False or state.get("decision") != "candidate-ready":
+        result.error("pilot integration state must be bridge-candidate, non-live, and candidate-ready")
     tests = pilot.get("required_end_to_end_tests")
     if not isinstance(tests, list) or len(tests) < 8:
         result.error("pilot readiness must preserve the eight end-to-end test classes")

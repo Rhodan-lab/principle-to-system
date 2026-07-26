@@ -60,7 +60,7 @@ Independent learners who want to understand *why* technology works, not merely *
 | `design-challenges/` | Engineering decisions under measurable constraints |
 | `templates/` | Reusable authoring structures for the four experience families |
 | `contracts/principia-atlas/` | Versioned Principia-side compatibility contracts |
-| `integration/principia-atlas/` | Non-live bridge manifests, deterministic exports, and invalid fixtures |
+| `integration/principia-atlas/` | Non-live bridge-candidate manifests, exact-revision exports, and invalid fixtures |
 | `release/` | Phase 12 candidate scope, terminology, equations, lifecycle scenarios, and pilot readiness |
 | `sources/` | Normalized module and experience source ledgers |
 | `scripts/` | Module, experience, synthesis, expansion, compatibility, and release validators |
@@ -161,16 +161,16 @@ The Phase 13 machine gate passes on draft PR #15. The reference implementation i
 
 ## Principia & Atlas compatibility
 
-[`contracts/principia-atlas/0.1/`](contracts/principia-atlas/0.1/) defines `principia-atlas-bridge/0.1`. It allows Principia to declare exact-revision Atlas dependencies and generate the opaque external-dependent shape already supported by Atlas coverage reporting.
-
-The current integration remains a non-live fixture:
+[`contracts/principia-atlas/0.1/`](contracts/principia-atlas/0.1/) defines `principia-atlas-bridge/0.1`. The current Principia-side state is:
 
 ```yaml
-mode: compatibility-fixture
+mode: bridge-candidate
 live: false
 ```
 
-Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires compatible machine gates in both repositories. Phase 12 tests bounded readiness but does not activate the bridge, and Phase 13 keeps all Atlas calls disabled.
+The candidate pins `model:en:delayed-correction-recurrence@2` while retaining the delayed-feedback claim and concepts at revision 1. Its deterministic `principia-atlas-external-dependent/0.2` export preserves legacy `depends_on` IDs and adds `depends_on_exact` records for Atlas Phase 2 exact-revision lookup and dependency-impact queries.
+
+Principia does not clone or modify Atlas during validation. Atlas knowledge status, Principia pedagogical `status`, and Principia `release_status` remain separate, and the export contains none of those status fields. No live cross-repository call is enabled.
 
 ## Validation
 

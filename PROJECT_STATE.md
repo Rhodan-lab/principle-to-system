@@ -4,11 +4,12 @@
 
 ## Current phase
 
-**Phase 13 — Software Foundation active on `agent/phase-13-software-foundation`; progression is governed by machine gates.**
+**Principia–Atlas bridge candidate active on `agent/bridge-candidate-delayed-correction-r2`; progression is governed by machine gates and live integration remains disabled.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
-Software state: **foundation-validated**.
+Software state: **foundation-validated**.  
+Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -30,11 +31,12 @@ The repository remains a material-first educational foundation. Its future produ
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
 | 11B | Controlled material expansion | Merged and validated through PR #13 |
 | 12 | Release candidate | Merged and validated through PR #14 |
-| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |
+| 13 | Software foundation | Merged and validated through PR #15 |
+| 14 | Principia–Atlas bridge candidate | Active; exact-revision validation pending |
 
 ## Integration topology
 
-PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`.
+PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`. PR #15 was merged into `main` at commit `fa9807fcdb649692d9670701211e155ecff21258`.
 
 Main therefore contains:
 
@@ -43,9 +45,10 @@ Main therefore contains:
 - seven reviewed crosscutting concepts;
 - three reviewed knowledge maps;
 - four complete applied-learning routes with sixteen Reviewed artifacts;
-- the non-live `principia-atlas-bridge/0.1` compatibility foundation.
+- the non-live `principia-atlas-bridge/0.1` compatibility foundation;
+- the Phase 13 content-native software foundation.
 
-Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was created directly from that merge and adds a content-native static software layer, deterministic build artifacts, machine-only governance, tests, project documentation, and read-only CI.
+Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was merged through PR #15 and provides the content-native static software layer. The bridge-candidate branch was created directly from that integrated state and changes only Principia-side materials, exact-revision manifests, deterministic exports, governance records, tests, and read-only CI.
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -117,14 +120,23 @@ release_status: draft
 - `release_status` is Principia publication readiness;
 - Atlas knowledge status remains Atlas-only authority.
 
-The compatibility fixture remains:
+The active Principia–Atlas bridge candidate is:
 
 ```yaml
-mode: compatibility-fixture
+mode: bridge-candidate
 live: false
 ```
 
-No status crosses the repository boundary automatically.
+Its exact Atlas references are:
+
+```text
+claim:en:model-oscillation-does-not-prove-real-system@1
+model:en:delayed-correction-recurrence@2
+concept:en:feedback@1
+concept:en:oscillation@1
+```
+
+Atlas remains unchanged, and status remains separate: Atlas owns knowledge status; Principia owns pedagogical `status` and publication `release_status`. No status crosses the repository boundary automatically.
 
 ## Phase 11B result — Controlled Material Expansion
 
@@ -182,15 +194,15 @@ Phase 12 originally kept RC1 on Hold. The Phase 13 owner directive supersedes th
 
 ### Principia & Atlas boundary
 
-Principia has exact artifact identity, status separation, deterministic export, and revision-impact scenarios. The pilot remains:
+Principia has exact artifact identity, status separation, deterministic exact-revision export, and revision-impact scenarios. The current importer candidate is:
 
 ```yaml
-mode: compatibility-fixture
+mode: bridge-candidate
 live: false
-decision: hold
+decision: candidate-ready
 ```
 
-Atlas remains unchanged. Atlas has not recorded that its direct-integration freeze has ended, accepted the external dependent, or approved a live pilot.
+Candidate-ready means Atlas Phase 2 may inspect the committed export through its own read-only importer. Atlas remains unchanged, has not accepted the external dependent, and no live cross-repository call is enabled.
 
 ## Validation
 
@@ -224,7 +236,7 @@ The former Phase 12 human-authority language is retained only in historical reco
 
 ## Next phase
 
-After PR #15 merges, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.
+After the bridge-candidate gate passes and its pull request is merged, Atlas Phase 2 may consume the committed `principia-atlas-external-dependent/0.2` file through its own importer. Live calls remain a later, separate contract transition.
 
 ## Continuation instructions
 

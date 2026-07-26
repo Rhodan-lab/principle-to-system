@@ -208,7 +208,7 @@ Authority granting that transition:
 
 The correct description today is:
 
-> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, a machine-validated but unreleased Phase 12 material baseline, and an active machine-governed Phase 13 software foundation.
+> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, a validated Phase 13 software foundation, and a non-live exact-revision Principia–Atlas bridge candidate.
 
 ## Phase 10 synthesis disposition
 
@@ -235,6 +235,15 @@ The correct description today is:
 ### Retained Phase 12 audit marker
 
 > A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and a machine-validated but unreleased Phase 12 material release candidate awaiting independent human authority.
+
+## Principia–Atlas bridge-candidate disposition
+
+- The bridge uses `mode: bridge-candidate` with `live: false`.
+- `model:en:delayed-correction-recurrence` advances from revision 1 to revision 2; the delayed-feedback claim and concepts remain at revision 1.
+- The revision-2 recurrence proves a bounded exact period-6 orbit, so oscillation is not treated as proof of instability.
+- The Principia failure pattern remains `artifact_revision: 1`, pedagogical `status: reviewed`, and `release_status: draft` because the change clarifies an existing model boundary rather than changing the principal conclusion.
+- The deterministic export includes `depends_on_exact` for an Atlas Phase 2 importer while retaining legacy opaque dependency IDs.
+- Atlas was not modified, no status is inherited, and no live cross-repository call is enabled.
 
 ## Phase 13 software-foundation disposition
 

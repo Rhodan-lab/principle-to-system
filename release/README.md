@@ -25,7 +25,7 @@ Atlas knowledge lifecycle remains separate. No Atlas status is copied into Princ
 - 16 applied experiences in 4 complete routes;
 - 143 core source records;
 - 28 experience-source records;
-- the non-live Principia–Atlas bridge fixture.
+- the historical non-live Principia–Atlas bridge fixture, now evolved into a non-live bridge candidate.
 
 The candidate proves repository-wide consistency. It does **not** mark content Complete or Released.
 
@@ -64,14 +64,18 @@ The Phase 13 machine gate passes on draft PR #15, so the software foundation sta
 
 The machine gate requires Phase 12 continuity, strict repository validation, safe content ingestion, unit tests, deterministic byte-identical builds, catalog and graph integrity, complete local search indexing, generated-link validation, and read-only CI.
 
-## First bounded integration pilot
+## Principia–Atlas bridge candidate
 
-The delayed-feedback slice remains the preferred pilot because it already has an exact-revision compatibility fixture. The pilot may become live only after:
+The delayed-feedback slice is now a Principia-side Atlas Phase 2 importer candidate:
 
-- Atlas exits its direct-integration freeze;
-- Principia's live-manifest machine gate passes;
-- Atlas accepts the external dependent;
-- revision, staleness, deprecation, retraction, and recovery behavior pass end to end;
-- neither repository imports the other repository’s status.
+```yaml
+mode: bridge-candidate
+live: false
+decision: candidate-ready
+```
 
-Phase 12 tests readiness for that pilot but does not activate it.
+The exact dependency set pins `model:en:delayed-correction-recurrence@2` and keeps the related claim and concepts at revision 1. `phase-12-revision-impact.json` records the inspected adoption without changing Principia artifact revision, pedagogical status, or release status.
+
+The deterministic export contract `principia-atlas-external-dependent/0.2` includes `depends_on_exact`. Atlas remains unchanged and decides independently whether its Phase 2 importer accepts the candidate.
+
+A future live bridge still requires a separate validated contract transition. This candidate performs no network call, repository synchronization, status inheritance, automatic merge, or automatic publication.
