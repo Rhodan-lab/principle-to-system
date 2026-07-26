@@ -4,12 +4,12 @@
   "terms": [
     {
       "term": "reviewed",
-      "meaning": "A focused Principia review has checked the declared scope; the artifact is not automatically complete, released, or independently certified.",
+      "meaning": "A focused Principia review has checked the declared scope; the artifact is not automatically complete, released, or Atlas-reviewed.",
       "must_not_imply": ["released", "complete", "Atlas-reviewed"]
     },
     {
       "term": "complete",
-      "meaning": "A Principia pedagogical lifecycle state that requires the repository release gate and explicit authority; it is forbidden during RC1.",
+      "meaning": "A Principia pedagogical lifecycle state controlled by Principia governance; it does not follow from software, bridge, release, or Atlas status.",
       "must_not_imply": ["Atlas knowledge maturity", "software availability"]
     },
     {
@@ -59,8 +59,8 @@
       "meaning": "Fraction of a declared observation interval in which a defined service meets stated conditions; the boundary and excluded events must be explicit."
     },
     {
-      "term": "non-live compatibility fixture",
-      "meaning": "A structural Principia–Atlas contract test with live set to false; it creates no operational or lifecycle dependency."
+      "term": "non-live bridge candidate",
+      "meaning": "A revision-pinned Principia–Atlas importer candidate with live set to false. It carries exact dependency identity but creates no operational call, lifecycle inheritance, or cross-repository status authority."
     }
   ],
   "forbidden_shortcuts": [
@@ -71,6 +71,7 @@
     "correlation proves causation",
     "redundancy guarantees resilience",
     "latest Atlas revision",
-    "automatic release promotion"
+    "automatic release promotion",
+    "oscillation proves instability"
   ]
 }
