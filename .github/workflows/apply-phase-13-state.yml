@@ -39,11 +39,31 @@ jobs:
           python-version: '3.12'
 
       - name: Apply machine-only roadmap transition
+        id: state_transition
+        shell: bash
         run: |
-          python3 scripts/apply_phase13_state.py --write
-          python3 scripts/apply_phase13_state.py --check
-          python3 scripts/finalize_phase12_validation_record.py --check
-          python3 -m py_compile scripts/apply_phase13_state.py
+          set +e
+          {
+            python3 scripts/apply_phase13_state.py --write &&
+            python3 scripts/apply_phase13_state.py --check &&
+            python3 scripts/finalize_phase12_validation_record.py --check &&
+            python3 -m py_compile scripts/apply_phase13_state.py
+          } > phase13-state-transition.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase13-state-transition.log
+          exit 0
+
+      - name: Upload state-transition diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase13-state-transition-diagnostics
+          path: phase13-state-transition.log
+
+      - name: Stop on state-transition errors
+        if: steps.state_transition.outputs.status != '0'
+        run: exit 1
 
       - name: Commit state transition
         shell: bash
