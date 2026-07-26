@@ -7,6 +7,12 @@ on:
     paths:
       - 'scripts/apply_bridge_candidate_validator_transitions.py'
       - '.github/workflows/apply-bridge-candidate-validator-transitions.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply_bridge_candidate_validator_transitions.py'
+      - '.github/workflows/apply-bridge-candidate-validator-transitions.yml'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +24,7 @@ concurrency:
 
 jobs:
   apply:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && (github.event_name != 'pull_request' || github.head_ref == 'agent/bridge-candidate-delayed-correction-r2')
     runs-on: ubuntu-latest
     steps:
       - name: Check out bridge candidate branch
@@ -49,4 +55,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add scripts/validate_phase11b_expansion.py scripts/validate_phase12_release_candidate.py
           git commit -m 'bridge: align inherited validators with candidate state'
+          git pull --rebase origin agent/bridge-candidate-delayed-correction-r2
           git push origin HEAD:agent/bridge-candidate-delayed-correction-r2
