@@ -4,7 +4,8 @@
 > Repository: `Rhodan-lab/principle-to-system`  
 > Product identity: Principia  
 > Atlas status: separate repository; unchanged  
-> Expansion: 12 new artifacts, 16 total experiences, 4 complete routes
+> Expansion: 12 new artifacts, 16 total experiences, 4 complete routes  
+> Validation status: implemented and validated on draft PR #13
 
 ## Purpose
 
@@ -139,6 +140,8 @@ Every one of the sixteen experience slugs has at least one ledger row. The centr
 - Phase 12 as the earliest release gate;
 - read-only CI.
 
+The workflow preserves full validation diagnostics as a GitHub Actions artifact while still failing the job whenever the validator reports an error.
+
 ## Principia & Atlas boundary
 
 Phase 11A was merged through PR #12. Phase 11B uses the revisioned artifact model introduced there but adds no new Atlas manifest and no live dependency.
@@ -152,7 +155,9 @@ live: false
 
 No status crosses the repository boundary automatically. Atlas remains unchanged.
 
-## Expected permanent validation
+## Validation result
+
+The exact draft PR #13 head passes:
 
 ```bash
 python3 scripts/validate_experiences.py --strict
@@ -165,19 +170,33 @@ python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
 ```
 
-The permanent workflow must use `contents: read`, must not clone Atlas, and must not write, commit, push, merge, or change lifecycle state.
+The coordinated GitHub Actions result is green for:
 
-## Exit condition
+- Phase 5 Sources;
+- Phase 6 Foundations;
+- Phase 7 Physical Science;
+- Phase 8 Life and Earth Systems;
+- Phase 9 Technology;
+- Phase 10 Synthesis;
+- Applied Materials;
+- Principia–Atlas Compatibility;
+- Phase 11B Expansion.
 
-Phase 11B is complete when:
+The permanent workflow uses `contents: read`, does not clone Atlas, and cannot write, commit, push, merge, or change lifecycle state.
+
+## Exit condition achieved
+
+Phase 11B satisfies its automated exit conditions:
 
 - all sixteen artifacts pass the expanded strict validator;
 - all four routes are navigable and complete;
 - all twenty-eight experience-source records validate;
-- prior Phase 5–11A continuity remains green;
+- prior Phase 5–11A continuity is green;
 - CI is permanently read-only;
 - all artifacts remain unreleased;
 - Atlas remains separate and non-live.
+
+Independent review and merge remain pending. Automated validation is not a release claim.
 
 ## Next stage
 
