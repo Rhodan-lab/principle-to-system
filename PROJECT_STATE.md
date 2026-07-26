@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 11A — Principia & Atlas Compatibility Foundation implemented on draft PR #12; coordinated validation and independent review remain pending.**
+**Phase 11A — Principia & Atlas Compatibility Foundation implemented and validated on draft PR #12; independent review and merge remain pending.**
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -23,7 +23,7 @@ The repository remains a material-first educational foundation. Its future produ
 | 8 | Life and Earth systems review | Merged and validated through PR #9 |
 | 9 | Technology review | Merged and validated through PR #10 |
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
-| 11A | Principia & Atlas compatibility foundation | Implemented on draft PR #12; coordinated validation pending |
+| 11A | Principia & Atlas compatibility foundation | Implemented and validated on draft PR #12; awaiting merge |
 | 11B | Controlled material expansion | Pending compatibility foundation |
 | 12 | Release candidate | Not started |
 | 13 | Optional software layer | Deferred |
@@ -122,7 +122,9 @@ The export contains no pedagogical, release, or knowledge status fields.
 - using mutable `latest` Atlas revisions;
 - activating a live bridge while Atlas Phase 1 freezes direct integration.
 
-## Validation
+## Validation result
+
+The exact PR #12 head passed:
 
 ```bash
 python3 scripts/export_principia_atlas_dependents.py --check
@@ -134,7 +136,7 @@ python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
 ```
 
-The permanent compatibility workflow uses `contents: read`. It may validate Principia files and stored fixtures, but it may not clone Atlas, write files, push commits, merge pull requests, or change lifecycle status.
+The permanent compatibility workflow uses `contents: read`. It passed deterministic export, valid and invalid bridge fixtures, experience identity and safety, Phase 10 continuity, repository structure, and workflow immutability. It does not clone Atlas, write files, push commits, merge pull requests, or change lifecycle status.
 
 ## Next phase
 
