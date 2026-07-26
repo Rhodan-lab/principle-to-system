@@ -208,7 +208,7 @@ Authority granting that transition:
 
 The correct description today is:
 
-> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and a machine-validated but unreleased Phase 12 material release candidate awaiting independent human authority.
+> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, a machine-validated but unreleased Phase 12 material baseline, and an active machine-governed Phase 13 software foundation.
 
 ## Phase 10 synthesis disposition
 
@@ -230,4 +230,17 @@ The correct description today is:
 - The release decision is **Hold**.
 - Automated promotion to Complete or Released is prohibited.
 - The first bounded integration pilot remains conditional and non-live.
-- Independent scientific, editorial, accessibility, safety, attribution, release-owner, and Atlas-side decisions remain required.
+- The former human-authority requirement is retained as Phase 12 history but is superseded for active development by the Phase 13 machine-only owner directive.
+
+### Retained Phase 12 audit marker
+
+> A reviewed 20-module Principia foundation with reconciled synthesis, four complete applied-learning routes, exact-revision compatibility preparation, and a machine-validated but unreleased Phase 12 material release candidate awaiting independent human authority.
+
+## Phase 13 software-foundation disposition
+
+- The active authority mode is machine-only; human review is not a blocking gate.
+- The RC1 material baseline remains Reviewed and applied experiences remain Draft.
+- Repository Markdown and JSON remain authoritative; generated site output is disposable.
+- The static build uses no third-party package and performs no build-time network fetch.
+- Catalog, search, graph, HTML safety, generated links, deterministic output, unit tests, and read-only CI are machine-gated.
+- Automatic merge, automatic publication, Atlas status inheritance, and live Atlas integration remain disabled.
