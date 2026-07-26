@@ -1,0 +1,43 @@
+{
+  "contract": "principia-atlas-offline-importer-snapshot/0.2",
+  "atlas_repository": "Rhodan-lab/Atlas",
+  "atlas_phase": 2,
+  "implementation": {
+    "pull_request": 20,
+    "tested_head_commit": "379d88d620469a749cebb88b0b41d9960e667558",
+    "merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9"
+  },
+  "governance_finalization": {
+    "pull_request": 21,
+    "head_commit": "c30bebf6a63263da8a4356f6c4dbc85f11a67bc4",
+    "merge_commit": "9370cc746e9756e433ac3772d56d079c9803b144",
+    "state": "accepted",
+    "mode": "importer-candidate"
+  },
+  "accepted_wire_contract": "principia-atlas-external-dependent/0.2",
+  "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+  "operational_record_contract": "atlas-external-dependent/0.1",
+  "lifecycle_impact_contract": "atlas-lifecycle-impact-report/0.1",
+  "atlas_content_contract": "atlas-content/0.1",
+  "capabilities": {
+    "exact_revision_resolution": true,
+    "legacy_index_verification": true,
+    "status_inheritance_rejected": true,
+    "live_true_rejected": true,
+    "deprecated_escalates_to": "revalidate",
+    "review_required_stale_escalates_to": "revalidate",
+    "confirmed_stale_escalates_to": "revalidate",
+    "retracted_escalates_to": "block-release",
+    "automatic_status_change": false,
+    "automatic_release_action": false
+  },
+  "validation": {
+    "phase2_kernel": "success",
+    "phase1_ai_review": "success",
+    "foundation_contract": "success",
+    "atlas_ci": "success",
+    "governance_record_finalized": true
+  },
+  "mode": "offline-importer-snapshot",
+  "live": false
+}
