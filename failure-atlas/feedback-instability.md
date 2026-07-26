@@ -4,6 +4,8 @@ slug: failure-pattern-feedback-instability
 domain: experience
 experience_type: failure-pattern
 status: reviewed
+artifact_revision: 1
+release_status: draft
 prerequisites: [03-mathematical-models, 20-sensors-control-infrastructure]
 connections: [concept-stability-and-change, concept-cause-and-effect, concept-systems-and-models, system-dossier-refrigerator]
 last_reviewed: 2026-07-25
