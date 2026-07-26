@@ -23,7 +23,7 @@ REQUIRED: dict[Path, tuple[str, ...]] = {
         "candidate-ready",
         "Atlas remains unchanged",
         "status remains separate",
-        "Atlas Phase 2 may consume",
+        "Atlas Phase 2 may now consume",
         "release decision remains **Hold**",
     ),
     README: (
