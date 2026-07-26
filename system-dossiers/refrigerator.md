@@ -8,7 +8,7 @@ artifact_revision: 1
 release_status: draft
 prerequisites: [08-energy-thermodynamics, 12-fluids-materials, 20-sensors-control-infrastructure]
 connections: [17-materials-manufacturing, concept-energy-and-matter, concept-systems-and-models, failure-pattern-feedback-instability, investigation-room-cooling, design-challenge-passive-cooler]
-last_reviewed: 2026-07-25
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -18,7 +18,7 @@ A refrigerator does not create cold. It uses work to move thermal energy from a 
 
 ## 1. Observable system
 
-Food cools below room temperature, the rear or underside becomes warm, the compressor cycles, and frost can form when humid air reaches a cold surface.
+Food cools below room temperature, the rear or underside becomes warm, the compressor cycles, and frost can form when humid air reaches a cold surface. Compressor cycling and bounded cabinet-temperature variation are normally expected consequences of on-off control; they are not automatically evidence of instability.
 
 ## 2. System boundary and environment
 
@@ -53,7 +53,7 @@ Pressure changes alter refrigerant saturation temperature. Evaporation at low pr
 | Evaporator | Absorbs cabinet heat | Cooling capacity falls |
 | Refrigerant | Transports energy through phase change | Cycle cannot operate as designed |
 | Insulation and seal | Limit heat and moisture entry | Runtime, frost, and energy use increase |
-| Sensor and controller | Close the temperature-control loop | Temperature drifts or cycling becomes abnormal |
+| Sensor and controller | Close the temperature-control loop | Temperature drifts, cycles outside intended bounds, or switches abnormally |
 
 ## 6. Interaction architecture
 
@@ -76,9 +76,11 @@ $$COP_R=\frac{Q_C}{W}$$
 
 The model treats the cabinet as one temperature and ignores spatial gradients, cycling details, pressure losses, and changing refrigerant properties.
 
-## 8. Control and feedback
+## 8. Control and feedback: cycling and stability
 
-On-off control commonly uses hysteresis: cooling starts above an upper threshold and stops below a lower threshold. Narrow hysteresis reduces temperature variation but can increase switching. Wider hysteresis protects equipment but permits larger temperature swings.
+On-off control commonly uses hysteresis: cooling starts above an upper threshold and stops below a lower threshold. The resulting bounded temperature cycle is intentional. Narrow hysteresis reduces temperature variation but can increase switching; wider hysteresis reduces switching but permits larger temperature swings.
+
+A repeated cycle is not automatically unstable. Control concern increases when the cycle differs from its designed band or timing—for example, short-cycling, growing temperature excursions, failure to recover after a disturbance, or limit violations. Those observations require diagnosis of the sensor, controller, thermal load, refrigerant loop, and equipment protection rather than labeling every oscillation as instability.
 
 ## 9. Failure modes
 
@@ -87,6 +89,7 @@ On-off control commonly uses hysteresis: cooling starts above an upper threshold
 - Restricted flow or incorrect refrigerant charge: poor heat transfer and possible compressor stress.
 - Sensor fault: the physical loop works but the information loop fails.
 - Frost accumulation: airflow and heat transfer decline.
+- Abnormal short-cycling: switching is too frequent for the intended hysteresis and equipment constraints; this can indicate a control, sensing, load, or refrigerant-system problem without proving mathematical instability.
 
 ## 10. Efficiency and performance
 
@@ -112,7 +115,7 @@ energy conservation
 → compressor and expansion device
 → evaporator and condenser
 → closed refrigerant loop
-→ sensing and feedback
+→ sensing, hysteresis, and bounded cycling
 → insulated food-preservation system
 ```
 
@@ -120,6 +123,7 @@ energy conservation
 
 - Which losses dominate for a particular appliance and climate?
 - How should temperature uniformity be measured in a loaded cabinet?
+- When does normal bounded cycling become harmful short-cycling or a limit violation?
 - When does repair have lower lifecycle impact than replacement?
 
 ## 15. Sources and module links
@@ -130,3 +134,4 @@ energy conservation
 - [Energy and Thermodynamics](../science/08-energy-thermodynamics/overview.md)
 - [Fluids and Materials](../science/12-fluids-materials/overview.md)
 - [Sensors, Control, and Infrastructure](../technology/20-sensors-control-infrastructure/overview.md)
+- [Feedback Instability](../failure-atlas/feedback-instability.md)

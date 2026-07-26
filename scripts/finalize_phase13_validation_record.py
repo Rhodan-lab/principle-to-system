@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Finalize or check the Phase 13 machine-validation record."""
+"""Finalize or check the Phase 13 machine-validation record, including downstream phases."""
 
 from __future__ import annotations
 
@@ -13,21 +13,6 @@ REPORT = ROOT / "reports" / "phase-13-software-foundation.md"
 README = ROOT / "README.md"
 AUDIT = ROOT / "AUDIT.md"
 RELEASE = ROOT / "release" / "README.md"
-
-STATE_CHANGES = (
-    (
-        "Software state: **implementation pending validation**.",
-        "Software state: **foundation-validated**.",
-    ),
-    (
-        "| 13 | Software foundation | Active; machine validation pending |",
-        "| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |",
-    ),
-    (
-        "Phase 13 validates the reference software foundation. After that gate passes, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.",
-        "After PR #15 merges, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.",
-    ),
-)
 
 REPORT_BLOCK = """## Machine validation result
 
@@ -50,16 +35,13 @@ AUDIT_RESULT = "- Phase 13 machine validation passes on draft PR #15 and the sof
 RELEASE_RESULT = "The Phase 13 machine gate passes on draft PR #15, so the software foundation state is `foundation-validated`."
 
 
-def replace_all(text: str, changes: tuple[tuple[str, str], ...], label: str, errors: list[str]) -> str:
-    fixed = text
-    for old, new in changes:
-        if new in fixed:
-            continue
-        if old not in fixed:
-            errors.append(f"{label}: transition source missing: {old[:100]}")
-            continue
-        fixed = fixed.replace(old, new, 1)
-    return fixed
+def replace_once(text: str, old: str, new: str, label: str, errors: list[str]) -> str:
+    if new in text:
+        return text
+    if old not in text:
+        errors.append(f"{label}: transition source missing: {old[:100]}")
+        return text
+    return text.replace(old, new, 1)
 
 
 def insert_after(text: str, anchor: str, addition: str, label: str, errors: list[str]) -> str:
@@ -69,6 +51,35 @@ def insert_after(text: str, anchor: str, addition: str, label: str, errors: list
         errors.append(f"{label}: insertion anchor missing")
         return text
     return text.replace(anchor, anchor + "\n\n" + addition, 1)
+
+
+def finalize_state(text: str, errors: list[str]) -> str:
+    fixed = text
+    if "Software state: **foundation-validated**." not in fixed:
+        fixed = replace_once(
+            fixed,
+            "Software state: **implementation pending validation**.",
+            "Software state: **foundation-validated**.",
+            "PROJECT_STATE.md software state",
+            errors,
+        )
+
+    phase_pending = "| 13 | Software foundation | Active; machine validation pending |"
+    phase_validated = "| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |"
+    phase_merged = "| 13 | Software foundation | Merged and validated through PR #15 |"
+    if phase_pending in fixed:
+        fixed = fixed.replace(phase_pending, phase_validated, 1)
+    elif phase_validated not in fixed and phase_merged not in fixed:
+        errors.append("PROJECT_STATE.md: Phase 13 validated or merged table marker is missing")
+
+    old_next = "Phase 13 validates the reference software foundation. After that gate passes, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority."
+    validated_next = "After PR #15 merges, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority."
+    downstream_next = "After the bridge-candidate gate passes and its pull request is merged, Atlas Phase 2 may consume the committed `principia-atlas-external-dependent/0.2` file through its own importer. Live calls remain a later, separate contract transition."
+    if old_next in fixed:
+        fixed = fixed.replace(old_next, validated_next, 1)
+    elif validated_next not in fixed and downstream_next not in fixed:
+        errors.append("PROJECT_STATE.md: Phase 13 or downstream continuation marker is missing")
+    return fixed
 
 
 def main() -> int:
@@ -82,7 +93,7 @@ def main() -> int:
     changes: list[tuple[Path, str]] = []
 
     state = STATE.read_text(encoding="utf-8")
-    fixed_state = replace_all(state, STATE_CHANGES, "PROJECT_STATE.md", errors)
+    fixed_state = finalize_state(state, errors)
     if fixed_state != state:
         changes.append((STATE, fixed_state))
 
@@ -123,12 +134,23 @@ def main() -> int:
 
     pending = {path: text for path, text in changes}
     required = {
-        STATE: ("Software state: **foundation-validated**.", "Implemented and validated on draft PR #15"),
         REPORT: ("## Machine validation result", "software_state: foundation-validated"),
         README: (README_RESULT,),
         AUDIT: (AUDIT_RESULT,),
         RELEASE: (RELEASE_RESULT,),
     }
+    state_value = pending.get(STATE, STATE.read_text(encoding="utf-8"))
+    if "Software state: **foundation-validated**." not in state_value:
+        errors.append("PROJECT_STATE.md: missing final marker: Software state foundation-validated")
+    if not any(
+        marker in state_value
+        for marker in (
+            "| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |",
+            "| 13 | Software foundation | Merged and validated through PR #15 |",
+        )
+    ):
+        errors.append("PROJECT_STATE.md: missing Phase 13 validated lifecycle marker")
+
     for path, markers in required.items():
         text = pending.get(path, path.read_text(encoding="utf-8"))
         for marker in markers:
@@ -153,7 +175,7 @@ def main() -> int:
         for path, _ in changes:
             print(f"- {path.relative_to(ROOT)}")
     else:
-        print("Phase 13 validation record already finalized.")
+        print("Phase 13 validation record already finalized, including downstream state.")
     return 0
 
 

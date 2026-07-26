@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Phase 11A audit records and read-only compatibility governance."""
+"""Validate the Principia–Atlas bridge-candidate audit and read-only governance."""
 from __future__ import annotations
 
 import json
@@ -9,34 +9,73 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW = ROOT / ".github" / "workflows" / "validate-principia-atlas-compatibility.yml"
 MANIFEST = ROOT / "integration" / "principia-atlas" / "manifests" / "feedback-instability.fixture.json"
+EXPORT = ROOT / "integration" / "principia-atlas" / "exports" / "feedback-instability.external-dependent.fixture.json"
+REPORT = ROOT / "reports" / "principia-atlas-bridge-candidate-r2.md"
+EXPECTED_REVISIONS = {
+    "claim:en:model-oscillation-does-not-prove-real-system": 1,
+    "model:en:delayed-correction-recurrence": 2,
+    "concept:en:feedback": 1,
+    "concept:en:oscillation": 1,
+}
 
 
 def main() -> int:
     errors: list[str] = []
-
     required = (
         ROOT / "contracts" / "principia-atlas" / "0.1" / "README.md",
         ROOT / "contracts" / "principia-atlas" / "0.1" / "bridge-manifest.schema.json",
         ROOT / "integration" / "principia-atlas" / "README.md",
         MANIFEST,
-        ROOT / "integration" / "principia-atlas" / "exports" / "feedback-instability.external-dependent.fixture.json",
-        ROOT / "reports" / "phase-11a-principia-atlas-compatibility.md",
+        EXPORT,
+        ROOT / "release" / "phase-12-revision-impact.json",
+        ROOT / "release" / "phase-12-pilot-readiness.json",
+        REPORT,
         ROOT / "scripts" / "export_principia_atlas_dependents.py",
         ROOT / "scripts" / "validate_principia_atlas_bridge.py",
-        ROOT / "scripts" / "validate_principia_atlas_audit.py",
+        Path(__file__),
+        ROOT / "software" / "tests" / "test_bridge_candidate.py",
         WORKFLOW,
     )
     for path in required:
         if not path.is_file():
-            errors.append(f"missing required Phase 11A artifact: {path.relative_to(ROOT)}")
+            errors.append(f"missing required bridge-candidate artifact: {path.relative_to(ROOT)}")
 
     try:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f"cannot validate bridge manifest: {exc}")
         manifest = {}
-    if manifest.get("live") is not False or manifest.get("mode") != "compatibility-fixture":
-        errors.append("Phase 11A manifest must remain non-live compatibility-fixture")
+    if manifest.get("live") is not False or manifest.get("mode") != "bridge-candidate":
+        errors.append("bridge manifest must remain non-live bridge-candidate")
+    atlas = manifest.get("atlas")
+    dependencies = atlas.get("dependencies") if isinstance(atlas, dict) else None
+    actual_revisions = {
+        item.get("id"): item.get("revision")
+        for item in dependencies or []
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    if actual_revisions != EXPECTED_REVISIONS:
+        errors.append(f"bridge dependency revisions differ: {actual_revisions}")
+    policy = manifest.get("status_policy")
+    if not isinstance(policy, dict):
+        errors.append("bridge status policy is missing")
+    else:
+        for key in ("knowledge_status_inheritance", "pedagogical_status_inheritance", "release_status_inheritance"):
+            if policy.get(key) != "prohibited":
+                errors.append(f"bridge status policy must prohibit {key}")
+
+    try:
+        export = json.loads(EXPORT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"cannot validate bridge export: {exc}")
+        export = {}
+    if export.get("contract") != "principia-atlas-external-dependent/0.2":
+        errors.append("bridge export must use candidate contract 0.2")
+    if export.get("bridge_mode") != "bridge-candidate" or export.get("live") is not False:
+        errors.append("bridge export must remain non-live bridge-candidate")
+    forbidden_status = {"status", "pedagogical_status", "release_status", "knowledge_status"} & set(export)
+    if forbidden_status:
+        errors.append(f"bridge export leaks status authority: {sorted(forbidden_status)}")
 
     if WORKFLOW.is_file():
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -48,7 +87,7 @@ def main() -> int:
             "git commit",
             "pull_request_target",
             "Rhodan-lab/Atlas.git",
-            "actions/checkout@v4\n        with:\n          repository: Rhodan-lab/Atlas",
+            "repository: Rhodan-lab/Atlas",
         ):
             if forbidden in workflow:
                 errors.append(f"compatibility workflow contains forbidden operation: {forbidden}")
@@ -57,51 +96,54 @@ def main() -> int:
             "validate_principia_atlas_bridge.py",
             "validate_principia_atlas_audit.py",
             "validate_experiences.py --strict",
-            "validate_phase10_synthesis.py",
-            "validate_repo.py",
+            "validate_repo.py --strict",
+            "validate_phase12_release_candidate.py",
+            "unittest discover -s software/tests",
+            "validate_phase13_software.py",
         ):
             if required_command not in workflow:
                 errors.append(f"compatibility workflow missing command: {required_command}")
 
     state = (ROOT / "PROJECT_STATE.md").read_text(encoding="utf-8")
     for marker in (
-        "Phase 11A — Principia & Atlas Compatibility Foundation",
-        "PR #11 was merged",
-        "artifact_revision",
-        "release_status",
-        "No live Atlas dependency",
-        "Phase 11B",
+        "Principia–Atlas bridge candidate",
+        "model:en:delayed-correction-recurrence@2",
+        "mode: bridge-candidate",
+        "live: false",
+        "Atlas remains unchanged",
+        "status remains separate",
     ):
         if marker not in state:
-            errors.append(f"PROJECT_STATE.md missing Phase 11A marker: {marker}")
+            errors.append(f"PROJECT_STATE.md missing bridge-candidate marker: {marker}")
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for marker in (
-        "future product identity **Principia**",
         "Principia & Atlas compatibility",
-        "contracts/principia-atlas/0.1",
-        "artifact_revision",
-        "release_status",
+        "bridge-candidate",
+        "delayed-correction-recurrence@2",
+        "depends_on_exact",
     ):
         if marker not in readme:
-            errors.append(f"README.md missing compatibility marker: {marker}")
+            errors.append(f"README.md missing bridge-candidate marker: {marker}")
 
-    report = (ROOT / "reports" / "phase-11a-principia-atlas-compatibility.md").read_text(encoding="utf-8")
-    for marker in (
-        "Atlas remains unchanged",
-        "No status crosses the boundary automatically",
-        "No live dependency",
-        "Phase 11B",
-    ):
-        if marker not in report:
-            errors.append(f"Phase 11A report missing marker: {marker}")
+    if REPORT.is_file():
+        report = REPORT.read_text(encoding="utf-8")
+        for marker in (
+            "Atlas was not modified",
+            "oscillation does not prove instability",
+            "model:en:delayed-correction-recurrence@2",
+            "candidate-ready",
+            "live: false",
+        ):
+            if marker not in report:
+                errors.append(f"bridge-candidate report missing marker: {marker}")
 
     if errors:
-        print("Principia–Atlas audit failed:", file=sys.stderr)
+        print("Principia–Atlas bridge-candidate audit failed:", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print("Principia–Atlas audit passed: non-live fixture, separate status authority, and read-only CI.")
+    print("Principia–Atlas audit passed: exact-revision candidate, separate status authority, Atlas unchanged, and read-only CI.")
     return 0
 
 

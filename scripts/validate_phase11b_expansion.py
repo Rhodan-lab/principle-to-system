@@ -262,8 +262,8 @@ def validate_governance(inventory: dict[str, object], errors: list[str]) -> None
         except json.JSONDecodeError as exc:
             errors.append(f"compatibility fixture is invalid JSON: {exc}")
         else:
-            if data.get("live") is not False or data.get("mode") != "compatibility-fixture":
-                errors.append("Phase 11B must preserve the non-live Atlas compatibility fixture")
+            if data.get("live") is not False or data.get("mode") not in {"compatibility-fixture", "bridge-candidate"}:
+                errors.append("Phase 11B must preserve a non-live Atlas bridge state")
 
 
 def validate_artifacts_and_ci(errors: list[str]) -> None:

@@ -6,9 +6,10 @@
     "principia_artifact": "principia:failure-pattern:feedback-instability",
     "principia_artifact_revision": 1,
     "bridge_fixture": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+    "export_contract": "principia-atlas-external-dependent/0.2",
     "atlas_entities": [
       "claim:en:model-oscillation-does-not-prove-real-system@1",
-      "model:en:delayed-correction-recurrence@1",
+      "model:en:delayed-correction-recurrence@2",
       "concept:en:feedback@1",
       "concept:en:oscillation@1"
     ]
@@ -17,29 +18,36 @@
     "exact_revision_identity": true,
     "status_separation": true,
     "deterministic_export": true,
+    "exact_dependency_export": true,
     "revision_impact_scenarios": true,
+    "oscillation_instability_boundary": true,
     "release_candidate_gate": "validated",
+    "software_gate": "validated",
+    "phase_2_importer_candidate": true,
     "human_release_approval": false
   },
   "atlas_readiness": {
     "repository_changed_by_phase_12": false,
+    "repository_changed_by_bridge_candidate": false,
     "direct_integration_freeze_exited": false,
     "external_dependent_accepted": false,
     "live_pilot_approval": false
   },
   "integration_state": {
-    "mode": "compatibility-fixture",
+    "mode": "bridge-candidate",
     "live": false,
-    "decision": "hold",
-    "earliest_next_action": "Run a separate cross-repository pilot proposal after Atlas exits its integration freeze and both repositories record explicit approval."
+    "decision": "candidate-ready",
+    "earliest_next_action": "Atlas Phase 2 may import and validate the committed exact-revision candidate through its own read-only importer without enabling live cross-repository calls."
   },
   "required_end_to_end_tests": [
     "exact-revision-resolution",
+    "candidate-export-schema",
     "stale-dependency-detection",
     "deprecation-successor-selection",
     "load-bearing-retraction-blocks-release",
     "principia-revision-regenerates-export",
     "no-status-inheritance",
+    "oscillation-does-not-imply-instability",
     "independent-build-and-validation",
     "recovery-from-unavailable-repository"
   ]

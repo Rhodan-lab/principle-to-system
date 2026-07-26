@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the non-live Principia–Atlas compatibility foundation."""
+"""Validate the non-live Principia–Atlas bridge candidate and exact-revision export."""
 from __future__ import annotations
 
 import copy
@@ -34,15 +34,7 @@ TEMPLATE_FILES = (
 PEDAGOGICAL_STATUSES = {"draft", "reviewed", "complete", "blocked"}
 RELEASE_STATUSES = {"draft", "candidate", "released", "withdrawn"}
 ROLES = {"load-bearing", "supporting", "context"}
-USES = {
-    "definition",
-    "evidence",
-    "claim-boundary",
-    "model",
-    "model-boundary",
-    "source-context",
-    "synthesis-context",
-}
+USES = {"definition", "evidence", "claim-boundary", "model", "model-boundary", "source-context", "synthesis-context"}
 CHANGE_POLICIES = {"inspect", "revalidate", "block-release"}
 ENTITY_TYPES = {"source", "evidence", "claim", "concept", "model", "question", "synthesis"}
 PREFIX_TO_TYPE = {
@@ -54,9 +46,7 @@ PREFIX_TO_TYPE = {
     "question": "question",
     "synthesis": "synthesis",
 }
-ARTIFACT_ID_RE = re.compile(
-    r"^principia:(system-dossier|failure-pattern|investigation|design-challenge):[a-z0-9][a-z0-9-]*$"
-)
+ARTIFACT_ID_RE = re.compile(r"^principia:(system-dossier|failure-pattern|investigation|design-challenge):[a-z0-9][a-z0-9-]*$")
 ATLAS_ID_RE = re.compile(r"^(src|evidence|claim|concept|model|question|synthesis):[a-z0-9][a-z0-9:-]*$")
 FORBIDDEN_KEYS = {
     "required_atlas_status",
@@ -65,6 +55,19 @@ FORBIDDEN_KEYS = {
     "auto_promote",
     "promote_principia",
     "atlas_checkout",
+}
+EXPECTED_REVISIONS = {
+    "claim:en:model-oscillation-does-not-prove-real-system": 1,
+    "model:en:delayed-correction-recurrence": 2,
+    "concept:en:feedback": 1,
+    "concept:en:oscillation": 1,
+}
+EXPECTED_POLICY = {
+    "knowledge_status_inheritance": "prohibited",
+    "pedagogical_status_inheritance": "prohibited",
+    "release_status_inheritance": "prohibited",
+    "atlas_status_authority": "Atlas",
+    "principia_status_authority": "Principia",
 }
 
 
@@ -161,12 +164,10 @@ def validate_seed_artifacts(report: Report) -> dict[str, dict[str, object]]:
         revision = frontmatter.get("artifact_revision")
         if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
             report.add("artifact-revision", f"{relative}: artifact_revision must be a positive integer")
-        release = frontmatter.get("release_status")
-        if release not in RELEASE_STATUSES:
-            report.add("release-status", f"{relative}: invalid release_status {release!r}")
-        status = frontmatter.get("status")
-        if status not in PEDAGOGICAL_STATUSES:
-            report.add("pedagogical-status", f"{relative}: invalid pedagogical status {status!r}")
+        if frontmatter.get("release_status") not in RELEASE_STATUSES:
+            report.add("release-status", f"{relative}: invalid release_status")
+        if frontmatter.get("status") not in PEDAGOGICAL_STATUSES:
+            report.add("pedagogical-status", f"{relative}: invalid pedagogical status")
         slug = frontmatter.get("slug")
         if not isinstance(slug, str) or expected_artifact_id(expected_type, slug) is None:
             report.add("artifact-id", f"{relative}: slug cannot produce a stable Principia artifact ID")
@@ -178,29 +179,43 @@ def validate_seed_artifacts(report: Report) -> dict[str, dict[str, object]]:
         except OSError as exc:
             report.add("template-file", f"cannot read {relative}: {exc}")
             continue
-        for marker in (
-            "artifact_revision:",
-            "release_status:",
-            "status` records pedagogical maturity",
-            "Neither inherits Atlas knowledge status",
-        ):
+        for marker in ("artifact_revision:", "release_status:", "status` records pedagogical maturity", "Neither inherits Atlas knowledge status"):
             if marker not in text:
                 report.add("template-contract", f"{relative}: missing marker {marker!r}")
     return parsed
 
 
-def validate_manifest(
-    manifest: dict[str, Any],
-    artifacts: dict[str, dict[str, object]] | None = None,
-) -> Report:
+def validate_material_boundary(report: Report) -> None:
+    feedback = (ROOT / "failure-atlas" / "feedback-instability.md").read_text(encoding="utf-8").lower()
+    refrigerator = (ROOT / "system-dossiers" / "refrigerator.md").read_text(encoding="utf-8").lower()
+    for marker in (
+        "oscillation is a pattern of repeated change",
+        "does not by itself establish instability",
+        "exactly periodic with period 6",
+        "it is also bounded",
+        "does not demonstrate that the orbit is unstable",
+    ):
+        if marker not in feedback:
+            report.add("oscillation-boundary", f"failure-atlas/feedback-instability.md missing marker {marker!r}")
+    for marker in (
+        "not automatically evidence of instability",
+        "the resulting bounded temperature cycle is intentional",
+        "a repeated cycle is not automatically unstable",
+        "abnormal short-cycling",
+    ):
+        if marker not in refrigerator:
+            report.add("oscillation-boundary", f"system-dossiers/refrigerator.md missing marker {marker!r}")
+
+
+def validate_manifest(manifest: dict[str, Any], artifacts: dict[str, dict[str, object]] | None = None) -> Report:
     report = Report()
     if manifest.get("contract") != "principia-atlas-bridge/0.1":
         report.add("contract", "contract must be principia-atlas-bridge/0.1")
     bridge_id = manifest.get("id")
     if not isinstance(bridge_id, str) or not bridge_id.startswith("bridge:"):
         report.add("bridge-id", "id must be a namespaced bridge identifier")
-    if manifest.get("mode") != "compatibility-fixture" or manifest.get("live") is not False:
-        report.add("live-dependency", "Atlas Phase 1 permits only mode=compatibility-fixture and live=false")
+    if manifest.get("mode") != "bridge-candidate" or manifest.get("live") is not False:
+        report.add("live-dependency", "candidate requires mode=bridge-candidate and live=false")
 
     for location in find_forbidden_keys(manifest):
         report.add("status-policy", f"forbidden cross-repository authority field at {location}")
@@ -225,11 +240,11 @@ def validate_manifest(
             report.add("artifact-path", "principia.path escapes the repository")
         if not resolved.is_file():
             report.add("artifact-path", f"principia.path does not exist: {artifact_path}")
-    artifact_revision = principia.get("artifact_revision")
-    if not isinstance(artifact_revision, int) or isinstance(artifact_revision, bool) or artifact_revision < 1:
+    revision = principia.get("artifact_revision")
+    if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
         report.add("artifact-revision", "principia.artifact_revision must be a positive integer")
     if principia.get("pedagogical_status_field") != "status":
-        report.add("pedagogical-status", "pedagogical_status_field must remain status for contract 0.1")
+        report.add("pedagogical-status", "pedagogical_status_field must remain status")
     if principia.get("pedagogical_status") not in PEDAGOGICAL_STATUSES:
         report.add("pedagogical-status", "principia.pedagogical_status is invalid")
     if principia.get("release_status") not in RELEASE_STATUSES:
@@ -263,18 +278,19 @@ def validate_manifest(
     if not isinstance(dependencies, list) or not dependencies:
         report.add("dependencies", "atlas.dependencies must be a non-empty list")
         dependencies = []
-    seen: set[tuple[str, int]] = set()
+    seen_ids: set[str] = set()
+    actual_revisions: dict[str, int] = {}
     for index, dependency in enumerate(dependencies):
         prefix = f"atlas.dependencies[{index}]"
         if not isinstance(dependency, dict):
             report.add("dependency", f"{prefix} must be an object")
             continue
         entity_id = dependency.get("id")
-        revision = dependency.get("revision")
+        dep_revision = dependency.get("revision")
         entity_type = dependency.get("entity_type")
         if not isinstance(entity_id, str) or not ATLAS_ID_RE.fullmatch(entity_id):
             report.add("dependency-id", f"{prefix}.id is invalid")
-        if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+        if not isinstance(dep_revision, int) or isinstance(dep_revision, bool) or dep_revision < 1:
             report.add("dependency-revision", f"{prefix}.revision must be a positive exact integer")
         if entity_type not in ENTITY_TYPES:
             report.add("dependency-type", f"{prefix}.entity_type is invalid")
@@ -288,31 +304,30 @@ def validate_manifest(
             report.add("dependency-use", f"{prefix}.use is invalid")
         if dependency.get("change_policy") not in CHANGE_POLICIES:
             report.add("change-policy", f"{prefix}.change_policy is invalid")
-        if isinstance(entity_id, str) and isinstance(revision, int):
-            key = (entity_id, revision)
-            if key in seen:
-                report.add("duplicate-dependency", f"duplicate Atlas dependency {entity_id}@{revision}")
-            seen.add(key)
+        if isinstance(entity_id, str):
+            if entity_id in seen_ids:
+                report.add("duplicate-dependency", f"duplicate Atlas dependency {entity_id}")
+            seen_ids.add(entity_id)
+            if isinstance(dep_revision, int) and not isinstance(dep_revision, bool):
+                actual_revisions[entity_id] = dep_revision
+    if actual_revisions != EXPECTED_REVISIONS:
+        report.add("dependency-revision", f"candidate exact revisions differ: {actual_revisions}")
 
-    policy = manifest.get("status_policy")
-    expected_policy = {
-        "knowledge_status_inheritance": "prohibited",
-        "pedagogical_status_inheritance": "prohibited",
-        "release_status_inheritance": "prohibited",
-        "atlas_status_authority": "Atlas",
-        "principia_status_authority": "Principia",
-    }
-    if policy != expected_policy:
-        report.add("status-policy", "status_policy must prohibit all cross-repository status inheritance")
+    if manifest.get("status_policy") != EXPECTED_POLICY:
+        report.add("status-policy", "status_policy must preserve separate Atlas and Principia authority")
 
     export_policy = manifest.get("export")
     if not isinstance(export_policy, dict):
         report.add("export-policy", "export must be an object")
     else:
+        if export_policy.get("schema") != "principia-atlas-external-dependent/0.2":
+            report.add("export-policy", "export.schema must be principia-atlas-external-dependent/0.2")
         if export_policy.get("kind") != "principia-artifact":
             report.add("export-policy", "export.kind must be principia-artifact")
         if export_policy.get("role") not in ROLES:
             report.add("export-policy", "export.role is invalid")
+        if export_policy.get("exact_revisions") is not True:
+            report.add("export-policy", "export.exact_revisions must be true")
     return report
 
 
@@ -365,10 +380,7 @@ def validate_invalid_fixtures(report: Report, artifacts: dict[str, dict[str, obj
             report.add("invalid-fixture-pass", f"{path.relative_to(ROOT)} unexpectedly passed")
         missing = expected_codes - candidate_report.codes
         if missing:
-            report.add(
-                "invalid-fixture-diagnostic",
-                f"{path.relative_to(ROOT)} missing expected error codes: {sorted(missing)}",
-            )
+            report.add("invalid-fixture-diagnostic", f"{path.relative_to(ROOT)} missing expected error codes: {sorted(missing)}")
 
 
 def validate_contract_artifacts(report: Report) -> None:
@@ -378,7 +390,7 @@ def validate_contract_artifacts(report: Report) -> None:
         MANIFEST_PATH,
         EXPORT_PATH,
         ROOT / "scripts" / "export_principia_atlas_dependents.py",
-        ROOT / "scripts" / "validate_principia_atlas_bridge.py",
+        Path(__file__),
     )
     for path in required:
         if not path.is_file():
@@ -394,7 +406,9 @@ def validate_contract_artifacts(report: Report) -> None:
         for marker in (
             "principia-atlas-bridge/0.1",
             "compatibility-fixture",
-            "Rhodan-lab/Atlas",
+            "bridge-candidate",
+            "principia-atlas-external-dependent/0.2",
+            "exact_revisions",
             "knowledge_status_inheritance",
         ):
             if marker not in serialized:
@@ -406,20 +420,58 @@ def validate_contract_artifacts(report: Report) -> None:
     else:
         for marker in (
             "No status crosses the boundary automatically",
-            "mode: compatibility-fixture",
+            "mode: bridge-candidate",
             "live: false",
-            "Atlas may later ingest that export",
-            "A future live bridge requires separate approval in both repositories",
+            "depends_on_exact",
+            "Atlas Phase 2 importer",
+            "No live cross-repository call",
         ):
             if marker not in contract_text:
                 report.add("contract-doc", f"contract README missing marker {marker!r}")
 
 
+def validate_export(report: Report, manifest: dict[str, Any]) -> None:
+    try:
+        expected_text = render(build_export(manifest))
+        actual_text = EXPORT_PATH.read_text(encoding="utf-8")
+    except (ValueError, OSError) as exc:
+        report.add("export", str(exc))
+        return
+    if actual_text != expected_text:
+        report.add("export-stale", "stored Atlas external-dependent export is stale")
+    try:
+        export_value = json.loads(actual_text)
+    except json.JSONDecodeError as exc:
+        report.add("export-json", f"invalid export JSON: {exc}")
+        return
+    if not isinstance(export_value, dict):
+        report.add("export-json", "export root must be an object")
+        return
+    if export_value.get("contract") != "principia-atlas-external-dependent/0.2":
+        report.add("export-contract", "candidate export contract is incorrect")
+    if export_value.get("bridge_mode") != "bridge-candidate" or export_value.get("live") is not False:
+        report.add("export-live", "candidate export must remain bridge-candidate and non-live")
+    exact = export_value.get("depends_on_exact")
+    if not isinstance(exact, list):
+        report.add("export-revisions", "candidate export lacks depends_on_exact")
+    else:
+        actual = {
+            item.get("id"): item.get("revision")
+            for item in exact
+            if isinstance(item, dict) and isinstance(item.get("id"), str)
+        }
+        if actual != EXPECTED_REVISIONS:
+            report.add("export-revisions", f"candidate export exact revisions differ: {actual}")
+    forbidden = {"status", "pedagogical_status", "release_status", "knowledge_status"} & set(export_value)
+    if forbidden:
+        report.add("export-authority", f"Atlas export leaks Principia status fields: {sorted(forbidden)}")
+
+
 def main() -> int:
     report = Report()
     artifacts = validate_seed_artifacts(report)
+    validate_material_boundary(report)
     validate_contract_artifacts(report)
-
     try:
         manifest = load_json(MANIFEST_PATH)
     except ValueError as exc:
@@ -427,44 +479,18 @@ def main() -> int:
         manifest = {}
     manifest_report = validate_manifest(manifest, artifacts)
     report.findings.extend(manifest_report.findings)
-
     if manifest:
-        try:
-            expected_export = render(build_export(manifest))
-            actual_export = EXPORT_PATH.read_text(encoding="utf-8")
-        except (ValueError, OSError) as exc:
-            report.add("export", str(exc))
-        else:
-            if actual_export != expected_export:
-                report.add("export-stale", "stored Atlas external-dependent export is stale")
-            try:
-                export_value = json.loads(actual_export)
-            except json.JSONDecodeError as exc:
-                report.add("export-json", f"invalid export JSON: {exc}")
-            else:
-                if isinstance(export_value, dict):
-                    forbidden_export_fields = {
-                        "status",
-                        "pedagogical_status",
-                        "release_status",
-                        "knowledge_status",
-                    } & set(export_value)
-                    if forbidden_export_fields:
-                        report.add(
-                            "export-authority",
-                            f"Atlas export leaks Principia status fields: {sorted(forbidden_export_fields)}",
-                        )
-
+        validate_export(report, manifest)
     validate_invalid_fixtures(report, artifacts)
 
     if report.findings:
-        print("Principia–Atlas bridge validation failed:", file=sys.stderr)
+        print("Principia–Atlas bridge candidate validation failed:", file=sys.stderr)
         for finding in report.findings:
             print(f"- [{finding.code}] {finding.message}", file=sys.stderr)
         return 1
     print(
-        "Principia–Atlas bridge passed: 4 revisioned artifacts, 1 non-live manifest, "
-        "1 deterministic Atlas export, and negative boundary fixtures."
+        "Principia–Atlas bridge candidate passed: delayed-correction model@2, other dependencies unchanged, "
+        "separate status authority, exact-revision export, non-live importer boundary, and negative fixtures."
     )
     return 0
 
