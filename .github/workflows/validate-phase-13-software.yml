@@ -1,0 +1,93 @@
+name: Validate Phase 13 Software Foundation
+
+on:
+  push:
+    branches:
+      - agent/phase-13-software-foundation
+    paths:
+      - 'software/**'
+      - 'release/phase-13-*'
+      - 'scripts/validate_phase13_software.py'
+      - 'reports/phase-13-*'
+      - 'PROJECT_STATE.md'
+      - 'README.md'
+      - 'AUDIT.md'
+      - '.github/workflows/validate-phase-13-software.yml'
+      - 'foundations/**'
+      - 'science/**'
+      - 'technology/**'
+      - 'pathways/**'
+      - 'concepts/**'
+      - 'maps/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-13-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out software foundation
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Phase 12 baseline continuity
+        run: |
+          python3 scripts/finalize_phase12_validation_record.py --check
+          python3 scripts/validate_phase12_release_candidate.py
+          python3 scripts/validate_repo.py --strict
+
+      - name: Compile software and validators
+        run: |
+          python3 -m py_compile software/principia_site.py
+          python3 -m py_compile software/tests/test_principia_site.py
+          python3 -m py_compile scripts/validate_phase13_software.py
+
+      - name: Run software unit tests
+        run: python3 -m unittest discover -s software/tests -v
+
+      - name: Validate machine-governed software contract
+        run: python3 scripts/validate_phase13_software.py
+
+      - name: Build deployable static reference site
+        run: python3 software/principia_site.py build --output phase13-site
+
+      - name: Upload deterministic site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: principia-phase-13-static-site
+          path: phase13-site
+          include-hidden-files: true
+
+      - name: Verify workflow immutability
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/validate-phase-13-software.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'contents' + ': write',
+              'git ' + 'push',
+              'git ' + 'commit',
+              'pull_request' + '_target',
+          )
+          assert 'contents: read' in workflow
+          for token in forbidden:
+              assert token not in workflow, token
+          PY
