@@ -56,7 +56,7 @@ Phase 15 artifacts:
 - `pilot/feedback-instability.import-receipt.json`;
 - `pilot/feedback-instability.lifecycle-matrix.json`.
 
-## Phase 16 — offline multi-artifact candidate
+## Phase 16 — offline multi-artifact pilot
 
 Atlas PR #21 finalized the importer baseline record without changing importer behavior:
 
@@ -75,12 +75,13 @@ principia:investigation:room-cooling@1
 principia:system-dossier:refrigerator@1
 ```
 
-Candidate state:
+Validated state:
 
 ```yaml
-state: offline-multi-artifact-candidate
+state: offline-multi-artifact-validated
 mode: offline-multi-artifact-pilot
 live: false
+tested_head: 67d6ec98c51188dabcffd48dad968a83653ea584
 ```
 
 Phase 16 artifacts:
