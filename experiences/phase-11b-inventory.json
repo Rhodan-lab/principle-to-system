@@ -1,0 +1,72 @@
+{
+  "schema": "principia-experience-expansion/0.1",
+  "phase": "11B",
+  "generated": "2026-07-26",
+  "status_policy": {
+    "pedagogical_status": "reviewed",
+    "artifact_revision": 1,
+    "release_status": "draft",
+    "complete_allowed": false
+  },
+  "counts": {
+    "routes": 4,
+    "artifacts": 16,
+    "system_dossiers": 4,
+    "failure_patterns": 4,
+    "investigations": 4,
+    "design_challenges": 4
+  },
+  "routes": [
+    {
+      "id": "thermal-control",
+      "title": "Thermal Control and Passive Cooling",
+      "status": "reviewed",
+      "artifacts": [
+        {"type": "system-dossier", "slug": "system-dossier-refrigerator", "path": "system-dossiers/refrigerator.md"},
+        {"type": "failure-pattern", "slug": "failure-pattern-feedback-instability", "path": "failure-atlas/feedback-instability.md"},
+        {"type": "investigation", "slug": "investigation-room-cooling", "path": "investigations/room-cooling.md"},
+        {"type": "design-challenge", "slug": "design-challenge-passive-cooler", "path": "design-challenges/passive-cooler.md"}
+      ]
+    },
+    {
+      "id": "resilient-energy",
+      "title": "Solar, Storage, Protection, and Resilient Service",
+      "status": "reviewed",
+      "artifacts": [
+        {"type": "system-dossier", "slug": "system-dossier-solar-battery-microgrid", "path": "system-dossiers/solar-battery-microgrid.md"},
+        {"type": "failure-pattern", "slug": "failure-pattern-protection-coordination", "path": "failure-atlas/protection-coordination.md"},
+        {"type": "investigation", "slug": "investigation-solar-shading", "path": "investigations/solar-shading.md"},
+        {"type": "design-challenge", "slug": "design-challenge-resilient-charging-hub", "path": "design-challenges/resilient-charging-hub.md"}
+      ]
+    },
+    {
+      "id": "water-infrastructure",
+      "title": "Water Treatment, Distribution, Measurement, and Storage",
+      "status": "reviewed",
+      "artifacts": [
+        {"type": "system-dossier", "slug": "system-dossier-drinking-water-network", "path": "system-dossiers/drinking-water-network.md"},
+        {"type": "failure-pattern", "slug": "failure-pattern-sensor-drift-hidden-degradation", "path": "failure-atlas/sensor-drift-hidden-degradation.md"},
+        {"type": "investigation", "slug": "investigation-filter-loading", "path": "investigations/filter-loading.md"},
+        {"type": "design-challenge", "slug": "design-challenge-nonpotable-rainwater-buffer", "path": "design-challenges/nonpotable-rainwater-buffer.md"}
+      ]
+    },
+    {
+      "id": "distributed-information",
+      "title": "Distributed Web Service, Queueing, and Recovery",
+      "status": "reviewed",
+      "artifacts": [
+        {"type": "system-dossier", "slug": "system-dossier-web-service-request", "path": "system-dossiers/web-service-request.md"},
+        {"type": "failure-pattern", "slug": "failure-pattern-retry-storm-queue-collapse", "path": "failure-atlas/retry-storm-queue-collapse.md"},
+        {"type": "investigation", "slug": "investigation-queue-delay-near-capacity", "path": "investigations/queue-delay-near-capacity.md"},
+        {"type": "design-challenge", "slug": "design-challenge-resilient-school-information-service", "path": "design-challenges/resilient-school-information-service.md"}
+      ]
+    }
+  ],
+  "governance": {
+    "atlas_live_dependency": false,
+    "atlas_status_inheritance": false,
+    "source_ledger": "sources/experience-source-ledger.md",
+    "validator": "scripts/validate_phase11b_expansion.py",
+    "release_gate": "Phase 12"
+  }
+}

@@ -1,0 +1,109 @@
+name: Validate Phase 11B Expansion
+
+on:
+  push:
+    branches:
+      - agent/phase-11b-controlled-material-expansion
+    paths:
+      - 'experiences/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+      - 'templates/**'
+      - 'sources/experience-source-ledger.md'
+      - 'reports/phase-11b-*'
+      - 'scripts/validate_experiences.py'
+      - 'scripts/validate_phase11b_expansion.py'
+      - 'scripts/export_principia_atlas_dependents.py'
+      - 'scripts/validate_principia_atlas_bridge.py'
+      - 'scripts/validate_principia_atlas_audit.py'
+      - 'README.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-11b-expansion.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-11b-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out controlled expansion
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile experience and compatibility validators
+        run: |
+          python3 -m py_compile scripts/validate_experiences.py
+          python3 -m py_compile scripts/validate_phase11b_expansion.py
+          python3 -m py_compile scripts/export_principia_atlas_dependents.py
+          python3 -m py_compile scripts/validate_principia_atlas_bridge.py
+          python3 -m py_compile scripts/validate_principia_atlas_audit.py
+
+      - name: Validate original experience foundation
+        run: python3 scripts/validate_experiences.py --strict
+
+      - name: Validate four-route controlled expansion
+        id: expansion
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase11b_expansion.py > phase11b-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase11b-validation.log
+          exit 0
+
+      - name: Upload Phase 11B diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11b-validation-diagnostics
+          path: phase11b-validation.log
+
+      - name: Stop on Phase 11B validation errors
+        if: steps.expansion.outputs.status != '0'
+        run: exit 1
+
+      - name: Validate non-live compatibility continuity
+        run: |
+          python3 scripts/export_principia_atlas_dependents.py --check
+          python3 scripts/validate_principia_atlas_bridge.py
+          python3 scripts/validate_principia_atlas_audit.py
+
+      - name: Validate reviewed synthesis continuity
+        run: |
+          python3 scripts/validate_phase10_synthesis.py
+          python3 scripts/validate_phase10_audit.py
+
+      - name: Validate repository structure
+        run: python3 scripts/validate_repo.py
+
+      - name: Verify workflow immutability
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/validate-phase-11b-expansion.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'contents' + ': write',
+              'git ' + 'push',
+              'git ' + 'commit',
+              'pull_request' + '_target',
+          )
+          assert 'contents: read' in workflow
+          for token in forbidden:
+              assert token not in workflow, token
+          PY

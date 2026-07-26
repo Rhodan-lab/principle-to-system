@@ -53,7 +53,7 @@ Independent learners who want to understand *why* technology works, not merely *
 | `pathways/` | Six end-to-end science-to-technology chains |
 | `maps/` | Dependency and enabling-relationship maps |
 | `synthesis/` | Phase-level canonical graphs and reconciliation contracts |
-| `experiences/` | Shared rules and navigation for applied materials |
+| `experiences/` | Shared rules, four-route navigation, and the Phase 11B inventory |
 | `system-dossiers/` | Reverse-engineering complete technologies |
 | `failure-atlas/` | Recurring causal failure patterns and redesign strategies |
 | `investigations/` | Safe model-comparison inquiries with uncertainty |
@@ -61,8 +61,8 @@ Independent learners who want to understand *why* technology works, not merely *
 | `templates/` | Reusable authoring structures for the four experience families |
 | `contracts/principia-atlas/` | Versioned Principia-side compatibility contracts |
 | `integration/principia-atlas/` | Non-live bridge manifests, deterministic exports, and invalid fixtures |
-| `sources/` | Legacy module ledger and normalized experience-source ledger |
-| `scripts/` | Module, experience, synthesis, and compatibility validators |
+| `sources/` | Normalized module and experience source ledgers |
+| `scripts/` | Module, experience, synthesis, expansion, and compatibility validators |
 
 Every core module contains `overview.md`, `technology.md`, and `explore.md`. Applied materials use family-specific standards and templates.
 
@@ -78,29 +78,46 @@ Choose a route in [`pathways/`](pathways/), such as [`atoms-to-computers.md`](pa
 
 ### 3. Reverse-engineer a system
 
-Start with [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md). Trace energy, matter, and information flows; remove a component mentally; predict the result; compare alternative architectures.
+Choose one reviewed dossier:
+
+- [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md)
+- [`system-dossiers/solar-battery-microgrid.md`](system-dossiers/solar-battery-microgrid.md)
+- [`system-dossiers/drinking-water-network.md`](system-dossiers/drinking-water-network.md)
+- [`system-dossiers/web-service-request.md`](system-dossiers/web-service-request.md)
+
+Trace energy, matter, information, control, and failure boundaries; remove a component mentally; predict the result; compare alternative architectures.
 
 ### 4. Explain, diagnose, investigate, design
 
-1. [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md)
-2. [`failure-atlas/feedback-instability.md`](failure-atlas/feedback-instability.md)
-3. [`investigations/room-cooling.md`](investigations/room-cooling.md)
-4. [`design-challenges/passive-cooler.md`](design-challenges/passive-cooler.md)
+[`experiences/phase-11b-inventory.json`](experiences/phase-11b-inventory.json) defines four complete routes:
 
-The same thermodynamic theme is viewed through explanation, failure, evidence, and design.
+| Route | System | Failure | Investigation | Design |
+| --- | --- | --- | --- | --- |
+| thermal-control | Refrigerator | Feedback instability | Room cooling | Passive cooler |
+| resilient-energy | Solar–battery microgrid | Protection coordination | Solar shading | Resilient charging hub |
+| water-infrastructure | Drinking-water network | Sensor drift | Filter loading | Non-potable rainwater buffer |
+| distributed-information | Web-service request | Retry storm | Queue delay | Resilient school information service |
+
+Each route examines one system through explanation, failure, evidence, and design.
 
 ## Content and artifact status
 
 File presence does not imply review completion. Module status is tracked in [`INDEX.md`](INDEX.md); repository blockers and review order are tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md) and [`AUDIT.md`](AUDIT.md).
 
-The initial applied-material exemplars have completed a focused source, safety, structure, and metadata review. Their pedagogical `status` is `reviewed`, not `complete`.
+The sixteen applied-material artifacts have completed focused source, safety, structure, and metadata review. Their pedagogical `status` is `reviewed`, not `complete`.
 
 Applied experiences also carry:
 
 - `artifact_revision` — the exact Principia revision exposed to dependency reporting;
-- `release_status` — publication readiness, currently `draft` for the seed artifacts.
+- `release_status` — publication readiness, currently `draft` for all Phase 11B artifacts.
 
-Pedagogical review, release readiness, and Atlas knowledge status are separate decisions.
+Pedagogical review, release readiness, and Atlas knowledge status are separate decisions. Phase 12 is the earliest release gate.
+
+## Safety boundaries
+
+- Energy experiences use diagrams, public data, and simulation; they do not authorize wiring, battery modification, islanding, backfeed, or grid testing.
+- Water experiences explain regulated systems without providing a procedure for producing safe drinking water; the rainwater design is explicitly non-potable.
+- Distributed-information experiences use synthetic traffic and fictional data; they do not authorize scanning, flooding, credential use, private-data access, or testing live services.
 
 ## Principia & Atlas compatibility
 
@@ -113,7 +130,7 @@ mode: compatibility-fixture
 live: false
 ```
 
-Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories.
+Principia does not clone Atlas during validation, and the export contains no Principia pedagogical or release status. A future live bridge requires explicit approval and compatible phase gates in both repositories. Phase 11B does not activate that bridge.
 
 ## Validation
 
@@ -124,11 +141,11 @@ python3 scripts/validate_repo.py
 python3 scripts/validate_repo.py --strict
 ```
 
-Applied-material layer:
+Applied-material foundation and controlled expansion:
 
 ```bash
-python3 scripts/validate_experiences.py
 python3 scripts/validate_experiences.py --strict
+python3 scripts/validate_phase11b_expansion.py
 ```
 
 Principia & Atlas compatibility:
@@ -139,15 +156,15 @@ python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
 ```
 
-GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, and compatibility validation. Compatibility CI is read-only and does not import Atlas.
+GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, expansion, and compatibility validation. Compatibility and Phase 11B CI are read-only and do not import Atlas.
 
 ## Sources
 
-Reviewed module sources are recorded in the normalized [`sources/source-ledger.md`](sources/source-ledger.md). New applied materials use the machine-readable [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), with one source per eight-column row.
+Reviewed module sources are recorded in [`sources/source-ledger.md`](sources/source-ledger.md). Applied materials use [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), which contains 28 one-source-per-row records after Phase 11B.
 
 ## Contributing
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/) and pass strict experience validation. Bridgeable artifacts must also use positive exact `artifact_revision` values and explicit `release_status`.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), and [`SOURCE_POLICY.md`](SOURCE_POLICY.md). New applied materials must begin from the appropriate file in [`templates/`](templates/), enter the machine-readable experience inventory, and pass strict expansion validation. Bridgeable artifacts must use positive exact `artifact_revision` values and explicit `release_status`.
 
 ## Licensing
 

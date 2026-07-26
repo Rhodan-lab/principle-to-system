@@ -6,7 +6,7 @@ experience_type: index
 status: reviewed
 prerequisites: []
 connections: [03-mathematical-models, concept-structure-and-function, concept-systems-and-models]
-last_reviewed: 2026-07-25
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -33,6 +33,11 @@ Design challenges ask learners to make and defend engineering choices under meas
 
 Use [`templates/design-challenge.md`](../templates/design-challenge.md).
 
-## Initial challenge
+## Reviewed challenges
 
-- [Design a Passive Cooler](passive-cooler.md)
+- [Design a Passive Cooler](passive-cooler.md) — thermal-control route
+- [Design a Resilient Community Charging Hub](resilient-charging-hub.md) — resilient-energy route
+- [Design a Non-Potable Rainwater Buffer](nonpotable-rainwater-buffer.md) — water-infrastructure route
+- [Design a Resilient School Information Service](resilient-school-information-service.md) — distributed-information route
+
+The challenges require diagrams, public data, hypothetical datasets, or offline simulation. They are not installation, treatment, or live-system testing instructions. Every challenge remains `release_status: draft` until Phase 12. The canonical inventory is [`experiences/phase-11b-inventory.json`](../experiences/phase-11b-inventory.json).

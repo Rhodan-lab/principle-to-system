@@ -6,7 +6,7 @@ experience_type: index
 status: reviewed
 prerequisites: []
 connections: [concept-systems-and-models, concept-cause-and-effect]
-last_reviewed: 2026-07-25
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -44,6 +44,8 @@ notice a system
 6. Keep physical activities optional, low-energy, and safe.
 7. Do not use grades, streaks, or competitive ranking.
 8. End with unresolved questions and evidence that could change the conclusion.
+9. Do not convert a diagram or validator pass into release authority.
+10. Keep Atlas knowledge status separate from Principia pedagogical and release status.
 
 ## Identity and status separation
 
@@ -56,28 +58,55 @@ Each authored experience has four independent identity or lifecycle fields:
 | `status` | Pedagogical maturity | Principia |
 | `release_status` | Publication readiness | Principia |
 
-`status: reviewed` does not imply `release_status: released`. Neither field copies or inherits Atlas knowledge status.
+`status: reviewed` does not imply `release_status: released`. Every Phase 11B artifact uses `artifact_revision: 1` and `release_status: draft`. A dependency-relevant change must increment the artifact revision before a bridge manifest can be updated.
 
-The initial seed artifacts use `artifact_revision: 1` and `release_status: draft`. A dependency-relevant change must increment the artifact revision before a bridge manifest can be updated.
+## Canonical four-route inventory
 
-## Principia & Atlas compatibility
+[`phase-11b-inventory.json`](phase-11b-inventory.json) is the machine-readable inventory for four complete routes and sixteen artifacts.
 
-[`contracts/principia-atlas/0.1/`](../contracts/principia-atlas/0.1/) defines a future-safe, one-way compatibility boundary. Principia can describe exact-revision Atlas dependencies and export an opaque external-dependent record without importing Atlas or treating Atlas lifecycle state as Principia status.
-
-During Atlas Phase 1, compatibility manifests are fixtures only:
-
-```yaml
-mode: compatibility-fixture
-live: false
-```
-
-The current feedback-instability fixture demonstrates the boundary but does not activate a live cross-repository dependency.
-
-## Initial route
+### thermal-control
 
 1. [The Domestic Refrigerator](../system-dossiers/refrigerator.md)
 2. [Feedback Instability](../failure-atlas/feedback-instability.md)
 3. [How Does a Room Cool?](../investigations/room-cooling.md)
 4. [Design a Passive Cooler](../design-challenges/passive-cooler.md)
 
-Together they examine one thermodynamic theme through explanation, failure, evidence, and design.
+### resilient-energy
+
+1. [A Solar–Battery Microgrid](../system-dossiers/solar-battery-microgrid.md)
+2. [Protection Coordination Failure](../failure-atlas/protection-coordination.md)
+3. [How Does Partial Shading Change Solar Output?](../investigations/solar-shading.md)
+4. [Design a Resilient Community Charging Hub](../design-challenges/resilient-charging-hub.md)
+
+This route is simulation- and data-first. It does not authorize live electrical work, islanding tests, battery modification, or grid connection.
+
+### water-infrastructure
+
+1. [A Drinking-Water Treatment and Distribution Network](../system-dossiers/drinking-water-network.md)
+2. [Sensor Drift and Hidden Degradation](../failure-atlas/sensor-drift-hidden-degradation.md)
+3. [How Does Filter Loading Change Flow Resistance?](../investigations/filter-loading.md)
+4. [Design a Non-Potable Rainwater Buffer](../design-challenges/nonpotable-rainwater-buffer.md)
+
+This route explains regulated public-water systems and safe models. It does not provide a procedure for producing potable water or modifying plumbing.
+
+### distributed-information
+
+1. [A Web Request Through a Distributed Service](../system-dossiers/web-service-request.md)
+2. [Retry Storm and Queue Collapse](../failure-atlas/retry-storm-queue-collapse.md)
+3. [How Does Queueing Delay Grow Near Capacity?](../investigations/queue-delay-near-capacity.md)
+4. [Design a Resilient School Information Service](../design-challenges/resilient-school-information-service.md)
+
+This route uses synthetic traffic and offline simulation only. It does not authorize testing, scanning, flooding, or accessing live systems.
+
+## Principia & Atlas compatibility
+
+[`contracts/principia-atlas/0.1/`](../contracts/principia-atlas/0.1/) defines a future-safe, one-way compatibility boundary. Principia can describe exact-revision Atlas dependencies and export an opaque external-dependent record without importing Atlas or treating Atlas lifecycle state as Principia status.
+
+During Atlas Phase 1, compatibility manifests remain fixtures only:
+
+```yaml
+mode: compatibility-fixture
+live: false
+```
+
+Phase 11B adds no live Atlas dependency and does not change Atlas.
