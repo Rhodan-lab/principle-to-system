@@ -6,12 +6,14 @@ on:
       - agent/phase-13-software-foundation
     paths:
       - 'scripts/apply_phase13_state.py'
+      - 'scripts/finalize_phase13_phase12_history.py'
       - '.github/workflows/apply-phase-13-state.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'scripts/apply_phase13_state.py'
+      - 'scripts/finalize_phase13_phase12_history.py'
       - '.github/workflows/apply-phase-13-state.yml'
   workflow_dispatch:
 
@@ -46,8 +48,10 @@ jobs:
           {
             python3 scripts/apply_phase13_state.py --write &&
             python3 scripts/apply_phase13_state.py --check &&
+            python3 scripts/finalize_phase13_phase12_history.py --write &&
+            python3 scripts/finalize_phase13_phase12_history.py --check &&
             python3 scripts/finalize_phase12_validation_record.py --check &&
-            python3 -m py_compile scripts/apply_phase13_state.py
+            python3 -m py_compile scripts/apply_phase13_state.py scripts/finalize_phase13_phase12_history.py
           } > phase13-state-transition.log 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
