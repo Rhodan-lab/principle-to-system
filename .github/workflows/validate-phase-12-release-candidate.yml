@@ -62,6 +62,7 @@ jobs:
           python3 -m py_compile scripts/export_principia_atlas_dependents.py
           python3 -m py_compile scripts/validate_principia_atlas_bridge.py
           python3 -m py_compile scripts/validate_principia_atlas_audit.py
+          python3 -m py_compile scripts/finalize_phase12_validation_record.py
           python3 -m py_compile scripts/validate_phase12_release_candidate.py
 
       - name: Validate metadata and source foundation
@@ -139,8 +140,19 @@ jobs:
         shell: bash
         run: |
           set +e
-          python3 scripts/validate_phase12_release_candidate.py > phase12-validation.log 2>&1
-          status=$?
+          python3 scripts/finalize_phase12_validation_record.py --check > phase12-validation.log 2>&1
+          finalizer_status=$?
+          if [ "$finalizer_status" -eq 0 ]; then
+            python3 scripts/validate_phase12_release_candidate.py >> phase12-validation.log 2>&1
+            validator_status=$?
+          else
+            validator_status=0
+          fi
+          if [ "$finalizer_status" -ne 0 ]; then
+            status=$finalizer_status
+          else
+            status=$validator_status
+          fi
           echo "status=$status" >> "$GITHUB_OUTPUT"
           cat phase12-validation.log
           exit 0
