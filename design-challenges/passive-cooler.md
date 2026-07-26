@@ -4,6 +4,8 @@ slug: design-challenge-passive-cooler
 domain: experience
 experience_type: design-challenge
 status: reviewed
+artifact_revision: 1
+release_status: draft
 prerequisites: [03-mathematical-models, 08-energy-thermodynamics, 12-fluids-materials]
 connections: [17-materials-manufacturing, system-dossier-refrigerator, investigation-room-cooling]
 last_reviewed: 2026-07-25
