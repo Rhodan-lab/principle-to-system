@@ -1,0 +1,155 @@
+name: Validate Phase 12 Release Candidate
+
+on:
+  push:
+    branches:
+      - agent/phase-12-release-candidate
+    paths:
+      - 'foundations/**'
+      - 'science/**'
+      - 'technology/**'
+      - 'concepts/**'
+      - 'pathways/**'
+      - 'maps/**'
+      - 'synthesis/**'
+      - 'experiences/**'
+      - 'system-dossiers/**'
+      - 'failure-atlas/**'
+      - 'investigations/**'
+      - 'design-challenges/**'
+      - 'contracts/**'
+      - 'integration/**'
+      - 'release/**'
+      - 'sources/**'
+      - 'reports/phase-12-*'
+      - 'scripts/**'
+      - 'INDEX.md'
+      - 'README.md'
+      - 'AUDIT.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-12-release-candidate.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-12-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release candidate
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile release and continuity validators
+        run: |
+          python3 -m py_compile scripts/validate_repo.py
+          python3 -m py_compile scripts/validate_experiences.py
+          python3 -m py_compile scripts/validate_phase11b_expansion.py
+          python3 -m py_compile scripts/validate_phase10_synthesis.py
+          python3 -m py_compile scripts/validate_phase10_audit.py
+          python3 -m py_compile scripts/export_principia_atlas_dependents.py
+          python3 -m py_compile scripts/validate_principia_atlas_bridge.py
+          python3 -m py_compile scripts/validate_principia_atlas_audit.py
+          python3 -m py_compile scripts/validate_phase12_release_candidate.py
+
+      - name: Validate metadata and source foundation
+        run: |
+          python3 scripts/normalize_module_metadata.py
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Validate Foundations continuity
+        run: |
+          python3 scripts/apply_foundations_review_sources.py --check
+          python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
+
+      - name: Validate Physical Science continuity
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/finalize_phase7_review.py --check
+
+      - name: Validate Life and Earth continuity
+        run: |
+          python3 scripts/apply_phase8_review_sources.py --check
+          python3 scripts/finalize_phase8_review.py --check
+          python3 scripts/validate_phase8_continuity_phase9.py
+
+      - name: Validate Technology continuity
+        run: |
+          python3 scripts/normalize_phase9_transformer_literals.py --check
+          python3 scripts/normalize_phase9_finalizer.py --check
+          python3 scripts/apply_phase9_review_sources.py --check
+          python3 scripts/finalize_phase9_review.py --check
+          python3 scripts/validate_phase9_technology_review.py
+          python3 scripts/validate_phase9_audit.py
+
+      - name: Validate synthesis continuity
+        run: |
+          python3 scripts/normalize_phase10_reconciler.py --check
+          python3 scripts/finalize_phase10_synthesis.py --check
+          python3 scripts/validate_phase10_synthesis.py
+          python3 scripts/validate_phase10_audit.py
+
+      - name: Validate applied-material expansion
+        run: |
+          python3 scripts/validate_experiences.py --strict
+          python3 scripts/validate_phase11b_expansion.py
+
+      - name: Validate non-live compatibility continuity
+        run: |
+          python3 scripts/export_principia_atlas_dependents.py --check
+          python3 scripts/validate_principia_atlas_bridge.py
+          python3 scripts/validate_principia_atlas_audit.py
+
+      - name: Validate strict repository structure
+        run: python3 scripts/validate_repo.py --strict
+
+      - name: Validate Phase 12 release candidate
+        id: release_candidate
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase12_release_candidate.py > phase12-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase12-validation.log
+          exit 0
+
+      - name: Upload Phase 12 diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase12-release-candidate-diagnostics
+          path: phase12-validation.log
+
+      - name: Stop on Phase 12 validation errors
+        if: steps.release_candidate.outputs.status != '0'
+        run: exit 1
+
+      - name: Verify workflow immutability
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/validate-phase-12-release-candidate.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'contents' + ': write',
+              'git ' + 'push',
+              'git ' + 'commit',
+              'pull_request' + '_target',
+          )
+          assert 'contents: read' in workflow
+          for token in forbidden:
+              assert token not in workflow, token
+          PY
