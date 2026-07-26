@@ -57,7 +57,25 @@ jobs:
         run: python3 scripts/validate_experiences.py --strict
 
       - name: Validate four-route controlled expansion
-        run: python3 scripts/validate_phase11b_expansion.py
+        id: expansion
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/validate_phase11b_expansion.py > phase11b-validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase11b-validation.log
+          exit 0
+
+      - name: Upload Phase 11B diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11b-validation-diagnostics
+          path: phase11b-validation.log
+
+      - name: Stop on Phase 11B validation errors
+        if: steps.expansion.outputs.status != '0'
+        run: exit 1
 
       - name: Validate non-live compatibility continuity
         run: |
