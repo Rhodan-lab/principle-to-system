@@ -1,0 +1,53 @@
+name: Apply Phase 12 Chain Repairs
+
+on:
+  push:
+    branches:
+      - agent/phase-12-release-candidate
+    paths:
+      - 'scripts/apply_phase12_chain_repairs.py'
+      - '.github/workflows/apply-phase-12-chain-repairs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-12-chain-repairs
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 12 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-12-release-candidate
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply explicit chains
+        run: |
+          python3 scripts/apply_phase12_chain_repairs.py --write
+          python3 scripts/apply_phase12_chain_repairs.py --check
+          python3 -m py_compile scripts/apply_phase12_chain_repairs.py
+          python3 scripts/validate_repo.py --strict
+
+      - name: Commit explicit chains
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No chain repairs remain.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add science/10-electricity-magnetism/technology.md science/15-ecosystems-complex-systems/technology.md technology/17-materials-manufacturing/technology.md technology/19-software-ai/technology.md technology/20-sensors-control-infrastructure/technology.md
+          git commit -m 'content: add explicit Phase 12 system chains'
+          git push origin HEAD:agent/phase-12-release-candidate
