@@ -2,17 +2,24 @@
 
 ## Purpose
 
-`principia-atlas-bridge/0.1` prepares Principia artifacts to participate in a future **Principia & Atlas** product while preserving repository independence and separate authority.
+`principia-atlas-bridge/0.1` lets Principia declare exact-revision Atlas dependencies while preserving repository independence and separate authority.
 
-The bridge is deliberately one-way and offline:
+The bridge is one-way and offline:
 
 - Principia authors a revision-specific dependency manifest.
-- A deterministic exporter can produce the opaque `external_dependents` shape already accepted by Atlas coverage reporting.
-- Atlas may later ingest that export through its own reviewed process.
-- Principia never imports Atlas source files, review records, or lifecycle decisions during validation.
-- Atlas remains able to validate itself without cloning or reading Principia.
+- A deterministic exporter produces an importer candidate with legacy dependency IDs and exact dependency objects.
+- Atlas Phase 2 importer work may later ingest and validate that committed export through Atlas's own process.
+- Principia never imports Atlas source files, review records, lifecycle status, or runtime state during validation.
+- Atlas remains independently buildable and is not modified by this contract update.
 
-During Atlas Phase 1, every Principia bridge manifest must use `mode: compatibility-fixture` and `live: false`. A fixture proves contract compatibility; it is not a live knowledge dependency.
+The active manifest uses:
+
+```yaml
+mode: bridge-candidate
+live: false
+```
+
+`bridge-candidate` means the record is revision-pinned and importer-ready on the Principia side. It does not activate a network call, synchronization process, status transfer, or live dependency. **No live cross-repository call is permitted by this state.**
 
 ## Ownership boundary
 
@@ -27,14 +34,14 @@ During Atlas Phase 1, every Principia bridge manifest must use `mode: compatibil
 
 No status crosses the boundary automatically.
 
-- Atlas `reviewed` does not make a Principia artifact pedagogically reviewed or released.
-- Principia `reviewed` does not make any Atlas entity scientifically reviewed.
-- A validator pass establishes only structural conformance.
-- AI-generated analysis cannot grant scientific, editorial, legal, ethical, methodological, translation, or release authority.
+- Atlas review status does not make a Principia artifact pedagogically reviewed or released.
+- Principia `reviewed` does not change any Atlas entity's knowledge lifecycle.
+- Principia software or bridge validation does not promote pedagogical or publication state.
+- Atlas importer acceptance, when implemented, will remain an Atlas decision.
 
 ## Principia artifact identity
 
-A bridgeable Principia artifact requires:
+A bridgeable Principia artifact requires independent fields:
 
 ```yaml
 slug: failure-pattern-feedback-instability
@@ -43,24 +50,22 @@ artifact_revision: 1
 release_status: draft
 ```
 
-`status` is pedagogical maturity under Principia governance. `release_status` is publication readiness. `artifact_revision` is a positive integer that changes whenever dependency-relevant meaning changes.
+`status` is pedagogical maturity. `release_status` is publication readiness. `artifact_revision` changes only when dependency-relevant Principia meaning changes. Clarifying an already-declared model boundary without changing the principal conclusion does not require an artifact revision increment.
 
-The exported external ID is namespaced and stable:
+The exported external ID is stable:
 
 ```text
 principia:failure-pattern:feedback-instability
 ```
 
-Renaming a file path does not change the ID. Changing the artifact's dependency-relevant meaning requires a new `artifact_revision`.
+## Exact Atlas dependency references
 
-## Atlas dependency reference
-
-Every Atlas dependency is exact-revision:
+Every Atlas dependency uses one exact positive integer revision. The current model reference is:
 
 ```json
 {
   "id": "model:en:delayed-correction-recurrence",
-  "revision": 1,
+  "revision": 2,
   "entity_type": "model",
   "role": "supporting",
   "use": "model-boundary",
@@ -68,75 +73,74 @@ Every Atlas dependency is exact-revision:
 }
 ```
 
+The other delayed-feedback dependencies remain pinned to revision 1.
+
 Forbidden forms include:
 
 - `revision: "latest"`;
 - unversioned entity references;
 - copied Atlas lifecycle status used as a Principia gate;
-- automatic release or pedagogical promotion;
+- automatic pedagogical or release promotion;
 - direct repository imports;
-- a live dependency while Atlas Phase 1 keeps direct integration frozen.
+- live calls while `live: false`.
 
-## Dependency roles
+## Dependency roles and uses
 
-- `load-bearing` — changing or invalidating the Atlas entity could change the artifact's principal explanation, model, requirement, or conclusion.
+- `load-bearing` — changing or invalidating the Atlas entity could change the artifact's principal explanation or conclusion.
 - `supporting` — materially useful but replaceable without changing the principal conclusion.
 - `context` — navigation or interpretation rather than authority.
 
-Roles are local to the Principia artifact manifest. They do not modify Atlas entities.
-
-## Uses
-
-Allowed `use` values are:
-
-- `definition`;
-- `evidence`;
-- `claim-boundary`;
-- `model`;
-- `model-boundary`;
-- `source-context`;
-- `synthesis-context`.
+Allowed `use` values are `definition`, `evidence`, `claim-boundary`, `model`, `model-boundary`, `source-context`, and `synthesis-context`.
 
 ## Change policies
 
-- `inspect` — flag the artifact for inspection after an Atlas revision, deprecation, or retraction.
-- `revalidate` — rerun the bounded Principia review before release.
-- `block-release` — a pending or incompatible change blocks release-status promotion until resolved.
+- `inspect` — inspect a changed exact revision and record whether the Principia artifact can adopt it unchanged.
+- `revalidate` — rerun the bounded Principia material checks.
+- `block-release` — prevent release-status promotion until a load-bearing incompatibility is resolved.
 
-These policies affect Principia workflow only. They do not ask Atlas to change lifecycle state.
+These policies affect Principia workflow only. They do not change Atlas lifecycle state.
 
-## Export format
+## Candidate export
 
-The exporter emits the exact opaque reference shape documented by Atlas:
+The exporter emits `principia-atlas-external-dependent/0.2`:
 
 ```json
 {
+  "contract": "principia-atlas-external-dependent/0.2",
   "id": "principia:failure-pattern:feedback-instability",
-  "kind": "principia-artifact",
-  "repository": "Rhodan-lab/principle-to-system",
   "revision": 1,
-  "role": "load-bearing",
+  "bridge_mode": "bridge-candidate",
+  "live": false,
   "depends_on": [
     "claim:en:model-oscillation-does-not-prove-real-system",
     "model:en:delayed-correction-recurrence"
+  ],
+  "depends_on_exact": [
+    {
+      "id": "model:en:delayed-correction-recurrence",
+      "revision": 2,
+      "role": "supporting",
+      "use": "model-boundary",
+      "change_policy": "inspect"
+    }
   ]
 }
 ```
 
-The export contains no Principia pedagogical or release status because Atlas must not validate or inherit those states.
+`depends_on` preserves the existing opaque ID coverage shape. `depends_on_exact` is the Phase 2 importer candidate surface for exact-revision lookup and dependency-impact queries.
 
-## Current fixture
+The export contains no Atlas knowledge status and no Principia pedagogical or release status.
 
-`integration/principia-atlas/manifests/feedback-instability.fixture.json` maps the existing Principia failure-pattern artifact to exact Atlas delayed-feedback entities. It is intentionally non-live. Its generated export is stored beside it for deterministic comparison.
+## Oscillation and instability boundary
+
+The revision-2 recurrence proves a bounded exact period-6 orbit for its declared initial state. It demonstrates oscillation. It does not prove instability, does not show that delay always causes instability, and does not establish real-system behaviour. Principia retains the load-bearing claim boundary that model oscillation does not prove a real system.
 
 ## Promotion boundary
 
-A future live bridge requires separate approval in both repositories:
+The candidate is ready for an Atlas Phase 2 importer test, but remains non-live:
 
-1. Atlas exits the phase that freezes direct integration.
-2. Principia approves a live manifest through its own review.
-3. Atlas accepts the external dependent through its own contract and governance.
-4. Neither repository imports the other's status.
-5. Revision, staleness, deprecation, and retraction behavior are tested end to end.
-
-Until then, bridge work remains compatibility preparation only.
+1. Atlas may import the committed candidate through a read-only, exact-revision process.
+2. Atlas may reject it without changing Principia status.
+3. Neither repository imports the other's status.
+4. Revision, staleness, deprecation, retraction, and recovery behaviour remain testable.
+5. Live calls require a later contract and `live: true` transition that is not part of this candidate.
