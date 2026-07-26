@@ -1,0 +1,10 @@
+{
+  "contract": "principia-atlas-invalid-fixture/0.1",
+  "base_manifest": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+  "expected_error_codes": ["status-policy"],
+  "patch": {
+    "status_policy": {
+      "knowledge_status_inheritance": "copied"
+    }
+  }
+}
