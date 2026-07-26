@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 11B — Controlled Material Expansion implemented on `agent/phase-11b-controlled-material-expansion`; coordinated validation and independent review remain pending.**
+**Phase 11B — Controlled Material Expansion implemented and validated on draft PR #13; independent review and merge remain pending.**
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -24,7 +24,7 @@ The repository remains a material-first educational foundation. Its future produ
 | 9 | Technology review | Merged and validated through PR #10 |
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
-| 11B | Controlled material expansion | Implemented on Phase 11B branch; coordinated validation pending |
+| 11B | Controlled material expansion | Implemented and validated on draft PR #13; awaiting independent review and merge |
 | 12 | Release candidate | Not started |
 | 13 | Optional software layer | Deferred |
 
@@ -168,7 +168,9 @@ Phase 11B expands the applied learning layer from one route and four artifacts t
 
 Phase 11B uses revisioned Principia artifacts but creates no new Atlas manifest and no live dependency. Atlas remains unchanged.
 
-## Validation
+## Validation result
+
+The exact draft PR #13 head passes:
 
 ```bash
 python3 scripts/validate_experiences.py --strict
@@ -181,7 +183,19 @@ python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
 ```
 
-The permanent `.github/workflows/validate-phase-11b-expansion.yml` workflow uses `contents: read`. It validates the original experience foundation, all sixteen expanded artifacts, route completeness, revision and release state, source coverage, safety boundaries, navigation, Phase 10 continuity, Phase 11A compatibility, repository structure, and workflow immutability.
+All applicable GitHub Actions workflows pass together:
+
+- Phase 5 Sources;
+- Phase 6 Foundations;
+- Phase 7 Physical Science;
+- Phase 8 Life and Earth Systems;
+- Phase 9 Technology;
+- Phase 10 Synthesis;
+- Applied Materials;
+- Principia–Atlas Compatibility;
+- Phase 11B Expansion.
+
+The permanent `.github/workflows/validate-phase-11b-expansion.yml` workflow uses `contents: read`. It validates the original experience foundation, all sixteen expanded artifacts, route completeness, revision and release state, source coverage, safety boundaries, navigation, Phase 10 continuity, Phase 11A compatibility, repository structure, workflow immutability, and preserved diagnostic output. It cannot write, commit, push, merge, or activate Atlas integration.
 
 ## Next phase
 
