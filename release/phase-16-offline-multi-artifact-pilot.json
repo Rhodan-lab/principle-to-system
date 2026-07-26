@@ -7,7 +7,10 @@
   "live": false,
   "principia": {
     "repository": "Rhodan-lab/principle-to-system",
-    "branch": "agent/phase-16-offline-multi-artifact-pilot",
+    "branch": "main",
+    "pull_request": 20,
+    "head_commit": "d37674490f054241ef08ccf7a644247b444fa874",
+    "merge_commit": "c493bf879a7945f9991e13592d42424138a0879b",
     "artifacts": [
       {
         "id": "principia:failure-pattern:feedback-instability",
@@ -64,8 +67,9 @@
   "validation": {
     "status": "success",
     "pull_request": 20,
-    "tested_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
-    "merge_commit": null
+    "candidate_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
+    "tested_head_commit": "d37674490f054241ef08ccf7a644247b444fa874",
+    "merge_commit": "c493bf879a7945f9991e13592d42424138a0879b"
   },
   "next_gate": "offline-event-protocol-candidate",
   "live_activation_permitted": false
