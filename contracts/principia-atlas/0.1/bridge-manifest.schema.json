@@ -23,7 +23,7 @@
       "pattern": "^bridge:[a-z0-9][a-z0-9:-]*$"
     },
     "mode": {
-      "const": "compatibility-fixture"
+      "enum": ["compatibility-fixture", "bridge-candidate"]
     },
     "live": {
       "const": false
@@ -165,13 +165,19 @@
     "export": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "role"],
+      "required": ["schema", "kind", "role", "exact_revisions"],
       "properties": {
+        "schema": {
+          "const": "principia-atlas-external-dependent/0.2"
+        },
         "kind": {
           "const": "principia-artifact"
         },
         "role": {
           "enum": ["load-bearing", "supporting", "context"]
+        },
+        "exact_revisions": {
+          "const": true
         }
       }
     }
