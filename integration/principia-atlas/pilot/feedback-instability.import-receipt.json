@@ -1,0 +1,81 @@
+{
+  "atlas_importer": {
+    "accepted_wire_contract": "principia-atlas-external-dependent/0.2",
+    "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+    "head_commit": "379d88d620469a749cebb88b0b41d9960e667558",
+    "merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+    "operational_record_contract": "atlas-external-dependent/0.1",
+    "pull_request": 20,
+    "repository": "Rhodan-lab/Atlas"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false
+  },
+  "contract": "principia-atlas-offline-import-receipt/0.1",
+  "input": {
+    "artifact_id": "principia:failure-pattern:feedback-instability",
+    "artifact_revision": 1,
+    "contract": "principia-atlas-external-dependent/0.2",
+    "path": "integration/principia-atlas/exports/feedback-instability.external-dependent.fixture.json",
+    "sha256": "6d9d232007b5ecc18c6470f5c2e457decfcae1a5be99764be9796b4b24db7047"
+  },
+  "live": false,
+  "mode": "offline-pilot",
+  "pilot_id": "principia-atlas:offline-pilot:feedback-instability",
+  "result": {
+    "accepted": true,
+    "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+    "dependencies": [
+      {
+        "change_policy": "block-release",
+        "entity_type": "claim",
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+        "resolution": "current",
+        "revision": 1,
+        "role": "load-bearing",
+        "use": "claim-boundary"
+      },
+      {
+        "change_policy": "inspect",
+        "entity_type": "concept",
+        "id": "concept:en:feedback",
+        "key": "concept:en:feedback@1",
+        "resolution": "current",
+        "revision": 1,
+        "role": "supporting",
+        "use": "definition"
+      },
+      {
+        "change_policy": "inspect",
+        "entity_type": "concept",
+        "id": "concept:en:oscillation",
+        "key": "concept:en:oscillation@1",
+        "resolution": "current",
+        "revision": 1,
+        "role": "supporting",
+        "use": "definition"
+      },
+      {
+        "change_policy": "inspect",
+        "entity_type": "model",
+        "id": "model:en:delayed-correction-recurrence",
+        "key": "model:en:delayed-correction-recurrence@2",
+        "resolution": "current",
+        "revision": 2,
+        "role": "supporting",
+        "use": "model-boundary"
+      }
+    ],
+    "legacy_id_index_verified": true,
+    "operational_record_contract": "atlas-external-dependent/0.1",
+    "source_contract": "principia-atlas-external-dependent/0.2",
+    "source_shape": "depends_on+depends_on_exact",
+    "status_inheritance": "prohibited"
+  }
+}
