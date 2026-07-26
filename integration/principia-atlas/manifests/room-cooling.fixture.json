@@ -1,0 +1,58 @@
+{
+  "contract": "principia-atlas-bridge/0.1",
+  "id": "bridge:candidate:room-cooling",
+  "mode": "bridge-candidate",
+  "live": false,
+  "principia": {
+    "repository": "Rhodan-lab/principle-to-system",
+    "artifact_id": "principia:investigation:room-cooling",
+    "path": "investigations/room-cooling.md",
+    "artifact_revision": 1,
+    "pedagogical_status_field": "status",
+    "pedagogical_status": "reviewed",
+    "release_status": "draft"
+  },
+  "atlas": {
+    "repository": "Rhodan-lab/Atlas",
+    "content_contract": "atlas-content/0.1",
+    "dependencies": [
+      {
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "revision": 1,
+        "entity_type": "claim",
+        "role": "load-bearing",
+        "use": "claim-boundary",
+        "change_policy": "block-release"
+      },
+      {
+        "id": "concept:en:feedback",
+        "revision": 1,
+        "entity_type": "concept",
+        "role": "supporting",
+        "use": "definition",
+        "change_policy": "inspect"
+      },
+      {
+        "id": "concept:en:oscillation",
+        "revision": 1,
+        "entity_type": "concept",
+        "role": "supporting",
+        "use": "definition",
+        "change_policy": "inspect"
+      }
+    ]
+  },
+  "status_policy": {
+    "knowledge_status_inheritance": "prohibited",
+    "pedagogical_status_inheritance": "prohibited",
+    "release_status_inheritance": "prohibited",
+    "atlas_status_authority": "Atlas",
+    "principia_status_authority": "Principia"
+  },
+  "export": {
+    "schema": "principia-atlas-external-dependent/0.2",
+    "kind": "principia-artifact",
+    "role": "supporting",
+    "exact_revisions": true
+  }
+}

@@ -4,13 +4,14 @@
 
 ## Current phase
 
-**Phase 15 — Offline Integration Pilot merged and validated through PR #18; live integration remains disabled.**
+**Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20; the PR remains unmerged.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
 Software state: **foundation-validated**.  
 Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).  
-Pilot state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).
+Phase 15 state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).  
+Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artifact-pilot`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -35,6 +36,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 13 | Software foundation | Merged and validated through PR #15 |
 | 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
 | 15 | Offline integration pilot | Merged and validated through PR #18 |
+| 16 | Offline multi-artifact integration pilot | Implemented and validated on draft PR #20; unmerged |
 
 ## Integration topology
 
@@ -46,8 +48,14 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`.
 - PR #17 finalized the bridge record at `02ce0bf99b6a27852a6ec610d875a9c88e465cec`.
 - PR #18 was merged into `main` at commit `beeb4d6d4e71d1d08698a000e720fc88fc730ebc`.
+- PR #19 finalized the Phase 15 record at `c9b14e385333e2640a76902297f0c8b3282668e4`.
+- Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
+- Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
+- Phase 16 candidate validation passed on exact head `67d6ec98c51188dabcffd48dad968a83653ea584`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas PR #20 importer snapshot, deterministic import receipt, and lifecycle-impact matrix.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas PR #20 importer snapshot, deterministic Phase 15 receipt, and lifecycle-impact matrix.
+
+The validated Phase 16 branch adds two additional exact Principia exports, an atomic three-artifact batch, receipt contract v0.2, receipt chain, mixed lifecycle-impact matrix, and deterministic recovery scenarios.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -88,6 +96,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical validation marker: release decision remains **Hold**.
 - Historical Phase 14 marker: `Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16`.
 - Historical importer marker: `Atlas Phase 2 may now consume`.
+- Historical Phase 15 marker: `Phase 15 — Offline Integration Pilot merged and validated through PR #18`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -108,7 +117,7 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 15.
+- Atlas remains unchanged by Principia Phase 16.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -178,6 +187,30 @@ The deterministic receipt accepts all four exact dependencies. Lifecycle scenari
 
 No automatic status change, release action, repository mutation, or network call is permitted. `live: false` remains mandatory.
 
+## Phase 16 result — Offline Multi-Artifact Integration Pilot
+
+`release/phase-16-offline-multi-artifact-pilot.json` defines `offline-multi-artifact-validated`.
+
+The atomic batch contains:
+
+```text
+principia:failure-pattern:feedback-instability@1
+principia:investigation:room-cooling@1
+principia:system-dossier:refrigerator@1
+```
+
+The pilot pins Atlas PR #20 implementation and the accepted Atlas PR #21 governance baseline. It introduces:
+
+- `principia-atlas-offline-import-batch/0.2`;
+- `principia-atlas-offline-batch-receipt/0.2`;
+- `principia-atlas-offline-receipt-chain/0.2`;
+- `principia-atlas-offline-multi-impact-matrix/0.2`;
+- `principia-atlas-offline-recovery-matrix/0.2`.
+
+The lifecycle matrix tests fan-out across one or three Principia artifacts depending on the Atlas entity. The recovery matrix tests duplicate replay, stale or skipped sequence, wrong predecessor, valid next checkpoint, partial batch, digest corruption, status inheritance, and attempted live activation.
+
+The exact candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` passed all applicable Phase 5–16, compatibility, release-candidate, and software workflows. Repository integration remains a separate explicit action.
+
 ## Validation
 
 ```bash
@@ -185,8 +218,12 @@ python3 scripts/finalize_phase15_state.py --check
 python3 scripts/validate_phase15_postmerge_record.py
 python3 scripts/generate_phase15_offline_pilot.py --check
 python3 scripts/validate_phase15_offline_pilot.py
-python3 scripts/finalize_bridge_candidate_records.py --check
 python3 scripts/export_principia_atlas_dependents.py --check
+python3 scripts/export_principia_atlas_dependents.py --manifest integration/principia-atlas/manifests/refrigerator.fixture.json --output integration/principia-atlas/exports/refrigerator.external-dependent.fixture.json --check
+python3 scripts/export_principia_atlas_dependents.py --manifest integration/principia-atlas/manifests/room-cooling.fixture.json --output integration/principia-atlas/exports/room-cooling.external-dependent.fixture.json --check
+python3 scripts/generate_phase16_offline_multi_artifact.py --check
+python3 scripts/validate_phase16_offline_multi_artifact.py
+python3 scripts/finalize_bridge_candidate_records.py --check
 python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
 python3 scripts/validate_experiences.py --strict
@@ -199,8 +236,8 @@ python3 -m unittest discover -s software/tests -v
 python3 scripts/validate_phase13_software.py
 ```
 
-The exact PR #18 head passed all applicable Phase 5–15, bridge, strict repository, release-candidate, and software workflows before merge.
+All applicable workflows passed on the exact candidate head before the validated record was written. The validated-record head must also remain green before integration.
 
 ## Next phase
 
-The next gate is an offline multi-artifact pilot with receipt versioning, multiple external dependents, mixed lifecycle states, and deterministic recovery scenarios. Live integration remains disabled and requires a distinct future contract transition.
+After Phase 16 is integrated, the next bounded gate is an **offline event-protocol candidate** that models digest-bound lifecycle events and acknowledgements without activating network synchronization. Live integration remains disabled and requires a distinct future contract transition.

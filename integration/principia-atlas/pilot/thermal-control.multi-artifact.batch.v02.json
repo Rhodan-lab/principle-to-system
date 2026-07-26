@@ -1,0 +1,40 @@
+{
+  "atlas_snapshot": {
+    "governance_merge_commit": "9370cc746e9756e433ac3772d56d079c9803b144",
+    "governance_pull_request": 21,
+    "implementation_merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+    "implementation_pull_request": 20,
+    "path": "integration/principia-atlas/pilot/atlas-phase2-importer.snapshot.v02.json",
+    "sha256": "255afa6be2e5b1c34f67da29b8f264f1980b2183a5233e9290847a23cc24543a"
+  },
+  "atomic": true,
+  "batch_id": "principia-atlas:offline-batch:thermal-control:0001",
+  "contract": "principia-atlas-offline-import-batch/0.2",
+  "inputs": [
+    {
+      "artifact_id": "principia:failure-pattern:feedback-instability",
+      "artifact_revision": 1,
+      "dependency_count": 4,
+      "export_path": "integration/principia-atlas/exports/feedback-instability.external-dependent.fixture.json",
+      "export_sha256": "6d9d232007b5ecc18c6470f5c2e457decfcae1a5be99764be9796b4b24db7047"
+    },
+    {
+      "artifact_id": "principia:investigation:room-cooling",
+      "artifact_revision": 1,
+      "dependency_count": 3,
+      "export_path": "integration/principia-atlas/exports/room-cooling.external-dependent.fixture.json",
+      "export_sha256": "6358d9c15e9d41f8d9e6ed04d78f1f55348c10a12856f0f9644b899acfe72e05"
+    },
+    {
+      "artifact_id": "principia:system-dossier:refrigerator",
+      "artifact_revision": 1,
+      "dependency_count": 3,
+      "export_path": "integration/principia-atlas/exports/refrigerator.external-dependent.fixture.json",
+      "export_sha256": "a92ddd10e3711c3c1b1f0ee152da1f5b66c036f857cfc27c58f9c0a4d9633b68"
+    }
+  ],
+  "live": false,
+  "mode": "offline-multi-artifact-pilot",
+  "previous_receipt_sha256": null,
+  "sequence": 1
+}

@@ -1,0 +1,97 @@
+{
+  "automatic_release_action": false,
+  "automatic_status_change": false,
+  "contract": "principia-atlas-offline-recovery-matrix/0.2",
+  "current_head": {
+    "receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+    "sequence": 1
+  },
+  "expected_next_sequence": 2,
+  "live": false,
+  "mode": "offline-multi-artifact-pilot",
+  "pilot_id": "principia-atlas:offline-multi-artifact:thermal-control",
+  "repository_mutation": false,
+  "scenarios": [
+    {
+      "accepted": true,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": null,
+      "outcome": "idempotent-noop",
+      "previous_receipt_sha256": null,
+      "scenario_id": "duplicate-replay",
+      "sequence": 1
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-RECEIPT-SEQUENCE",
+      "outcome": "rejected",
+      "previous_receipt_sha256": null,
+      "scenario_id": "stale-sequence",
+      "sequence": 0
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-RECEIPT-SEQUENCE",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "skipped-sequence",
+      "sequence": 3
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-RECEIPT-PREVIOUS-DIGEST",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "scenario_id": "wrong-predecessor",
+      "sequence": 2
+    },
+    {
+      "accepted": true,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": null,
+      "outcome": "accepted-recovery-checkpoint",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "valid-next-checkpoint",
+      "sequence": 2
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-BATCH-ATOMICITY",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "partial-batch",
+      "sequence": 2
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "error_code": "E-BATCH-DIGEST",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "export-digest-corruption",
+      "sequence": 2
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-BATCH-STATUS-INHERITANCE",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "status-inheritance-injection",
+      "sequence": 2
+    },
+    {
+      "accepted": false,
+      "batch_sha256": "564c622e79c444b9078267f628ed06c252b6e4d8d4649db0c1003eb7ee9c7de8",
+      "error_code": "E-BATCH-LIVE-FROZEN",
+      "outcome": "rejected",
+      "previous_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "scenario_id": "live-activation",
+      "sequence": 2
+    }
+  ]
+}

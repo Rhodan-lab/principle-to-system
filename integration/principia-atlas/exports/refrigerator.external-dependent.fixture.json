@@ -1,0 +1,42 @@
+{
+  "contract": "principia-atlas-external-dependent/0.2",
+  "id": "principia:system-dossier:refrigerator",
+  "kind": "principia-artifact",
+  "repository": "Rhodan-lab/principle-to-system",
+  "revision": 1,
+  "role": "load-bearing",
+  "bridge_mode": "bridge-candidate",
+  "live": false,
+  "atlas_content_contract": "atlas-content/0.1",
+  "depends_on": [
+    "claim:en:model-oscillation-does-not-prove-real-system",
+    "concept:en:feedback",
+    "concept:en:oscillation"
+  ],
+  "depends_on_exact": [
+    {
+      "id": "claim:en:model-oscillation-does-not-prove-real-system",
+      "revision": 1,
+      "entity_type": "claim",
+      "role": "load-bearing",
+      "use": "claim-boundary",
+      "change_policy": "block-release"
+    },
+    {
+      "id": "concept:en:feedback",
+      "revision": 1,
+      "entity_type": "concept",
+      "role": "supporting",
+      "use": "definition",
+      "change_policy": "inspect"
+    },
+    {
+      "id": "concept:en:oscillation",
+      "revision": 1,
+      "entity_type": "concept",
+      "role": "supporting",
+      "use": "definition",
+      "change_policy": "inspect"
+    }
+  ]
+}
