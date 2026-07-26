@@ -106,8 +106,8 @@ jobs:
               'git ' + 'commit',
               'pull_request' + '_target',
               'repository: Rhodan-lab/' + 'Atlas',
-              'curl ',
-              'wget ',
+              'cu' + 'rl ',
+              'wg' + 'et ',
           )
           assert 'contents: read' in workflow
           for token in forbidden:
