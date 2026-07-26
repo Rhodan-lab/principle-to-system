@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the finalized post-merge records for the non-live bridge candidate."""
+"""Validate finalized records for the merged non-live bridge candidate."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,6 @@ RELEASE = ROOT / "release" / "README.md"
 
 REQUIRED: dict[Path, tuple[str, ...]] = {
     STATE: (
-        "Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16",
         "| 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |",
         "PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`",
         "model:en:delayed-correction-recurrence@2",
@@ -23,7 +22,6 @@ REQUIRED: dict[Path, tuple[str, ...]] = {
         "candidate-ready",
         "Atlas remains unchanged",
         "status remains separate",
-        "Atlas Phase 2 may now consume",
         "release decision remains **Hold**",
     ),
     README: (
@@ -53,6 +51,17 @@ REQUIRED: dict[Path, tuple[str, ...]] = {
     ),
 }
 
+STATE_ALTERNATIVES = (
+    (
+        "Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16",
+        "Phase 15 — Offline Integration Pilot",
+    ),
+    (
+        "Atlas Phase 2 may now consume",
+        "Atlas PR #20 subsequently accepted",
+    ),
+)
+
 FORBIDDEN: dict[Path, tuple[str, ...]] = {
     STATE: (
         "Active; exact-revision validation pending",
@@ -69,17 +78,26 @@ def main() -> int:
     parser.parse_args()
 
     errors: list[str] = []
+    texts: dict[Path, str] = {}
     for path, markers in REQUIRED.items():
         if not path.is_file():
             errors.append(f"missing finalized record: {path.relative_to(ROOT)}")
             continue
         text = path.read_text(encoding="utf-8")
+        texts[path] = text
         for marker in markers:
             if marker not in text:
                 errors.append(f"{path.relative_to(ROOT)}: missing finalized marker {marker!r}")
         for forbidden in FORBIDDEN.get(path, ()):
             if forbidden in text:
                 errors.append(f"{path.relative_to(ROOT)}: stale pre-merge marker remains {forbidden!r}")
+
+    state = texts.get(STATE, "")
+    for alternatives in STATE_ALTERNATIVES:
+        if not any(marker in state for marker in alternatives):
+            errors.append(
+                f"PROJECT_STATE.md: missing bridge continuity marker; expected one of {alternatives!r}"
+            )
 
     if errors:
         print("Bridge candidate record finalization failed:", file=sys.stderr)
@@ -89,7 +107,7 @@ def main() -> int:
 
     print(
         "Bridge candidate records finalized: PR #16 merged, exact model revision 2 retained, "
-        "status authority separated, Atlas Phase 2 importer-ready, and live integration disabled."
+        "status authority separated, downstream offline pilot permitted, and live integration disabled."
     )
     return 0
 

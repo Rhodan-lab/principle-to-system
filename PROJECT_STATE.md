@@ -4,12 +4,13 @@
 
 ## Current phase
 
-**Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16; ready for Atlas Phase 2 importer testing while live integration remains disabled.**
+**Phase 15 — Offline Integration Pilot implemented and machine-validated on draft PR #18; live integration remains disabled.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
 Software state: **foundation-validated**.  
-Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).
+Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).  
+Pilot state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -33,10 +34,11 @@ The repository remains a material-first educational foundation. Its future produ
 | 12 | Release candidate | Merged and validated through PR #14 |
 | 13 | Software foundation | Merged and validated through PR #15 |
 | 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
+| 15 | Offline integration pilot | Implemented and machine-validated on draft PR #18; merge pending |
 
 ## Integration topology
 
-PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`. PR #15 was merged into `main` at commit `fa9807fcdb649692d9670701211e155ecff21258`. PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`.
+PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`. PR #14 was merged into `main` at commit `824fa2d4774647203222ab9198fc25ad4b11cda5`. PR #15 was merged into `main` at commit `fa9807fcdb649692d9670701211e155ecff21258`. PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`. PR #17 finalized the merged bridge-candidate record at commit `02ce0bf99b6a27852a6ec610d875a9c88e465cec`.
 
 Main therefore contains:
 
@@ -47,9 +49,10 @@ Main therefore contains:
 - four complete applied-learning routes with sixteen Reviewed artifacts;
 - the `principia-atlas-bridge/0.1` compatibility foundation;
 - the Phase 13 content-native software foundation;
-- the non-live exact-revision bridge candidate for the Atlas Phase 2 importer.
+- the non-live exact-revision bridge candidate for the Atlas Phase 2 importer;
+- after Phase 15 merge, the pinned Atlas PR #20 importer snapshot, deterministic offline receipt, and lifecycle-impact matrix.
 
-Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was merged through PR #15 and provides the content-native static software layer. Phase 14 was merged through PR #16 and provides the validated exact-revision importer candidate. The candidate changes only Principia-side materials, manifests, exports, governance records, tests, and read-only CI.
+Phase 12 was merged through PR #14 and remains the validated material baseline. Phase 13 was merged through PR #15 and provides the content-native static software layer. Phase 14 was merged through PR #16 and provides the validated exact-revision importer candidate. Phase 15 pins the Atlas PR #20 importer evidence and validates a deterministic receipt plus lifecycle-impact matrix entirely offline. The phase changes only Principia-side integration evidence, governance records, tests, and read-only CI.
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -80,7 +83,6 @@ No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas st
 The following strings describe the former Phase 12 gate and are retained only as historical audit inputs. They are superseded by `release/phase-13-machine-governance.json`.
 
 - Historical validation marker: release decision remains **Hold**.
-
 - **Phase 12 — Release Candidate implemented and validated on draft PR #14; independent review, merge, and release authority remain pending.**
 - `| 12 | Release candidate | RC1 implemented and validated on draft PR #14; awaiting independent review and merge |`
 - `After PR #14 receives independent review and is merged, the project enters human release review while the release decision remains Hold.`
@@ -195,7 +197,7 @@ Phase 12 originally kept RC1 on Hold. The Phase 13 owner directive supersedes th
 
 ### Principia & Atlas boundary
 
-Principia has exact artifact identity, status separation, deterministic exact-revision export, and revision-impact scenarios. The current importer candidate is:
+Principia has exact artifact identity, status separation, deterministic exact-revision export, and revision-impact scenarios. The importer candidate is:
 
 ```yaml
 mode: bridge-candidate
@@ -203,7 +205,7 @@ live: false
 decision: candidate-ready
 ```
 
-Candidate-ready means Atlas Phase 2 may inspect the committed export through its own read-only importer. Atlas remains unchanged, has not accepted the external dependent, and no live cross-repository call is enabled.
+Candidate-ready means Atlas Phase 2 may inspect the committed export through its own read-only importer. Atlas PR #20 subsequently accepted the exact export through a pinned read-only adapter. Principia Phase 15 verifies the resulting contract offline; no live cross-repository call is enabled.
 
 ## Validation
 
@@ -216,10 +218,12 @@ python3 scripts/validate_phase10_audit.py
 python3 scripts/export_principia_atlas_dependents.py --check
 python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
+python3 scripts/generate_phase15_offline_pilot.py --check
+python3 scripts/validate_phase15_offline_pilot.py
 python3 scripts/validate_phase12_release_candidate.py
 ```
 
-The exact PR #16 head passed source, scientific-review, synthesis, applied-material, compatibility, strict-repository, release-candidate, software, revision-impact, deterministic-export, and workflow-immutability gates before merge. Permanent CI remains read-only and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
+The exact PR #16 head passed source, scientific-review, synthesis, applied-material, compatibility, strict-repository, release-candidate, software, revision-impact, deterministic-export, and workflow-immutability gates before merge. Phase 15 additionally validates the pinned Atlas PR #20 importer, deterministic receipt, lifecycle scenarios, negative paths, and software continuity. Permanent CI remains read-only and cannot clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
 
 ## Phase 13 machine-only authority
 
@@ -235,10 +239,16 @@ Machine authority means:
 
 The former Phase 12 human-authority language is retained only in historical records for deterministic audit continuity. It is not an active project dependency.
 
+## Phase 15 result — Offline Integration Pilot
+
+`release/phase-15-offline-pilot.json` defines the active `offline-pilot-validated` state. The pilot pins Atlas PR #20 at merge commit `1cc4aec6908a8703a7f505478329c633a23b4ef9`, verifies the exact Principia export digest, records an accepted four-dependency receipt, and exercises current, deprecated, stale, and retracted lifecycle outcomes.
+
+The Atlas importer implementation is technically accepted. Atlas `PROJECT_STATE.md` still contains pre-merge wording for PR #20; Phase 15 records this as an explicit non-blocking governance observation rather than treating mutable prose as protocol authority.
+
 ## Next phase
 
-Atlas Phase 2 may now consume the committed `principia-atlas-external-dependent/0.2` file through its own read-only importer. Importer acceptance remains Atlas-owned. Live calls require a later, separate contract transition.
+The next gate is a broader offline multi-artifact pilot with receipt versioning, multiple external dependents, mixed lifecycle states, and deterministic recovery scenarios. Live calls require a later, separate contract transition and remain disabled.
 
 ## Continuation instructions
 
-Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, `release/README.md`, the Phase 10–12 reports, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because software or structural validation passes. Phase progression uses declared machine gates rather than a human-review dependency.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, `release/README.md`, the Phase 10–15 reports, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because software or structural validation passes. Phase progression uses declared machine gates rather than a human-review dependency.

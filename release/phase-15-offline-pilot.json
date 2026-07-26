@@ -1,0 +1,39 @@
+{
+  "contract": "principia-offline-integration-pilot/0.1",
+  "id": "principia-atlas-offline-pilot-feedback-instability",
+  "phase": 15,
+  "state": "offline-pilot-validated",
+  "mode": "offline-pilot",
+  "live": false,
+  "principia": {
+    "repository": "Rhodan-lab/principle-to-system",
+    "artifact_id": "principia:failure-pattern:feedback-instability",
+    "artifact_revision": 1,
+    "export_contract": "principia-atlas-external-dependent/0.2",
+    "export_sha256": "6d9d232007b5ecc18c6470f5c2e457decfcae1a5be99764be9796b4b24db7047"
+  },
+  "atlas": {
+    "repository": "Rhodan-lab/Atlas",
+    "pull_request": 20,
+    "head_commit": "379d88d620469a749cebb88b0b41d9960e667558",
+    "merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+    "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+    "operational_record_contract": "atlas-external-dependent/0.1",
+    "lifecycle_impact_contract": "atlas-lifecycle-impact-report/0.1"
+  },
+  "artifacts": {
+    "snapshot": "integration/principia-atlas/pilot/atlas-phase2-importer.snapshot.json",
+    "receipt": "integration/principia-atlas/pilot/feedback-instability.import-receipt.json",
+    "lifecycle_matrix": "integration/principia-atlas/pilot/feedback-instability.lifecycle-matrix.json"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "automatic_status_change": false,
+    "automatic_release_action": false,
+    "repository_mutation": false
+  },
+  "next_gate": "offline-multi-artifact-pilot",
+  "live_activation_permitted": false
+}

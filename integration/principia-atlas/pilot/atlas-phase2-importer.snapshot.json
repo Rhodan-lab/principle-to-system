@@ -1,0 +1,47 @@
+{
+  "contract": "principia-atlas-offline-importer-snapshot/0.1",
+  "atlas_repository": "Rhodan-lab/Atlas",
+  "atlas_phase": 2,
+  "source_pull_request": 20,
+  "source_head_commit": "379d88d620469a749cebb88b0b41d9960e667558",
+  "source_merge_commit": "1cc4aec6908a8703a7f505478329c633a23b4ef9",
+  "accepted_wire_contract": "principia-atlas-external-dependent/0.2",
+  "adapter_contract": "atlas-principia-bridge-adapter/0.1",
+  "operational_record_contract": "atlas-external-dependent/0.1",
+  "lifecycle_impact_contract": "atlas-lifecycle-impact-report/0.1",
+  "atlas_content_contract": "atlas-content/0.1",
+  "principia_source": {
+    "repository": "Rhodan-lab/principle-to-system",
+    "pull_request": 16,
+    "head_commit": "405cfabb6eba71b42bd42ed81b922b458f9175e7",
+    "merge_commit": "eb3a00dfbfdfaa5470cb40505fa213e5349a917f",
+    "path": "integration/principia-atlas/exports/feedback-instability.external-dependent.fixture.json",
+    "blob_sha": "a0ab1e098b17a5cfe9fee521394513461a2f4e51",
+    "sha256": "6d9d232007b5ecc18c6470f5c2e457decfcae1a5be99764be9796b4b24db7047"
+  },
+  "capabilities": {
+    "exact_revision_resolution": true,
+    "legacy_index_verification": true,
+    "status_inheritance_rejected": true,
+    "live_true_rejected": true,
+    "deprecated_escalates_to": "revalidate",
+    "review_required_stale_escalates_to": "revalidate",
+    "confirmed_stale_escalates_to": "revalidate",
+    "retracted_escalates_to": "block-release",
+    "automatic_status_change": false,
+    "automatic_release_action": false
+  },
+  "validation": {
+    "phase2_kernel": "success",
+    "phase1_ai_review": "success",
+    "foundation_contract": "success",
+    "atlas_ci": "success"
+  },
+  "governance_observation": {
+    "code": "ATLAS-STATE-WORDING-LAGS-MERGE",
+    "description": "Atlas PROJECT_STATE still labels PR #20 as a candidate although PR #20 is merged. The merged PR metadata, pinned source record, implementation, tests, and exact-head CI provide the importer evidence used by this offline pilot.",
+    "blocking": false
+  },
+  "mode": "offline-importer-snapshot",
+  "live": false
+}

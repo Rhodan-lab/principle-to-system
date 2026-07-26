@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the Principia–Atlas bridge-candidate audit and read-only governance."""
+"""Validate the Principia–Atlas bridge candidate and read-only governance."""
 from __future__ import annotations
 
 import json
@@ -60,7 +60,11 @@ def main() -> int:
     if not isinstance(policy, dict):
         errors.append("bridge status policy is missing")
     else:
-        for key in ("knowledge_status_inheritance", "pedagogical_status_inheritance", "release_status_inheritance"):
+        for key in (
+            "knowledge_status_inheritance",
+            "pedagogical_status_inheritance",
+            "release_status_inheritance",
+        ):
             if policy.get(key) != "prohibited":
                 errors.append(f"bridge status policy must prohibit {key}")
 
@@ -73,7 +77,12 @@ def main() -> int:
         errors.append("bridge export must use candidate contract 0.2")
     if export.get("bridge_mode") != "bridge-candidate" or export.get("live") is not False:
         errors.append("bridge export must remain non-live bridge-candidate")
-    forbidden_status = {"status", "pedagogical_status", "release_status", "knowledge_status"} & set(export)
+    forbidden_status = {
+        "status",
+        "pedagogical_status",
+        "release_status",
+        "knowledge_status",
+    } & set(export)
     if forbidden_status:
         errors.append(f"bridge export leaks status authority: {sorted(forbidden_status)}")
 
@@ -105,8 +114,7 @@ def main() -> int:
                 errors.append(f"compatibility workflow missing command: {required_command}")
 
     state = (ROOT / "PROJECT_STATE.md").read_text(encoding="utf-8")
-    for marker in (
-        "Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16",
+    required_state_markers = (
         "| 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |",
         "PR #16 was merged into `main` at commit `eb3a00dfbfdfaa5470cb40505fa213e5349a917f`",
         "model:en:delayed-correction-recurrence@2",
@@ -114,10 +122,24 @@ def main() -> int:
         "live: false",
         "Atlas remains unchanged",
         "status remains separate",
-        "Atlas Phase 2 may now consume",
-    ):
+    )
+    for marker in required_state_markers:
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing bridge-candidate marker: {marker}")
+    for alternatives in (
+        (
+            "Phase 14 — Principia–Atlas bridge candidate merged and validated through PR #16",
+            "Phase 15 — Offline Integration Pilot",
+        ),
+        (
+            "Atlas Phase 2 may now consume",
+            "Atlas PR #20 subsequently accepted",
+        ),
+    ):
+        if not any(marker in state for marker in alternatives):
+            errors.append(
+                f"PROJECT_STATE.md missing bridge continuity marker; expected one of {alternatives!r}"
+            )
     if "Active; exact-revision validation pending" in state:
         errors.append("PROJECT_STATE.md still reports bridge validation as pending")
 
@@ -148,7 +170,10 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print("Principia–Atlas audit passed: merged exact-revision candidate, separate status authority, Atlas unchanged, and read-only CI.")
+    print(
+        "Principia–Atlas audit passed: merged exact-revision candidate, separate status authority, "
+        "validated downstream offline pilot, Atlas unchanged, and read-only CI."
+    )
     return 0
 
 
