@@ -1,0 +1,16 @@
+{
+  "chain_id": "principia-atlas:offline-receipt-chain:thermal-control",
+  "contract": "principia-atlas-offline-receipt-chain/0.2",
+  "entries": [
+    {
+      "previous_receipt_sha256": null,
+      "receipt_path": "integration/principia-atlas/pilot/thermal-control.multi-artifact.receipt.v02.json",
+      "receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+      "sequence": 1
+    }
+  ],
+  "head_receipt_sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562",
+  "head_sequence": 1,
+  "live": false,
+  "mode": "offline-multi-artifact-pilot"
+}
