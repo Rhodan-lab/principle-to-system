@@ -28,17 +28,15 @@ def main() -> int:
         EXPECTED_CANDIDATE_HEAD,
         EXPECTED_VALIDATED_HEAD,
         "offline-multi-artifact-validated",
-        "offline event-protocol candidate",
+        "Phase 17 — Offline Event-Protocol Candidate",
         "live: false",
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing finalized marker: {marker}")
 
     for stale in (
-        "draft PR #20",
-        "the PR remains unmerged",
-        "merge remains pending",
-        "merge pending",
+        "PR #20; the PR remains unmerged",
+        "| 16 | Offline multi-artifact integration pilot | Implemented and validated on draft PR #20; unmerged |",
         "Repository integration remains a separate explicit action",
         "After Phase 16 is integrated",
     ):
