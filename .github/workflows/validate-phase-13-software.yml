@@ -8,6 +8,8 @@ on:
       - 'software/**'
       - 'release/phase-13-*'
       - 'scripts/validate_phase13_software.py'
+      - 'scripts/finalize_phase13_phase12_history.py'
+      - 'scripts/finalize_phase13_validation_record.py'
       - 'reports/phase-13-*'
       - 'PROJECT_STATE.md'
       - 'README.md'
@@ -50,6 +52,7 @@ jobs:
       - name: Validate Phase 12 baseline continuity
         run: |
           python3 scripts/finalize_phase12_validation_record.py --check
+          python3 scripts/finalize_phase13_phase12_history.py --check
           python3 scripts/validate_phase12_release_candidate.py
           python3 scripts/validate_repo.py --strict
 
@@ -58,6 +61,11 @@ jobs:
           python3 -m py_compile software/principia_site.py
           python3 -m py_compile software/tests/test_principia_site.py
           python3 -m py_compile scripts/validate_phase13_software.py
+          python3 -m py_compile scripts/finalize_phase13_phase12_history.py
+          python3 -m py_compile scripts/finalize_phase13_validation_record.py
+
+      - name: Validate finalized Phase 13 state
+        run: python3 scripts/finalize_phase13_validation_record.py --check
 
       - name: Run software unit tests
         run: python3 -m unittest discover -s software/tests -v
