@@ -1,0 +1,46 @@
+{
+  "automatic_release_action": false,
+  "automatic_status_change": false,
+  "contract": "principia-atlas-offline-lifecycle-matrix/0.1",
+  "live": false,
+  "mode": "offline-pilot",
+  "pilot_id": "principia-atlas:offline-pilot:feedback-instability",
+  "scenarios": [
+    {
+      "atlas_entity_state": "current",
+      "atlas_staleness": "current",
+      "declared_action": "inspect",
+      "effective_action": "inspect",
+      "reason": "principia-declared-policy"
+    },
+    {
+      "atlas_entity_state": "deprecated",
+      "atlas_staleness": "current",
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-entity-deprecated"
+    },
+    {
+      "atlas_entity_state": "draft",
+      "atlas_staleness": "review-required",
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-staleness-review-required"
+    },
+    {
+      "atlas_entity_state": "draft",
+      "atlas_staleness": "confirmed-stale",
+      "declared_action": "inspect",
+      "effective_action": "revalidate",
+      "reason": "atlas-staleness-confirmed-stale"
+    },
+    {
+      "atlas_entity_state": "retracted",
+      "atlas_staleness": "current",
+      "declared_action": "inspect",
+      "effective_action": "block-release",
+      "reason": "atlas-entity-retracted"
+    }
+  ],
+  "target": "model:en:delayed-correction-recurrence@2"
+}
