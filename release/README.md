@@ -60,6 +60,8 @@ failure_behavior: block-progression
 
 A Phase 13 pass authorizes continued software development only. It does not mark material Complete, release applied experiences, copy Atlas status, or activate live integration.
 
+The Phase 13 machine gate passes on draft PR #15, so the software foundation state is `foundation-validated`.
+
 The machine gate requires Phase 12 continuity, strict repository validation, safe content ingestion, unit tests, deterministic byte-identical builds, catalog and graph integrity, complete local search indexing, generated-link validation, and read-only CI.
 
 ## First bounded integration pilot

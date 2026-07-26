@@ -3,7 +3,8 @@
 > Branch: `agent/phase-13-software-foundation`  
 > Baseline: Phase 12 RC1 merged through PR #14 at `824fa2d4774647203222ab9198fc25ad4b11cda5`  
 > Authority mode: **machine-only**  
-> Atlas integration: **non-live**
+> Atlas integration: **non-live**  
+> Validation status: **foundation-validated on draft PR #15**
 
 ## Purpose
 
@@ -128,6 +129,21 @@ The Phase 13 validator checks:
 - generated-link validity and path containment;
 - two byte-identical builds;
 - read-only workflow permissions.
+
+## Machine validation result
+
+The Phase 13 workflow passes on draft PR #15. It validates Phase 12 continuity, strict repository structure, all unit tests, the 92-document catalog, 20 module groups, search completeness, graph integrity, generated-link containment, local-only browser assets, two byte-identical builds, the deployable static-site artifact, and workflow immutability.
+
+```yaml
+authority_mode: machine-only
+software_state: foundation-validated
+human_review_required: false
+automatic_merge: false
+automatic_publication: false
+live_atlas_integration: false
+```
+
+Machine validation authorizes continuation of the software track without changing pedagogical or applied-experience release status.
 
 ## Content operations
 

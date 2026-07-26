@@ -151,6 +151,8 @@ python3 software/principia_site.py serve --output software/dist --port 8000
 
 Routine content additions do not require application-code changes. Rebuilding updates document pages, module navigation, collection indexes, search data, catalog JSON, and dependency graph output automatically.
 
+The Phase 13 machine gate passes on draft PR #15. The reference implementation is `foundation-validated`, and the generated site is reproducible from repository content.
+
 ## Safety boundaries
 
 - Energy experiences use diagrams, public data, and simulation; they do not authorize wiring, battery modification, islanding, backfeed, or grid testing.

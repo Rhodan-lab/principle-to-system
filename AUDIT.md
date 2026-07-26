@@ -239,6 +239,8 @@ The correct description today is:
 ## Phase 13 software-foundation disposition
 
 - The active authority mode is machine-only; human review is not a blocking gate.
+
+- Phase 13 machine validation passes on draft PR #15 and the software state is `foundation-validated`.
 - The RC1 material baseline remains Reviewed and applied experiences remain Draft.
 - Repository Markdown and JSON remain authoritative; generated site output is disposable.
 - The static build uses no third-party package and performs no build-time network fetch.

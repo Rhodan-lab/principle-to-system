@@ -8,7 +8,7 @@
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
-Software state: **implementation pending validation**.
+Software state: **foundation-validated**.
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -30,7 +30,7 @@ The repository remains a material-first educational foundation. Its future produ
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
 | 11B | Controlled material expansion | Merged and validated through PR #13 |
 | 12 | Release candidate | Merged and validated through PR #14 |
-| 13 | Software foundation | Active; machine validation pending |
+| 13 | Software foundation | Implemented and validated on draft PR #15; awaiting merge |
 
 ## Integration topology
 
@@ -224,7 +224,7 @@ The former Phase 12 human-authority language is retained only in historical reco
 
 ## Next phase
 
-Phase 13 validates the reference software foundation. After that gate passes, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.
+After PR #15 merges, the next software phase expands product navigation, content operations, deployment packaging, and optional Atlas interoperability without changing content authority.
 
 ## Continuation instructions
 
