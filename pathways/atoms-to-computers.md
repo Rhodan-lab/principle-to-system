@@ -2,16 +2,16 @@
 title: "Atoms to Computers"
 slug: pathway-atoms-to-computers
 domain: pathway
-status: complete
+status: reviewed
 prerequisites: [06-matter-quantum, 10-electricity-magnetism, 17-materials-manufacturing, 18-semiconductors-electronics, 19-software-ai]
 connections: [05-computation-algorithms, 11-waves-signals]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
 # Atoms to Computers
 
-This pathway traces the complete dependency chain from atomic physics to a functioning digital computer. At every stage, a scientific principle is exploited, an abstraction is introduced, an engineering problem is solved, and a trade-off appears.
+This pathway traces one defensible dependency route from atomic physics to programmable computing; other material, device, circuit, and architectural routes are possible. At every stage, a scientific principle is exploited, an abstraction is introduced, an engineering problem is solved, and a trade-off appears.
 
 ---
 
@@ -21,9 +21,9 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 **Abstraction introduced:** The concept of *electron configuration* — a compact description of which energy levels are occupied — replaces the full quantum-mechanical wavefunction for practical purposes.
 
-**Engineering problem solved:** Identifying which elements have the right electronic properties (four valence electrons, moderate band gap) to serve as controllable conductors. Silicon and germanium emerge as candidates.
+**Engineering problem solved:** Identifying material systems whose electronic states, defects, interfaces, thermal behaviour, manufacturability, and supply constraints can support controllable devices. Silicon became dominant through a combination of suitable oxide chemistry, process maturity, abundance, and device performance rather than one valence-electron rule.
 
-**Trade-off:** Quantum mechanics is exact but computationally intractable for many-electron atoms. Approximations (Hartree–Fock, density functional theory) trade accuracy for tractability.
+**Trade-off:** Many-electron calculations require approximations and numerical choices. Hartree–Fock, density-functional methods, empirical models, and experiments offer different balances of accuracy, interpretation, computational cost, and domain of validity.
 
 **Prerequisite knowledge:** [Module 06 — Matter and Quantum Foundations](../science/06-matter-quantum/overview.md)
 
@@ -31,13 +31,13 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 ## Stage 2: Band theory and semiconductor behaviour
 
-**Mechanism used:** When atoms form a crystal lattice, their discrete energy levels broaden into continuous *bands*. The gap between the valence band (filled) and conduction band (empty) determines whether the material is a conductor, semiconductor, or insulator.
+**Mechanism used:** When atoms form a crystal lattice, their allowed electronic states form bands separated by gaps. Occupancy, Fermi level, temperature, disorder, dimensionality, contacts, and scattering jointly determine transport; a band-gap value alone does not universally classify every material.
 
-**Abstraction introduced:** The *band gap* $E_g$ — a single energy value that characterises the material's electrical behaviour. For silicon, $E_g \approx 1.1$ eV at room temperature.
+**Abstraction introduced:** The *band gap* $E_g$ — a useful material parameter whose value depends on temperature, composition, strain, structure, and measurement convention. It informs transport but does not by itself determine device behaviour.
 
 **Engineering problem solved:** Controlling conductivity. By adding impurity atoms (doping) — phosphorus for n-type (extra electrons) or boron for p-type (extra holes) — engineers tune the carrier concentration over many orders of magnitude.
 
-**Trade-off:** Narrower band gaps increase intrinsic carrier concentration (more leakage current at high temperature). Wider band gaps require higher voltages to switch. Silicon's moderate gap is a compromise between switching voltage and thermal stability.
+**Trade-off:** Band gap, carrier statistics, mobility, breakdown field, contacts, defects, thermal conductivity, dielectric interfaces, and fabrication jointly shape leakage, voltage, speed, temperature range, and reliability. No single band-gap ordering determines the best device material.
 
 **Prerequisite knowledge:** [Module 06](../science/06-matter-quantum/overview.md), [Module 17 — Materials Science](../technology/17-materials-manufacturing/overview.md)
 
@@ -47,11 +47,11 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 **Mechanism used:** At the interface between p-type and n-type silicon, electrons diffuse from n to p and holes from p to n, creating a depletion region with a built-in electric field. This field opposes further diffusion, establishing equilibrium.
 
-**Abstraction introduced:** The *diode* — a two-terminal device that conducts current in one direction (forward bias) and blocks it in the other (reverse bias). Its behaviour is captured by the Shockley equation: $I = I_0(e^{V/nV_T} - 1)$.
+**Abstraction introduced:** The *diode* — a nonlinear two-terminal device whose forward injection, reverse leakage, capacitance, recombination, resistance, and breakdown depend on structure and operating regime. The Shockley equation is an ideal model under restricted assumptions, not a universal device law.
 
 **Engineering problem solved:** Rectification — converting AC to DC, protecting circuits from reverse polarity, and enabling voltage regulation.
 
-**Trade-off:** Forward voltage drop ($\sim 0.6$ V for silicon) wastes energy. Lower-drop materials (Schottky diodes, GaN) improve efficiency but add cost or complexity.
+**Trade-off:** Forward voltage depends on current, area, temperature, material, structure, and series resistance, so conduction loss must be evaluated at a specified operating point. Lower-drop materials (Schottky diodes, GaN) improve efficiency but add cost or complexity.
 
 **Prerequisite knowledge:** [Module 10 — Electricity and Magnetism](../science/10-electricity-magnetism/overview.md), [Module 18 — Semiconductors](../technology/18-semiconductors-electronics/overview.md)
 
@@ -59,13 +59,13 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 ## Stage 4: The transistor as a switch
 
-**Mechanism used:** A MOSFET uses a gate voltage to create or deplete a conducting channel between source and drain. Above the threshold voltage $V_{th}$, an inversion layer forms and current flows; below it, the channel is off.
+**Mechanism used:** A MOSFET uses a gate voltage to create or deplete a conducting channel between source and drain. Gate bias changes surface potential and channel charge continuously. Threshold voltage is an extraction and compact-model parameter; subthreshold current, leakage, contacts, capacitance, and short-channel effects prevent a perfectly hard on/off boundary.
 
-**Abstraction introduced:** The *binary switch* — the transistor is treated as either fully on (logic 1) or fully off (logic 0), ignoring the analogue transition region. This digital abstraction enables Boolean logic.
+**Abstraction introduced:** The *binary abstraction* — circuits assign voltage ranges and timing windows to logical states while device current remains analogue and continuous. Noise margins, delay, leakage, and metastability bound the abstraction. This digital abstraction enables Boolean logic.
 
-**Engineering problem solved:** Amplification and switching with no moving parts, at speeds determined by carrier transit time across the channel (picoseconds for nanometre gates).
+**Engineering problem solved:** Amplification and switching in compact solid-state devices. Device and circuit delay depend on capacitance, resistance, carrier transport, contacts, interconnect, load, supply, geometry, and the chosen timing definition.
 
-**Trade-off:** Smaller transistors switch faster and use less energy per switch, but suffer increased leakage current (quantum tunnelling through thin gate oxides) and greater variability in threshold voltage. This is the fundamental tension driving Moore's law and its eventual slowdown.
+**Trade-off:** Scaling can reduce some capacitances and increase density, but leakage, variability, electrostatics, interconnect, memory movement, heat, reliability, lithography, packaging, and cost can offset or reverse expected gains. Moore's observation is an economic and historical trend, not a device law.
 
 **Prerequisite knowledge:** [Module 18 — Semiconductors and Electronics](../technology/18-semiconductors-electronics/overview.md)
 
@@ -79,7 +79,7 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 **Engineering problem solved:** Composability — complex logic from simple, verified building blocks. Standard cell libraries provide pre-characterised gates with known timing, power, and area.
 
-**Trade-off:** CMOS draws significant power only during switching (dynamic power $P = \alpha C V^2 f$), but static leakage grows as transistors shrink. Power density, not transistor count, is now the primary design constraint.
+**Trade-off:** The approximation $P_{dyn}=\alpha C V^2 f$ describes selected switching losses at a stated boundary. Leakage, short-circuit current, clocks, memory, interconnect, I/O, data movement, workload, packaging, and cooling also matter; the dominant constraint depends on the system and operating point.
 
 **Prerequisite knowledge:** [Module 18](../technology/18-semiconductors-electronics/overview.md), [Module 05 — Computation](../foundations/05-computation-algorithms/overview.md)
 
@@ -89,11 +89,11 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 **Mechanism used:** Logic gates are composed into functional units — arithmetic logic units (ALUs), register files, control units, caches — connected by buses. A clock signal synchronises operations, and an instruction set architecture (ISA) defines the interface between hardware and software.
 
-**Abstraction introduced:** The *stored-program computer* (von Neumann architecture) — instructions and data share the same memory, and the processor fetches, decodes, and executes instructions sequentially (with pipelining and parallelism for performance).
+**Abstraction introduced:** The *stored-program architecture* — instructions are represented as data and executed through an instruction-set interface. Implementations may use caches, pipelines, speculation, parallel units, accelerators, separate memory paths, or other organisations while preserving selected architectural behaviour.
 
-**Engineering problem solved:** General-purpose computation — a single hardware design that can execute any algorithm expressed in its instruction set, from word processing to climate simulation.
+**Engineering problem solved:** General-purpose computation — A programmable architecture that executes instruction sequences within its ISA, memory, timing, numerical, and computability limits, from word processing to climate simulation.
 
-**Trade-off:** The von Neumann bottleneck — memory bandwidth limits throughput because instructions and data compete for the same bus. Caches, out-of-order execution, and multi-core designs mitigate but do not eliminate this fundamental constraint.
+**Trade-off:** Computation, memory capacity, latency, bandwidth, coherence, communication, control flow, energy, and software locality interact. A shared instruction/data path is one possible bottleneck, not the only universal limit.
 
 **Prerequisite knowledge:** [Module 18](../technology/18-semiconductors-electronics/overview.md), [Module 05](../foundations/05-computation-algorithms/overview.md)
 
@@ -103,9 +103,9 @@ This pathway traces the complete dependency chain from atomic physics to a funct
 
 **Mechanism used:** The processor executes machine instructions, but humans write in high-level languages. Compilers translate human-readable code into machine code. The operating system manages hardware resources (memory, I/O, scheduling) and provides abstractions (files, processes, virtual memory) that isolate applications from hardware details.
 
-**Abstraction introduced:** The *virtual machine* — each running program behaves as if it has exclusive access to a complete computer, even though physical resources are shared. This enables multitasking, security isolation, and hardware independence.
+**Abstraction introduced:** The *virtual machine* — process, virtual-memory, container, or virtual-machine abstractions provide selected resource and isolation views whose guarantees depend on hardware, kernel, configuration, and implementation, even though physical resources are shared. This enables multitasking, security isolation, and hardware independence.
 
-**Engineering problem solved:** Programmability and portability — software written once runs on any hardware that supports the same OS interface, and multiple programs coexist without interference.
+**Engineering problem solved:** Programmability, resource sharing, and conditional portability through specified language, ABI, runtime, operating-system, and hardware interfaces. Isolation and coexistence are engineered properties that can fail through defects, configuration, shared resources, or hostile inputs.
 
 **Trade-off:** Abstraction layers add overhead (context switches, memory management, system calls). Real-time and embedded systems sometimes bypass the OS for deterministic timing, sacrificing generality for predictability.
 
@@ -128,3 +128,10 @@ quantum mechanics (electron energy levels)
 ```
 
 Each arrow represents a new abstraction built on the mechanism below it, solving an engineering problem while introducing a new trade-off that constrains the next level.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

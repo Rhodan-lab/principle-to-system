@@ -1,0 +1,103 @@
+name: Validate Phase 10 Synthesis
+
+on:
+  push:
+    branches:
+      - agent/phase-10-synthesis-reconciliation
+    paths:
+      - 'pathways/**'
+      - 'concepts/**'
+      - 'maps/**'
+      - 'synthesis/**'
+      - 'reports/phase-10-*'
+      - 'scripts/**'
+      - 'sources/**'
+      - 'INDEX.md'
+      - 'README.md'
+      - 'AUDIT.md'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-10-synthesis.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-10-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out committed synthesis
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile Phase 10 validators
+        run: |
+          python3 -m py_compile scripts/normalize_phase10_reconciler.py
+          python3 -m py_compile scripts/apply_phase10_synthesis.py
+          python3 -m py_compile scripts/finalize_phase10_synthesis.py
+          python3 -m py_compile scripts/validate_phase10_synthesis.py
+          python3 -m py_compile scripts/validate_phase10_audit.py
+
+      - name: Validate metadata and source foundation
+        run: |
+          python3 scripts/normalize_module_metadata.py
+          python3 scripts/normalize_source_ledger.py --check --strict
+          python3 scripts/apply_verified_source_baseline.py --check
+
+      - name: Validate Foundations continuity
+        run: |
+          python3 scripts/apply_foundations_review_sources.py --check
+          python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
+
+      - name: Validate Physical Science continuity
+        run: |
+          python3 scripts/apply_phase7_review_sources.py --check
+          python3 scripts/finalize_phase7_review.py --check
+
+      - name: Validate Life and Earth continuity
+        run: |
+          python3 scripts/apply_phase8_review_sources.py --check
+          python3 scripts/finalize_phase8_review.py --check
+          python3 scripts/validate_phase8_continuity_phase9.py
+
+      - name: Validate Technology continuity
+        run: |
+          python3 scripts/normalize_phase9_transformer_literals.py --check
+          python3 scripts/normalize_phase9_finalizer.py --check
+          python3 scripts/apply_phase9_review_sources.py --check
+          python3 scripts/finalize_phase9_review.py --check
+          python3 scripts/validate_phase9_technology_review.py
+          python3 scripts/validate_phase9_audit.py
+
+      - name: Validate Phase 10 synthesis contracts
+        run: |
+          python3 scripts/normalize_phase10_reconciler.py --check
+          python3 scripts/finalize_phase10_synthesis.py --check
+          python3 scripts/validate_phase10_synthesis.py
+          python3 scripts/validate_phase10_audit.py
+
+      - name: Verify Phase 10 final-state idempotence
+        shell: bash
+        run: |
+          python3 scripts/finalize_phase10_synthesis.py --write
+          git diff --exit-code -- \
+            pathways \
+            concepts \
+            maps \
+            PROJECT_STATE.md
+
+      - name: Validate repository and applied materials
+        run: |
+          python3 scripts/validate_repo.py
+          python3 scripts/validate_experiences.py --strict

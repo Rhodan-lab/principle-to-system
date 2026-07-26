@@ -47,7 +47,7 @@ The pathways and crosscutting concepts reinforce this architecture well. The nex
 
 **Required resolution:** module status must be computed from the three learner-facing files and may advance only under the definitions in `PROJECT_STATE.md`.
 
-**Current action:** `INDEX.md` now reports all modules as Draft pending review.
+**Resolution:** Modules 01–20 are Reviewed after focused Phase 6–9 review; no module is Complete before the release gate.
 
 ### A-002 — Malformed slug values
 
@@ -156,7 +156,7 @@ Review Modules 17–20 against the scientific modules. Ensure that each componen
 
 ### Phase 5 — Synthesis reconciliation
 
-Reconcile pathways, crosscutting concepts, maps, index entries, and source-ledger references against the reviewed modules.
+**Implemented in repository Phase 10.** Pathways, crosscutting concepts, maps, status, terminology, links, and prerequisite direction are reconciled against reviewed Modules 01–20 and a machine-readable canonical graph.
 
 ### Phase 6 — Release gate
 
@@ -190,4 +190,11 @@ Status transition:
 
 The repository is valuable and worth continuing. Its architecture should be preserved. The correct description today is:
 
-> A structurally complete, connected first draft undergoing scientific and editorial review.
+> A scientifically reviewed 20-module foundation with a reconciled synthesis layer, awaiting applied-material expansion, independent review, and strict release validation.
+
+## Phase 10 synthesis disposition
+
+- A-001 through A-010 have repository-level resolutions or focused review artifacts.
+- A-011 and A-012 are addressed for the synthesis layer through canonical titles, identifiers, navigable links, and edge vocabulary.
+- A-013 is addressed through phase-specific reports, deterministic scripts, and read-only CI.
+- No synthesis document is Complete; final completion remains governed by Phase 12.

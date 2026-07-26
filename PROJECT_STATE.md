@@ -4,9 +4,9 @@
 
 ## Current phase
 
-**Phase 9 Technology review implemented and validated on draft PR #10; independent review and merge remain pending.**
+**Phase 10 Synthesis Reconciliation implemented and validated on draft PR #11; independent review and merge remain pending.**
 
-The repository remains a material-first educational foundation. Software is intentionally deferred until the scientific material, source system, synthesis layer, and release gates are mature.
+The repository remains a material-first educational foundation. Software is intentionally deferred until synthesis, release validation, and governance are mature.
 
 ## Phase progress
 
@@ -21,218 +21,88 @@ The repository remains a material-first educational foundation. Software is inte
 | 6 | Foundations scientific review | Merged and validated through PR #8 |
 | 7 | Physical-science review | Merged and validated through PR #8 |
 | 8 | Life and Earth systems review | Merged and validated through PR #9 |
-| 9 | Technology review | Implemented and validated on PR #10; awaiting merge |
-| 10 | Synthesis reconciliation | Next after Phase 9 integration |
-| 11 | Controlled material expansion | Seed exemplars complete |
+| 9 | Technology review | Merged and validated through PR #10 |
+| 10 | Synthesis reconciliation | Implemented and validated on PR #11; awaiting merge |
+| 11 | Controlled material expansion | Seed exemplars exist; expansion pending reviewed synthesis |
 | 12 | Release candidate | Not started |
 | 13 | Optional software layer | Deferred |
 
 ## Integration topology
 
-The original Phase 6 work entered an outdated feature branch after Phase 5 had already reached `main`. PR #8 corrected the topology by integrating the reviewed Phase 6 and Phase 7 layers into `main`. PR #9 then integrated Phase 8.
+`main` contains the reviewed Modules 01–20 after PR #10. The Phase 10 branch was created directly from that merged state and changes only synthesis, audit, state, and validation artifacts. PR #11 carries the focused reconciliation into `main`. No workflow automatically merges pull requests.
 
-The current order is clean:
+## Repository status on PR #11
 
-1. `main` contains reviewed Modules 01–16;
-2. `agent/phase-9-technology-review` was created directly from the merged Phase 8 state;
-3. PR #10 carries the focused Phase 9 review into `main`;
-4. no phase workflow automatically merges pull requests.
-
-## Repository inventory and status
-
-### Core material
-
-- 20 modules;
-- 60 learner-facing files;
-- 7 crosscutting concepts;
-- 6 end-to-end pathways;
-- 3 Mermaid knowledge maps;
-- normalized central source ledger;
-- reusable metadata, source, scientific-review, continuity, and audit validators.
-
-On PR #10:
+### Foundations Modules 01–05
 
 - Modules 01–05: **Reviewed**;
+
+### Physical Science Modules 06–12
+
 - Modules 06–12: **Reviewed**;
-- Modules 13–16: **Reviewed**;
-- Modules 17–20: **Reviewed**;
-- Modules 01–20: **Reviewed**;
-- no core module is Complete.
-
-Reviewed means all three files for a module—`overview.md`, `technology.md`, and `explore.md`—passed the applicable focused scientific, editorial, source, metadata, equation, safety, security, privacy, and limitation checks. Reviewed does not mean independently certified, production-qualified, or release-ready.
-
-### Applied-material layer
-
-- shared learning contract in `experiences/`;
-- 4 family standards;
-- 4 reusable templates;
-- 4 reviewed exemplars;
-- normalized experience-source ledger;
-- dedicated strict validator and GitHub Actions workflow.
-
-## Completed foundations
-
-### Phase 4 — Metadata
-
-Phase 4 normalized all 60 learner files with canonical slugs, domains, prerequisites, connections, review fields, and deterministic checks. It entered `main` through PR #4.
-
-### Phase 5 — Sources
-
-Phase 5 recovered malformed historical rows, removed weak records only when inspected replacements existed, produced a 110-record baseline, and established deterministic source validation. It is merged into `main`.
-
-### Phase 6 — Foundations Modules 01–05
-
-The 15 Foundations files were reviewed for causal reasoning, measurement, uncertainty, modelling, probability, statistics, computation, numerical limits, reproducibility, and safe exploration. Six reviewed sources increased the ledger to 116 records.
-
-### Phase 7 — Physical Science Modules 06–12
-
-The 21 Physical Science files were reviewed for quantum foundations, chemistry, thermodynamics, mechanics, electromagnetism, waves, fluids, materials, equations, model boundaries, and learner safety. Five reviewed sources increased the ledger to **121 records**. Phases 6 and 7 entered `main` through PR #8.
 
 ### Phase 8 — Life and Earth Systems Modules 13–16
 
-The 12 files were reviewed for cellular energetics, genetics, evolution, ecology, complex systems, Earth systems, climate, mathematical models, scale transitions, privacy, and safe exploration. Ten institutional sources increased the ledger to **131 records**. Phase 8 entered `main` through PR #9.
+- Modules 13–16: **Reviewed**;
 
-## Phase 9 result — Technology Modules 17–20
+### Phase 9 Technology review implemented and merged through PR #10
 
-Phase 9 reviewed all 12 Technology files as one coordinated transaction and then applied a second deterministic scientific-quality pass.
+- Modules 17–20: **Reviewed**;
+- Modules 01–20: **Reviewed**;
 
-### Module 17 — Materials Science and Manufacturing
+### Reconciled synthesis layer
 
-- replaced broad material-class stereotypes with conditional structure–processing–property–performance relationships;
-- corrected phase, strengthening, diffusion, Hall–Petch, lever-rule, fracture, fatigue, creep, and symbol definitions;
-- added process qualification, traceable metrology, uncertainty, acceptance criteria, digital-thread provenance, and configuration control;
-- qualified casting, forming, machining, additive, joining, efficiency, lifecycle, and defect claims;
-- removed learner fracture, glowing-metal, quenching, machine, laser, powder, and chemical hazards.
+- 6 pathways: **Reviewed**;
+- 7 crosscutting concepts: **Reviewed**;
+- 3 knowledge maps: **Reviewed**;
+- source ledger: **143 records**;
+- no core or synthesis artifact is Complete.
 
-### Module 18 — Semiconductors and Electronics
+## Historical continuity record
 
-- corrected band, Fermi-level, carrier, hole, doping, junction, diode, BJT, MOSFET, threshold, built-in-potential, and compact-model explanations;
-- aligned equations and symbol definitions and removed literal technology-node and transistor-count interpretations;
-- reframed Moore's observation, performance, power, thermal behaviour, yield, reliability, packaging, architecture, fabrication, and metrology;
-- replaced physical teardown, intentional thermal stress, and fabrication activities with simulation, documentation, telemetry, and institutional metrology.
+- Phase 9 Technology review implemented and validated on draft PR #10 before that pull request was merged.
+- Historical pre-merge marker: `Technology review | Implemented and validated on PR #10; awaiting merge`.
+- The Phase 9 central-ledger transition was 131 → 143 records.
+- Phase 10 Synthesis reconciliation is the current branch-stage audit label.
+- Permanent CI is read-only.
+- no core module is Complete; synthesis artifacts also remain Reviewed pending Phase 12.
 
-### Module 19 — Software and AI Foundations
+Reviewed means focused reconciliation has checked metadata, canonical identifiers, links, prerequisite direction, terminology, equations, claims, limitations, and status consistency. It does not mean independently certified or release-ready.
 
-- limited compression, channel-capacity, TCP, optimisation, and machine-learning claims to their specifications and assumptions;
-- distinguished theorem limits, finite implementations, application semantics, trust boundaries, and failure models;
-- added task validity, uncertainty, calibration, subgroup performance, distribution shift, robustness, privacy, security, misuse, monitoring, provenance, human oversight, appeal, rollback, and incident response;
-- corrected information-theory and optimisation symbols and removed unstable size, latency, training-duration, and architecture claims;
-- replaced third-party network probing and sensitive-profile observation with authorised, fictional, or own-device explorations.
+## Phase 10 result — Synthesis Reconciliation
 
-### Module 20 — Sensors, Control, and Infrastructure
+Phase 10 establishes `synthesis/phase-10-canonical-graph.json` as the machine-readable synthesis contract. It reconciles:
 
-- replaced anthropomorphic control descriptions with measure–condition–sample–estimate–decide–act–verify;
-- corrected PID, state-space, complex-power, sampling, delay, estimation, saturation, inverter, protection, resilience, reliability, and symbol definitions;
-- added independent protection, fail-safe and fail-operational analysis, common-cause failure, human authority, industrial-control cybersecurity, defence in depth, and recovery testing;
-- qualified grid balance, smart-inverter, synthetic-inertia, communication, storage, and service claims;
-- removed unsafe infrastructure proximity, operational-system experimentation, and long-object balancing activities.
+1. the exact 20-module prerequisite graph;
+2. arrow direction and relationship vocabulary;
+3. six science-to-technology pathways;
+4. seven crosscutting concepts;
+5. three Mermaid maps;
+6. status policy, terminology, equations, quantities, and links;
+7. superseded claims identified during Modules 01–20 review;
+8. the unchanged 143-record source baseline.
 
-## Phase 9 sources
+Major repairs include removing hard transistor thresholds, universal material stereotypes, unconstrained genome-editing claims, fixed AI deployment promises, instantaneous-grid simplifications, frequency-capacity shortcuts, energy-in-bonds language, universal scale-free-network claims, and deterministic structure–function reasoning.
 
-Phase 9 added twelve inspected authoritative records:
+The final editorial-scientific pass further reconciles causal language, thermodynamic boundaries, semiconductor scaling, AI deployment and autonomy, control and grid operation, communications, biotechnology, batteries, scale analysis, stability, emergence, and model purpose.
 
-- NIST additive manufacturing, semiconductor metrology, AI risk management, cyber-physical systems, and industrial-control guidance;
-- NIOSH metal-powder additive-manufacturing safety;
-- OSHA machine-guarding requirements;
-- IETF RFC 9293 for TCP;
-- U.S. Department of Energy Grid Modernization Initiative.
-
-The preserved source transition is **131 → 143 records**. The Phase 9 branch contains **143 records**, twelve additions, and zero source-report errors.
-
-## Phase 9 validation artifacts
-
-- `reports/phase-9-technology-review.md`;
-- `reports/phase-9-technology-sources.json`;
-- `sources/phase-9-reviewed-sources.json`;
-- `scripts/apply_phase9_review_sources.py`;
-- `scripts/apply_phase9_technology_review.py`;
-- `scripts/finalize_phase9_review.py`;
-- `scripts/normalize_phase9_transformer_literals.py`;
-- `scripts/normalize_phase9_finalizer.py`;
-- `scripts/validate_foundations_continuity_phase9.py`;
-- `scripts/validate_phase8_continuity_phase9.py`;
-- `scripts/validate_phase9_technology_review.py`;
-- `scripts/validate_phase9_audit.py`;
-- `.github/workflows/validate-phase-9-technology.yml`.
-
-The temporary write-capable Phase 9 workflow is removed after material generation. Permanent CI is read-only.
-
-## Status meanings
-
-- **Draft** — content exists but has not completed focused review.
-- **Reviewed** — claims, sources, structure, safety, security, privacy, metadata, equations, links, assumptions, and limitations received focused review.
-- **Complete** — reviewed content passes repository-wide synthesis and release gates with no unresolved findings.
-- **Blocked** — progress depends on a recorded unresolved issue.
-
-No core module is Complete.
-
-## Validation commands
-
-### Metadata and sources
+## Validation
 
 ```bash
-python3 scripts/normalize_module_metadata.py
-python3 scripts/normalize_source_ledger.py --check --strict
-python3 scripts/apply_verified_source_baseline.py --check
-```
-
-### Earlier-phase continuity
-
-```bash
-python3 scripts/apply_foundations_review_sources.py --check
-python3 scripts/validate_foundations_continuity_phase9.py --allow-downstream-reviewed
-python3 scripts/apply_phase7_review_sources.py --check
-python3 scripts/finalize_phase7_review.py --check
-python3 scripts/apply_phase8_review_sources.py --check
-python3 scripts/finalize_phase8_review.py --check
-python3 scripts/validate_phase8_continuity_phase9.py
-```
-
-### Phase 9
-
-```bash
-python3 scripts/normalize_phase9_transformer_literals.py --check
-python3 scripts/normalize_phase9_finalizer.py --check
-python3 scripts/apply_phase9_review_sources.py --check
-python3 scripts/finalize_phase9_review.py --check
-python3 scripts/validate_phase9_technology_review.py
-python3 scripts/validate_phase9_audit.py
+python3 scripts/normalize_phase10_reconciler.py --check
+python3 scripts/finalize_phase10_synthesis.py --check
+python3 scripts/validate_phase10_synthesis.py
+python3 scripts/validate_phase10_audit.py
 python3 scripts/validate_repo.py
+python3 scripts/validate_experiences.py --strict
 ```
 
-The permanent gate checks:
+The permanent `.github/workflows/validate-phase-10-synthesis.yml` workflow has `contents: read`. It verifies metadata and the source foundation, Phases 6–9 continuity, all 16 synthesis files, the 20-module canonical graph, links, Mermaid edges, final-state idempotence, repository structure, applied-material validation, status history, and removal of the temporary write workflow.
 
-- all 12 expected Technology files and Reviewed metadata;
-- canonical slugs, prerequisites, domains, connections, and all 20 INDEX statuses;
-- direct source-to-ledger matching and the preserved 131→143 transition;
-- materials, semiconductor, software, AI, control, and infrastructure model boundaries;
-- equations, symbols, units, measurement, qualification, lifecycle, cybersecurity, privacy, and human oversight;
-- removal of stale identifiers and unsafe or operational exploration instructions;
-- continuity of reviewed Modules 01–16;
-- deterministic idempotence of both review layers;
-- review-record and project-state consistency;
-- no core module marked Complete.
+## Next phase
 
-## Next phase — Phase 10 Synthesis reconciliation
-
-Phase 10 must reconcile:
-
-1. pathways and prerequisite sequences;
-2. crosscutting concepts;
-3. Mermaid knowledge maps;
-4. terminology, symbols, equations, and units;
-5. source and status references;
-6. cross-module transfer and technology links;
-7. contradictions, duplication, gaps, and release blockers.
-
-## Remaining core work
-
-1. Obtain independent review and merge PR #10 when explicitly approved.
-2. Complete Phase 10 synthesis reconciliation.
-3. Pass repository-wide strict release validation.
-4. Expand applied materials only from stable reviewed patterns.
-5. Consider software only after the material system is mature.
+Phase 11 may expand system dossiers, failure-atlas entries, investigations, and design challenges only from stable reviewed patterns. Phase 12 remains the strict repository-wide release candidate and the earliest point at which Reviewed artifacts may be considered for Complete status.
 
 ## Continuation instructions
 
-Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, and the relevant phase reports. Keep scientific review, synthesis, expansion, and software implementation in separate focused pull requests. Never promote content solely because a file exists or a structural check passes.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, and the phase reports. Keep synthesis, expansion, release validation, and software implementation in separate focused pull requests. Never promote material solely because a file exists or a structural check passes.

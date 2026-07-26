@@ -2,10 +2,10 @@
 title: "Patterns"
 slug: concept-patterns
 domain: crosscutting
-status: complete
+status: reviewed
 prerequisites: []
 connections: [01-scientific-reasoning, 03-mathematical-models, 11-waves-signals, 14-dna-evolution, 15-ecosystems-complex-systems, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -13,11 +13,11 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-A **pattern** is a regularity — a repeated or predictable feature in observations, data, or mathematical structures — that signals an underlying mechanism or constraint. Recognising patterns is the first step toward explanation: once a regularity is identified, science asks *why* it occurs, and engineering asks *how* to exploit or avoid it.
+A **pattern** is a regularity — a repeated or predictable feature in observations, data, or mathematical structures — that may suggest an underlying mechanism, constraint, data-generating process, or artefact and therefore requires testing. Recognising patterns is the first step toward explanation: once a regularity is identified, science asks *why* it occurs, and engineering asks *how* to exploit or avoid it.
 
 ## Why scientists and engineers use patterns
 
-Patterns compress information. Instead of cataloguing every individual event, a pattern allows prediction of future events from a compact rule or model. Engineers rely on patterns to design repeatable processes, detect anomalies, and establish tolerances. Without pattern recognition there is no generalisation, and without generalisation there is no science.
+Patterns compress information. Instead of cataloguing every individual event, a pattern allows prediction of future events from a compact rule or model. Engineers rely on patterns to design repeatable processes, detect anomalies, and establish tolerances. Pattern recognition supports generalisation, but valid science also requires measurement, uncertainty, comparison, mechanism, and tests against alternatives.
 
 ## Demonstrations across modules
 
@@ -31,11 +31,11 @@ Waves of all kinds — mechanical, electromagnetic, quantum probability amplitud
 
 ### Genetic code redundancy (Module 14)
 
-The mapping from 64 codons to 20 amino acids follows a degenerate but structured pattern: synonymous codons typically differ only in the third (wobble) position. This pattern is not arbitrary; it minimises the phenotypic effect of point mutations and reflects the evolutionary optimisation of translation fidelity.
+The mapping from 64 codons to 20 amino acids follows a degenerate but structured pattern: synonymous codons typically differ only in the third (wobble) position. Codon redundancy has structured consequences for translation, mutation, expression, and error tolerance, but its present form should not be reduced to one universal optimisation objective.
 
 ### Fractal and scale-free network topology (Module 15)
 
-Ecosystems, metabolic networks, and the internet all exhibit degree distributions that follow approximate power laws — a pattern indicating preferential attachment or optimisation under resource constraints. Recognising this pattern allows prediction of network robustness: scale-free networks tolerate random failures but are vulnerable to targeted attacks on hubs.
+Some biological, ecological, technological, and social networks show heavy-tailed or approximately power-law features over limited ranges, while others do not. Sampling, thresholding, dependence, finite size, and model comparison strongly affect the conclusion. Preferential attachment is one possible mechanism among many; robustness requires topology, weights, direction, dynamics, dependency, repair, and a specified failure model.
 
 ### Repeating logic structures in digital circuits (Module 18)
 
@@ -43,7 +43,7 @@ Processor architectures are built from repeated patterns of logic gates (AND, OR
 
 ## Common misunderstandings
 
-- **Correlation is not pattern.** A pattern implies reproducibility under stated conditions; a single correlation in noisy data may be coincidence. Genuine patterns survive replication and have mechanistic explanations.
+- **A correlation can be a pattern without being causal.** Reproducibility, effect size, uncertainty, measurement quality, and out-of-sample performance determine whether a regularity is credible. A mechanistic explanation strengthens understanding but is not part of the definition of every empirical pattern.
 - **Patterns are not always simple.** Chaotic systems produce patterns (strange attractors) that are deterministic but aperiodic. Complexity does not negate regularity; it changes the mathematical tools needed to describe it.
 - **Human perception over-detects patterns.** Apophenia — seeing structure in randomness — is a cognitive bias. Scientific method exists partly to distinguish real patterns from perceived ones via controlled experiments and statistical tests.
 
@@ -55,3 +55,10 @@ Processor architectures are built from repeated patterns of logic gates (AND, OR
 - [Module 14: DNA and Evolution](../science/14-dna-evolution/overview.md) — the genetic code as a pattern in molecular biology.
 - [Module 15: Ecosystems and Complex Systems](../science/15-ecosystems-complex-systems/overview.md) — emergent patterns in networks.
 - [Module 18: Semiconductors and Electronics](../technology/18-semiconductors-electronics/overview.md) — hierarchical repetition in digital design.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.

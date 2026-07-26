@@ -1,0 +1,61 @@
+{
+  "generated": "2026-07-26",
+  "status_policy": {
+    "synthesis_status": "reviewed",
+    "release_status": "complete",
+    "rule": "Pathways, concepts, and maps remain reviewed until repository-wide release validation passes."
+  },
+  "edge_semantics": {
+    "prerequisite_for": "The source module is assumed before the target module.",
+    "enables": "The source supplies a mechanism, material, or capability used by the target.",
+    "constrains": "The source supplies limits, conservation laws, or operating boundaries for the target.",
+    "measures": "The source supplies measurement or inference methods used by the target.",
+    "models": "The source supplies representations or computational methods used to study the target.",
+    "controls": "The source supplies decision, feedback, or coordination logic used by the target."
+  },
+  "modules": {
+    "01-scientific-reasoning": [],
+    "02-measurement-uncertainty": ["01-scientific-reasoning"],
+    "03-mathematical-models": ["01-scientific-reasoning"],
+    "04-probability-statistics": ["01-scientific-reasoning", "03-mathematical-models"],
+    "05-computation-algorithms": ["03-mathematical-models", "04-probability-statistics"],
+    "06-matter-quantum": ["01-scientific-reasoning", "02-measurement-uncertainty", "03-mathematical-models"],
+    "07-chemical-bonding": ["06-matter-quantum"],
+    "08-energy-thermodynamics": ["03-mathematical-models", "06-matter-quantum"],
+    "09-motion-forces": ["03-mathematical-models"],
+    "10-electricity-magnetism": ["03-mathematical-models", "06-matter-quantum"],
+    "11-waves-signals": ["03-mathematical-models", "09-motion-forces"],
+    "12-fluids-materials": ["03-mathematical-models", "08-energy-thermodynamics", "09-motion-forces"],
+    "13-cells-bioenergetics": ["07-chemical-bonding", "08-energy-thermodynamics"],
+    "14-dna-evolution": ["07-chemical-bonding", "13-cells-bioenergetics"],
+    "15-ecosystems-complex-systems": ["04-probability-statistics", "13-cells-bioenergetics", "14-dna-evolution"],
+    "16-earth-planetary": ["08-energy-thermodynamics", "09-motion-forces", "12-fluids-materials", "15-ecosystems-complex-systems"],
+    "17-materials-manufacturing": ["06-matter-quantum", "07-chemical-bonding", "12-fluids-materials"],
+    "18-semiconductors-electronics": ["06-matter-quantum", "10-electricity-magnetism", "17-materials-manufacturing"],
+    "19-software-ai": ["04-probability-statistics", "05-computation-algorithms", "18-semiconductors-electronics"],
+    "20-sensors-control-infrastructure": ["10-electricity-magnetism", "11-waves-signals", "18-semiconductors-electronics", "19-software-ai"]
+  },
+  "pathways": [
+    "pathways/atoms-to-computers.md",
+    "pathways/biology-to-biotechnology.md",
+    "pathways/chemistry-to-materials-and-batteries.md",
+    "pathways/data-to-ai-and-automation.md",
+    "pathways/fields-to-electric-power.md",
+    "pathways/waves-to-global-communication.md"
+  ],
+  "concepts": [
+    "concepts/cause-and-effect.md",
+    "concepts/energy-and-matter.md",
+    "concepts/patterns.md",
+    "concepts/scale-proportion-and-quantity.md",
+    "concepts/stability-and-change.md",
+    "concepts/structure-and-function.md",
+    "concepts/systems-and-models.md"
+  ],
+  "maps": [
+    "maps/foundations-map.md",
+    "maps/science-to-technology-map.md",
+    "maps/complete-dependency-map.md"
+  ],
+  "ledger_records": 143
+}

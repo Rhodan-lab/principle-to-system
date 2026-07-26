@@ -45,6 +45,7 @@ Independent learners who want to understand *why* technology works, not merely *
 | `concepts/` | Seven crosscutting ideas used across disciplines |
 | `pathways/` | Six end-to-end science-to-technology chains |
 | `maps/` | Dependency and enabling-relationship maps |
+| `synthesis/` | Phase-level canonical graphs and reconciliation contracts |
 | `experiences/` | Shared rules and navigation for applied materials |
 | `system-dossiers/` | Reverse-engineering complete technologies |
 | `failure-atlas/` | Recurring causal failure patterns and redesign strategies |
@@ -101,11 +102,11 @@ python3 scripts/validate_experiences.py
 python3 scripts/validate_experiences.py --strict
 ```
 
-GitHub Actions runs strict applied-material validation when relevant files change.
+GitHub Actions runs focused metadata, source, scientific-review, synthesis, and applied-material validation. The Phase 10 canonical synthesis graph is validated against Modules 01–20.
 
 ## Sources
 
-Module sources remain in [`sources/source-ledger.md`](sources/source-ledger.md), which is undergoing normalization. New applied materials use the machine-readable [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), with one source per eight-column row.
+Reviewed module sources are recorded in the normalized [`sources/source-ledger.md`](sources/source-ledger.md). New applied materials use the machine-readable [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), with one source per eight-column row.
 
 ## Contributing
 

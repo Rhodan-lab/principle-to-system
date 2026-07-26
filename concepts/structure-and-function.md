@@ -2,10 +2,10 @@
 title: "Structure and Function"
 slug: concept-structure-and-function
 domain: crosscutting
-status: complete
+status: reviewed
 prerequisites: []
 connections: [06-matter-quantum, 07-chemical-bonding, 13-cells-bioenergetics, 14-dna-evolution, 17-materials-manufacturing, 18-semiconductors-electronics]
-last_reviewed: 2026-07-24
+last_reviewed: 2026-07-26
 content_license: CC-BY-4.0
 ---
 
@@ -13,21 +13,21 @@ content_license: CC-BY-4.0
 
 ## Definition
 
-**Structure** is the arrangement of components — spatial, temporal, or logical — within a system. **Function** is what the system does: the behaviour or capability that emerges from that arrangement. The principle that *structure determines function* is one of the most powerful generalisations in science and engineering: if you understand how something is built, you can predict what it will do, and if you need it to do something specific, you must build it accordingly.
+**Structure** is an arrangement of components, states, or relations across spatial, temporal, logical, or organisational scales. **Function** is a behaviour, role, or service defined relative to a context and observer. Structure constrains possible behaviour, but function also depends on material state, environment, history, dynamics, interfaces, control, and the task definition.
 
 ## Why scientists and engineers use it
 
-Identifying the structure–function relationship allows prediction without exhaustive testing. A biologist who knows the three-dimensional fold of a protein can predict its catalytic activity. An engineer who knows the crystal structure of a metal can predict its mechanical properties. Conversely, when a desired function is specified, the structure–function principle guides the design of structures that will achieve it. This bidirectional reasoning — from structure to function and from function to required structure — is the core of both scientific explanation and engineering design.
+Structure can narrow hypotheses and guide measurement without uniquely determining outcome. A protein fold or crystal structure supports mechanistic hypotheses, but catalytic or mechanical performance still requires composition, defects, state, environment, loading, kinetics, and test evidence. Inverse design is generally many-to-many: several structures may realise a function, and one structure may support several functions.
 
 ## Demonstrations across modules
 
 ### Electron configuration and chemical behaviour (Module 06)
 
-The spatial distribution of electrons around a nucleus (orbitals, shells, subshells) determines how an atom bonds, what ions it forms, and what spectra it emits. Carbon's four valence electrons in $sp^3$ hybridised orbitals create a tetrahedral bonding geometry that enables the structural diversity of organic chemistry. Silicon's similar but larger orbitals enable semiconductor behaviour. Structure (electron arrangement) determines function (chemical and electronic properties).
+Electronic states, occupancy, interactions, molecular environment, and symmetry help explain bonding, ions, spectra, and transport. Carbon supports many hybridisation and bonding environments; silicon's solid-state behaviour depends on periodic structure, defects, dopants, interfaces, and temperature. Electronic structure constrains chemistry and transport without uniquely fixing them.
 
 ### Molecular shape and reactivity (Module 07)
 
-Enzyme active sites have precise three-dimensional shapes that complement their substrates (the lock-and-key or induced-fit model). A single amino acid substitution can alter the shape enough to destroy catalytic function — as in sickle-cell haemoglobin, where a valine-for-glutamate swap changes the protein's surface, causing aggregation. The function (oxygen transport) depends entirely on the structure (quaternary fold and surface chemistry).
+Enzyme function depends on dynamic conformational ensembles, electrostatics, solvent, cofactors, substrate access, and reaction pathways; lock-and-key and induced-fit are limited models. A substitution can change stability, dynamics, binding, assembly, expression, or have little measurable effect. Haemoglobin oxygen transport combines molecular structure with binding equilibria, allostery, concentration, cells, flow, and physiology.
 
 ### Cell membrane architecture (Module 13)
 
@@ -35,15 +35,15 @@ The phospholipid bilayer — hydrophilic heads facing water, hydrophobic tails f
 
 ### DNA double helix and information storage (Module 14)
 
-The double-helical structure of DNA — antiparallel sugar-phosphate backbones with hydrogen-bonded base pairs (A–T, G–C) — enables three functions simultaneously: information storage (base sequence), faithful replication (complementary base pairing), and regulated expression (accessibility of promoter regions). The structure is not merely correlated with these functions; it mechanistically enables them.
+DNA's base sequence and complementary duplex structure support storage and template-directed copying, while fidelity also depends on polymerases, proofreading, repair, chromatin, cell state, and damage. Regulated expression involves promoters, enhancers, RNA processing, accessibility, transcription machinery, and many other structures; the double helix alone does not provide all three functions.
 
 ### Crystal structure and material properties (Module 17)
 
-The arrangement of atoms in a crystal lattice determines hardness, conductivity, optical properties, and failure modes. Face-centred cubic (FCC) metals like copper are ductile because their close-packed planes allow dislocation glide. Body-centred cubic (BCC) metals like iron are harder but more brittle at low temperatures. Diamond and graphite are both pure carbon, but their radically different structures (3D tetrahedral vs 2D layered) produce radically different functions (hardest natural material vs lubricant).
+Atomic arrangement and electronic structure influence mechanics, transport, optics, and failure, while composition, defects, phases, texture, grain structure, environment, processing, geometry, and test method also matter. Diamond and graphite illustrate strong structural effects, but labels such as 'hardest' or 'lubricant' remain property- and condition-specific.
 
 ### Transistor geometry and switching speed (Module 18)
 
-A MOSFET's function (voltage-controlled current switching) arises from its layered structure: source, drain, channel, gate oxide, and gate electrode. The gate length determines switching speed and leakage current. FinFET and gate-all-around architectures wrap the gate around the channel to maintain electrostatic control at nanometre scales — a structural innovation driven by a functional requirement (suppressing short-channel effects).
+A MOSFET's function (voltage-controlled current switching) arises from its layered structure: source, drain, channel, gate oxide, and gate electrode. Geometry contributes to electrostatics, capacitance, delay, leakage, variability, and contacts, while circuit and system performance also depend on interconnect, memory, architecture, packaging, workload, and thermal limits. FinFET and gate-all-around architectures wrap the gate around the channel to maintain electrostatic control at nanometre scales — a structural innovation driven by a functional requirement (suppressing short-channel effects).
 
 ## Common misunderstandings
 
@@ -59,3 +59,10 @@ A MOSFET's function (voltage-controlled current switching) arises from its layer
 - [Module 14: DNA and Evolution](../science/14-dna-evolution/overview.md) — DNA structure and genetic function.
 - [Module 17: Materials Science and Manufacturing](../technology/17-materials-manufacturing/overview.md) — crystal structure and material properties.
 - [Module 18: Semiconductors and Electronics](../technology/18-semiconductors-electronics/overview.md) — transistor geometry and performance.
+
+## Phase 10 synthesis boundaries
+
+- This document is a reviewed route or crosscutting synthesis, not proof that one mechanism, architecture, or historical sequence is inevitable.
+- Every equation, quantity, and causal claim inherits the assumptions and validity limits stated in the linked reviewed modules.
+- Technology performance depends on architecture, implementation, operating conditions, measurement boundary, lifecycle, safety, security, and human organisation.
+- `Reviewed` records focused reconciliation; it does not mean independently certified or release-ready.
