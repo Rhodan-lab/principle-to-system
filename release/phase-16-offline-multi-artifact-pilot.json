@@ -2,7 +2,7 @@
   "contract": "principia-offline-multi-artifact-pilot/0.2",
   "id": "principia-atlas-offline-multi-artifact-thermal-control",
   "phase": 16,
-  "state": "offline-multi-artifact-candidate",
+  "state": "offline-multi-artifact-validated",
   "mode": "offline-multi-artifact-pilot",
   "live": false,
   "principia": {
@@ -62,9 +62,9 @@
     "repository_mutation": false
   },
   "validation": {
-    "status": "pending",
-    "pull_request": null,
-    "tested_head_commit": null,
+    "status": "success",
+    "pull_request": 20,
+    "tested_head_commit": "67d6ec98c51188dabcffd48dad968a83653ea584",
     "merge_commit": null
   },
   "next_gate": "offline-event-protocol-candidate",
