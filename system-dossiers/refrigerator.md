@@ -76,7 +76,7 @@ $$COP_R=\frac{Q_C}{W}$$
 
 The model treats the cabinet as one temperature and ignores spatial gradients, cycling details, pressure losses, and changing refrigerant properties.
 
-## 8. Control, cycling, and stability
+## 8. Control and feedback: cycling and stability
 
 On-off control commonly uses hysteresis: cooling starts above an upper threshold and stops below a lower threshold. The resulting bounded temperature cycle is intentional. Narrow hysteresis reduces temperature variation but can increase switching; wider hysteresis reduces switching but permits larger temperature swings.
 
