@@ -1,0 +1,106 @@
+{
+  "authority": {
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "repository_mutation": false
+  },
+  "contract": "principia-atlas-offline-event-recovery/0.3",
+  "event_log_head_sequence": 1,
+  "event_log_head_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+  "live": false,
+  "mode": "offline-event-protocol",
+  "protocol_id": "principia-atlas:offline-event-protocol:thermal-control",
+  "scenarios": [
+    {
+      "accepted": true,
+      "candidate_event_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+      "error_code": null,
+      "result": "idempotent-noop",
+      "scenario_id": "duplicate-exact-replay"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "7c3272a4151ebc5c4aef9d5957ef89ae98e163997c6d5132ef2bff862ddfcec4",
+      "error_code": "E-P17-EQUIVOCATION",
+      "result": "reject",
+      "scenario_id": "same-sequence-different-digest"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "7f511605dd93e9b13cf2210aa4b29467a62304d3fe9a508bcf6c86ffde9209fb",
+      "error_code": "E-P17-STALE-SEQUENCE",
+      "result": "reject",
+      "scenario_id": "stale-sequence"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "e7b4c71ce4db73bec2569569a5c7a0e9fb6a53046c775b6a7a19681540974855",
+      "error_code": "E-P17-SKIPPED-SEQUENCE",
+      "result": "reject",
+      "scenario_id": "skipped-sequence"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "90cd26dd4d53453835a54859d0c04d0af519ed95cee6dd53c188420c1c4cd222",
+      "error_code": "E-P17-PREDECESSOR",
+      "result": "reject",
+      "scenario_id": "wrong-predecessor"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "a266aa1736129591115045b001b2b22d2c8e44c0603dd05101bb280a66783c24",
+      "error_code": "E-P17-RECEIPT-HEAD",
+      "result": "reject",
+      "scenario_id": "wrong-receipt-chain-head"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "6c01a3f29e7fa25a5de333e81b5c83f71c32898cab0f0a03212902bb69614fcb",
+      "error_code": "E-P17-ENTITY-STATE",
+      "result": "reject",
+      "scenario_id": "unknown-entity-state"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "03fca0b0d8714940b878e42dd6ce236d2e6af5b9f1ba09078fe653c33c3cc0de",
+      "error_code": "E-P17-AFFECTED-SET",
+      "result": "reject",
+      "scenario_id": "affected-set-mismatch"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "f405ebb59f090da24d7b288d71dc3c0c04109dac3f005f843ae27b67800897b6",
+      "error_code": "E-P17-STATUS-INHERITANCE",
+      "result": "reject",
+      "scenario_id": "status-inheritance-injection"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "cbb18608713097bf448b0e27b17f260eb506bb06d8aa8012475030028d180404",
+      "error_code": "E-P17-AUTOMATIC-MUTATION",
+      "result": "reject",
+      "scenario_id": "automatic-release-mutation"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "0f81d241cea21a20fcf2c039ffb83f05f928261964fda2013a71a702ddf52d29",
+      "error_code": "E-P17-LIVE-FROZEN",
+      "result": "reject",
+      "scenario_id": "live-activation"
+    },
+    {
+      "accepted": true,
+      "candidate_event_sha256": "7a11628e4f85573cca3221f7dc0c903be7d176c3dd347855f54bf80598cf6cf0",
+      "error_code": null,
+      "result": "accept",
+      "scenario_id": "valid-next-event"
+    },
+    {
+      "accepted": false,
+      "candidate_event_sha256": "8f1564b4b17ef64d77fe97a4dfd126959323bc37a9cc4ccfcc50ad4bf198f16f",
+      "error_code": "E-P17-ACK-DIGEST",
+      "result": "reject",
+      "scenario_id": "ack-event-digest-mismatch"
+    }
+  ]
+}
