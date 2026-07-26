@@ -4,7 +4,10 @@
 
 ## Current phase
 
-**Phase 11B — Controlled Material Expansion implemented and validated on draft PR #13; independent review and merge remain pending.**
+**Phase 12 — Release Candidate implemented on `agent/phase-12-release-candidate`; coordinated validation, independent review, and release authority remain pending.**
+
+Candidate: `principia-material-foundation-rc1`  
+Release decision remains **Hold**.
 
 The repository remains a material-first educational foundation. Its future product identity is Principia. Atlas remains a separate repository and knowledge-governance authority.
 
@@ -24,13 +27,13 @@ The repository remains a material-first educational foundation. Its future produ
 | 9 | Technology review | Merged and validated through PR #10 |
 | 10 | Synthesis reconciliation | Merged and validated through PR #11 |
 | 11A | Principia & Atlas compatibility foundation | Merged and validated through PR #12 |
-| 11B | Controlled material expansion | Implemented and validated on draft PR #13; awaiting independent review and merge |
-| 12 | Release candidate | Not started |
+| 11B | Controlled material expansion | Merged and validated through PR #13 |
+| 12 | Release candidate | RC1 implemented; coordinated validation pending |
 | 13 | Optional software layer | Deferred |
 
 ## Integration topology
 
-PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`.
+PR #11 was merged into `main` at commit `058f164f6e181311a34d68def22e252e7e20f646`. PR #12 was merged into `main` at commit `565c119e63218b4376f501f99bc96c1e09a3acca`. PR #13 was merged into `main` at commit `223327901b6c1c259350622a00b822511293d516`.
 
 Main therefore contains:
 
@@ -38,9 +41,10 @@ Main therefore contains:
 - six reviewed pathways;
 - seven reviewed crosscutting concepts;
 - three reviewed knowledge maps;
+- four complete applied-learning routes with sixteen Reviewed artifacts;
 - the non-live `principia-atlas-bridge/0.1` compatibility foundation.
 
-The Phase 11B branch was created directly from that merged state. It modifies only Principia educational materials, navigation, source coverage, project records, validators, and read-only CI.
+The Phase 12 branch was created directly from the merged Phase 11B state. It adds release governance, repository-wide validation, terminology and equation contracts, revision-impact scenarios, pilot-readiness records, project documentation, and read-only CI.
 
 No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -74,6 +78,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, imports Atlas st
 - Historical Phase 10 marker: `Phase 10 Synthesis Reconciliation implemented and validated on draft PR #11`.
 - Phase 10 Synthesis reconciliation was subsequently merged through PR #11.
 - Phase 11A — Principia & Atlas Compatibility Foundation was implemented and validated on draft PR #12 before merge.
+- Phase 11B — Controlled Material Expansion was implemented and validated on draft PR #13 before merge.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -101,20 +106,16 @@ release_status: draft
 - `release_status` is Principia publication readiness;
 - Atlas knowledge status remains Atlas-only authority.
 
-The existing compatibility fixture remains:
+The compatibility fixture remains:
 
 ```yaml
 mode: compatibility-fixture
 live: false
 ```
 
-No status crosses the repository boundary automatically. A live pilot still requires explicit approval and compatible phase gates in both repositories.
+No status crosses the repository boundary automatically.
 
 ## Phase 11B result — Controlled Material Expansion
-
-Phase 11B expands the applied learning layer from one route and four artifacts to four complete routes and sixteen artifacts.
-
-### Canonical inventory
 
 `experiences/phase-11b-inventory.json` defines:
 
@@ -128,79 +129,90 @@ Phase 11B expands the applied learning layer from one route and four artifacts t
 - `release_status: draft` for every artifact;
 - no Complete or released experience.
 
-### Routes
+`sources/experience-source-ledger.md` contains **28 records**. The central core-module ledger remains at **143 records**.
 
-1. `thermal-control`
-   - domestic refrigerator;
-   - feedback instability;
-   - room-cooling investigation;
-   - passive-cooler design challenge.
+## Phase 12 result — Release Candidate RC1
 
-2. `resilient-energy`
-   - solar–battery microgrid;
-   - protection coordination failure;
-   - partial-shading investigation;
-   - resilient charging-hub design challenge.
+`release/phase-12-release-candidate.json` defines `principia-material-foundation-rc1`.
 
-3. `water-infrastructure`
-   - drinking-water treatment and distribution network;
-   - sensor drift and hidden degradation;
-   - filter-loading investigation;
-   - non-potable rainwater-buffer design challenge.
+### Frozen scope
 
-4. `distributed-information`
-   - distributed web-service request;
-   - retry storm and queue collapse;
-   - queue-delay investigation;
-   - resilient school-information-service design challenge.
+- 20 core modules;
+- 60 learner-facing core files;
+- 16 synthesis files;
+- 4 complete routes;
+- 16 Reviewed experience artifacts;
+- 143 core source records;
+- 28 experience-source records;
+- one non-live Principia–Atlas compatibility fixture.
 
-### Safety boundaries
+### Lifecycle policy
 
-- Energy work is diagram-, public-data-, and simulation-only; no construction, wiring, battery modification, islanding, backfeed, or grid testing.
-- Water work does not provide a procedure for producing safe drinking water; no contaminated-water handling, treatment chemicals, tasting, plumbing modification, or potable claim is allowed.
-- Information-system work uses synthetic traffic and fictional data only; no live-service access, scanning, flooding, credential use, or private student data is allowed.
+RC1 preserves:
 
-### Source result
+```yaml
+core_status: reviewed
+synthesis_status: reviewed
+experience_status: reviewed
+artifact_revision: 1
+release_status: draft
+repository_release_state: candidate-hold
+```
 
-`sources/experience-source-ledger.md` expands from 9 to **28 records**. Every one of the sixteen experience slugs has source coverage. The central 143-record core-module ledger is unchanged.
+No automated gate may promote content to Complete or Released. The release decision remains **Hold** until explicit human authority is recorded.
+
+### RC contracts
+
+- `release/phase-12-terminology.json` defines cross-artifact terminology and prohibited semantic shortcuts.
+- `release/phase-12-equation-contracts.json` defines ten representative equation and model-boundary contracts.
+- `release/phase-12-revision-impact.json` defines revision, deprecation, retraction, and Principia meaning-change behavior.
+- `release/phase-12-pilot-readiness.json` records conditional readiness for the delayed-feedback pilot.
+- `scripts/validate_phase12_release_candidate.py` validates the repository-wide candidate without writing files.
 
 ### Principia & Atlas boundary
 
-Phase 11B uses revisioned Principia artifacts but creates no new Atlas manifest and no live dependency. Atlas remains unchanged.
+Principia has exact artifact identity, status separation, deterministic export, and revision-impact scenarios. The pilot remains:
 
-## Validation result
+```yaml
+mode: compatibility-fixture
+live: false
+decision: hold
+```
 
-The exact draft PR #13 head passes:
+Atlas remains unchanged. Atlas has not recorded that its direct-integration freeze has ended, accepted the external dependent, or approved a live pilot.
+
+## Validation
 
 ```bash
+python3 scripts/validate_repo.py --strict
 python3 scripts/validate_experiences.py --strict
 python3 scripts/validate_phase11b_expansion.py
+python3 scripts/validate_phase10_synthesis.py
+python3 scripts/validate_phase10_audit.py
 python3 scripts/export_principia_atlas_dependents.py --check
 python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
-python3 scripts/validate_phase10_synthesis.py
-python3 scripts/validate_phase10_audit.py
-python3 scripts/validate_repo.py
+python3 scripts/validate_phase12_release_candidate.py
 ```
 
-All applicable GitHub Actions workflows pass together:
+The permanent Phase 12 workflow must use `contents: read`, preserve diagnostics, and never clone Atlas, write, commit, push, merge, promote lifecycle state, or activate integration.
 
-- Phase 5 Sources;
-- Phase 6 Foundations;
-- Phase 7 Physical Science;
-- Phase 8 Life and Earth Systems;
-- Phase 9 Technology;
-- Phase 10 Synthesis;
-- Applied Materials;
-- Principia–Atlas Compatibility;
-- Phase 11B Expansion.
+## Human authority still required
 
-The permanent `.github/workflows/validate-phase-11b-expansion.yml` workflow uses `contents: read`. It validates the original experience foundation, all sixteen expanded artifacts, route completeness, revision and release state, source coverage, safety boundaries, navigation, Phase 10 continuity, Phase 11A compatibility, repository structure, workflow immutability, and preserved diagnostic output. It cannot write, commit, push, merge, or activate Atlas integration.
+Automated validation cannot grant:
+
+1. independent scientific approval;
+2. editorial and pedagogical approval;
+3. accessibility and usability approval;
+4. safety and ethical approval;
+5. source and attribution approval;
+6. release-owner approval;
+7. Atlas-side live-pilot approval.
 
 ## Next phase
 
-Phase 12 is the repository-wide release candidate. It must perform independent scientific and editorial review, cross-artifact terminology and equation reconciliation, source integrity, accessibility and usability review, revision and deprecation tests, release-status governance, and a bounded readiness assessment for the first live Principia–Atlas pilot.
+After RC1 automated validation, the project enters independent release review. Phase 13 remains the optional software layer and begins only after the material foundation and governance decisions are mature enough to support it.
 
 ## Continuation instructions
 
-Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, the Phase 10 report, the Phase 11A report, the Phase 11B report, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because structural validation passes.
+Read `README.md`, `CONTENT_GUIDE.md`, `SOURCE_POLICY.md`, `AUDIT.md`, this file, `release/README.md`, the Phase 10–12 reports, `experiences/phase-11b-inventory.json`, and `contracts/principia-atlas/0.1/README.md`. Keep Atlas changes in the Atlas development track. Never infer status across repositories and never promote material solely because structural validation passes.
