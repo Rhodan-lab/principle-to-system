@@ -2,6 +2,10 @@
   "schema": "principia-revision-impact/0.1",
   "generated": "2026-07-26",
   "fixture": "integration/principia-atlas/manifests/feedback-instability.fixture.json",
+  "bridge_state": {
+    "mode": "bridge-candidate",
+    "live": false
+  },
   "principia_artifact": {
     "id": "principia:failure-pattern:feedback-instability",
     "path": "failure-atlas/feedback-instability.md",
@@ -9,6 +13,22 @@
     "pedagogical_status": "reviewed",
     "release_status": "draft"
   },
+  "accepted_changes": [
+    {
+      "id": "adopt-delayed-correction-recurrence-r2",
+      "atlas_entity": "model:en:delayed-correction-recurrence",
+      "from_revision": 1,
+      "to_revision": 2,
+      "atlas_event": "revised",
+      "change_policy": "inspect",
+      "inspection_outcome": "adopt-exact-revision",
+      "principia_meaning_changed": false,
+      "principia_artifact_revision_after": 1,
+      "principia_pedagogical_status_after": "reviewed",
+      "principia_release_status_after": "draft",
+      "reason": "Revision 2 proves an exact bounded period-6 orbit and explicitly separates oscillation from instability; Principia clarified the existing model boundary without changing its principal failure-pattern conclusion."
+    }
+  ],
   "scenarios": [
     {
       "id": "load-bearing-claim-revised",
@@ -22,10 +42,10 @@
       "automatic_pedagogical_change": false
     },
     {
-      "id": "supporting-model-revised",
+      "id": "supporting-model-future-revision",
       "atlas_entity": "model:en:delayed-correction-recurrence",
-      "from_revision": 1,
-      "to_revision": 2,
+      "from_revision": 2,
+      "to_revision": 3,
       "atlas_event": "revised",
       "change_policy": "inspect",
       "expected_principia_action": "inspect-dependency-and-record-decision",
@@ -72,6 +92,7 @@
     "automatic-release",
     "automatic-complete",
     "ignore-load-bearing-retraction",
-    "reuse-stale-export-after-principia-revision"
+    "reuse-stale-export-after-principia-revision",
+    "infer-instability-from-oscillation-alone"
   ]
 }
