@@ -4,7 +4,8 @@
 > Principia repository: `Rhodan-lab/principle-to-system`  
 > Atlas repository inspected read-only: `Rhodan-lab/Atlas`  
 > Integration mode: compatibility preparation only  
-> No live dependency is permitted during this phase
+> No live dependency is permitted during this phase  
+> Validation status: implemented and validated on draft PR #12
 
 ## Purpose
 
@@ -98,7 +99,19 @@ Validation requires known dishonest or premature paths to fail:
 2. using mutable `revision: "latest"` references;
 3. activating a live dependency while Atlas Phase 1 freezes direct integration.
 
-## Validation
+## Validation result
+
+The permanent read-only workflow passed:
+
+- compilation of all compatibility scripts;
+- deterministic external-dependent export comparison;
+- valid bridge-manifest validation;
+- expected failure of all negative fixtures;
+- revision and release metadata for four seed artifacts and four templates;
+- strict applied-experience safety and source validation;
+- Phase 6–10 continuity;
+- repository structural validation;
+- audit of workflow immutability and non-live integration state.
 
 ```bash
 python3 scripts/validate_experiences.py --strict
@@ -110,19 +123,18 @@ python3 scripts/validate_phase10_synthesis.py
 python3 scripts/validate_phase10_audit.py
 ```
 
-The permanent workflow must use `contents: read`, must not clone Atlas, and must not write, push, merge, or modify lifecycle status.
+The permanent workflow uses `contents: read`, does not clone Atlas, and cannot write, push, merge, or modify lifecycle status.
 
 ## Exit result
-
-Phase 11A is ready when:
 
 - all four experience artifacts and templates have revision and release metadata;
 - the valid fixture and deterministic export match;
 - all negative fixtures fail for the expected reasons;
-- Phase 10 and experience validation remain green;
+- Phase 5–10 and experience validation are green;
 - CI is read-only;
 - Atlas remains independent and unchanged;
-- No live dependency exists.
+- No live dependency exists;
+- independent review and merge remain pending.
 
 ## Next work
 
