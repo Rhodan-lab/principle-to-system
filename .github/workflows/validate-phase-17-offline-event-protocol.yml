@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - agent/phase-17-offline-event-protocol
+      - agent/finalize-phase-17-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-17-offline-event-protocol.json'
+      - 'release/phase-17-postmerge.json'
       - 'reports/phase-17-offline-event-protocol.md'
       - 'scripts/generate_phase17_offline_event_protocol.py'
       - 'scripts/validate_phase17_offline_event_protocol.py'
+      - 'scripts/validate_phase17_postmerge_record.py'
       - 'software/tests/test_phase17_offline_event_protocol.py'
       - 'PROJECT_STATE.md'
       - '.github/workflows/validate-phase-17-offline-event-protocol.yml'
@@ -41,6 +44,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase17_offline_event_protocol.py
           python3 -m py_compile scripts/validate_phase17_offline_event_protocol.py
+          python3 -m py_compile scripts/validate_phase17_postmerge_record.py
           python3 -m py_compile software/tests/test_phase17_offline_event_protocol.py
           python3 -m py_compile scripts/generate_phase16_offline_multi_artifact.py
           python3 -m py_compile scripts/validate_phase16_offline_multi_artifact.py
@@ -71,6 +75,7 @@ jobs:
             run_check python3 scripts/validate_phase16_offline_multi_artifact.py
             run_check python3 scripts/generate_phase17_offline_event_protocol.py --check
             run_check python3 scripts/validate_phase17_offline_event_protocol.py
+            run_check python3 scripts/validate_phase17_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
             run_check python3 scripts/finalize_phase15_state.py --check
             run_check python3 scripts/validate_phase15_postmerge_record.py
