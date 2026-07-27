@@ -101,7 +101,7 @@ def main() -> int:
         EXPECTED_CANDIDATE_HEAD,
         "release/phase-18-postmerge.json",
         "Historical Phase 18 candidate marker: `exact-head validation pending`",
-        "offline-reconciliation-policy-candidate",
+        "offline-reconciliation-policy-validated",
         "live: false",
     ):
         if marker not in state:
