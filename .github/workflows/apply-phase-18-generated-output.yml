@@ -6,6 +6,12 @@ on:
       - agent/phase-18-offline-reconciliation-simulation
     paths:
       - '.github/workflows/apply-phase-18-generated-output.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-phase-18-generated-output.yml'
+      - 'scripts/generate_phase18_offline_reconciliation.py'
   workflow_dispatch:
 
 permissions:
