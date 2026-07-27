@@ -15,6 +15,14 @@ CURRENT_18 = (
     "`agent/phase-18-offline-reconciliation-simulation`; exact-head validation pending.**"
 )
 FINAL_18 = "**Phase 18 — Offline Reconciliation Simulation merged and validated through PR #25.**"
+STABLE_FINAL_MARKERS = (
+    "Phase 18 state: **offline-reconciliation-simulation-validated**",
+    "| 18 | Offline reconciliation simulation | Merged and validated through PR #25 |",
+    "PR #25 was merged into `main` at commit `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`",
+    "release/phase-18-postmerge.json",
+    "reconciled-no-mutation",
+    "live: false",
+)
 SECTION = """## Phase 18 result — Offline Reconciliation Simulation
 
 `release/phase-18-offline-reconciliation.json` defines the immutable candidate `offline-reconciliation-simulation-candidate` with `mode: offline-reconciliation-simulation` and `live: false`.
@@ -39,10 +47,13 @@ Atlas remains unchanged. Reconciliation observes Principia pedagogical and relea
 """
 
 
+def is_finalized(text: str) -> bool:
+    """Recognize stable Phase 18 semantics even when a later phase is current."""
+    return all(marker in text for marker in STABLE_FINAL_MARKERS)
+
+
 def transform(text: str) -> str:
-    # The historical candidate finalizer remains valid after governance closure;
-    # the stricter post-merge validator checks the finalized semantics.
-    if FINAL_18 in text:
+    if is_finalized(text):
         return text
 
     if CURRENT_18 not in text:
