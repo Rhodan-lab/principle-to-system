@@ -1,0 +1,97 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false
+  },
+  "contract": "principia-atlas-offline-event-protocol-recovery/0.1",
+  "current_acknowledgement_head": {
+    "sequence": 2,
+    "sha256": "bb5c1fa34595c9c2ea96f5ee7d30fb212db4089ce4436f26d84f351eb30cee7e"
+  },
+  "current_event_head": {
+    "sequence": 2,
+    "sha256": "61ca082c74330aaff8391af0937096d12d64f9ac92010e982bb93f4e811144c9"
+  },
+  "expected_next_sequence": 3,
+  "live": false,
+  "matrix_id": "principia-atlas:offline-event-protocol-recovery:thermal-control:0001",
+  "mode": "offline-event-protocol",
+  "scenarios": [
+    {
+      "accepted": true,
+      "error_code": null,
+      "outcome": "idempotent-noop",
+      "scenario_id": "duplicate-event-replay"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-EVENT-SEQUENCE",
+      "outcome": "rejected",
+      "scenario_id": "stale-event-sequence"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-EVENT-SEQUENCE",
+      "outcome": "rejected",
+      "scenario_id": "skipped-event-sequence"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-EVENT-PREVIOUS-DIGEST",
+      "outcome": "rejected",
+      "scenario_id": "wrong-event-predecessor"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-EVENT-DIGEST",
+      "outcome": "rejected",
+      "scenario_id": "event-digest-corruption"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-SUBJECT-REVISION",
+      "outcome": "rejected",
+      "scenario_id": "unknown-subject-revision"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-STATUS-INHERITANCE",
+      "outcome": "rejected",
+      "scenario_id": "status-inheritance-injection"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-LIVE-FROZEN",
+      "outcome": "rejected",
+      "scenario_id": "live-activation"
+    },
+    {
+      "accepted": true,
+      "error_code": null,
+      "outcome": "accepted-recovery-checkpoint",
+      "scenario_id": "valid-next-event"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-ACK-EVENT-DIGEST",
+      "outcome": "rejected",
+      "scenario_id": "ack-wrong-event-digest"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-ACK-SEQUENCE",
+      "outcome": "rejected",
+      "scenario_id": "ack-out-of-order"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P17-ACK-ACTION",
+      "outcome": "rejected",
+      "scenario_id": "ack-action-weakening"
+    }
+  ]
+}

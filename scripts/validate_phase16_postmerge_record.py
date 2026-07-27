@@ -22,8 +22,8 @@ def main() -> int:
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "Phase 16 — Offline Multi-Artifact Integration Pilot merged and validated through PR #20",
         "| 16 | Offline multi-artifact integration pilot | Merged and validated through PR #20 |",
+        "Phase 16 state: **offline-multi-artifact-validated**",
         f"PR #20 was merged into `main` at commit `{EXPECTED_MERGE}`",
         EXPECTED_CANDIDATE_HEAD,
         EXPECTED_VALIDATED_HEAD,
