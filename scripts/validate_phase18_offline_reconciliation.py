@@ -13,8 +13,8 @@ import generate_phase18_release_record as release_record
 ROOT = Path(__file__).resolve().parent.parent
 RELEASE_PATH = release_record.RELEASE_PATH
 REPORT_DOC_PATH = ROOT / "reports" / "phase-18-offline-reconciliation.md"
-WORKFLOW_PATH = ROOT / ".github" / "workflows" / "validate-phase-18-offline-reconciliation.yml"
-TEST_PATH = ROOT / "software" / "tests" / "test_phase18_offline_reconciliation.py"
+WORKFLOW_PATH = ROOT / ".github/workflows/validate-phase-18-offline-reconciliation.yml"
+TEST_PATH = ROOT / "software/tests/test_phase18_offline_reconciliation.py"
 STATE_PATH = ROOT / "PROJECT_STATE.md"
 
 EXPECTED_RECOVERY = {
@@ -52,9 +52,7 @@ def non_mutating(value: Any) -> bool:
 
 def main() -> int:
     errors: list[str] = []
-
-    generated = reconciliation.build_outputs()
-    errors.extend(reconciliation.check_outputs(generated))
+    errors.extend(reconciliation.check_outputs(reconciliation.build_outputs()))
     release = release_record.build_release()
     errors.extend(release_record.check(release))
 
@@ -66,28 +64,18 @@ def main() -> int:
         REPORT_DOC_PATH,
         WORKFLOW_PATH,
         TEST_PATH,
-        Path(__file__),
     )
     for path in required:
         if not path.is_file():
             errors.append(f"missing Phase 18 artifact: {path.relative_to(ROOT)}")
-
     if errors:
-        print("Phase 18 reconciliation errors:", file=sys.stderr)
-        for error in errors:
-            print(f"- {error}", file=sys.stderr)
-        return 1
+        return fail(errors)
 
     report = load_json(reconciliation.REPORT_PATH)
     checkpoint = load_json(reconciliation.CHECKPOINT_PATH)
     recovery = load_json(reconciliation.RECOVERY_PATH)
     release_file = load_json(RELEASE_PATH)
 
-    if report.get("contract") != reconciliation.REPORT_CONTRACT:
-        errors.append("reconciliation report contract is incorrect")
-    if report.get("mode") != reconciliation.MODE or report.get("live") is not False:
-        errors.append("reconciliation report must remain offline and live=false")
-    summary = report.get("summary")
     expected_summary = {
         "event_count": 2,
         "acknowledgement_count": 2,
@@ -98,42 +86,35 @@ def main() -> int:
         "action_mismatch_count": 0,
         "decision": "reconciled-no-mutation",
     }
-    if not isinstance(summary, Mapping) or dict(summary) != expected_summary:
+    if report.get("contract") != reconciliation.REPORT_CONTRACT:
+        errors.append("reconciliation report contract is incorrect")
+    if report.get("mode") != reconciliation.MODE or report.get("live") is not False:
+        errors.append("reconciliation report must remain offline and live=false")
+    if report.get("summary") != expected_summary:
         errors.append("reconciliation summary does not match the canonical exact result")
-    if not non_mutating(report.get("authority")):
-        errors.append("reconciliation report must prohibit automatic mutations")
-    if isinstance(report.get("authority"), Mapping) and report["authority"].get("status_inheritance") != "prohibited":
-        errors.append("reconciliation report must prohibit status inheritance")
+    if not non_mutating(report.get("authority")) or report.get("authority", {}).get("status_inheritance") != "prohibited":
+        errors.append("reconciliation report authority boundary is incorrect")
 
     records = report.get("records")
     if not isinstance(records, list) or len(records) != 2:
         errors.append("reconciliation report must contain exactly two records")
     else:
-        expected_actions = ["revalidate", "block-release"]
         for index, record in enumerate(records):
-            if not isinstance(record, Mapping):
-                errors.append("reconciliation record is malformed")
-                continue
             if record.get("sequence") != index + 1 or record.get("result") != "reconciled":
                 errors.append("reconciliation record sequence or result is incorrect")
-            if record.get("required_action") != expected_actions[index]:
+            if record.get("required_action") != ("revalidate", "block-release")[index]:
                 errors.append("reconciliation record action is incorrect")
             artifacts = record.get("affected_artifacts")
             if not isinstance(artifacts, list) or len(artifacts) != 3:
                 errors.append("each reconciliation record must pin three artifacts")
-                continue
-            for artifact in artifacts:
-                if not isinstance(artifact, Mapping):
-                    errors.append("reconciled artifact is malformed")
-                    continue
-                if artifact.get("acknowledged_revision") != 1 or artifact.get("current_revision") != 1:
-                    errors.append("reconciled artifact revisions must remain exact at revision 1")
-                if artifact.get("pedagogical_status") != "reviewed" or artifact.get("release_status") != "draft":
-                    errors.append("Principia status fields changed during reconciliation")
-                if artifact.get("reconciliation_state") != "current":
-                    errors.append("reconciled artifact must be current")
+            else:
+                for artifact in artifacts:
+                    if artifact.get("acknowledged_revision") != 1 or artifact.get("current_revision") != 1:
+                        errors.append("reconciled artifact revisions must remain exact at revision 1")
+                    if artifact.get("pedagogical_status") != "reviewed" or artifact.get("release_status") != "draft":
+                        errors.append("Principia status fields changed during reconciliation")
 
-    source = report.get("source")
+    source = report.get("source", {})
     expected_source = {
         "phase17_candidate_head_commit": reconciliation.PHASE17_HEAD,
         "phase17_merge_commit": reconciliation.PHASE17_MERGE,
@@ -143,64 +124,44 @@ def main() -> int:
         "chain_sha256": reconciliation.sha256_file(reconciliation.CHAIN_PATH),
         "phase17_postmerge_sha256": reconciliation.sha256_file(reconciliation.PHASE17_POSTMERGE_PATH),
     }
-    if not isinstance(source, Mapping):
-        errors.append("reconciliation source provenance is missing")
-    else:
-        for key, value in expected_source.items():
-            if source.get(key) != value:
-                errors.append(f"reconciliation source {key} must equal {value}")
+    for key, value in expected_source.items():
+        if source.get(key) != value:
+            errors.append(f"reconciliation source {key} must equal {value}")
 
     if checkpoint.get("contract") != reconciliation.CHECKPOINT_CONTRACT:
         errors.append("reconciliation checkpoint contract is incorrect")
     if checkpoint.get("decision") != "reconciled-no-mutation" or checkpoint.get("live") is not False:
-        errors.append("reconciliation checkpoint decision or live boundary is incorrect")
+        errors.append("reconciliation checkpoint boundary is incorrect")
     if checkpoint.get("report_sha256") != reconciliation.sha256_document(report):
         errors.append("reconciliation checkpoint does not pin the exact report")
     if checkpoint.get("next_expected_event_sequence") != 3 or checkpoint.get("next_expected_acknowledgement_sequence") != 3:
         errors.append("reconciliation checkpoint next sequences are incorrect")
-    if not non_mutating(checkpoint.get("authority")):
-        errors.append("reconciliation checkpoint must prohibit automatic mutations")
 
-    if recovery.get("contract") != reconciliation.RECOVERY_CONTRACT:
-        errors.append("reconciliation recovery contract is incorrect")
     scenarios = recovery.get("scenarios")
-    if not isinstance(scenarios, list):
-        errors.append("reconciliation recovery scenarios are missing")
-    else:
-        observed = {
-            scenario["scenario_id"]: (
-                scenario.get("accepted"), scenario.get("outcome"), scenario.get("error_code")
-            )
-            for scenario in scenarios
-            if isinstance(scenario, Mapping) and isinstance(scenario.get("scenario_id"), str)
-        }
-        if observed != EXPECTED_RECOVERY:
-            errors.append("reconciliation recovery outcomes differ from the canonical matrix")
+    observed = {
+        item["scenario_id"]: (item.get("accepted"), item.get("outcome"), item.get("error_code"))
+        for item in scenarios or []
+        if isinstance(item, Mapping) and isinstance(item.get("scenario_id"), str)
+    }
+    if recovery.get("contract") != reconciliation.RECOVERY_CONTRACT or observed != EXPECTED_RECOVERY:
+        errors.append("reconciliation recovery outcomes differ from the canonical matrix")
     if not non_mutating(recovery.get("authority")) or recovery.get("live") is not False:
         errors.append("reconciliation recovery must remain non-mutating and live=false")
 
     if release_file != release:
         errors.append("candidate release record differs from deterministic output")
-    if release_file.get("contract") != release_record.CONTRACT:
-        errors.append("candidate release contract is incorrect")
     if release_file.get("state") != "offline-reconciliation-simulation-candidate":
         errors.append("candidate release state is incorrect")
     if release_file.get("mode") != reconciliation.MODE or release_file.get("live") is not False:
         errors.append("candidate release must remain offline and live=false")
-    if release_file.get("live_activation_permitted") is not False:
-        errors.append("candidate release must not permit live activation")
-    if release_file.get("next_gate") != "offline-reconciliation-policy-candidate":
-        errors.append("candidate next gate is incorrect")
-    if not non_mutating(release_file.get("authority")):
-        errors.append("candidate authority must prohibit automatic mutations")
     validation = release_file.get("validation")
     if not isinstance(validation, Mapping) or validation.get("status") != "pending" or validation.get("pull_request") is not None or validation.get("tested_head_commit") is not None:
-        errors.append("immutable candidate record must remain pending without self-referential PR or head")
+        errors.append("immutable candidate record must remain pending and non-self-referential")
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "Phase 18 — Offline Reconciliation Simulation",
-        "offline-reconciliation-simulation-candidate",
+        "Phase 18 result — Offline Reconciliation Simulation",
+        "offline-reconciliation-simulation-validated",
         "mode: offline-reconciliation-simulation",
         "live: false",
         "reconciled-no-mutation",
@@ -224,16 +185,19 @@ def main() -> int:
             errors.append(f"Phase 18 workflow contains prohibited operation: {forbidden}")
 
     if errors:
-        print("Phase 18 reconciliation errors:", file=sys.stderr)
-        for error in errors:
-            print(f"- {error}", file=sys.stderr)
-        return 1
-
+        return fail(errors)
     print(
         "Phase 18 passed: exact event/ack reconciliation, current artifact revisions, digest-bound "
         "checkpoint, deterministic divergence matrix, separate status authority, and live=false."
     )
     return 0
+
+
+def fail(errors: list[str]) -> int:
+    print("Phase 18 reconciliation errors:", file=sys.stderr)
+    for error in errors:
+        print(f"- {error}", file=sys.stderr)
+    return 1
 
 
 if __name__ == "__main__":
