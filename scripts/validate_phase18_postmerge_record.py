@@ -122,7 +122,7 @@ def main() -> int:
         "Final state: `offline-reconciliation-simulation-validated`",
         "release/phase-18-postmerge.json",
         "offline reconciliation-policy candidate",
-        "live: false",
+        "> Live: `false`",
     ):
         if marker not in report:
             errors.append(f"Phase 18 report missing finalization marker: {marker}")
