@@ -95,14 +95,13 @@ def main() -> int:
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "**Phase 18 — Offline Reconciliation Simulation merged and validated through PR #25.**",
         "Phase 18 state: **offline-reconciliation-simulation-validated**",
         "| 18 | Offline reconciliation simulation | Merged and validated through PR #25 |",
         f"PR #25 was merged into `main` at commit `{EXPECTED_MERGE}`",
         EXPECTED_CANDIDATE_HEAD,
         "release/phase-18-postmerge.json",
         "Historical Phase 18 candidate marker: `exact-head validation pending`",
-        "offline reconciliation-policy candidate",
+        "offline-reconciliation-policy-candidate",
         "live: false",
     ):
         if marker not in state:

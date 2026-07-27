@@ -1,0 +1,87 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-release-hold-proposals/0.1",
+  "items": [
+    {
+      "acknowledgement_id": "principia:lifecycle-ack:claim-model-boundary:retracted:0002",
+      "acknowledgement_sha256": "bb5c1fa34595c9c2ea96f5ee7d30fb212db4089ce4436f26d84f351eb30cee7e",
+      "affected_artifacts": [
+        {
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "artifact_revision": 1,
+          "exact_key": "principia:failure-pattern:feedback-instability@1",
+          "observed_pedagogical_status": "reviewed",
+          "observed_release_status": "draft",
+          "source_path": "failure-atlas/feedback-instability.md",
+          "source_sha256": "868eb61f463f9a576d0816150edd2c8779b4af0c66c1675978b2b4914ab021a9"
+        },
+        {
+          "artifact_id": "principia:investigation:room-cooling",
+          "artifact_revision": 1,
+          "exact_key": "principia:investigation:room-cooling@1",
+          "observed_pedagogical_status": "reviewed",
+          "observed_release_status": "draft",
+          "source_path": "investigations/room-cooling.md",
+          "source_sha256": "900ee1b0ae5f8dac8366cc7f0039c57f50f74873ba569c27cde0026a6628314b"
+        },
+        {
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "artifact_revision": 1,
+          "exact_key": "principia:system-dossier:refrigerator@1",
+          "observed_pedagogical_status": "reviewed",
+          "observed_release_status": "draft",
+          "source_path": "system-dossiers/refrigerator.md",
+          "source_sha256": "6c8883b4f9c401577367e2c4d16cf4eb98d5a4158c65283662a98eb43f127de1"
+        }
+      ],
+      "automatic_execution": false,
+      "effective": false,
+      "event_id": "atlas:lifecycle-event:claim-model-boundary:retracted:0002",
+      "event_sha256": "61ca082c74330aaff8391af0937096d12d64f9ac92010e982bb93f4e811144c9",
+      "hold_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+      "policy_action": "propose-release-hold",
+      "required_action": "block-release",
+      "requires_manual_resolution": true,
+      "scope": "release-only",
+      "sequence": 1,
+      "source_record_sequence": 2,
+      "state": "proposed",
+      "subject": {
+        "entity_type": "claim",
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+        "revision": 1
+      },
+      "transition": {
+        "from": "current",
+        "reason_code": "fixture-retraction",
+        "to": "retracted"
+      }
+    }
+  ],
+  "live": false,
+  "mode": "offline-reconciliation-policy",
+  "proposal_stream_id": "principia:offline-release-hold-proposals:thermal-control:0001",
+  "source": {
+    "phase18_finalization_merge_commit": "582117eb9ea9ecf489be5ef24464977195464d93",
+    "phase18_postmerge_path": "release/phase-18-postmerge.json",
+    "phase18_postmerge_sha256": "5cd15b5aae1eb7211abf3e523b05b3e212712fea6d36e836a9f15c6e70cf6cb7",
+    "reconciliation_id": "principia-atlas:offline-reconciliation:thermal-control:0001",
+    "reconciliation_path": "integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json",
+    "reconciliation_sha256": "b88334407d26fa986818f240b2f1048909fcb8b3443da1f3c05f174f5becbb8d"
+  },
+  "summary": {
+    "affected_artifact_count": 3,
+    "automatic_execution_count": 0,
+    "effective_hold_count": 0,
+    "proposal_count": 1
+  }
+}

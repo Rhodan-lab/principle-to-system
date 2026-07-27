@@ -1,0 +1,50 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-reconciliation-policy-ledger/0.1",
+  "decision": "proposals-recorded-no-mutation",
+  "entries": [
+    {
+      "entry": {
+        "entry_type": "review-queue",
+        "policy_document_sha256": "54c6b77d6a63d5325288249c2a3e1cb1d28945bca53e856f79e8a890d0a67008",
+        "policy_id": "principia:policy-review:feedback-deprecation:0001",
+        "previous_entry_sha256": null,
+        "sequence": 1,
+        "source_record_sequence": 1
+      },
+      "entry_sha256": "6b2e86669b0bc6aad74f9ebd9d767a03aa9339fb8aaffebab0caefa7102b3424"
+    },
+    {
+      "entry": {
+        "entry_type": "release-hold-proposal",
+        "policy_document_sha256": "8c4f8f5ec11ad30af2b53fa2aac614af938fe91855d831a8d181b6647400a12f",
+        "policy_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+        "previous_entry_sha256": "6b2e86669b0bc6aad74f9ebd9d767a03aa9339fb8aaffebab0caefa7102b3424",
+        "sequence": 2,
+        "source_record_sequence": 2
+      },
+      "entry_sha256": "e45b8d0b234d188ef9bfbe4664d0f68cc1d652e21e57f2c6b0d80a48bbde0296"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "e45b8d0b234d188ef9bfbe4664d0f68cc1d652e21e57f2c6b0d80a48bbde0296",
+  "ledger_id": "principia:offline-reconciliation-policy-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-reconciliation-policy",
+  "source": {
+    "phase18_finalization_merge_commit": "582117eb9ea9ecf489be5ef24464977195464d93",
+    "phase18_postmerge_path": "release/phase-18-postmerge.json",
+    "phase18_postmerge_sha256": "5cd15b5aae1eb7211abf3e523b05b3e212712fea6d36e836a9f15c6e70cf6cb7",
+    "reconciliation_id": "principia-atlas:offline-reconciliation:thermal-control:0001",
+    "reconciliation_path": "integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json",
+    "reconciliation_sha256": "b88334407d26fa986818f240b2f1048909fcb8b3443da1f3c05f174f5becbb8d"
+  }
+}
