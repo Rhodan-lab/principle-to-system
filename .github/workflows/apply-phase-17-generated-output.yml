@@ -1,0 +1,50 @@
+name: Apply Phase 17 Generated Output
+
+on:
+  push:
+    branches:
+      - agent/phase-17-offline-event-protocol-candidate
+    paths:
+      - '.github/workflows/apply-phase-17-generated-output.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-17-output
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-17-offline-event-protocol-candidate
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Regenerate and verify Phase 17 outputs
+        run: |
+          python3 scripts/generate_phase17_offline_event_protocol.py --write
+          python3 scripts/generate_phase17_offline_event_protocol.py --check
+
+      - name: Commit only deterministic output correction
+        shell: bash
+        run: |
+          target='integration/principia-atlas/pilot/thermal-control.event-recovery-matrix.v03.json'
+          if git diff --quiet -- "$target"; then
+            echo 'Phase 17 recovery matrix already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'integration: refresh Phase 17 recovery digests'
+          git push origin HEAD:agent/phase-17-offline-event-protocol-candidate
