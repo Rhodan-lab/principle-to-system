@@ -1,0 +1,101 @@
+name: Apply Phase 18 History Composition
+
+on:
+  push:
+    branches:
+      - agent/phase-18-offline-reconciliation-simulation
+    paths:
+      - '.github/workflows/apply-phase-18-history-composition.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-phase-18-history-composition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-18-history-composition
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 18 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-18-offline-reconciliation-simulation
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Make historical validators downstream-compositional
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              Path('scripts/validate_phase17_postmerge_record.py'): [
+                  (
+                      '        "Phase 17 — Offline Event-Protocol Candidate merged and validated through PR #22",\n',
+                      '        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",\n',
+                  ),
+              ],
+              Path('scripts/validate_phase17_offline_event_protocol.py'): [
+                  (
+                      '        "Phase 17 — Offline Event-Protocol Candidate",\n',
+                      '        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",\n',
+                  ),
+              ],
+              Path('scripts/validate_phase16_postmerge_record.py'): [
+                  (
+                      '        "Phase 17 — Offline Event-Protocol Candidate",\n',
+                      '        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",\n',
+                  ),
+              ],
+          }
+
+          for path, edits in replacements.items():
+              text = path.read_text(encoding='utf-8')
+              for old, new in edits:
+                  if new in text:
+                      continue
+                  if old not in text:
+                      raise SystemExit(f'missing validator composition anchor in {path}: {old!r}')
+                  text = text.replace(old, new, 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+          python3 scripts/validate_phase16_postmerge_record.py
+          python3 scripts/generate_phase17_offline_event_protocol.py --check
+          python3 scripts/validate_phase17_offline_event_protocol.py
+          python3 scripts/validate_phase17_postmerge_record.py
+          python3 scripts/generate_phase18_offline_reconciliation.py --check
+          python3 scripts/generate_phase18_release_record.py --check
+          python3 scripts/validate_phase18_offline_reconciliation.py
+          python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
+
+      - name: Commit validator composition
+        shell: bash
+        run: |
+          targets=(
+            scripts/validate_phase16_postmerge_record.py
+            scripts/validate_phase17_offline_event_protocol.py
+            scripts/validate_phase17_postmerge_record.py
+          )
+          if [ -z "$(git status --porcelain -- "${targets[@]}")" ]; then
+            echo 'Historical validators already compose with Phase 18.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "${targets[@]}"
+          git commit -m 'fix: compose Phase 16 and 17 validators with Phase 18'
+          git push origin HEAD:agent/phase-18-offline-reconciliation-simulation
