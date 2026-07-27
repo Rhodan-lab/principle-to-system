@@ -1,0 +1,41 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-19-offline-reconciliation-policy.json",
+    "sha256": "077bace5a433bafe26550186fb7bc03740125d7af06c406b3745377639275fed"
+  },
+  "contract": "principia-offline-reconciliation-policy-finalization/0.1",
+  "id": "principia-atlas-offline-reconciliation-policy-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-reconciliation-policy",
+  "next_gate": "offline-manual-policy-resolution-candidate",
+  "phase": 19,
+  "principia": {
+    "candidate_head_commit": "da77e4b1a5f6f17e98a38f0438c5531d0fba5aac",
+    "merge_commit": "699689c7a60da645d59cf2bdfe169b89f137a899",
+    "pull_request": 28,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "result": {
+    "decision": "proposals-recorded-no-mutation",
+    "effective_hold_count": 0,
+    "hold_proposal_count": 1,
+    "manual_review_item_count": 1,
+    "unique_affected_artifact_count": 3
+  },
+  "state": "offline-reconciliation-policy-validated",
+  "validation": {
+    "applicable_workflows": 15,
+    "candidate_head_commit": "da77e4b1a5f6f17e98a38f0438c5531d0fba5aac",
+    "status": "success"
+  }
+}
