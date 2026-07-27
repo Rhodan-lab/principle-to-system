@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 17 — Offline Event-Protocol Candidate implemented; exact-head validation pending.**
+**Phase 17 — Offline Event-Protocol Candidate merged and validated through PR #22.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -12,7 +12,7 @@ Software state: **foundation-validated**.
 Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).  
 Phase 15 state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).  
 Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artifact-pilot`, `live: false`).  
-Phase 17 state: **offline-event-protocol-candidate** (`mode: offline-event-protocol`, `live: false`).
+Phase 17 state: **offline-event-protocol-validated** (`mode: offline-event-protocol`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -38,7 +38,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
 | 15 | Offline integration pilot | Merged and validated through PR #18 |
 | 16 | Offline multi-artifact integration pilot | Merged and validated through PR #20 |
-| 17 | Offline event-protocol candidate | Implemented; exact-head validation pending |
+| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |
 
 ## Integration topology
 
@@ -53,14 +53,14 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #19 finalized the Phase 15 record at `c9b14e385333e2640a76902297f0c8b3282668e4`.
 - PR #20 was merged into `main` at commit `c493bf879a7945f9991e13592d42424138a0879b`.
 - PR #21 finalized the Phase 16 record at `44410d47d318c5aaedb7716e4ef3bdefae09b442`.
+- PR #22 was merged into `main` at commit `c9fba79f821d59b36030924e5c388f71a56f7787`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
 - Phase 16 final validated-record head was `d37674490f054241ef08ccf7a644247b444fa874`.
+- Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, and the integrated Phase 16 atomic three-artifact batch, receipt chain, lifecycle matrix, and recovery matrix.
-
-The Phase 17 branch adds two bounded-synthetic lifecycle events, two exact Principia acknowledgements, linked event and acknowledgement heads, and deterministic replay and recovery evidence.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, and the integrated Phase 17 lifecycle-event stream, acknowledgement stream, digest chains, and recovery matrix.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -103,6 +103,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical importer marker: `Atlas Phase 2 may now consume`.
 - Historical Phase 15 marker: `Phase 15 — Offline Integration Pilot merged and validated through PR #18`.
 - Historical Phase 16 marker: `Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20`.
+- Historical Phase 17 candidate marker: `exact-head validation pending`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -219,7 +220,7 @@ The candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` and final validate
 
 ## Phase 17 result — Offline Event-Protocol Candidate
 
-`release/phase-17-offline-event-protocol.json` defines `offline-event-protocol-candidate`.
+The immutable candidate record `release/phase-17-offline-event-protocol.json` defines `offline-event-protocol-candidate` with `mode: offline-event-protocol` and `live: false`.
 
 The candidate pins the finalized Phase 16 merge `44410d47d318c5aaedb7716e4ef3bdefae09b442` and the exact Phase 16 receipt. It introduces:
 
@@ -232,7 +233,9 @@ The candidate pins the finalized Phase 16 merge `44410d47d318c5aaedb7716e4ef3bde
 
 The bounded-synthetic stream models one deprecation and one retraction. Principia records `revalidate` and `block-release` acknowledgements for the three thermal-control artifacts without changing status or release state. Sequence, predecessor digests, event binding, duplicate replay, corruption, action weakening, and `live: true` are machine-gated.
 
-Phase 17 exact-head validation pending. No synchronization or live activation is enabled.
+All 13 applicable workflows passed on exact head `e260417ef7631ebf4f87c89faff7da45d571b63c`. PR #22 was merged at `c9fba79f821d59b36030924e5c388f71a56f7787`.
+
+`release/phase-17-postmerge.json` separately pins the candidate record digest, exact tested head, PR #22, merge commit, authority boundaries, and final state `offline-event-protocol-validated` without rewriting the candidate evidence.
 
 ## Validation
 
@@ -249,6 +252,7 @@ python3 scripts/validate_phase16_offline_multi_artifact.py
 python3 scripts/validate_phase16_postmerge_record.py
 python3 scripts/generate_phase17_offline_event_protocol.py --check
 python3 scripts/validate_phase17_offline_event_protocol.py
+python3 scripts/validate_phase17_postmerge_record.py
 python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
 python3 scripts/finalize_bridge_candidate_records.py --check
 python3 scripts/validate_principia_atlas_bridge.py
@@ -263,8 +267,8 @@ python3 -m unittest discover -s software/tests -v
 python3 scripts/validate_phase13_software.py
 ```
 
-All applicable Phase 17 workflows must pass on one exact head before the candidate record may be marked validated or integrated.
+The post-merge guard preserves the immutable candidate record, pins the validated PR #22 provenance, and prevents stale pre-merge wording from returning.
 
 ## Next phase
 
-The current gate is exact-head validation of Phase 17. Any later offline reconciliation simulation or live bridge requires a distinct contract transition; synchronization remains disabled.
+The next bounded gate is **Phase 18 — Offline Reconciliation Simulation Candidate**. It may simulate bounded disagreement, duplicate delivery, missed acknowledgements, and deterministic convergence using committed fixtures only. It must not activate networking, mutate Atlas, inherit status, or change `live: false`.
