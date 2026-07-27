@@ -1,0 +1,108 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "checkpoint_sha256": "39413c23553b6197eec429300633032688c314d56ccd3e88c6ad8008ab10d8c1",
+  "contract": "principia-atlas-offline-reconciliation-recovery/0.1",
+  "live": false,
+  "mode": "offline-reconciliation-simulation",
+  "reconciliation_id": "principia-atlas:offline-reconciliation:thermal-control:0001",
+  "scenarios": [
+    {
+      "accepted": true,
+      "error_code": null,
+      "outcome": "reconciled",
+      "scenario_id": "exact-reconciliation"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-COUNT-MISMATCH",
+      "outcome": "divergence-detected",
+      "scenario_id": "missing-acknowledgement"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ACK-DIGEST",
+      "outcome": "divergence-detected",
+      "scenario_id": "orphan-acknowledgement"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ACK-EVENT-DIGEST",
+      "outcome": "divergence-detected",
+      "scenario_id": "ack-event-digest-mismatch"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-CHAIN-ACK-HEAD",
+      "outcome": "divergence-detected",
+      "scenario_id": "action-weakening"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ACK-ORDER",
+      "outcome": "divergence-detected",
+      "scenario_id": "affected-artifact-mismatch"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ARTIFACT-REVISION",
+      "outcome": "divergence-detected",
+      "scenario_id": "stale-artifact-revision"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ARTIFACT-MISSING",
+      "outcome": "divergence-detected",
+      "scenario_id": "missing-current-artifact"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-EVENT-ORDER",
+      "outcome": "divergence-detected",
+      "scenario_id": "event-stream-reordered"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-ACK-ORDER",
+      "outcome": "divergence-detected",
+      "scenario_id": "acknowledgement-stream-reordered"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-CHAIN-EVENT-HEAD",
+      "outcome": "divergence-detected",
+      "scenario_id": "event-chain-head-mismatch"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-CHAIN-ACK-HEAD",
+      "outcome": "divergence-detected",
+      "scenario_id": "acknowledgement-chain-head-mismatch"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-STATUS-INHERITANCE",
+      "outcome": "divergence-detected",
+      "scenario_id": "status-inheritance-injection"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-AUTOMATIC-MUTATION",
+      "outcome": "divergence-detected",
+      "scenario_id": "automatic-release-mutation"
+    },
+    {
+      "accepted": false,
+      "error_code": "E-P18-LIVE-FROZEN",
+      "outcome": "divergence-detected",
+      "scenario_id": "live-activation"
+    }
+  ]
+}

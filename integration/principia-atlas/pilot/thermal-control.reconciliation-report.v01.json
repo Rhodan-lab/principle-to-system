@@ -1,0 +1,144 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-atlas-offline-reconciliation-report/0.1",
+  "live": false,
+  "mode": "offline-reconciliation-simulation",
+  "reconciliation_id": "principia-atlas:offline-reconciliation:thermal-control:0001",
+  "records": [
+    {
+      "acknowledgement_id": "principia:lifecycle-ack:concept-feedback:deprecated:0001",
+      "acknowledgement_sha256": "7a2f7fac649017afec39b9a835cca4f4f1a3d7142740015ddde3d3f028ca187a",
+      "affected_artifacts": [
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "failure-atlas/feedback-instability.md",
+          "source_sha256": "868eb61f463f9a576d0816150edd2c8779b4af0c66c1675978b2b4914ab021a9"
+        },
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:investigation:room-cooling",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "investigations/room-cooling.md",
+          "source_sha256": "900ee1b0ae5f8dac8366cc7f0039c57f50f74873ba569c27cde0026a6628314b"
+        },
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "system-dossiers/refrigerator.md",
+          "source_sha256": "6c8883b4f9c401577367e2c4d16cf4eb98d5a4158c65283662a98eb43f127de1"
+        }
+      ],
+      "event_id": "atlas:lifecycle-event:concept-feedback:deprecated:0001",
+      "event_sha256": "c06e10e9d1385af32a757148a7ce22fe44d97558123f7929e96a621edaad3ef9",
+      "required_action": "revalidate",
+      "result": "reconciled",
+      "sequence": 1,
+      "subject": {
+        "entity_type": "concept",
+        "id": "concept:en:feedback",
+        "key": "concept:en:feedback@1",
+        "revision": 1
+      },
+      "transition": {
+        "from": "current",
+        "reason_code": "fixture-deprecation",
+        "to": "deprecated"
+      }
+    },
+    {
+      "acknowledgement_id": "principia:lifecycle-ack:claim-model-boundary:retracted:0002",
+      "acknowledgement_sha256": "bb5c1fa34595c9c2ea96f5ee7d30fb212db4089ce4436f26d84f351eb30cee7e",
+      "affected_artifacts": [
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:failure-pattern:feedback-instability",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "failure-atlas/feedback-instability.md",
+          "source_sha256": "868eb61f463f9a576d0816150edd2c8779b4af0c66c1675978b2b4914ab021a9"
+        },
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:investigation:room-cooling",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "investigations/room-cooling.md",
+          "source_sha256": "900ee1b0ae5f8dac8366cc7f0039c57f50f74873ba569c27cde0026a6628314b"
+        },
+        {
+          "acknowledged_revision": 1,
+          "artifact_id": "principia:system-dossier:refrigerator",
+          "current_revision": 1,
+          "pedagogical_status": "reviewed",
+          "reconciliation_state": "current",
+          "release_status": "draft",
+          "source_path": "system-dossiers/refrigerator.md",
+          "source_sha256": "6c8883b4f9c401577367e2c4d16cf4eb98d5a4158c65283662a98eb43f127de1"
+        }
+      ],
+      "event_id": "atlas:lifecycle-event:claim-model-boundary:retracted:0002",
+      "event_sha256": "61ca082c74330aaff8391af0937096d12d64f9ac92010e982bb93f4e811144c9",
+      "required_action": "block-release",
+      "result": "reconciled",
+      "sequence": 2,
+      "subject": {
+        "entity_type": "claim",
+        "id": "claim:en:model-oscillation-does-not-prove-real-system",
+        "key": "claim:en:model-oscillation-does-not-prove-real-system@1",
+        "revision": 1
+      },
+      "transition": {
+        "from": "current",
+        "reason_code": "fixture-retraction",
+        "to": "retracted"
+      }
+    }
+  ],
+  "source": {
+    "acknowledgements_path": "integration/principia-atlas/pilot/thermal-control.lifecycle-acknowledgements.v01.json",
+    "acknowledgements_sha256": "77c7934875900ae2503477a849374f3aebed889661aa9642b7c2cd6271faf2e7",
+    "chain_path": "integration/principia-atlas/pilot/thermal-control.event-protocol-chain.v01.json",
+    "chain_sha256": "639558fc3f520d3f11a45e5b1350f07ba531672aeded8ee952a9b7c448cb958e",
+    "events_path": "integration/principia-atlas/pilot/thermal-control.lifecycle-events.v01.json",
+    "events_sha256": "19ef4eb4db721e84ac428f223c4e2b24fa0cf55e595660b8abc27f22509ad4e7",
+    "phase17_candidate_head_commit": "e260417ef7631ebf4f87c89faff7da45d571b63c",
+    "phase17_finalization_merge_commit": "806b03335a1d0b43e5a32ffecce8439350564152",
+    "phase17_merge_commit": "c9fba79f821d59b36030924e5c388f71a56f7787",
+    "phase17_postmerge_path": "release/phase-17-postmerge.json",
+    "phase17_postmerge_sha256": "0479849e0015d43c607bd9b65ae012c61050838a1ae3088b9e077f78fe787b28"
+  },
+  "summary": {
+    "acknowledgement_count": 2,
+    "action_mismatch_count": 0,
+    "decision": "reconciled-no-mutation",
+    "event_count": 2,
+    "orphan_acknowledgement_count": 0,
+    "reconciled_count": 2,
+    "stale_artifact_reference_count": 0,
+    "unacknowledged_count": 0
+  }
+}
