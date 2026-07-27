@@ -1,0 +1,123 @@
+name: Validate Phase 20 Offline Manual Policy Resolution
+
+on:
+  push:
+    branches:
+      - agent/phase-20-offline-manual-policy-resolution
+    paths:
+      - 'integration/principia-atlas/**'
+      - 'release/phase-19-postmerge.json'
+      - 'release/phase-20-offline-manual-policy-resolution.json'
+      - 'reports/phase-20-offline-manual-policy-resolution.md'
+      - 'scripts/generate_phase20_offline_manual_policy_resolution.py'
+      - 'scripts/validate_phase20_offline_manual_policy_resolution.py'
+      - 'software/tests/test_phase20_offline_manual_policy_resolution.py'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-20-offline-manual-policy-resolution.yml'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-20-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia Phase 20 candidate
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile Phase 20 and inherited validators
+        run: |
+          python3 -m py_compile scripts/generate_phase20_offline_manual_policy_resolution.py
+          python3 -m py_compile scripts/validate_phase20_offline_manual_policy_resolution.py
+          python3 -m py_compile software/tests/test_phase20_offline_manual_policy_resolution.py
+          python3 -m py_compile scripts/validate_phase19_postmerge_record.py
+          python3 -m py_compile scripts/validate_phase19_offline_reconciliation_policy.py
+          python3 -m py_compile scripts/validate_phase18_postmerge_record.py
+          python3 -m py_compile scripts/validate_phase18_offline_reconciliation.py
+          python3 -m py_compile scripts/validate_phase17_postmerge_record.py
+          python3 -m py_compile scripts/validate_phase16_postmerge_record.py
+          python3 -m py_compile scripts/validate_phase15_postmerge_record.py
+
+      - name: Run complete Phase 20 chain
+        id: phase20_chain
+        shell: bash
+        run: |
+          set +e
+          status=0
+          run_check() {
+            printf '\n$'
+            printf ' %q' "$@"
+            printf '\n'
+            "$@" || status=1
+          }
+          {
+            run_check python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
+            run_check python3 scripts/validate_phase20_offline_manual_policy_resolution.py
+            run_check python3 -m unittest software.tests.test_phase20_offline_manual_policy_resolution -v
+            run_check python3 scripts/validate_phase19_postmerge_record.py
+            run_check python3 scripts/generate_phase19_offline_reconciliation_policy.py --check
+            run_check python3 scripts/validate_phase19_offline_reconciliation_policy.py
+            run_check python3 -m unittest software.tests.test_phase19_offline_reconciliation_policy -v
+            run_check python3 scripts/validate_phase18_postmerge_record.py
+            run_check python3 scripts/generate_phase18_offline_reconciliation.py --check
+            run_check python3 scripts/generate_phase18_release_record.py --check
+            run_check python3 scripts/validate_phase18_offline_reconciliation.py
+            run_check python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
+            run_check python3 scripts/validate_phase17_postmerge_record.py
+            run_check python3 scripts/validate_phase16_postmerge_record.py
+            run_check python3 scripts/validate_phase15_postmerge_record.py
+            run_check python3 scripts/validate_principia_atlas_bridge.py
+            run_check python3 scripts/validate_principia_atlas_audit.py
+            run_check python3 scripts/validate_experiences.py --strict
+            run_check python3 scripts/validate_repo.py --strict
+            run_check python3 scripts/validate_phase12_release_candidate.py
+            run_check python3 -m unittest discover -s software/tests -v
+            run_check python3 scripts/validate_phase13_software.py
+          } > phase20-offline-manual-policy-resolution-validation.log 2>&1
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase20-offline-manual-policy-resolution-validation.log
+          exit 0
+
+      - name: Upload complete Phase 20 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase20-offline-manual-policy-resolution-validation-diagnostics
+          path: phase20-offline-manual-policy-resolution-validation.log
+
+      - name: Stop on Phase 20 errors
+        if: steps.phase20_chain.outputs.status != '0'
+        run: exit 1
+
+      - name: Verify permanent workflow immutability
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path('.github/workflows/validate-phase-20-offline-manual-policy-resolution.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'contents' + ': write',
+              'git ' + 'push',
+              'git ' + 'commit',
+              'pull_request' + '_target',
+              'repository: Rhodan-lab/' + 'Atlas',
+              'cu' + 'rl ',
+              'wg' + 'et ',
+          )
+          assert 'contents: read' in workflow
+          for token in forbidden:
+              assert token not in workflow, token
+          PY
