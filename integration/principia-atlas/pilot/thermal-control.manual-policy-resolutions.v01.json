@@ -1,0 +1,141 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-manual-policy-resolutions/0.1",
+  "fixture_kind": "bounded-synthetic",
+  "live": false,
+  "mode": "offline-manual-policy-resolution",
+  "resolution_stream_id": "principia:offline-manual-policy-resolutions:thermal-control:0001",
+  "resolutions": [
+    {
+      "resolution": {
+        "affected_artifacts": [
+          {
+            "artifact_id": "principia:failure-pattern:feedback-instability",
+            "artifact_revision": 1,
+            "exact_key": "principia:failure-pattern:feedback-instability@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          },
+          {
+            "artifact_id": "principia:investigation:room-cooling",
+            "artifact_revision": 1,
+            "exact_key": "principia:investigation:room-cooling@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          },
+          {
+            "artifact_id": "principia:system-dossier:refrigerator",
+            "artifact_revision": 1,
+            "exact_key": "principia:system-dossier:refrigerator@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          }
+        ],
+        "authority": {
+          "atlas_knowledge_status_authority": "Atlas",
+          "automatic_release_action": false,
+          "automatic_status_change": false,
+          "principia_pedagogical_status_authority": "Principia",
+          "principia_release_status_authority": "Principia",
+          "repository_mutation": false,
+          "status_inheritance": "prohibited"
+        },
+        "decision": "accept",
+        "fixture_kind": "bounded-synthetic",
+        "hold_effective": false,
+        "operational_effect": false,
+        "outcome": "accepted-for-manual-review",
+        "previous_resolution_sha256": null,
+        "proposal_document_sha256": "54c6b77d6a63d5325288249c2a3e1cb1d28945bca53e856f79e8a890d0a67008",
+        "proposal_id": "principia:policy-review:feedback-deprecation:0001",
+        "proposal_kind": "manual-review-item",
+        "rationale_code": "fixture-accept-manual-review",
+        "resolution_id": "principia:manual-policy-resolution:feedback-deprecation:0001",
+        "sequence": 1,
+        "source_policy_action": "manual-review",
+        "status_change": false
+      },
+      "resolution_sha256": "affb786c2c40fa7db159639bfb913ce79d878948efd4f7a1952c596e33f9a2c4"
+    },
+    {
+      "resolution": {
+        "affected_artifacts": [
+          {
+            "artifact_id": "principia:failure-pattern:feedback-instability",
+            "artifact_revision": 1,
+            "exact_key": "principia:failure-pattern:feedback-instability@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          },
+          {
+            "artifact_id": "principia:investigation:room-cooling",
+            "artifact_revision": 1,
+            "exact_key": "principia:investigation:room-cooling@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          },
+          {
+            "artifact_id": "principia:system-dossier:refrigerator",
+            "artifact_revision": 1,
+            "exact_key": "principia:system-dossier:refrigerator@1",
+            "observed_pedagogical_status": "reviewed",
+            "observed_release_status": "draft"
+          }
+        ],
+        "authority": {
+          "atlas_knowledge_status_authority": "Atlas",
+          "automatic_release_action": false,
+          "automatic_status_change": false,
+          "principia_pedagogical_status_authority": "Principia",
+          "principia_release_status_authority": "Principia",
+          "repository_mutation": false,
+          "status_inheritance": "prohibited"
+        },
+        "decision": "defer",
+        "fixture_kind": "bounded-synthetic",
+        "hold_effective": false,
+        "operational_effect": false,
+        "outcome": "deferred-no-hold-activation",
+        "previous_resolution_sha256": "affb786c2c40fa7db159639bfb913ce79d878948efd4f7a1952c596e33f9a2c4",
+        "proposal_document_sha256": "8c4f8f5ec11ad30af2b53fa2aac614af938fe91855d831a8d181b6647400a12f",
+        "proposal_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+        "proposal_kind": "release-hold-proposal",
+        "rationale_code": "fixture-defer-release-hold",
+        "resolution_id": "principia:manual-policy-resolution:model-boundary-retraction:0002",
+        "sequence": 2,
+        "source_policy_action": "propose-release-hold",
+        "status_change": false
+      },
+      "resolution_sha256": "bc8c2c6ab751401d24352ee56dc9fafdcd3616d1357380ec7a8b4f6a4e467b1e"
+    }
+  ],
+  "source": {
+    "phase19_finalization_merge_commit": "2ceb502ed8bd4155324b76aed6642229dba18bb7",
+    "phase19_postmerge_path": "release/phase-19-postmerge.json",
+    "phase19_postmerge_sha256": "74282ca55dfc21872ecbd2ea5e10821259dd998b8caf72344208299b135ecd57",
+    "policy_ledger_path": "integration/principia-atlas/pilot/thermal-control.policy-ledger.v01.json",
+    "policy_ledger_sha256": "238b22591dcddfb66a17bc7ea3726dc8b98e8963e7593c8d8e5b3474e0265f21",
+    "release_hold_proposals_path": "integration/principia-atlas/pilot/thermal-control.release-hold-proposals.v01.json",
+    "release_hold_proposals_sha256": "8c4f8f5ec11ad30af2b53fa2aac614af938fe91855d831a8d181b6647400a12f",
+    "review_queue_path": "integration/principia-atlas/pilot/thermal-control.policy-review-queue.v01.json",
+    "review_queue_sha256": "54c6b77d6a63d5325288249c2a3e1cb1d28945bca53e856f79e8a890d0a67008"
+  },
+  "summary": {
+    "accepted_count": 1,
+    "deferred_count": 1,
+    "effective_hold_count": 0,
+    "operational_effect_count": 0,
+    "rejected_count": 0,
+    "replaced_count": 0,
+    "resolution_count": 2,
+    "status_change_count": 0
+  }
+}
