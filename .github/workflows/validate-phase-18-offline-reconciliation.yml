@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - agent/phase-18-offline-reconciliation-simulation
+      - agent/finalize-phase-18-governance
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-18-offline-reconciliation.json'
+      - 'release/phase-18-postmerge.json'
       - 'reports/phase-18-offline-reconciliation.md'
       - 'scripts/generate_phase18_offline_reconciliation.py'
       - 'scripts/generate_phase18_release_record.py'
       - 'scripts/validate_phase18_offline_reconciliation.py'
+      - 'scripts/validate_phase18_postmerge_record.py'
       - 'scripts/finalize_phase18_state.py'
       - 'software/tests/test_phase18_offline_reconciliation.py'
       - 'PROJECT_STATE.md'
@@ -44,6 +47,7 @@ jobs:
           python3 -m py_compile scripts/generate_phase18_offline_reconciliation.py
           python3 -m py_compile scripts/generate_phase18_release_record.py
           python3 -m py_compile scripts/validate_phase18_offline_reconciliation.py
+          python3 -m py_compile scripts/validate_phase18_postmerge_record.py
           python3 -m py_compile scripts/finalize_phase18_state.py
           python3 -m py_compile scripts/generate_phase17_offline_event_protocol.py
           python3 -m py_compile scripts/validate_phase17_offline_event_protocol.py
@@ -73,6 +77,7 @@ jobs:
             run_check python3 scripts/generate_phase18_offline_reconciliation.py --check
             run_check python3 scripts/generate_phase18_release_record.py --check
             run_check python3 scripts/validate_phase18_offline_reconciliation.py
+            run_check python3 scripts/validate_phase18_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
             run_check python3 scripts/validate_phase17_postmerge_record.py
             run_check python3 scripts/generate_phase17_offline_event_protocol.py --check
