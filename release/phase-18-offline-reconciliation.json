@@ -1,0 +1,55 @@
+{
+  "artifacts": {
+    "checkpoint": {
+      "path": "integration/principia-atlas/pilot/thermal-control.reconciliation-checkpoint.v01.json",
+      "sha256": "39413c23553b6197eec429300633032688c314d56ccd3e88c6ad8008ab10d8c1"
+    },
+    "recovery": {
+      "path": "integration/principia-atlas/pilot/thermal-control.reconciliation-recovery.v01.json",
+      "sha256": "ece9730364577bbf082e6a549f3422f0cc8c52ec927d825db75cb7d0bcfd0591"
+    },
+    "report": {
+      "path": "integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json",
+      "sha256": "b88334407d26fa986818f240b2f1048909fcb8b3443da1f3c05f174f5becbb8d"
+    }
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-reconciliation-simulation/0.1",
+  "id": "principia-atlas-offline-reconciliation-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-reconciliation-simulation",
+  "next_gate": "offline-reconciliation-policy-candidate",
+  "phase": 18,
+  "result": {
+    "acknowledgement_count": 2,
+    "action_mismatch_count": 0,
+    "decision": "reconciled-no-mutation",
+    "event_count": 2,
+    "orphan_acknowledgement_count": 0,
+    "reconciled_count": 2,
+    "stale_artifact_reference_count": 0,
+    "unacknowledged_count": 0
+  },
+  "source_phase17": {
+    "candidate_head_commit": "e260417ef7631ebf4f87c89faff7da45d571b63c",
+    "finalization_merge_commit": "806b03335a1d0b43e5a32ffecce8439350564152",
+    "merge_commit": "c9fba79f821d59b36030924e5c388f71a56f7787",
+    "postmerge_path": "release/phase-17-postmerge.json",
+    "postmerge_sha256": "0479849e0015d43c607bd9b65ae012c61050838a1ae3088b9e077f78fe787b28"
+  },
+  "state": "offline-reconciliation-simulation-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}
