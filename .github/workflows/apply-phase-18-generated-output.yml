@@ -49,7 +49,7 @@ jobs:
             integration/principia-atlas/pilot/thermal-control.reconciliation-checkpoint.v01.json
             integration/principia-atlas/pilot/thermal-control.reconciliation-recovery.v01.json
           )
-          if git diff --quiet -- "${targets[@]}"; then
+          if [ -z "$(git status --porcelain -- "${targets[@]}")" ]; then
             echo 'Phase 18 outputs already current.'
             exit 0
           fi
