@@ -1,0 +1,114 @@
+name: Apply Phase 18 Semantic Fix
+
+on:
+  push:
+    branches:
+      - agent/phase-18-offline-reconciliation-simulation
+    paths:
+      - '.github/workflows/apply-phase-18-semantic-fix.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-phase-18-semantic-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-18-semantic-fix
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 18 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-18-offline-reconciliation-simulation
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply semantic divergence correction
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          generator = Path('scripts/generate_phase18_offline_reconciliation.py')
+          text = generator.read_text(encoding='utf-8')
+          text = text.replace('@dataclass(frozen=True)\nclass ReconciliationError', '@dataclass\nclass ReconciliationError', 1)
+
+          helper = '''\n\ndef rebind_ack_chain(acknowledgements_stream: dict[str, Any], chain: dict[str, Any]) -> None:\n    wrappers = acknowledgements_stream.get("acknowledgements")\n    links = chain.get("links")\n    if not isinstance(wrappers, list) or not isinstance(links, list) or len(wrappers) != len(links):\n        raise ValueError("E-P18-REBIND-SHAPE")\n    previous: str | None = None\n    for index, wrapper in enumerate(wrappers):\n        if not isinstance(wrapper, dict) or not isinstance(wrapper.get("acknowledgement"), dict):\n            raise ValueError("E-P18-REBIND-SHAPE")\n        acknowledgement = wrapper["acknowledgement"]\n        acknowledgement["previous_acknowledgement_sha256"] = previous\n        acknowledgement_sha = sha256_document(acknowledgement)\n        wrapper["acknowledgement_sha256"] = acknowledgement_sha\n        link = links[index]\n        if not isinstance(link, dict):\n            raise ValueError("E-P18-REBIND-SHAPE")\n        link["previous_acknowledgement_sha256"] = previous\n        link["acknowledgement_sha256"] = acknowledgement_sha\n        previous = acknowledgement_sha\n    chain["acknowledgement_head_sequence"] = len(wrappers)\n    chain["acknowledgement_head_sha256"] = previous\n'''
+          anchor = '    return result\n\n\ndef reconcile(\n'
+          if 'def rebind_ack_chain(' not in text:
+              if anchor not in text:
+                  raise SystemExit('rebind helper anchor missing')
+              text = text.replace(anchor, '    return result' + helper + '\n\ndef reconcile(\n', 1)
+
+          action_anchor = '''    action_weakening[1]["acknowledgements"][1]["acknowledgement_sha256"] = sha256_document(\n        action_weakening[1]["acknowledgements"][1]["acknowledgement"]\n    )\n    scenarios.append(("action-weakening", action_weakening))\n'''
+          action_new = '''    action_weakening[1]["acknowledgements"][1]["acknowledgement_sha256"] = sha256_document(\n        action_weakening[1]["acknowledgements"][1]["acknowledgement"]\n    )\n    rebind_ack_chain(action_weakening[1], action_weakening[2])\n    scenarios.append(("action-weakening", action_weakening))\n'''
+          if 'rebind_ack_chain(action_weakening[1], action_weakening[2])' not in text:
+              if action_anchor not in text:
+                  raise SystemExit('action weakening anchor missing')
+              text = text.replace(action_anchor, action_new, 1)
+
+          affected_anchor = '''    affected_mismatch[1]["acknowledgements"][0]["acknowledgement_sha256"] = sha256_document(\n        affected_mismatch[1]["acknowledgements"][0]["acknowledgement"]\n    )\n    scenarios.append(("affected-artifact-mismatch", affected_mismatch))\n'''
+          affected_new = '''    affected_mismatch[1]["acknowledgements"][0]["acknowledgement_sha256"] = sha256_document(\n        affected_mismatch[1]["acknowledgements"][0]["acknowledgement"]\n    )\n    rebind_ack_chain(affected_mismatch[1], affected_mismatch[2])\n    scenarios.append(("affected-artifact-mismatch", affected_mismatch))\n'''
+          if 'rebind_ack_chain(affected_mismatch[1], affected_mismatch[2])' not in text:
+              if affected_anchor not in text:
+                  raise SystemExit('affected mismatch anchor missing')
+              text = text.replace(affected_anchor, affected_new, 1)
+          generator.write_text(text, encoding='utf-8')
+
+          tests = Path('software/tests/test_phase18_offline_reconciliation.py')
+          test_text = tests.read_text(encoding='utf-8')
+          test_action_anchor = '''        weakened[1]["acknowledgements"][1]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)\n        self.assert_reconciliation_error(weakened, "E-P18-ACTION-MISMATCH")\n'''
+          test_action_new = '''        weakened[1]["acknowledgements"][1]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)\n        reconciliation.rebind_ack_chain(weakened[1], weakened[2])\n        self.assert_reconciliation_error(weakened, "E-P18-ACTION-MISMATCH")\n'''
+          if 'reconciliation.rebind_ack_chain(weakened[1], weakened[2])' not in test_text:
+              if test_action_anchor not in test_text:
+                  raise SystemExit('test action anchor missing')
+              test_text = test_text.replace(test_action_anchor, test_action_new, 1)
+
+          test_affected_anchor = '''        affected[1]["acknowledgements"][0]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)\n        self.assert_reconciliation_error(affected, "E-P18-AFFECTED-SET")\n'''
+          test_affected_new = '''        affected[1]["acknowledgements"][0]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)\n        reconciliation.rebind_ack_chain(affected[1], affected[2])\n        self.assert_reconciliation_error(affected, "E-P18-AFFECTED-SET")\n'''
+          if 'reconciliation.rebind_ack_chain(affected[1], affected[2])' not in test_text:
+              if test_affected_anchor not in test_text:
+                  raise SystemExit('test affected anchor missing')
+              test_text = test_text.replace(test_affected_anchor, test_affected_new, 1)
+          tests.write_text(test_text, encoding='utf-8')
+          PY
+
+          python3 scripts/generate_phase18_offline_reconciliation.py --write
+          python3 scripts/generate_phase18_release_record.py --write
+          python3 scripts/generate_phase18_offline_reconciliation.py --check
+          python3 scripts/generate_phase18_release_record.py --check
+          python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
+          python3 scripts/validate_phase18_offline_reconciliation.py
+
+      - name: Commit semantic correction and regenerated evidence
+        shell: bash
+        run: |
+          targets=(
+            scripts/generate_phase18_offline_reconciliation.py
+            software/tests/test_phase18_offline_reconciliation.py
+            integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json
+            integration/principia-atlas/pilot/thermal-control.reconciliation-checkpoint.v01.json
+            integration/principia-atlas/pilot/thermal-control.reconciliation-recovery.v01.json
+            release/phase-18-offline-reconciliation.json
+          )
+          if [ -z "$(git status --porcelain -- "${targets[@]}")" ]; then
+            echo 'Phase 18 semantic correction already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "${targets[@]}"
+          git commit -m 'fix: preserve semantic Phase 18 divergence classes'
+          git push origin HEAD:agent/phase-18-offline-reconciliation-simulation
