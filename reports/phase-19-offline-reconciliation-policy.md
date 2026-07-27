@@ -1,9 +1,11 @@
-# Phase 19 — Offline Reconciliation Policy Candidate
+# Phase 19 — Offline Reconciliation Policy
 
 > Date: 2026-07-27  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 18 finalization merge: `582117eb9ea9ecf489be5ef24464977195464d93`  
-> Candidate state: `offline-reconciliation-policy-candidate`  
+> Exact tested head: `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`  
+> Merge commit: `699689c7a60da645d59cf2bdfe169b89f137a899`  
+> Final state: `offline-reconciliation-policy-validated`  
 > Mode: `offline-reconciliation-policy`  
 > Live: `false`
 
@@ -34,7 +36,8 @@ Both records reference the same three exact Principia artifacts:
 - `principia-offline-release-hold-proposals/0.1`;
 - `principia-offline-reconciliation-policy-ledger/0.1`;
 - `principia-offline-reconciliation-policy-recovery/0.1`;
-- `principia-offline-reconciliation-policy/0.1`.
+- `principia-offline-reconciliation-policy/0.1`;
+- `principia-offline-reconciliation-policy-finalization/0.1`.
 
 ## Result
 
@@ -64,6 +67,12 @@ The committed recovery matrix contains 14 deterministic scenarios. It rejects so
 
 Only the exact baseline is accepted.
 
+## Finalization record
+
+PR #28 was merged into `main` at `699689c7a60da645d59cf2bdfe169b89f137a899` after all 15 applicable workflows passed on exact head `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`.
+
+`release/phase-19-postmerge.json` preserves the candidate record byte-for-byte by pinning its SHA-256, records PR #28 and the exact candidate head, and declares the final state `offline-reconciliation-policy-validated`. The candidate record remains unchanged and retains pending, non-self-referential validation fields.
+
 ## Authority boundary
 
 ```yaml
@@ -84,10 +93,11 @@ A proposal is not a decision. A recorded review item does not change pedagogical
 ```bash
 python3 scripts/generate_phase19_offline_reconciliation_policy.py --check
 python3 scripts/validate_phase19_offline_reconciliation_policy.py
+python3 scripts/validate_phase19_postmerge_record.py
 python3 -m unittest software.tests.test_phase19_offline_reconciliation_policy -v
 python3 scripts/validate_phase18_postmerge_record.py
 ```
 
 ## Next bounded gate
 
-After Phase 19 integration, the next bounded gate is an **offline manual-policy-resolution candidate**. It may record an explicit human or separately authorized accept, defer, replace, or reject decision against each proposal. It must not call Atlas, inherit lifecycle status, or mutate content and release state automatically.
+The next bounded gate is an **offline manual-policy-resolution candidate**. It may record an explicit human or separately authorized accept, defer, replace, or reject decision against each proposal. It must not call Atlas, inherit lifecycle status, or mutate content and release state automatically.
