@@ -28,7 +28,7 @@
     {
       "accepted": false,
       "candidate_event_sha256": "7f511605dd93e9b13cf2210aa4b29467a62304d3fe9a508bcf6c86ffde9209fb",
-      "error_code": "E-P17-SEQUENCE",
+      "error_code": "E-P17-STALE-SEQUENCE",
       "result": "reject",
       "scenario_id": "stale-sequence"
     },

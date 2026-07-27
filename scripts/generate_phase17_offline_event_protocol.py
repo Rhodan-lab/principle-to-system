@@ -285,7 +285,7 @@ def validate_event_candidate(
         raise ProtocolError("E-P17-RECEIPT-SEQUENCE")
 
     sequence = candidate.get("sequence")
-    if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence < 1:
+    if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence < 0:
         raise ProtocolError("E-P17-SEQUENCE")
     head_sequence = int(log.get("head_sequence", 0))
     head_sha = log.get("head_event_sha256")
