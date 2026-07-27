@@ -8,7 +8,7 @@ It does not merge repositories, modify Atlas, or create a live cross-repository 
 
 - `manifests/` — revision-specific Principia dependency manifests;
 - `exports/` — deterministic importer candidates with legacy IDs and `depends_on_exact` records;
-- `pilot/` — pinned Atlas importer evidence, receipts, lifecycle-impact matrices, receipt chains, and recovery scenarios;
+- `pilot/` — pinned Atlas importer evidence, receipts, lifecycle-impact matrices, receipt chains, event records, acknowledgements, and recovery scenarios;
 - `fixtures/invalid/` — mutable-revision, status-inheritance, and live-dependency paths that must fail validation.
 
 ## Exact bridge boundary
@@ -81,7 +81,6 @@ Validated state:
 state: offline-multi-artifact-validated
 mode: offline-multi-artifact-pilot
 live: false
-tested_head: 67d6ec98c51188dabcffd48dad968a83653ea584
 ```
 
 Phase 16 artifacts:
@@ -94,6 +93,45 @@ Phase 16 artifacts:
 - `pilot/thermal-control.recovery-matrix.v02.json` — replay, ordering, digest, atomicity, authority, and live-activation recovery cases.
 
 The batch receipt uses `principia-atlas-offline-batch-receipt/0.2`. Duplicate replay is idempotent. A later receipt must use the next sequence and exact predecessor digest. Partial batches, corrupted digests, status inheritance, and `live: true` are rejected.
+
+## Phase 17 — offline event-protocol candidate
+
+Phase 17 binds a lifecycle event to the finalized Phase 16 checkpoint:
+
+```text
+Phase 16 PR #20 merge: c493bf879a7945f9991e13592d42424138a0879b
+Phase 16 record PR #21 merge: 44410d47d318c5aaedb7716e4ef3bdefae09b442
+Receipt-chain sequence: 1
+Receipt-chain head: af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562
+```
+
+Target state:
+
+```yaml
+state: offline-event-protocol-validated
+mode: offline-event-protocol
+live: false
+```
+
+The first event models `concept:en:feedback@1` as deprecated and reports `revalidate` for the exact three thermal-control artifacts. It does not alter their Principia-owned status.
+
+Phase 17 contracts:
+
+```text
+principia-atlas-offline-lifecycle-event/0.3
+principia-atlas-offline-event-ack/0.3
+principia-atlas-offline-event-log/0.3
+principia-atlas-offline-event-recovery/0.3
+```
+
+Phase 17 artifacts:
+
+- `pilot/thermal-control.lifecycle-event.v03.json` — digest-bound Atlas lifecycle event snapshot;
+- `pilot/thermal-control.lifecycle-event-ack.v03.json` — Principia acknowledgement of the exact event digest;
+- `pilot/thermal-control.event-log.v03.json` — append-only sequence and predecessor boundary;
+- `pilot/thermal-control.event-recovery-matrix.v03.json` — replay, equivocation, ordering, predecessor, authority, acknowledgement, and live-activation cases.
+
+Exact duplicate replay is an idempotent no-op. A different event at the same sequence is rejected as equivocation. Stale, skipped, incorrectly linked, status-inheriting, mutating, or live events are rejected.
 
 ## Model boundary
 
@@ -108,33 +146,30 @@ The revision-2 recurrence produces a bounded exact period-6 orbit for its declar
 
 ## Commands
 
-Validate all deterministic exports:
+Validate deterministic exports and earlier pilots:
 
 ```bash
 python3 scripts/export_principia_atlas_dependents.py --check
-python3 scripts/export_principia_atlas_dependents.py \
-  --manifest integration/principia-atlas/manifests/refrigerator.fixture.json \
-  --output integration/principia-atlas/exports/refrigerator.external-dependent.fixture.json \
-  --check
-python3 scripts/export_principia_atlas_dependents.py \
-  --manifest integration/principia-atlas/manifests/room-cooling.fixture.json \
-  --output integration/principia-atlas/exports/room-cooling.external-dependent.fixture.json \
-  --check
-```
-
-Validate Phase 15 and Phase 16:
-
-```bash
 python3 scripts/generate_phase15_offline_pilot.py --check
 python3 scripts/validate_phase15_offline_pilot.py
 python3 scripts/generate_phase16_offline_multi_artifact.py --check
 python3 scripts/validate_phase16_offline_multi_artifact.py
+python3 scripts/validate_phase16_postmerge_record.py
 ```
 
-Regenerate Phase 16 outputs only during an explicit contract update:
+Validate Phase 17:
 
 ```bash
-python3 scripts/generate_phase16_offline_multi_artifact.py --write
+python3 scripts/finalize_phase17_state.py --check
+python3 scripts/generate_phase17_offline_event_protocol.py --check
+python3 scripts/validate_phase17_offline_event_protocol.py
+python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
+```
+
+Regenerate Phase 17 protocol outputs only during an explicit contract update:
+
+```bash
+python3 scripts/generate_phase17_offline_event_protocol.py --write
 ```
 
 Run the complete Principia gate:
@@ -155,6 +190,6 @@ Permanent CI is read-only. It never writes, pushes, merges, imports Atlas dynami
 - Atlas owns knowledge identity, exact revisions, evidence, provenance, review level, lifecycle, and staleness.
 - Principia owns pedagogy, artifact identity, artifact revision, and publication readiness.
 - `status`, `release_status`, and Atlas knowledge status remain separate.
-- Exports and receipts contain no inherited status fields.
-- Impact reports do not automatically change status or release state.
-- A later live bridge requires a different validated state; Phase 16 remains `live: false`.
+- Exports, receipts, events, and acknowledgements contain no inherited Principia status fields.
+- Impact reports and lifecycle events do not automatically change status or release state.
+- A later live bridge requires a different validated state; Phase 17 remains `live: false`.
