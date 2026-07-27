@@ -443,7 +443,7 @@ def validate_records(errors: list[str]) -> None:
 
     state = PROJECT_STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "Phase 17 — Offline Event-Protocol Candidate",
+        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
         "offline-event-protocol-candidate",
         "mode: offline-event-protocol",
         "live: false",

@@ -95,7 +95,7 @@ def main() -> int:
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "Phase 17 — Offline Event-Protocol Candidate merged and validated through PR #22",
+        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
         "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
         f"PR #22 was merged into `main` at commit `{EXPECTED_MERGE}`",
         EXPECTED_CANDIDATE_HEAD,
