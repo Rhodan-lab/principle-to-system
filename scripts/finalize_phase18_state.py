@@ -14,6 +14,7 @@ CURRENT_18 = (
     "**Phase 18 — Offline Reconciliation Simulation Candidate implemented on "
     "`agent/phase-18-offline-reconciliation-simulation`; exact-head validation pending.**"
 )
+FINAL_18 = "**Phase 18 — Offline Reconciliation Simulation merged and validated through PR #25.**"
 SECTION = """## Phase 18 result — Offline Reconciliation Simulation
 
 `release/phase-18-offline-reconciliation.json` defines the immutable candidate `offline-reconciliation-simulation-candidate` with `mode: offline-reconciliation-simulation` and `live: false`.
@@ -39,6 +40,11 @@ Atlas remains unchanged. Reconciliation observes Principia pedagogical and relea
 
 
 def transform(text: str) -> str:
+    # The historical candidate finalizer remains valid after governance closure;
+    # the stricter post-merge validator checks the finalized semantics.
+    if FINAL_18 in text:
+        return text
+
     if CURRENT_18 not in text:
         if CURRENT_17 not in text:
             raise ValueError("missing Phase 17 current-phase anchor")
