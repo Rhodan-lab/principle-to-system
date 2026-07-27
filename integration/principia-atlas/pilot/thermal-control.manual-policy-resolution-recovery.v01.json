@@ -18,23 +18,91 @@
   "mode": "offline-manual-policy-resolution",
   "recovery_id": "principia:offline-manual-policy-resolution-recovery:thermal-control:0001",
   "scenarios": [
-    {"expected_error": null, "expected_outcome": "accepted", "scenario_id": "baseline"},
-    {"expected_error": "E-P20-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "phase19-postmerge-drift"},
-    {"expected_error": "E-P20-PROPOSAL-DIGEST", "expected_outcome": "rejected", "scenario_id": "review-queue-drift"},
-    {"expected_error": "E-P20-PROPOSAL-DIGEST", "expected_outcome": "rejected", "scenario_id": "hold-proposal-drift"},
-    {"expected_error": "E-P20-PROPOSAL-ID", "expected_outcome": "rejected", "scenario_id": "unknown-proposal-id"},
-    {"expected_error": "E-P20-DUPLICATE", "expected_outcome": "rejected", "scenario_id": "duplicate-resolution-id"},
-    {"expected_error": "E-P20-SEQUENCE", "expected_outcome": "rejected", "scenario_id": "resolution-sequence-drift"},
-    {"expected_error": "E-P20-PREVIOUS-DIGEST", "expected_outcome": "rejected", "scenario_id": "resolution-predecessor-drift"},
-    {"expected_error": "E-P20-AUTOMATIC-EXECUTION", "expected_outcome": "rejected", "scenario_id": "accept-review-auto-execution"},
-    {"expected_error": "E-P20-HOLD-EFFECTIVE", "expected_outcome": "rejected", "scenario_id": "deferred-hold-effective"},
-    {"expected_error": "E-P20-DECISION", "expected_outcome": "rejected", "scenario_id": "unsupported-decision"},
-    {"expected_error": "E-P20-AFFECTED-SET", "expected_outcome": "rejected", "scenario_id": "affected-set-drift"},
-    {"expected_error": "E-P20-STATUS-INHERITANCE", "expected_outcome": "rejected", "scenario_id": "status-inheritance"},
-    {"expected_error": "E-P20-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-status-change"},
-    {"expected_error": "E-P20-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-release-action"},
-    {"expected_error": "E-P20-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "repository-mutation"},
-    {"expected_error": "E-P20-LIVE-FROZEN", "expected_outcome": "rejected", "scenario_id": "live-activation"}
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P20-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase19-postmerge-drift"
+    },
+    {
+      "expected_error": "E-P20-PROPOSAL-DIGEST",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-queue-drift"
+    },
+    {
+      "expected_error": "E-P20-PROPOSAL-DIGEST",
+      "expected_outcome": "rejected",
+      "scenario_id": "hold-proposal-drift"
+    },
+    {
+      "expected_error": "E-P20-PROPOSAL-ID",
+      "expected_outcome": "rejected",
+      "scenario_id": "unknown-proposal-id"
+    },
+    {
+      "expected_error": "E-P20-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-resolution-id"
+    },
+    {
+      "expected_error": "E-P20-SEQUENCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-sequence-drift"
+    },
+    {
+      "expected_error": "E-P20-PREVIOUS-DIGEST",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-predecessor-drift"
+    },
+    {
+      "expected_error": "E-P20-AUTOMATIC-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "accept-review-auto-execution"
+    },
+    {
+      "expected_error": "E-P20-HOLD-EFFECTIVE",
+      "expected_outcome": "rejected",
+      "scenario_id": "deferred-hold-effective"
+    },
+    {
+      "expected_error": "E-P20-DECISION",
+      "expected_outcome": "rejected",
+      "scenario_id": "unsupported-decision"
+    },
+    {
+      "expected_error": "E-P20-AFFECTED-SET",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P20-STATUS-INHERITANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P20-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-status-change"
+    },
+    {
+      "expected_error": "E-P20-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-release-action"
+    },
+    {
+      "expected_error": "E-P20-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "repository-mutation"
+    },
+    {
+      "expected_error": "E-P20-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    }
   ],
   "summary": {
     "accepted_count": 1,
