@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 20 — Offline Manual Policy Resolution Candidate implemented on `agent/phase-20-offline-manual-policy-resolution`; exact-head validation pending.**
+**Phase 20 — Offline Manual Policy Resolution merged and validated through PR #30.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -15,7 +15,7 @@ Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artif
 Phase 17 state: **offline-event-protocol-validated** (`mode: offline-event-protocol`, `live: false`).  
 Phase 18 state: **offline-reconciliation-simulation-validated** (`mode: offline-reconciliation-simulation`, `live: false`).  
 Phase 19 state: **offline-reconciliation-policy-validated** (`mode: offline-reconciliation-policy`, `live: false`).  
-Phase 20 target state: **offline-manual-policy-resolution-candidate** (`mode: offline-manual-policy-resolution`, `live: false`).
+Phase 20 state: **offline-manual-policy-resolution-validated** (`mode: offline-manual-policy-resolution`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -44,7 +44,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 17 | Offline event-protocol candidate | Merged and validated through PR #22 |
 | 18 | Offline reconciliation simulation | Merged and validated through PR #25 |
 | 19 | Offline reconciliation policy | Merged and validated through PR #28 |
-| 20 | Offline manual policy resolution | Implemented; exact-head validation pending |
+| 20 | Offline manual policy resolution | Merged and validated through PR #30 |
 
 ## Integration topology
 
@@ -66,6 +66,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 19 exact candidate validation passed at `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`.
 - PR #28 was merged into `main` at commit `699689c7a60da645d59cf2bdfe169b89f137a899`.
 - PR #29 finalized the Phase 19 record at `2ceb502ed8bd4155324b76aed6642229dba18bb7`.
+- Phase 20 exact candidate validation passed at `d128d2c469b43fc07fe1db2f62ce9538841e4463`.
+- PR #30 was merged into `main` at commit `724611a7d7ec0b3723ea217928cba4616ce2bebd`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -73,7 +75,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 manual review queue, non-effective release-hold proposal, digest ledger, and recovery evidence, and the Phase 20 bounded-synthetic accept/defer resolution stream, resolution ledger, checkpoint, and recovery candidate.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 manual review queue, non-effective release-hold proposal, digest ledger, and recovery evidence, and the integrated Phase 20 bounded-synthetic accept/defer resolution stream, resolution ledger, checkpoint, and recovery evidence.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -120,6 +122,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 18 candidate marker: `exact-head validation pending`.
 - Historical Phase 19 candidate marker: `exact-head validation pending`.
 - Historical Phase 20 candidate marker: `exact-head validation pending`.
+- Historical Phase 20 target marker: `offline-manual-policy-resolution-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -228,9 +231,9 @@ The recovery matrix contains 14 scenarios and rejects source drift, weakened act
 
 `release/phase-19-postmerge.json` separately pins the immutable candidate digest, exact tested head `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`, PR #28, merge commit `699689c7a60da645d59cf2bdfe169b89f137a899`, all 15 applicable workflows, authority boundaries, and final state `offline-reconciliation-policy-validated`.
 
-## Phase 20 result — Offline Manual Policy Resolution Candidate
+## Phase 20 result — Offline Manual Policy Resolution
 
-`release/phase-20-offline-manual-policy-resolution.json` defines the immutable candidate `offline-manual-policy-resolution-candidate` with `mode: offline-manual-policy-resolution` and `live: false`.
+`release/phase-20-offline-manual-policy-resolution.json` preserves the immutable candidate `offline-manual-policy-resolution-candidate` with `mode: offline-manual-policy-resolution` and `live: false`.
 
 The bounded-synthetic fixture records two explicit proposal resolutions:
 
@@ -255,11 +258,14 @@ The ordered ledger pins each proposal-document digest, resolution digest, sequen
 
 The recovery matrix contains 17 scenarios and rejects Phase 19 source drift, proposal digest drift, unknown or duplicate identities, sequence and predecessor corruption, automatic execution, effective deferred holds, unsupported decisions, affected-set drift, status inheritance, automatic status or release action, repository mutation, and live activation.
 
+`release/phase-20-postmerge.json` separately pins the immutable candidate digest, exact tested head `d128d2c469b43fc07fe1db2f62ce9538841e4463`, PR #30, merge commit `724611a7d7ec0b3723ea217928cba4616ce2bebd`, all 16 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-manual-policy-resolution-validated`.
+
 ## Validation
 
 ```bash
 python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
 python3 scripts/validate_phase20_offline_manual_policy_resolution.py
+python3 scripts/validate_phase20_postmerge_record.py
 python3 -m unittest software.tests.test_phase20_offline_manual_policy_resolution -v
 python3 scripts/generate_phase19_offline_reconciliation_policy.py --check
 python3 scripts/validate_phase19_offline_reconciliation_policy.py
@@ -284,4 +290,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-After Phase 20 integration, the next bounded gate is an **offline policy-resolution reconciliation candidate**. It may reconcile proposal identities, synthetic resolutions, ledger heads, and checkpoints, but it must not treat synthetic decisions as real authorization or activate status, release, network, or repository mutation.
+Next gate: **offline-policy-resolution-reconciliation-candidate**.
+
+The next bounded gate is an **offline policy-resolution reconciliation candidate**. It may reconcile proposal identities, synthetic resolutions, ledger heads, and checkpoints, but it must not treat synthetic decisions as real authorization or activate status, release, network, or repository mutation.

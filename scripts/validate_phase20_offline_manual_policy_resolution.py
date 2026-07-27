@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Validate Phase 20 offline manual-policy-resolution evidence and boundaries."""
 from __future__ import annotations
-import json, sys
+
+import json
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -14,8 +16,10 @@ REPORT_PATH = ROOT / "reports/phase-20-offline-manual-policy-resolution.md"
 STATE_PATH = ROOT / "PROJECT_STATE.md"
 WORKFLOW_PATH = ROOT / ".github/workflows/validate-phase-20-offline-manual-policy-resolution.yml"
 
+
 class ValidationError(ValueError):
     pass
+
 
 def load(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -23,11 +27,13 @@ def load(path: Path) -> dict[str, Any]:
         raise ValidationError(f"{path.relative_to(ROOT)} must contain an object")
     return value
 
+
 def authority(value: Any) -> None:
     if value != gen.AUTHORITY:
         if isinstance(value, Mapping) and value.get("status_inheritance") != "prohibited":
             raise ValidationError("E-P20-STATUS-INHERITANCE")
         raise ValidationError("E-P20-AUTHORITY")
+
 
 def artifacts(value: Any) -> None:
     if not isinstance(value, list) or len(value) != 3:
@@ -46,6 +52,7 @@ def artifacts(value: Any) -> None:
         if item.get("observed_release_status") != "draft":
             raise ValidationError("E-P20-AFFECTED-SET")
 
+
 def validate_stream(stream: Mapping[str, Any]) -> None:
     if stream.get("contract") != "principia-offline-manual-policy-resolutions/0.1":
         raise ValidationError("E-P20-CONTRACT")
@@ -56,14 +63,25 @@ def validate_stream(stream: Mapping[str, Any]) -> None:
     authority(stream.get("authority"))
     if stream.get("source") != gen.source():
         raise ValidationError("E-P20-SOURCE-PIN")
+
     entries = stream.get("resolutions")
     if not isinstance(entries, list) or len(entries) != 2:
         raise ValidationError("E-P20-COUNT")
     expected = (
-        ("accept", "accepted-for-manual-review", "manual-review-item",
-         "principia:policy-review:feedback-deprecation:0001", gen.QUEUE_SHA),
-        ("defer", "deferred-no-hold-activation", "release-hold-proposal",
-         "principia:release-hold-proposal:model-boundary-retraction:0001", gen.HOLD_SHA),
+        (
+            "accept",
+            "accepted-for-manual-review",
+            "manual-review-item",
+            "principia:policy-review:feedback-deprecation:0001",
+            gen.QUEUE_SHA,
+        ),
+        (
+            "defer",
+            "deferred-no-hold-activation",
+            "release-hold-proposal",
+            "principia:release-hold-proposal:model-boundary-retraction:0001",
+            gen.HOLD_SHA,
+        ),
     )
     seen: set[str] = set()
     previous: str | None = None
@@ -84,6 +102,7 @@ def validate_stream(stream: Mapping[str, Any]) -> None:
         if not isinstance(rid, str) or rid in seen:
             raise ValidationError("E-P20-DUPLICATE")
         seen.add(rid)
+
         decision, outcome, kind, proposal_id, proposal_sha = expected[index]
         if resolution.get("decision") != decision or resolution.get("outcome") != outcome:
             raise ValidationError("E-P20-DECISION")
@@ -102,12 +121,19 @@ def validate_stream(stream: Mapping[str, Any]) -> None:
             raise ValidationError("E-P20-HOLD-EFFECTIVE")
         artifacts(resolution.get("affected_artifacts"))
         previous = digest
+
     if stream.get("summary") != {
-        "accepted_count": 1, "deferred_count": 1, "effective_hold_count": 0,
-        "operational_effect_count": 0, "rejected_count": 0, "replaced_count": 0,
-        "resolution_count": 2, "status_change_count": 0,
+        "accepted_count": 1,
+        "deferred_count": 1,
+        "effective_hold_count": 0,
+        "operational_effect_count": 0,
+        "rejected_count": 0,
+        "replaced_count": 0,
+        "resolution_count": 2,
+        "status_change_count": 0,
     }:
         raise ValidationError("E-P20-SUMMARY")
+
 
 def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
     stream = bundle[gen.RESOLUTIONS_PATH]
@@ -115,6 +141,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
     checkpoint = bundle[gen.CHECKPOINT_PATH]
     recovery = bundle[gen.RECOVERY_PATH]
     release = bundle[gen.RELEASE_PATH]
+
     validate_stream(stream)
     authority(ledger.get("authority"))
     if ledger.get("contract") != "principia-offline-manual-policy-resolution-ledger/0.1":
@@ -126,14 +153,18 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         raise ValidationError("E-P20-LEDGER")
     if ledger.get("head_resolution_sha256") != links[-1].get("resolution_sha256"):
         raise ValidationError("E-P20-LEDGER")
+
     authority(checkpoint.get("authority"))
     if checkpoint.get("resolution_stream_sha256") != gen.doc_sha(stream):
         raise ValidationError("E-P20-CHECKPOINT")
     if checkpoint.get("ledger_sha256") != gen.doc_sha(ledger):
         raise ValidationError("E-P20-CHECKPOINT")
-    if any(checkpoint.get(key) != 0 for key in
-           ("effective_hold_count", "operational_effect_count", "status_change_count")):
+    if any(
+        checkpoint.get(key) != 0
+        for key in ("effective_hold_count", "operational_effect_count", "status_change_count")
+    ):
         raise ValidationError("E-P20-CHECKPOINT")
+
     authority(recovery.get("authority"))
     expected_scenarios = [
         {"expected_error": error, "expected_outcome": outcome, "scenario_id": scenario}
@@ -141,6 +172,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
     ]
     if recovery.get("scenarios") != expected_scenarios:
         raise ValidationError("E-P20-RECOVERY")
+
     authority(release.get("authority"))
     if release.get("state") != "offline-manual-policy-resolution-candidate":
         raise ValidationError("E-P20-RELEASE")
@@ -149,12 +181,16 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
     if release.get("source_phase19") != gen.source():
         raise ValidationError("E-P20-SOURCE-PIN")
     if release.get("validation") != {
-        "pull_request": None, "status": "pending", "tested_head_commit": None
+        "pull_request": None,
+        "status": "pending",
+        "tested_head_commit": None,
     }:
         raise ValidationError("E-P20-RELEASE")
     for name, path in {
-        "checkpoint": gen.CHECKPOINT_PATH, "ledger": gen.LEDGER_PATH,
-        "recovery": gen.RECOVERY_PATH, "resolutions": gen.RESOLUTIONS_PATH,
+        "checkpoint": gen.CHECKPOINT_PATH,
+        "ledger": gen.LEDGER_PATH,
+        "recovery": gen.RECOVERY_PATH,
+        "resolutions": gen.RESOLUTIONS_PATH,
     }.items():
         if release.get("artifacts", {}).get(name) != {
             "path": path.relative_to(ROOT).as_posix(),
@@ -162,20 +198,31 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         }:
             raise ValidationError("E-P20-RELEASE")
 
+
 def main() -> int:
     errors: list[str] = []
     source_files = (
         (ROOT / "release/phase-19-postmerge.json", gen.P19_POST, "E-P20-SOURCE-PIN"),
-        (gen.PILOT / "thermal-control.policy-review-queue.v01.json", gen.QUEUE_SHA,
-         "E-P20-PROPOSAL-DIGEST"),
-        (gen.PILOT / "thermal-control.release-hold-proposals.v01.json", gen.HOLD_SHA,
-         "E-P20-PROPOSAL-DIGEST"),
-        (gen.PILOT / "thermal-control.policy-ledger.v01.json", gen.POLICY_LEDGER_SHA,
-         "E-P20-PROPOSAL-DIGEST"),
+        (
+            gen.PILOT / "thermal-control.policy-review-queue.v01.json",
+            gen.QUEUE_SHA,
+            "E-P20-PROPOSAL-DIGEST",
+        ),
+        (
+            gen.PILOT / "thermal-control.release-hold-proposals.v01.json",
+            gen.HOLD_SHA,
+            "E-P20-PROPOSAL-DIGEST",
+        ),
+        (
+            gen.PILOT / "thermal-control.policy-ledger.v01.json",
+            gen.POLICY_LEDGER_SHA,
+            "E-P20-PROPOSAL-DIGEST",
+        ),
     )
     for path, expected, code in source_files:
         if not path.is_file() or gen.hashlib.sha256(path.read_bytes()).hexdigest() != expected:
             errors.append(code)
+
     try:
         built = gen.build()
         validate_bundle(built)
@@ -193,21 +240,27 @@ def main() -> int:
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "**Phase 20 — Offline Manual Policy Resolution Candidate implemented",
-        "Phase 19 state: **offline-reconciliation-policy-validated**",
-        "Phase 20 target state: **offline-manual-policy-resolution-candidate**",
-        "| 20 | Offline manual policy resolution | Implemented; exact-head validation pending |",
-        "resolutions-recorded-no-mutation", "bounded-synthetic", "live: false",
+        "Phase 20",
+        "offline-manual-policy-resolution",
+        "| 20 | Offline manual policy resolution |",
+        "Historical Phase 20 candidate marker: `exact-head validation pending`",
+        "resolutions-recorded-no-mutation",
+        "bounded-synthetic",
+        "live: false",
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 20 marker: {marker}")
 
     report = REPORT_PATH.read_text(encoding="utf-8")
     for marker in (
-        "# Phase 20 — Offline Manual Policy Resolution Candidate",
+        "# Phase 20 — Offline Manual Policy Resolution",
         "`principia-offline-manual-policy-resolutions/0.1`",
-        "`accept`", "`defer`", "bounded-synthetic", "0 effective holds",
-        "resolutions-recorded-no-mutation", "Live: `false`",
+        "`accept`",
+        "`defer`",
+        "bounded-synthetic",
+        "0 effective holds",
+        "resolutions-recorded-no-mutation",
+        "Live: `false`",
     ):
         if marker not in report:
             errors.append(f"Phase 20 report missing marker: {marker}")
@@ -218,25 +271,38 @@ def main() -> int:
         "scripts/generate_phase20_offline_manual_policy_resolution.py --check",
         "scripts/validate_phase20_offline_manual_policy_resolution.py",
         "software.tests.test_phase20_offline_manual_policy_resolution",
-        "scripts/validate_phase19_postmerge_record.py", "contents: read",
+        "scripts/validate_phase19_postmerge_record.py",
+        "contents: read",
     ):
         if marker not in workflow:
             errors.append(f"Phase 20 workflow missing marker: {marker}")
-    for token in ("contents: write", "git push", "git commit", "pull_request_target",
-                  "repository: Rhodan-lab/Atlas", "curl ", "wget "):
+    for token in (
+        "contents: write",
+        "git push",
+        "git commit",
+        "pull_request_target",
+        "repository: Rhodan-lab/Atlas",
+        "curl ",
+        "wget ",
+    ):
         if token in workflow:
             errors.append(f"Phase 20 workflow contains prohibited operation: {token}")
+
     if errors:
         return fail(errors)
-    print("Phase 20 passed: synthetic accept/defer resolutions are digest-bound, "
-          "non-effective, non-mutating, and live=false.")
+    print(
+        "Phase 20 passed: synthetic accept/defer resolutions are digest-bound, "
+        "non-effective, non-mutating, and live=false."
+    )
     return 0
+
 
 def fail(errors: list[str]) -> int:
     print("Phase 20 validation errors:", file=sys.stderr)
     for error in errors:
         print(f"- {error}", file=sys.stderr)
     return 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

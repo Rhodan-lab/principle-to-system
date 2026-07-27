@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - agent/phase-20-offline-manual-policy-resolution
+      - agent/finalize-phase-20-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-19-postmerge.json'
       - 'release/phase-20-offline-manual-policy-resolution.json'
+      - 'release/phase-20-postmerge.json'
       - 'reports/phase-20-offline-manual-policy-resolution.md'
       - 'scripts/generate_phase20_offline_manual_policy_resolution.py'
       - 'scripts/validate_phase20_offline_manual_policy_resolution.py'
+      - 'scripts/validate_phase20_postmerge_record.py'
       - 'software/tests/test_phase20_offline_manual_policy_resolution.py'
       - 'PROJECT_STATE.md'
       - '.github/workflows/validate-phase-20-offline-manual-policy-resolution.yml'
@@ -30,7 +33,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Principia Phase 20 candidate
+      - name: Check out Principia Phase 20 evidence
         uses: actions/checkout@v4
 
       - name: Configure Python
@@ -42,6 +45,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase20_offline_manual_policy_resolution.py
           python3 -m py_compile scripts/validate_phase20_offline_manual_policy_resolution.py
+          python3 -m py_compile scripts/validate_phase20_postmerge_record.py
           python3 -m py_compile software/tests/test_phase20_offline_manual_policy_resolution.py
           python3 -m py_compile scripts/validate_phase19_postmerge_record.py
           python3 -m py_compile scripts/validate_phase19_offline_reconciliation_policy.py
@@ -66,6 +70,7 @@ jobs:
           {
             run_check python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
             run_check python3 scripts/validate_phase20_offline_manual_policy_resolution.py
+            run_check python3 scripts/validate_phase20_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase20_offline_manual_policy_resolution -v
             run_check python3 scripts/validate_phase19_postmerge_record.py
             run_check python3 scripts/generate_phase19_offline_reconciliation_policy.py --check
