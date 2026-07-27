@@ -47,17 +47,19 @@
   "live": false,
   "live_activation_permitted": false,
   "mode": "offline-event-protocol",
-  "next_gate": "exact-head-validation",
+  "next_gate": "repository-integration",
   "phase": 17,
   "source_phase16_merge_commit": "44410d47d318c5aaedb7716e4ef3bdefae09b442",
   "source_receipt": {
     "path": "integration/principia-atlas/pilot/thermal-control.multi-artifact.receipt.v02.json",
     "sha256": "af529bc6c866be889e6a0b552dffedd81a5e46466cdae08e234472031617b562"
   },
-  "state": "offline-event-protocol-candidate",
+  "state": "offline-event-protocol-validated",
   "validation": {
-    "pull_request": null,
-    "status": "pending",
-    "tested_head_commit": null
+    "candidate_head_commit": "2e248fb6270e63eb0801485a6d1739332bb6403b",
+    "merge_commit": null,
+    "pull_request": 22,
+    "status": "success",
+    "validated_record_head_commit": null
   }
 }
