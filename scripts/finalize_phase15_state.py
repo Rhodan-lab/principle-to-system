@@ -47,13 +47,14 @@ REPLACEMENTS = (
     ),
 )
 
+# Stable Phase 15 semantics. Later phases may reorganize validation-command prose,
+# but they must preserve the accepted pilot identity and non-live Atlas baseline.
 FINAL_MARKERS = (
     "Phase 15 — Offline Integration Pilot",
     "offline-pilot-validated",
     "| 15 | Offline integration pilot |",
     "Atlas PR #20",
     "1cc4aec6908a8703a7f505478329c633a23b4ef9",
-    "python3 scripts/validate_phase15_offline_pilot.py",
     "live: false",
 )
 
@@ -91,8 +92,7 @@ def main() -> int:
     args = parser.parse_args()
     text = STATE_PATH.read_text(encoding="utf-8")
     if args.write:
-        output = transformed(text)
-        STATE_PATH.write_text(output, encoding="utf-8")
+        STATE_PATH.write_text(transformed(text), encoding="utf-8")
         print("Phase 15 project state finalized.")
         return 0
     check(text)
