@@ -96,11 +96,10 @@ def main() -> int:
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
         "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
-        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
         f"PR #22 was merged into `main` at commit `{EXPECTED_MERGE}`",
         EXPECTED_CANDIDATE_HEAD,
         "offline-event-protocol-validated",
-        "Phase 18 — Offline Reconciliation Simulation Candidate",
+        "Phase 18",
         "live: false",
         "Historical Phase 17 candidate marker: `exact-head validation pending`",
     ):
