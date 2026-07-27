@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the Phase 19 offline reconciliation-policy candidate."""
+"""Validate the immutable Phase 19 offline reconciliation-policy candidate."""
 from __future__ import annotations
 
 import json
@@ -102,9 +102,9 @@ def main() -> int:
 
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "**Phase 19 — Offline Reconciliation Policy Candidate implemented",
-        "Phase 19 target state: **offline-reconciliation-policy-candidate**",
-        "| 19 | Offline reconciliation policy | Implemented; exact-head validation pending |",
+        "Phase 19 state: **offline-reconciliation-policy-validated**",
+        "| 19 | Offline reconciliation policy | Merged and validated through PR #28 |",
+        "Historical Phase 19 candidate marker: `exact-head validation pending`",
         PHASE18_FINALIZATION_MERGE,
         "proposals-recorded-no-mutation",
         "manual review queue",
@@ -116,7 +116,7 @@ def main() -> int:
 
     report = REPORT_PATH.read_text(encoding="utf-8")
     for marker in (
-        "# Phase 19 — Offline Reconciliation Policy Candidate",
+        "# Phase 19 — Offline Reconciliation Policy",
         "`principia-offline-review-queue/0.1`",
         "`principia-offline-release-hold-proposals/0.1`",
         "`principia-offline-reconciliation-policy-ledger/0.1`",
