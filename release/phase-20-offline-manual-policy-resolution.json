@@ -1,0 +1,62 @@
+{
+  "artifacts": {
+    "checkpoint": {
+      "path": "integration/principia-atlas/pilot/thermal-control.manual-policy-resolution-checkpoint.v01.json",
+      "sha256": "38e4c918ac08bb13b0667cb0962f65cc2311faf493e21cb29e736efdbe65a518"
+    },
+    "ledger": {
+      "path": "integration/principia-atlas/pilot/thermal-control.manual-policy-resolution-ledger.v01.json",
+      "sha256": "04eaf9c1a446cfb0166b052564725c39aeedee15dba1c55d865c9ae24f717791"
+    },
+    "recovery": {
+      "path": "integration/principia-atlas/pilot/thermal-control.manual-policy-resolution-recovery.v01.json",
+      "sha256": "3c324868b95ffac50ae4935c1b279645b37489ed78e18832a234bd6d76faccdd"
+    },
+    "resolutions": {
+      "path": "integration/principia-atlas/pilot/thermal-control.manual-policy-resolutions.v01.json",
+      "sha256": "8b9d9412a0ff33cc986914379375a6d389bbc74e3f2378beaf8e7a52a3d96760"
+    }
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-manual-policy-resolution/0.1",
+  "id": "principia-atlas-offline-manual-policy-resolution-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-manual-policy-resolution",
+  "next_gate": "offline-policy-resolution-reconciliation-candidate",
+  "phase": 20,
+  "result": {
+    "accepted_count": 1,
+    "decision": "resolutions-recorded-no-mutation",
+    "deferred_count": 1,
+    "effective_hold_count": 0,
+    "operational_effect_count": 0,
+    "resolution_count": 2,
+    "status_change_count": 0
+  },
+  "source_phase19": {
+    "phase19_finalization_merge_commit": "2ceb502ed8bd4155324b76aed6642229dba18bb7",
+    "phase19_postmerge_path": "release/phase-19-postmerge.json",
+    "phase19_postmerge_sha256": "74282ca55dfc21872ecbd2ea5e10821259dd998b8caf72344208299b135ecd57",
+    "policy_ledger_path": "integration/principia-atlas/pilot/thermal-control.policy-ledger.v01.json",
+    "policy_ledger_sha256": "238b22591dcddfb66a17bc7ea3726dc8b98e8963e7593c8d8e5b3474e0265f21",
+    "release_hold_proposals_path": "integration/principia-atlas/pilot/thermal-control.release-hold-proposals.v01.json",
+    "release_hold_proposals_sha256": "8c4f8f5ec11ad30af2b53fa2aac614af938fe91855d831a8d181b6647400a12f",
+    "review_queue_path": "integration/principia-atlas/pilot/thermal-control.policy-review-queue.v01.json",
+    "review_queue_sha256": "54c6b77d6a63d5325288249c2a3e1cb1d28945bca53e856f79e8a890d0a67008"
+  },
+  "state": "offline-manual-policy-resolution-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}
