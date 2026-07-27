@@ -3,20 +3,22 @@
 > Date: 2026-07-27  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Atlas repository modified: no  
-> State: `offline-event-protocol-candidate`  
+> State: `offline-event-protocol-validated`  
 > Mode: `offline-event-protocol`  
 > Live: `false`  
-> Exact-head validation: pending
+> Pull request: #22  
+> Exact tested head: `e260417ef7631ebf4f87c89faff7da45d571b63c`  
+> Merge commit: `c9fba79f821d59b36030924e5c388f71a56f7787`
 
 ## Purpose
 
-Phase 16 proved that three exact Principia artifacts can be admitted as one deterministic offline batch with a receipt chain and lifecycle-impact policy. Phase 17 tests the next bounded problem: how Atlas lifecycle changes could be represented as digest-bound events and how Principia could acknowledge them without activating synchronization or transferring status authority.
+Phase 16 proved that three exact Principia artifacts can be admitted as one deterministic offline batch with a receipt chain and lifecycle-impact policy. Phase 17 tests the next bounded problem: how Atlas lifecycle changes can be represented as digest-bound events and how Principia can acknowledge them without activating synchronization or transferring status authority.
 
 No network synchronization, Atlas checkout, service call, webhook, repository mutation, status inheritance, automatic release action, or live dependency is introduced.
 
 ## Pinned foundation
 
-The candidate starts from the merged and finalized Phase 16 state:
+Phase 17 starts from the merged and finalized Phase 16 state:
 
 ```text
 Principia Phase 16 finalization merge:
@@ -47,6 +49,7 @@ principia-atlas-offline-lifecycle-acknowledgement/0.1
 principia-atlas-offline-lifecycle-acknowledgement-stream/0.1
 principia-atlas-offline-event-protocol-chain/0.1
 principia-atlas-offline-event-protocol-recovery/0.1
+principia-offline-event-protocol-finalization/0.1
 ```
 
 Every event is explicitly `bounded-synthetic`. The fixtures model protocol behavior only; they do not assert that Atlas actually deprecated or retracted a canonical entity.
@@ -130,13 +133,18 @@ The recovery matrix is evidence about deterministic protocol handling, not a liv
 python3 scripts/validate_phase16_postmerge_record.py
 python3 scripts/generate_phase17_offline_event_protocol.py --check
 python3 scripts/validate_phase17_offline_event_protocol.py
+python3 scripts/validate_phase17_postmerge_record.py
 python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
 ```
 
 The permanent Phase 17 workflow also executes the complete inherited Phase 15–16, bridge, strict repository, release-candidate, and software validation chain. It uses `contents: read` and uploads complete diagnostics.
 
-## Candidate boundary
+## Validation result
 
-The candidate is implemented, but exact-head validation remains pending. It must not be promoted beyond `offline-event-protocol-candidate` until every applicable workflow passes together on one exact head.
+All 13 applicable workflows passed together on exact candidate head `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 
-Phase 17 does not activate synchronization. Any later delivery, reconciliation, or live integration gate requires a distinct contract and separate machine validation.
+PR #22 was merged into `main` at `c9fba79f821d59b36030924e5c388f71a56f7787`. The immutable candidate record remains at `release/phase-17-offline-event-protocol.json`; merged provenance is pinned separately in `release/phase-17-postmerge.json`.
+
+Phase 17 is therefore integrated as `offline-event-protocol-validated`. It still does not activate synchronization or transfer authority between repositories.
+
+The next bounded gate is the offline reconciliation simulation candidate. It must remain deterministic, repository-separate, and `live: false`; any live bridge requires a distinct future contract transition.
