@@ -44,7 +44,7 @@ PROHIBITED_KEYS = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass
 class ReconciliationError(ValueError):
     code: str
 
@@ -157,6 +157,28 @@ def stream_entries(stream: Mapping[str, Any], key: str, inner: str) -> list[dict
             raise ReconciliationError("E-P18-STREAM-SHAPE")
         result.append(dict(wrapper))
     return result
+
+def rebind_ack_chain(acknowledgements_stream: dict[str, Any], chain: dict[str, Any]) -> None:
+    wrappers = acknowledgements_stream.get("acknowledgements")
+    links = chain.get("links")
+    if not isinstance(wrappers, list) or not isinstance(links, list) or len(wrappers) != len(links):
+        raise ValueError("E-P18-REBIND-SHAPE")
+    previous: str | None = None
+    for index, wrapper in enumerate(wrappers):
+        if not isinstance(wrapper, dict) or not isinstance(wrapper.get("acknowledgement"), dict):
+            raise ValueError("E-P18-REBIND-SHAPE")
+        acknowledgement = wrapper["acknowledgement"]
+        acknowledgement["previous_acknowledgement_sha256"] = previous
+        acknowledgement_sha = sha256_document(acknowledgement)
+        wrapper["acknowledgement_sha256"] = acknowledgement_sha
+        link = links[index]
+        if not isinstance(link, dict):
+            raise ValueError("E-P18-REBIND-SHAPE")
+        link["previous_acknowledgement_sha256"] = previous
+        link["acknowledgement_sha256"] = acknowledgement_sha
+        previous = acknowledgement_sha
+    chain["acknowledgement_head_sequence"] = len(wrappers)
+    chain["acknowledgement_head_sha256"] = previous
 
 
 def reconcile(
@@ -406,6 +428,9 @@ def build_recovery(
 
     orphan_ack = copy.deepcopy(base)
     orphan_ack[1]["acknowledgements"][1]["acknowledgement"]["event_id"] = "atlas:lifecycle-event:unknown:0002"
+    orphan_ack[1]["acknowledgements"][1]["acknowledgement_sha256"] = sha256_document(
+        orphan_ack[1]["acknowledgements"][1]["acknowledgement"]
+    )
     scenarios.append(("orphan-acknowledgement", orphan_ack))
 
     wrong_event_digest = copy.deepcopy(base)
@@ -420,6 +445,7 @@ def build_recovery(
     action_weakening[1]["acknowledgements"][1]["acknowledgement_sha256"] = sha256_document(
         action_weakening[1]["acknowledgements"][1]["acknowledgement"]
     )
+    rebind_ack_chain(action_weakening[1], action_weakening[2])
     scenarios.append(("action-weakening", action_weakening))
 
     affected_mismatch = copy.deepcopy(base)
@@ -427,6 +453,7 @@ def build_recovery(
     affected_mismatch[1]["acknowledgements"][0]["acknowledgement_sha256"] = sha256_document(
         affected_mismatch[1]["acknowledgements"][0]["acknowledgement"]
     )
+    rebind_ack_chain(affected_mismatch[1], affected_mismatch[2])
     scenarios.append(("affected-artifact-mismatch", affected_mismatch))
 
     stale_revision = copy.deepcopy(base)

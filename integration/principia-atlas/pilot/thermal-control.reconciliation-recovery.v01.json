@@ -28,7 +28,7 @@
     },
     {
       "accepted": false,
-      "error_code": "E-P18-ACK-DIGEST",
+      "error_code": "E-P18-ACK-ORPHAN",
       "outcome": "divergence-detected",
       "scenario_id": "orphan-acknowledgement"
     },
@@ -40,13 +40,13 @@
     },
     {
       "accepted": false,
-      "error_code": "E-P18-CHAIN-ACK-HEAD",
+      "error_code": "E-P18-ACTION-MISMATCH",
       "outcome": "divergence-detected",
       "scenario_id": "action-weakening"
     },
     {
       "accepted": false,
-      "error_code": "E-P18-ACK-ORDER",
+      "error_code": "E-P18-AFFECTED-SET",
       "outcome": "divergence-detected",
       "scenario_id": "affected-artifact-mismatch"
     },

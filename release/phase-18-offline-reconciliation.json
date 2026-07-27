@@ -6,7 +6,7 @@
     },
     "recovery": {
       "path": "integration/principia-atlas/pilot/thermal-control.reconciliation-recovery.v01.json",
-      "sha256": "ece9730364577bbf082e6a549f3422f0cc8c52ec927d825db75cb7d0bcfd0591"
+      "sha256": "27960e0e5969114c82dacfa642e8de57437f315c019efcefcff79ebf00a1eed9"
     },
     "report": {
       "path": "integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json",

@@ -71,6 +71,8 @@ class Phase18OfflineReconciliationTests(unittest.TestCase):
 
         orphan = copy.deepcopy(base)
         orphan[1]["acknowledgements"][1]["acknowledgement"]["event_id"] = "atlas:lifecycle-event:unknown:0002"
+        orphan_ack = orphan[1]["acknowledgements"][1]["acknowledgement"]
+        orphan[1]["acknowledgements"][1]["acknowledgement_sha256"] = reconciliation.sha256_document(orphan_ack)
         self.assert_reconciliation_error(orphan, "E-P18-ACK-ORPHAN")
 
     def test_action_and_affected_set_divergence_are_detected(self) -> None:
@@ -85,12 +87,14 @@ class Phase18OfflineReconciliationTests(unittest.TestCase):
         ack = weakened[1]["acknowledgements"][1]["acknowledgement"]
         ack["required_action"] = "revalidate"
         weakened[1]["acknowledgements"][1]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)
+        reconciliation.rebind_ack_chain(weakened[1], weakened[2])
         self.assert_reconciliation_error(weakened, "E-P18-ACTION-MISMATCH")
 
         affected = copy.deepcopy(base)
         ack = affected[1]["acknowledgements"][0]["acknowledgement"]
         ack["affected_artifacts"].pop()
         affected[1]["acknowledgements"][0]["acknowledgement_sha256"] = reconciliation.sha256_document(ack)
+        reconciliation.rebind_ack_chain(affected[1], affected[2])
         self.assert_reconciliation_error(affected, "E-P18-AFFECTED-SET")
 
     def test_current_inventory_divergence_is_detected(self) -> None:
