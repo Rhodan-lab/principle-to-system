@@ -18,20 +18,76 @@
   "mode": "offline-reconciliation-policy",
   "recovery_id": "principia:offline-reconciliation-policy-recovery:thermal-control:0001",
   "scenarios": [
-    {"expected_error": null, "expected_outcome": "accepted", "scenario_id": "baseline"},
-    {"expected_error": "E-P19-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "source-digest-drift"},
-    {"expected_error": "E-P19-SOURCE-COUNT", "expected_outcome": "rejected", "scenario_id": "missing-source-record"},
-    {"expected_error": "E-P19-ACTION-MAPPING", "expected_outcome": "rejected", "scenario_id": "revalidate-weakened"},
-    {"expected_error": "E-P19-ACTION-MAPPING", "expected_outcome": "rejected", "scenario_id": "block-release-weakened"},
-    {"expected_error": "E-P19-AUTOMATIC-EXECUTION", "expected_outcome": "rejected", "scenario_id": "queue-auto-execution"},
-    {"expected_error": "E-P19-MANUAL-RESOLUTION", "expected_outcome": "rejected", "scenario_id": "queue-auto-resolution"},
-    {"expected_error": "E-P19-HOLD-EFFECTIVE", "expected_outcome": "rejected", "scenario_id": "hold-effective"},
-    {"expected_error": "E-P19-AFFECTED-SET", "expected_outcome": "rejected", "scenario_id": "affected-set-drift"},
-    {"expected_error": "E-P19-DUPLICATE", "expected_outcome": "rejected", "scenario_id": "duplicate-policy-id"},
-    {"expected_error": "E-P19-LEDGER-ORDER", "expected_outcome": "rejected", "scenario_id": "ledger-predecessor-drift"},
-    {"expected_error": "E-P19-STATUS-INHERITANCE", "expected_outcome": "rejected", "scenario_id": "status-inheritance"},
-    {"expected_error": "E-P19-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-mutation"},
-    {"expected_error": "E-P19-LIVE-FROZEN", "expected_outcome": "rejected", "scenario_id": "live-activation"}
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P19-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-digest-drift"
+    },
+    {
+      "expected_error": "E-P19-SOURCE-COUNT",
+      "expected_outcome": "rejected",
+      "scenario_id": "missing-source-record"
+    },
+    {
+      "expected_error": "E-P19-ACTION-MAPPING",
+      "expected_outcome": "rejected",
+      "scenario_id": "revalidate-weakened"
+    },
+    {
+      "expected_error": "E-P19-ACTION-MAPPING",
+      "expected_outcome": "rejected",
+      "scenario_id": "block-release-weakened"
+    },
+    {
+      "expected_error": "E-P19-AUTOMATIC-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "queue-auto-execution"
+    },
+    {
+      "expected_error": "E-P19-MANUAL-RESOLUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "queue-auto-resolution"
+    },
+    {
+      "expected_error": "E-P19-HOLD-EFFECTIVE",
+      "expected_outcome": "rejected",
+      "scenario_id": "hold-effective"
+    },
+    {
+      "expected_error": "E-P19-AFFECTED-SET",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P19-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-policy-id"
+    },
+    {
+      "expected_error": "E-P19-LEDGER-ORDER",
+      "expected_outcome": "rejected",
+      "scenario_id": "ledger-predecessor-drift"
+    },
+    {
+      "expected_error": "E-P19-STATUS-INHERITANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P19-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-mutation"
+    },
+    {
+      "expected_error": "E-P19-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    }
   ],
   "summary": {
     "accepted_count": 1,
