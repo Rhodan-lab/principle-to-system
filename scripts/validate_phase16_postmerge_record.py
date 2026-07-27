@@ -28,7 +28,7 @@ def main() -> int:
         EXPECTED_CANDIDATE_HEAD,
         EXPECTED_VALIDATED_HEAD,
         "offline-multi-artifact-validated",
-        "Phase 17 — Offline Event-Protocol Candidate",
+        "| 17 | Offline event-protocol candidate | Merged and validated through PR #22 |",
         "live: false",
     ):
         if marker not in state:

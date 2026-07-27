@@ -1,0 +1,29 @@
+{
+  "acknowledgement_head": {
+    "sequence": 2,
+    "sha256": "bb5c1fa34595c9c2ea96f5ee7d30fb212db4089ce4436f26d84f351eb30cee7e"
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-atlas-offline-reconciliation-checkpoint/0.1",
+  "decision": "reconciled-no-mutation",
+  "event_head": {
+    "sequence": 2,
+    "sha256": "61ca082c74330aaff8391af0937096d12d64f9ac92010e982bb93f4e811144c9"
+  },
+  "inventory_sha256": "4da5f13b237dfa43523710dae0b958bd5ea860ceff9e10969d22b4f21c0204fc",
+  "live": false,
+  "mode": "offline-reconciliation-simulation",
+  "next_expected_acknowledgement_sequence": 3,
+  "next_expected_event_sequence": 3,
+  "reconciliation_id": "principia-atlas:offline-reconciliation:thermal-control:0001",
+  "report_path": "integration/principia-atlas/pilot/thermal-control.reconciliation-report.v01.json",
+  "report_sha256": "b88334407d26fa986818f240b2f1048909fcb8b3443da1f3c05f174f5becbb8d"
+}
