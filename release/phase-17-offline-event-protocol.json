@@ -39,6 +39,7 @@
   },
   "state": "offline-event-protocol-validated",
   "validation": {
-    "status": "candidate-awaiting-exact-head-ci"
+    "requested_from_head_commit": "2c8e8321cd690b5571ac7ba567de0329ec4f46b8",
+    "status": "candidate-ci-requested"
   }
 }
