@@ -1,0 +1,33 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false
+  },
+  "candidate_record": {
+    "path": "release/phase-17-offline-event-protocol.json",
+    "sha256": "fade774fea05b116f6dad307cdcf5219163b6083b175d3be103259857d409c4f"
+  },
+  "contract": "principia-offline-event-protocol-finalization/0.1",
+  "id": "principia-atlas-offline-event-protocol-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-event-protocol",
+  "next_gate": "offline-reconciliation-simulation-candidate",
+  "phase": 17,
+  "principia": {
+    "candidate_head_commit": "e260417ef7631ebf4f87c89faff7da45d571b63c",
+    "merge_commit": "c9fba79f821d59b36030924e5c388f71a56f7787",
+    "pull_request": 22,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "state": "offline-event-protocol-validated",
+  "validation": {
+    "applicable_workflows": 13,
+    "candidate_head_commit": "e260417ef7631ebf4f87c89faff7da45d571b63c",
+    "status": "success"
+  }
+}
