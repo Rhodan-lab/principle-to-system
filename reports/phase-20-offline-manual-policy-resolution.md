@@ -1,9 +1,11 @@
-# Phase 20 — Offline Manual Policy Resolution Candidate
+# Phase 20 — Offline Manual Policy Resolution
 
 > Date: 2026-07-28  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 19 finalization merge: `2ceb502ed8bd4155324b76aed6642229dba18bb7`  
-> Candidate state: `offline-manual-policy-resolution-candidate`  
+> Exact tested head: `d128d2c469b43fc07fe1db2f62ce9538841e4463`  
+> Merge commit: `724611a7d7ec0b3723ea217928cba4616ce2bebd`  
+> Final state: `offline-manual-policy-resolution-validated`  
 > Mode: `offline-manual-policy-resolution`  
 > Live: `false`
 
@@ -32,7 +34,8 @@ Both resolutions cover the same three exact Principia artifacts at revision 1:
 - `principia-offline-manual-policy-resolution-ledger/0.1`;
 - `principia-offline-manual-policy-resolution-checkpoint/0.1`;
 - `principia-offline-manual-policy-resolution-recovery/0.1`;
-- `principia-offline-manual-policy-resolution/0.1`.
+- `principia-offline-manual-policy-resolution/0.1`;
+- `principia-offline-manual-policy-resolution-finalization/0.1`.
 
 ## Result
 
@@ -66,6 +69,12 @@ The committed matrix contains 17 deterministic scenarios. It rejects Phase 19 so
 
 Only the exact bounded-synthetic baseline is accepted.
 
+## Finalization record
+
+PR #30 was merged into `main` at `724611a7d7ec0b3723ea217928cba4616ce2bebd` after all 16 applicable workflows passed on exact head `d128d2c469b43fc07fe1db2f62ce9538841e4463`.
+
+`release/phase-20-postmerge.json` preserves the immutable candidate record byte-for-byte by pinning its SHA-256, records PR #30 and the exact candidate head, and declares final state `offline-manual-policy-resolution-validated`. It explicitly records `real_authorization_claimed: false`.
+
 ## Authority boundary
 
 ```yaml
@@ -87,10 +96,11 @@ No actual human authorization is claimed. No release hold becomes effective. No 
 ```bash
 python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
 python3 scripts/validate_phase20_offline_manual_policy_resolution.py
+python3 scripts/validate_phase20_postmerge_record.py
 python3 -m unittest software.tests.test_phase20_offline_manual_policy_resolution -v
 python3 scripts/validate_phase19_postmerge_record.py
 ```
 
 ## Next bounded gate
 
-After Phase 20 integration, the next bounded gate is an **offline policy-resolution reconciliation candidate**. It may reconcile proposal identities, synthetic resolutions, ledger heads, and checkpoints, but it must not treat synthetic decisions as real authorization or activate any status, release, network, or repository mutation.
+The next bounded gate is an **offline policy-resolution reconciliation candidate**. It may reconcile proposal identities, synthetic resolutions, ledger heads, and checkpoints, but it must not treat synthetic decisions as real authorization or activate any status, release, network, or repository mutation.
