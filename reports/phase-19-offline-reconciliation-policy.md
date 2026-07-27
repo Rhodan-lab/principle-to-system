@@ -47,7 +47,7 @@ unique_affected_artifacts: 3
 decision: proposals-recorded-no-mutation
 ```
 
-The queue item is `open-proposal` and requires manual resolution. The release hold is only `proposed`; `effective` remains false.
+The exact result contains **0 effective holds**. The queue item is `open-proposal` and requires manual resolution. The release hold is only `proposed`; `effective` remains false.
 
 ## Digest-bound ledger
 
