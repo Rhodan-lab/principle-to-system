@@ -110,7 +110,7 @@ def main() -> int:
         EXPECTED_CANDIDATE_HEAD,
         "release/phase-19-postmerge.json",
         "Historical Phase 19 candidate marker: `exact-head validation pending`",
-        "offline manual-policy-resolution candidate",
+        "offline-manual-policy-resolution-candidate",
         "proposals-recorded-no-mutation",
         "live: false",
     ):
