@@ -1,0 +1,56 @@
+name: Apply Phase 18 Release Record
+
+on:
+  push:
+    branches:
+      - agent/phase-18-offline-reconciliation-simulation
+    paths:
+      - '.github/workflows/apply-phase-18-release-record.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/apply-phase-18-release-record.yml'
+      - 'scripts/generate_phase18_release_record.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-phase-18-release
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 18 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-18-offline-reconciliation-simulation
+          fetch-depth: 0
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate candidate release record
+        run: |
+          python3 scripts/generate_phase18_release_record.py --write
+          python3 scripts/generate_phase18_release_record.py --check
+
+      - name: Commit immutable candidate record
+        shell: bash
+        run: |
+          target='release/phase-18-offline-reconciliation.json'
+          if [ -z "$(git status --porcelain -- "$target")" ]; then
+            echo 'Phase 18 release record already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'release: generate Phase 18 reconciliation candidate'
+          git push origin HEAD:agent/phase-18-offline-reconciliation-simulation
