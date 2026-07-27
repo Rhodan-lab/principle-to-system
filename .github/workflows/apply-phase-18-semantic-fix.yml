@@ -36,9 +36,12 @@ jobs:
           python-version: '3.12'
 
       - name: Apply semantic divergence correction
+        id: semantic
         shell: bash
         run: |
-          python3 - <<'PY'
+          set +e
+          {
+            python3 - <<'PY'
           from pathlib import Path
 
           generator = Path('scripts/generate_phase18_offline_reconciliation.py')
@@ -84,13 +87,28 @@ jobs:
               test_text = test_text.replace(test_affected_anchor, test_affected_new, 1)
           tests.write_text(test_text, encoding='utf-8')
           PY
+            python3 scripts/generate_phase18_offline_reconciliation.py --write
+            python3 scripts/generate_phase18_release_record.py --write
+            python3 scripts/generate_phase18_offline_reconciliation.py --check
+            python3 scripts/generate_phase18_release_record.py --check
+            python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
+            python3 scripts/validate_phase18_offline_reconciliation.py
+          } > phase18-semantic-fix.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase18-semantic-fix.log
+          exit 0
 
-          python3 scripts/generate_phase18_offline_reconciliation.py --write
-          python3 scripts/generate_phase18_release_record.py --write
-          python3 scripts/generate_phase18_offline_reconciliation.py --check
-          python3 scripts/generate_phase18_release_record.py --check
-          python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
-          python3 scripts/validate_phase18_offline_reconciliation.py
+      - name: Upload semantic-fix diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase18-semantic-fix-diagnostics
+          path: phase18-semantic-fix.log
+
+      - name: Stop on semantic-fix errors
+        if: steps.semantic.outputs.status != '0'
+        run: exit 1
 
       - name: Commit semantic correction and regenerated evidence
         shell: bash
