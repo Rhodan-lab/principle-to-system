@@ -4,14 +4,15 @@
 
 ## Current phase
 
-**Phase 16 — Offline Multi-Artifact Integration Pilot merged and validated through PR #20.**
+**Phase 17 — Offline Event-Protocol Candidate implemented on `agent/phase-17-offline-event-protocol-candidate`; exact-head validation pending.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
 Software state: **foundation-validated**.  
 Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).  
 Phase 15 state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).  
-Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artifact-pilot`, `live: false`).
+Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artifact-pilot`, `live: false`).  
+Phase 17 target state: **offline-event-protocol-validated** (`mode: offline-event-protocol`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -37,6 +38,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 14 | Principia–Atlas bridge candidate | Merged and validated through PR #16 |
 | 15 | Offline integration pilot | Merged and validated through PR #18 |
 | 16 | Offline multi-artifact integration pilot | Merged and validated through PR #20 |
+| 17 | Offline event-protocol candidate | Implemented; exact-head validation pending |
 
 ## Integration topology
 
@@ -50,12 +52,13 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #18 was merged into `main` at commit `beeb4d6d4e71d1d08698a000e720fc88fc730ebc`.
 - PR #19 finalized the Phase 15 record at `c9b14e385333e2640a76902297f0c8b3282668e4`.
 - PR #20 was merged into `main` at commit `c493bf879a7945f9991e13592d42424138a0879b`.
+- PR #21 finalized the Phase 16 record at `44410d47d318c5aaedb7716e4ef3bdefae09b442`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
 - Phase 16 final validated-record head was `d37674490f054241ef08ccf7a644247b444fa874`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, and the integrated Phase 16 atomic three-artifact batch, receipt chain, lifecycle matrix, and recovery matrix.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, and the integrated Phase 16 atomic three-artifact batch, receipt chain, lifecycle matrix, and recovery matrix, plus the Phase 17 digest-bound lifecycle event, acknowledgement, append-only event log, and recovery matrix candidate.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -98,6 +101,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical importer marker: `Atlas Phase 2 may now consume`.
 - Historical Phase 15 marker: `Phase 15 — Offline Integration Pilot merged and validated through PR #18`.
 - Historical Phase 16 marker: `Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20`.
+- Phase 16 — Offline Multi-Artifact Integration Pilot merged and validated through PR #20.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -118,7 +122,7 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 16.
+- Atlas remains unchanged by Principia Phase 17.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -212,6 +216,19 @@ The lifecycle matrix tests fan-out across one or three Principia artifacts depen
 
 The candidate head `67d6ec98c51188dabcffd48dad968a83653ea584` and final validated-record head `d37674490f054241ef08ccf7a644247b444fa874` passed all applicable workflows. PR #20 was merged at `c493bf879a7945f9991e13592d42424138a0879b`.
 
+## Phase 17 result — Offline Event-Protocol Candidate
+
+`release/phase-17-offline-event-protocol.json` defines the target state `offline-event-protocol-validated`.
+
+The protocol is anchored to the Phase 16 receipt-chain head and contains:
+
+- one digest-bound lifecycle event for `concept:en:feedback@1` in the deprecated state;
+- one acknowledgement that pins the exact event digest and affected-artifact digest;
+- one append-only event-log entry;
+- one deterministic replay, ordering, equivocation, authority, and recovery matrix.
+
+The event reports `revalidate` for the exact three thermal-control artifacts but executes no action. Atlas knowledge lifecycle, Principia pedagogical status, and Principia release status remain separate. No repository is mutated and `live: false` remains mandatory.
+
 ## Validation
 
 ```bash
@@ -225,6 +242,9 @@ python3 scripts/export_principia_atlas_dependents.py --manifest integration/prin
 python3 scripts/generate_phase16_offline_multi_artifact.py --check
 python3 scripts/validate_phase16_offline_multi_artifact.py
 python3 scripts/validate_phase16_postmerge_record.py
+python3 scripts/generate_phase17_offline_event_protocol.py --check
+python3 scripts/validate_phase17_offline_event_protocol.py
+python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
 python3 scripts/finalize_bridge_candidate_records.py --check
 python3 scripts/validate_principia_atlas_bridge.py
 python3 scripts/validate_principia_atlas_audit.py
@@ -242,4 +262,4 @@ All applicable workflows passed on the final validated-record head before merge.
 
 ## Next phase
 
-The next bounded gate is **Phase 17 — Offline Event-Protocol Candidate**. It must model digest-bound lifecycle events, acknowledgements, replay protection, ordering, and recovery without network synchronization. Live integration remains disabled and requires a distinct future contract transition.
+After Phase 17 integration, the next bounded gate is **offline event-stream scaling**: multiple ordered events, checkpoint compaction, bounded retention, and long-chain recovery. Network synchronization and live integration remain disabled and require a distinct future contract.
