@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 18 — Offline Reconciliation Simulation Candidate implemented on `agent/phase-18-offline-reconciliation-simulation`; exact-head validation pending.**
+**Phase 18 — Offline Reconciliation Simulation merged and validated through PR #25.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -13,7 +13,7 @@ Bridge state: **candidate-ready** (`mode: bridge-candidate`, `live: false`).
 Phase 15 state: **offline-pilot-validated** (`mode: offline-pilot`, `live: false`).  
 Phase 16 state: **offline-multi-artifact-validated** (`mode: offline-multi-artifact-pilot`, `live: false`).  
 Phase 17 state: **offline-event-protocol-validated** (`mode: offline-event-protocol`, `live: false`).  
-Phase 18 target state: **offline-reconciliation-simulation-candidate** (`mode: offline-reconciliation-simulation`, `live: false`).
+Phase 18 state: **offline-reconciliation-simulation-validated** (`mode: offline-reconciliation-simulation`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -40,7 +40,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 15 | Offline integration pilot | Merged and validated through PR #18 |
 | 16 | Offline multi-artifact integration pilot | Merged and validated through PR #20 |
 | 17 | Offline event-protocol candidate | Merged and validated through PR #22 |
-| 18 | Offline reconciliation simulation | Implemented; exact-head validation pending |
+| 18 | Offline reconciliation simulation | Merged and validated through PR #25 |
 
 ## Integration topology
 
@@ -62,6 +62,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
 - Phase 16 final validated-record head was `d37674490f054241ef08ccf7a644247b444fa874`.
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
+- Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
+- PR #25 was merged into `main` at commit `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`.
 
 Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, and the integrated Phase 17 lifecycle-event stream, acknowledgement stream, digest chains, and recovery matrix, plus the Phase 18 reconciliation report, checkpoint, and divergence simulation candidate.
 
@@ -107,6 +109,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 15 marker: `Phase 15 — Offline Integration Pilot merged and validated through PR #18`.
 - Historical Phase 16 marker: `Phase 16 — Offline Multi-Artifact Integration Pilot implemented and validated on draft PR #20`.
 - Historical Phase 17 candidate marker: `exact-head validation pending`.
+- Historical Phase 18 candidate marker: `exact-head validation pending`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -242,7 +245,7 @@ All 13 applicable workflows passed on exact head `e260417ef7631ebf4f87c89faff7da
 
 ## Phase 18 result — Offline Reconciliation Simulation
 
-`release/phase-18-offline-reconciliation.json` defines the immutable candidate `offline-reconciliation-simulation-candidate` with `mode: offline-reconciliation-simulation` and `live: false`.
+`release/phase-18-offline-reconciliation.json` preserves the immutable candidate `offline-reconciliation-simulation-candidate` with `mode: offline-reconciliation-simulation` and `live: false`.
 
 The simulation reconciles the official Phase 17 event stream, acknowledgement stream, digest chain, and current revisions of the three thermal-control artifacts. The exact baseline result is:
 
@@ -260,6 +263,8 @@ decision: reconciled-no-mutation
 The divergence matrix rejects missing or orphan acknowledgements, event-binding errors, weakened actions, affected-set mismatches, stale or missing Principia artifacts, reordered streams, chain-head mismatches, status inheritance, automatic mutation, and `live: true`.
 
 Atlas remains unchanged. Reconciliation observes Principia pedagogical and release state only to verify exact current artifact revisions; it does not inherit or mutate those fields.
+
+`release/phase-18-postmerge.json` separately pins the immutable candidate digest, exact tested head `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`, PR #25, merge commit `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`, all 14 applicable workflows, authority boundaries, and final state `offline-reconciliation-simulation-validated`.
 
 ## Validation
 
@@ -280,6 +285,7 @@ python3 scripts/validate_phase17_postmerge_record.py
 python3 scripts/generate_phase18_offline_reconciliation.py --check
 python3 scripts/generate_phase18_release_record.py --check
 python3 scripts/validate_phase18_offline_reconciliation.py
+python3 scripts/validate_phase18_postmerge_record.py
 python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
 python3 -m unittest software.tests.test_phase17_offline_event_protocol -v
 python3 scripts/finalize_bridge_candidate_records.py --check
@@ -295,7 +301,7 @@ python3 -m unittest discover -s software/tests -v
 python3 scripts/validate_phase13_software.py
 ```
 
-The post-merge guard preserves the immutable candidate record, pins the validated PR #22 provenance, and prevents stale pre-merge wording from returning.
+The post-merge guard preserves the immutable Phase 18 candidate record, pins the validated PR #25 provenance, and prevents stale pre-merge wording from returning.
 
 ## Next phase
 

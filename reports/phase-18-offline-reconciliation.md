@@ -3,7 +3,9 @@
 > Date: 2026-07-27  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Atlas repository modified: no  
-> Candidate state: `offline-reconciliation-simulation-candidate`  
+> Exact tested head: `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`  
+> Merge commit: `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`  
+> Final state: `offline-reconciliation-simulation-validated`  
 > Mode: `offline-reconciliation-simulation`  
 > Live: `false`
 
@@ -65,6 +67,7 @@ principia-atlas-offline-reconciliation-report/0.1
 principia-atlas-offline-reconciliation-checkpoint/0.1
 principia-atlas-offline-reconciliation-recovery/0.1
 principia-offline-reconciliation-simulation/0.1
+principia-offline-reconciliation-finalization/0.1
 ```
 
 ## Checkpoint
@@ -99,6 +102,12 @@ The deterministic recovery matrix detects:
 
 The exact unmodified baseline is the only `reconciled` scenario. Every divergence produces a stable Phase 18 error code.
 
+## Finalization record
+
+PR #25 was merged into `main` at `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a` after all 14 applicable workflows passed on exact head `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
+
+`release/phase-18-postmerge.json` preserves the candidate record byte-for-byte by pinning its SHA-256, records PR #25 and the exact candidate head, and declares the final state `offline-reconciliation-simulation-validated`. The candidate record itself remains unchanged and retains no self-referential pull-request or tested-head fields.
+
 ## Authority boundary
 
 - Atlas owns knowledge identity, exact revision, lifecycle, review level, and staleness.
@@ -116,6 +125,7 @@ The exact unmodified baseline is the only `reconciled` scenario. Every divergenc
 python3 scripts/generate_phase18_offline_reconciliation.py --check
 python3 scripts/generate_phase18_release_record.py --check
 python3 scripts/validate_phase18_offline_reconciliation.py
+python3 scripts/validate_phase18_postmerge_record.py
 python3 -m unittest software.tests.test_phase18_offline_reconciliation -v
 ```
 
@@ -123,4 +133,4 @@ Permanent Phase 18 CI also runs Phase 17 post-merge validation, Phase 16 and Pha
 
 ## Next bounded gate
 
-After Phase 18 integration, the next bounded gate is an **offline reconciliation-policy candidate**. It may model how reconciliation findings become explicit Principia review queues or release holds, but it must not mutate content status or activate live synchronization automatically.
+The next bounded gate is an **offline reconciliation-policy candidate**. It may model how reconciliation findings become explicit Principia review queues or release holds, but it must not mutate content status, call Atlas, or activate live synchronization automatically.
