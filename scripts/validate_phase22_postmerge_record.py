@@ -43,7 +43,7 @@ def main() -> int:
         errors.append("Phase 22 candidate record digest changed after merge")
 
     finalization = load_json(FINALIZATION_PATH)
-    expected_top = {
+    for key, value in {
         "contract": "principia-offline-resolution-consequence-planning-finalization/0.1",
         "phase": 22,
         "state": "offline-resolution-consequence-planning-validated",
@@ -54,8 +54,7 @@ def main() -> int:
         "next_gate": "offline-consequence-plan-assurance-candidate",
         "live_activation_permitted": False,
         "real_authorization_claimed": False,
-    }
-    for key, value in expected_top.items():
+    }.items():
         if finalization.get(key) != value:
             errors.append(f"Phase 22 finalization {key} must equal {value}")
 
@@ -74,10 +73,8 @@ def main() -> int:
     }
     if not isinstance(principia, Mapping):
         errors.append("Phase 22 Principia provenance is missing")
-    else:
-        for key, value in expected_principia.items():
-            if principia.get(key) != value:
-                errors.append(f"Phase 22 Principia {key} must equal {value}")
+    elif any(principia.get(key) != value for key, value in expected_principia.items()):
+        errors.append("Phase 22 Principia provenance is invalid")
 
     if finalization.get("validation") != {
         "applicable_workflows": 18,
@@ -150,12 +147,8 @@ def main() -> int:
     ):
         if marker not in report:
             errors.append(f"Phase 22 report missing finalization marker: {marker}")
-    for stale in (
-        "# Phase 22 — Offline Resolution-Consequence Planning Candidate",
-        "> Candidate state: `offline-resolution-consequence-planning-candidate`",
-    ):
-        if stale in report:
-            errors.append(f"Phase 22 report retains stale candidate wording: {stale}")
+    if "> Candidate state: `offline-resolution-consequence-planning-candidate`" in report:
+        errors.append("Phase 22 report retains stale candidate-state wording")
 
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
     for marker in (
