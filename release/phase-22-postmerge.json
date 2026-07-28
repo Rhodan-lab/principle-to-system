@@ -1,0 +1,48 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-22-offline-resolution-consequence-planning.json",
+    "sha256": "ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8"
+  },
+  "contract": "principia-offline-resolution-consequence-planning-finalization/0.1",
+  "decision": "consequence-plans-recorded-no-execution",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-resolution-consequence-planning-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-resolution-consequence-planning",
+  "next_gate": "offline-consequence-plan-assurance-candidate",
+  "phase": 22,
+  "principia": {
+    "candidate_head_commit": "43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a",
+    "merge_commit": "54dcbaa12a4ac57ecd31a8936e6549c35393d04b",
+    "pull_request": 35,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "completed_plan_count": 0,
+    "effective_hold_count": 0,
+    "manual_review_plan_count": 1,
+    "operational_effect_count": 0,
+    "plan_count": 2,
+    "planned_step_count": 6,
+    "release_governance_plan_count": 1,
+    "started_plan_count": 0,
+    "status_change_count": 0
+  },
+  "state": "offline-resolution-consequence-planning-validated",
+  "validation": {
+    "applicable_workflows": 18,
+    "candidate_head_commit": "43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a",
+    "status": "success"
+  }
+}
