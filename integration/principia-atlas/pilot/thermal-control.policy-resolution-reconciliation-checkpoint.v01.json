@@ -1,0 +1,28 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "checkpoint_id": "principia:offline-policy-resolution-reconciliation-checkpoint:thermal-control:0001",
+  "contract": "principia-offline-policy-resolution-reconciliation-checkpoint/0.1",
+  "decision": "reconciled-resolutions-no-mutation",
+  "effective_hold_count": 0,
+  "ledger_sha256": "4321df1f2e8081dcb21e2ffe112c2af2acc00f081e730ff49d046df3739dad91",
+  "live": false,
+  "matched_resolution_count": 2,
+  "missing_resolution_count": 0,
+  "mode": "offline-policy-resolution-reconciliation",
+  "operational_effect_count": 0,
+  "orphan_resolution_count": 0,
+  "proposal_count": 2,
+  "real_authorization_claimed": false,
+  "reconciliation_report_sha256": "61be3ed70056220e217b8c15fe2d4e0e0b2bc7ef9096af61211012b54b4df6be",
+  "resolution_count": 2,
+  "source_resolution_checkpoint_sha256": "38e4c918ac08bb13b0667cb0962f65cc2311faf493e21cb29e736efdbe65a518",
+  "status_change_count": 0
+}
