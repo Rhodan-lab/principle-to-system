@@ -16,17 +16,11 @@ from scripts import generate_phase21_offline_policy_resolution_reconciliation as
 STATE_PATH = ROOT / "PROJECT_STATE.md"
 REPORT_DOC_PATH = ROOT / "reports" / "phase-21-offline-policy-resolution-reconciliation.md"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "validate-phase-21-offline-policy-resolution-reconciliation.yml"
+FINALIZATION_PATH = ROOT / "release" / "phase-21-postmerge.json"
 
 
 class ValidationError(ValueError):
     pass
-
-
-def load(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValidationError(f"{path.relative_to(ROOT)} must contain an object")
-    return value
 
 
 def authority(value: Any) -> None:
@@ -95,9 +89,8 @@ def validate_report(report: Mapping[str, Any]) -> None:
             raise ValidationError("E-P21-MISSING")
         if actual.get("real_authorization_claimed") is not False:
             raise ValidationError("E-P21-AUTHORIZATION")
-        for key in ("effective_hold", "operational_effect", "status_change"):
-            if actual.get(key) is not False:
-                raise ValidationError("E-P21-EFFECT")
+        if any(actual.get(key) is not False for key in ("effective_hold", "operational_effect", "status_change")):
+            raise ValidationError("E-P21-EFFECT")
 
     expected_summary = {
         "checkpoint_mismatch_count": 0,
@@ -124,7 +117,6 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
     checkpoint = bundle[gen.CHECKPOINT_PATH]
     recovery = bundle[gen.RECOVERY_PATH]
     release = bundle[gen.RELEASE_PATH]
-
     validate_report(report)
 
     authority(ledger.get("authority"))
@@ -166,7 +158,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         raise ValidationError("E-P21-CHECKPOINT")
     if checkpoint.get("source_resolution_checkpoint_sha256") != gen.RESOLUTION_CHECKPOINT_SHA:
         raise ValidationError("E-P21-CHECKPOINT")
-    expected_checkpoint_counts = {
+    counts = {
         "proposal_count": 2,
         "resolution_count": 2,
         "matched_resolution_count": 2,
@@ -177,7 +169,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         "status_change_count": 0,
         "real_authorization_claimed": False,
     }
-    for key, value in expected_checkpoint_counts.items():
+    for key, value in counts.items():
         if checkpoint.get(key) != value:
             if key == "real_authorization_claimed":
                 raise ValidationError("E-P21-AUTHORIZATION")
@@ -200,7 +192,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         raise ValidationError("E-P21-RECOVERY")
 
     authority(release.get("authority"))
-    expected_release_top = {
+    expected_release = {
         "contract": "principia-offline-policy-resolution-reconciliation/0.1",
         "decision": gen.DECISION,
         "fixture_kind": "bounded-synthetic",
@@ -212,7 +204,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         "source_phase20": gen.source(),
         "state": "offline-policy-resolution-reconciliation-candidate",
     }
-    for key, value in expected_release_top.items():
+    for key, value in expected_release.items():
         if release.get(key) != value:
             if key == "live":
                 raise ValidationError("E-P21-LIVE-FROZEN")
@@ -225,13 +217,13 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
         raise ValidationError("E-P21-RELEASE")
     if release.get("validation") != {"pull_request": None, "status": "pending", "tested_head_commit": None}:
         raise ValidationError("E-P21-RELEASE")
-    expected_artifacts = {
+    paths = {
         "checkpoint": gen.CHECKPOINT_PATH,
         "ledger": gen.LEDGER_PATH,
         "reconciliation_report": gen.REPORT_PATH,
         "recovery": gen.RECOVERY_PATH,
     }
-    for name, path in expected_artifacts.items():
+    for name, path in paths.items():
         if release.get("artifacts", {}).get(name) != {
             "path": path.relative_to(ROOT).as_posix(),
             "sha256": gen.file_sha(bundle[path]),
@@ -241,7 +233,7 @@ def validate_bundle(bundle: Mapping[Path, Mapping[str, Any]]) -> None:
 
 def main() -> int:
     errors: list[str] = []
-    source_files = (
+    sources = (
         (ROOT / "release/phase-20-postmerge.json", gen.PHASE20_POSTMERGE_SHA, "E-P21-SOURCE-PIN"),
         (ROOT / "release/phase-20-offline-manual-policy-resolution.json", gen.PHASE20_CANDIDATE_SHA, "E-P21-SOURCE-PIN"),
         (gen.PILOT / "thermal-control.policy-review-queue.v01.json", gen.REVIEW_QUEUE_SHA, "E-P21-PROPOSAL-DIGEST"),
@@ -251,10 +243,9 @@ def main() -> int:
         (gen.PILOT / "thermal-control.manual-policy-resolution-ledger.v01.json", gen.RESOLUTION_LEDGER_SHA, "E-P21-LEDGER"),
         (gen.PILOT / "thermal-control.manual-policy-resolution-checkpoint.v01.json", gen.RESOLUTION_CHECKPOINT_SHA, "E-P21-CHECKPOINT"),
     )
-    for path, expected, code in source_files:
+    for path, expected, code in sources:
         if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
             errors.append(code)
-
     try:
         built = gen.build()
         validate_bundle(built)
@@ -270,50 +261,63 @@ def main() -> int:
     if errors:
         return fail(errors)
 
+    finalized = FINALIZATION_PATH.is_file()
     state = STATE_PATH.read_text(encoding="utf-8")
-    for marker in (
-        "**Phase 21 — Offline Policy-Resolution Reconciliation Candidate implemented",
-        "Phase 20 state: **offline-manual-policy-resolution-validated**",
-        "Phase 21 target state: **offline-policy-resolution-reconciliation-candidate**",
-        "| 21 | Offline policy-resolution reconciliation | Implemented; exact-head validation pending |",
-        "reconciled-resolutions-no-mutation",
-        "bounded-synthetic",
-        "real_authorization_claimed: false",
-        "live: false",
-    ):
+    state_markers = (
+        (
+            "Phase 21 state: **offline-policy-resolution-reconciliation-validated**",
+            "| 21 | Offline policy-resolution reconciliation | Merged and validated through PR #32 |",
+            "release/phase-21-postmerge.json",
+        )
+        if finalized
+        else (
+            "**Phase 21 — Offline Policy-Resolution Reconciliation Candidate implemented",
+            "Phase 21 target state: **offline-policy-resolution-reconciliation-candidate**",
+            "| 21 | Offline policy-resolution reconciliation | Implemented; exact-head validation pending |",
+        )
+    )
+    for marker in (*state_markers, "Phase 20 state: **offline-manual-policy-resolution-validated**",
+                   "reconciled-resolutions-no-mutation", "bounded-synthetic",
+                   "real_authorization_claimed: false", "live: false"):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 21 marker: {marker}")
 
     report_doc = REPORT_DOC_PATH.read_text(encoding="utf-8")
-    for marker in (
-        "# Phase 21 — Offline Policy-Resolution Reconciliation Candidate",
-        "`principia-offline-policy-resolution-reconciliation-report/0.1`",
-        "2 matched resolutions",
-        "0 missing resolutions",
-        "0 orphan resolutions",
-        "0 effective holds",
-        "real_authorization_claimed: false",
-        "reconciled-resolutions-no-mutation",
-        "> Live: `false`",
-    ):
+    report_markers = (
+        (
+            "# Phase 21 — Offline Policy-Resolution Reconciliation",
+            "Final state: `offline-policy-resolution-reconciliation-validated`",
+            "release/phase-21-postmerge.json",
+        )
+        if finalized
+        else (
+            "# Phase 21 — Offline Policy-Resolution Reconciliation Candidate",
+            "> Candidate state: `offline-policy-resolution-reconciliation-candidate`",
+        )
+    )
+    for marker in (*report_markers, "`principia-offline-policy-resolution-reconciliation-report/0.1`",
+                   "2 matched resolutions", "0 missing resolutions", "0 orphan resolutions",
+                   "0 effective holds", "real_authorization_claimed: false",
+                   "reconciled-resolutions-no-mutation", "> Live: `false`"):
         if marker not in report_doc:
             errors.append(f"Phase 21 report missing marker: {marker}")
 
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
-    for marker in (
+    workflow_markers = [
         "agent/phase-21-policy-resolution-reconciliation",
         "scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check",
         "scripts/validate_phase21_offline_policy_resolution_reconciliation.py",
         "software.tests.test_phase21_offline_policy_resolution_reconciliation",
         "scripts/validate_phase20_postmerge_record.py",
         "contents: read",
-    ):
+    ]
+    if finalized:
+        workflow_markers.extend(("agent/finalize-phase-21-record", "scripts/validate_phase21_postmerge_record.py"))
+    for marker in workflow_markers:
         if marker not in workflow:
             errors.append(f"Phase 21 workflow missing marker: {marker}")
-    for token in (
-        "contents: write", "git push", "git commit", "pull_request_target",
-        "repository: Rhodan-lab/Atlas", "curl ", "wget ",
-    ):
+    for token in ("contents: write", "git push", "git commit", "pull_request_target",
+                  "repository: Rhodan-lab/Atlas", "curl ", "wget "):
         if token in workflow:
             errors.append(f"Phase 21 workflow contains prohibited operation: {token}")
 
