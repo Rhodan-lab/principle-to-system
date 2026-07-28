@@ -1,0 +1,45 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-assurance-ledger/0.1",
+  "decision": "consequence-plans-assured-no-execution",
+  "entries": [
+    {
+      "entry": {
+        "assurance_id": "principia:consequence-plan-assurance:feedback-manual-review:0001",
+        "assurance_sha256": "afcdc0c5d948df154873583358454ce70bd77bc28523f9eae69711d0abad8336",
+        "plan_id": "principia:resolution-consequence-plan:feedback-manual-review:0001",
+        "plan_sha256": "f2cf1f339f90e4c4a622440fbd86be9a97c53587f059abe0a092ad0bf01efca1",
+        "previous_entry_sha256": null,
+        "sequence": 1,
+        "verdict": "assured-planning-only"
+      },
+      "entry_sha256": "23bf327311dc5f1972c30dc9d39b53bcf9f885de8326fbdae6225a5c336db5e8"
+    },
+    {
+      "entry": {
+        "assurance_id": "principia:consequence-plan-assurance:model-boundary-release-governance:0002",
+        "assurance_sha256": "5c961aa3c39611ce82c036342f4f503fc1fd3cefa686f9b675aa5bc946d4355b",
+        "plan_id": "principia:resolution-consequence-plan:model-boundary-release-governance:0002",
+        "plan_sha256": "f11b3c226fe9b457384387d1d52843e0874f4ebe246fdc4a7a8801cc374e3129",
+        "previous_entry_sha256": "23bf327311dc5f1972c30dc9d39b53bcf9f885de8326fbdae6225a5c336db5e8",
+        "sequence": 2,
+        "verdict": "assured-planning-only"
+      },
+      "entry_sha256": "9eb5b4b88a66225b7cae672e54ebf75a749da7b815cae8e6ee21e71e6aa34943"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "9eb5b4b88a66225b7cae672e54ebf75a749da7b815cae8e6ee21e71e6aa34943",
+  "ledger_id": "principia:offline-consequence-plan-assurance-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-consequence-plan-assurance",
+  "source_assurance_report_sha256": "a78601dfe3dcb2148695522e421f8d7a0578307e3c9457d149e446c3657055fc"
+}
