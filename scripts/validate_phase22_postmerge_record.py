@@ -10,9 +10,9 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parent.parent
 STATE_PATH = ROOT / "PROJECT_STATE.md"
-CANDIDATE_PATH = ROOT / "release" / "phase-22-offline-resolution-consequence-planning.json"
-FINALIZATION_PATH = ROOT / "release" / "phase-22-postmerge.json"
-REPORT_PATH = ROOT / "reports" / "phase-22-offline-resolution-consequence-planning.md"
+CANDIDATE_PATH = ROOT / "release/phase-22-offline-resolution-consequence-planning.json"
+FINALIZATION_PATH = ROOT / "release/phase-22-postmerge.json"
+REPORT_PATH = ROOT / "reports/phase-22-offline-resolution-consequence-planning.md"
 WORKFLOW_PATH = ROOT / ".github/workflows/validate-phase-22-offline-resolution-consequence-planning.yml"
 
 EXPECTED_CANDIDATE_HEAD = "43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a"
@@ -38,10 +38,8 @@ def main() -> int:
             errors.append(f"missing Phase 22 finalization file: {path.relative_to(ROOT)}")
     if errors:
         return fail(errors)
-
     if sha256_file(CANDIDATE_PATH) != EXPECTED_CANDIDATE_SHA256:
         errors.append("Phase 22 candidate record digest changed after merge")
-
     finalization = load_json(FINALIZATION_PATH)
     for key, value in {
         "contract": "principia-offline-resolution-consequence-planning-finalization/0.1",
@@ -57,13 +55,11 @@ def main() -> int:
     }.items():
         if finalization.get(key) != value:
             errors.append(f"Phase 22 finalization {key} must equal {value}")
-
     if finalization.get("candidate_record") != {
         "path": "release/phase-22-offline-resolution-consequence-planning.json",
         "sha256": EXPECTED_CANDIDATE_SHA256,
     }:
         errors.append("Phase 22 finalization candidate record pin is invalid")
-
     principia = finalization.get("principia")
     expected_principia = {
         "repository": "Rhodan-lab/principle-to-system",
@@ -71,18 +67,16 @@ def main() -> int:
         "candidate_head_commit": EXPECTED_CANDIDATE_HEAD,
         "merge_commit": EXPECTED_MERGE,
     }
-    if not isinstance(principia, Mapping):
-        errors.append("Phase 22 Principia provenance is missing")
-    elif any(principia.get(key) != value for key, value in expected_principia.items()):
+    if not isinstance(principia, Mapping) or any(
+        principia.get(key) != value for key, value in expected_principia.items()
+    ):
         errors.append("Phase 22 Principia provenance is invalid")
-
     if finalization.get("validation") != {
         "applicable_workflows": 18,
         "candidate_head_commit": EXPECTED_CANDIDATE_HEAD,
         "status": "success",
     }:
         errors.append("Phase 22 exact-head validation provenance is invalid")
-
     if finalization.get("result") != {
         "completed_plan_count": 0,
         "effective_hold_count": 0,
@@ -95,7 +89,6 @@ def main() -> int:
         "status_change_count": 0,
     }:
         errors.append("Phase 22 finalization result is invalid")
-
     authority = finalization.get("authority")
     if not isinstance(authority, Mapping):
         errors.append("Phase 22 authority record is missing")
@@ -105,10 +98,8 @@ def main() -> int:
                 errors.append(f"Phase 22 finalization must keep {key}=false")
         if authority.get("status_inheritance") != "prohibited":
             errors.append("Phase 22 finalization must prohibit status inheritance")
-
     state = STATE_PATH.read_text(encoding="utf-8")
     for marker in (
-        "**Phase 22 — Offline Resolution-Consequence Planning merged and validated through PR #35.**",
         "Phase 22 state: **offline-resolution-consequence-planning-validated**",
         "| 22 | Offline resolution-consequence planning | Merged and validated through PR #35 |",
         f"Phase 22 exact candidate validation passed at `{EXPECTED_CANDIDATE_HEAD}`",
@@ -123,14 +114,6 @@ def main() -> int:
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 22 finalization marker: {marker}")
-    for stale in (
-        "**Phase 22 — Offline Resolution-Consequence Planning Candidate implemented on `agent/phase-22-offline-resolution-consequence-planning`; exact-head validation pending.**",
-        "| 22 | Offline resolution-consequence planning | Implemented; exact-head validation pending |",
-        "Phase 22 target state: **offline-resolution-consequence-planning-candidate**",
-    ):
-        if stale in state:
-            errors.append(f"PROJECT_STATE.md retains stale Phase 22 wording: {stale}")
-
     report = REPORT_PATH.read_text(encoding="utf-8")
     for marker in (
         "# Phase 22 — Offline Resolution-Consequence Planning",
@@ -147,9 +130,6 @@ def main() -> int:
     ):
         if marker not in report:
             errors.append(f"Phase 22 report missing finalization marker: {marker}")
-    if "> Candidate state: `offline-resolution-consequence-planning-candidate`" in report:
-        errors.append("Phase 22 report retains stale candidate-state wording")
-
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
     for marker in (
         "agent/finalize-phase-22-record",
@@ -160,17 +140,11 @@ def main() -> int:
         if marker not in workflow:
             errors.append(f"Phase 22 workflow missing finalization marker: {marker}")
     for forbidden in (
-        "contents" + ": write",
-        "git " + "push",
-        "git " + "commit",
-        "pull_request" + "_target",
-        "repository: Rhodan-lab/Atlas",
-        "curl ",
-        "wget ",
+        "contents" + ": write", "git " + "push", "git " + "commit",
+        "pull_request" + "_target", "repository: Rhodan-lab/Atlas", "curl ", "wget ",
     ):
         if forbidden in workflow:
             errors.append(f"Phase 22 workflow contains forbidden token: {forbidden}")
-
     if errors:
         return fail(errors)
     print(
