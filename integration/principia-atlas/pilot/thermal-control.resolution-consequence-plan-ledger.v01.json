@@ -1,0 +1,41 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-resolution-consequence-plan-ledger/0.1",
+  "decision": "consequence-plans-recorded-no-execution",
+  "entries": [
+    {
+      "entry": {
+        "plan_id": "principia:resolution-consequence-plan:feedback-manual-review:0001",
+        "plan_sha256": "f2cf1f339f90e4c4a622440fbd86be9a97c53587f059abe0a092ad0bf01efca1",
+        "previous_entry_sha256": null,
+        "sequence": 1,
+        "source_resolution_id": "principia:manual-policy-resolution:feedback-deprecation:0001"
+      },
+      "entry_sha256": "f8e752c455a2fb533cabb61a78ad3173665fc6d5289085149d5b42261617e98e"
+    },
+    {
+      "entry": {
+        "plan_id": "principia:resolution-consequence-plan:model-boundary-release-governance:0002",
+        "plan_sha256": "f11b3c226fe9b457384387d1d52843e0874f4ebe246fdc4a7a8801cc374e3129",
+        "previous_entry_sha256": "f8e752c455a2fb533cabb61a78ad3173665fc6d5289085149d5b42261617e98e",
+        "sequence": 2,
+        "source_resolution_id": "principia:manual-policy-resolution:model-boundary-retraction:0002"
+      },
+      "entry_sha256": "839d49becdc1b58c38874fad9e7e10ad5224c2c10ef8047ff88e14c973ed6971"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "839d49becdc1b58c38874fad9e7e10ad5224c2c10ef8047ff88e14c973ed6971",
+  "ledger_id": "principia:offline-resolution-consequence-plan-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-resolution-consequence-planning",
+  "source_plan_stream_sha256": "5d98b43c2bddd5f3f2c7f524fd3701a4240e569f8e2b601e549bcb5483418c15"
+}
