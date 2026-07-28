@@ -1,0 +1,52 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-21-offline-policy-resolution-reconciliation.json",
+    "sha256": "d3485c7941588232121c74fc2d063d51c73aa121c5bd9a8e4fcbc5be2d5ba4af"
+  },
+  "contract": "principia-offline-policy-resolution-reconciliation-finalization/0.1",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-policy-resolution-reconciliation-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-policy-resolution-reconciliation",
+  "next_gate": "offline-resolution-consequence-planning-candidate",
+  "phase": 21,
+  "principia": {
+    "candidate_head_commit": "ff97a73d8fcba37eaf31220a9480d882c345c7c4",
+    "merge_commit": "7e14b700883018ca11c38d07f82418f165f542f5",
+    "pull_request": 32,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "checkpoint_mismatch_count": 0,
+    "decision": "reconciled-resolutions-no-mutation",
+    "effective_hold_count": 0,
+    "ledger_mismatch_count": 0,
+    "matched_resolution_count": 2,
+    "missing_resolution_count": 0,
+    "operational_effect_count": 0,
+    "orphan_resolution_count": 0,
+    "proposal_count": 2,
+    "proposal_digest_mismatch_count": 0,
+    "resolution_count": 2,
+    "resolution_digest_mismatch_count": 0,
+    "status_change_count": 0,
+    "unique_affected_artifact_count": 3
+  },
+  "state": "offline-policy-resolution-reconciliation-validated",
+  "validation": {
+    "applicable_workflows": 17,
+    "candidate_head_commit": "ff97a73d8fcba37eaf31220a9480d882c345c7c4",
+    "status": "success"
+  }
+}
