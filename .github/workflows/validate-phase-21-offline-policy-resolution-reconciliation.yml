@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - agent/phase-21-policy-resolution-reconciliation
+      - agent/finalize-phase-21-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-20-postmerge.json'
       - 'release/phase-21-offline-policy-resolution-reconciliation.json'
+      - 'release/phase-21-postmerge.json'
       - 'reports/phase-21-offline-policy-resolution-reconciliation.md'
       - 'scripts/generate_phase21_offline_policy_resolution_reconciliation.py'
       - 'scripts/validate_phase21_offline_policy_resolution_reconciliation.py'
+      - 'scripts/validate_phase21_postmerge_record.py'
       - 'software/tests/test_phase21_offline_policy_resolution_reconciliation.py'
       - 'PROJECT_STATE.md'
       - '.github/workflows/validate-phase-21-offline-policy-resolution-reconciliation.yml'
@@ -30,7 +33,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Principia Phase 21 candidate
+      - name: Check out Principia Phase 21 evidence
         uses: actions/checkout@v4
 
       - name: Configure Python
@@ -42,6 +45,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase21_offline_policy_resolution_reconciliation.py
           python3 -m py_compile scripts/validate_phase21_offline_policy_resolution_reconciliation.py
+          python3 -m py_compile scripts/validate_phase21_postmerge_record.py
           python3 -m py_compile software/tests/test_phase21_offline_policy_resolution_reconciliation.py
           python3 -m py_compile scripts/validate_phase20_postmerge_record.py
           python3 -m py_compile scripts/validate_phase20_offline_manual_policy_resolution.py
@@ -66,6 +70,7 @@ jobs:
           {
             run_check python3 scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check
             run_check python3 scripts/validate_phase21_offline_policy_resolution_reconciliation.py
+            run_check python3 scripts/validate_phase21_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase21_offline_policy_resolution_reconciliation -v
             run_check python3 scripts/validate_phase20_postmerge_record.py
             run_check python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
