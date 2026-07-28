@@ -1,0 +1,41 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-policy-resolution-reconciliation-ledger/0.1",
+  "decision": "reconciled-resolutions-no-mutation",
+  "entries": [
+    {
+      "entry": {
+        "match_sha256": "172773541ee182f0a2eeb2d1c683be6a5167468b4904315b91ccc6be5f68a879",
+        "previous_entry_sha256": null,
+        "proposal_id": "principia:policy-review:feedback-deprecation:0001",
+        "resolution_id": "principia:manual-policy-resolution:feedback-deprecation:0001",
+        "sequence": 1
+      },
+      "entry_sha256": "076638357beb83fc5aa3039f09e560f3d5d2a76778a9e9dd8d5ee5ee344c2adc"
+    },
+    {
+      "entry": {
+        "match_sha256": "03cdecd3e57383e4ee1b3fed3285ec5b002643e0c16e81bf88ba5d95d6c2fd31",
+        "previous_entry_sha256": "076638357beb83fc5aa3039f09e560f3d5d2a76778a9e9dd8d5ee5ee344c2adc",
+        "proposal_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+        "resolution_id": "principia:manual-policy-resolution:model-boundary-retraction:0002",
+        "sequence": 2
+      },
+      "entry_sha256": "282e0e74b26fb67019f36f830f7216bb8c40caed526fad9b22ed1365a987318a"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "282e0e74b26fb67019f36f830f7216bb8c40caed526fad9b22ed1365a987318a",
+  "ledger_id": "principia:offline-policy-resolution-reconciliation-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-policy-resolution-reconciliation",
+  "source_reconciliation_sha256": "0f897261e88391cf6569f95118b6bf4c5661098775ccae0688394d1df55198b7"
+}
