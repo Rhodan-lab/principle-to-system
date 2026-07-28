@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 21 — Offline Policy-Resolution Reconciliation merged and validated through PR #32.**
+**Phase 22 — Offline Resolution-Consequence Planning Candidate implemented on `agent/phase-22-offline-resolution-consequence-planning`; exact-head validation pending.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -16,7 +16,8 @@ Phase 17 state: **offline-event-protocol-validated** (`mode: offline-event-proto
 Phase 18 state: **offline-reconciliation-simulation-validated** (`mode: offline-reconciliation-simulation`, `live: false`).  
 Phase 19 state: **offline-reconciliation-policy-validated** (`mode: offline-reconciliation-policy`, `live: false`).  
 Phase 20 state: **offline-manual-policy-resolution-validated** (`mode: offline-manual-policy-resolution`, `live: false`).  
-Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: offline-policy-resolution-reconciliation`, `live: false`).
+Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: offline-policy-resolution-reconciliation`, `live: false`).  
+Phase 22 target state: **offline-resolution-consequence-planning-candidate** (`mode: offline-resolution-consequence-planning`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -47,6 +48,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 19 | Offline reconciliation policy | Merged and validated through PR #28 |
 | 20 | Offline manual policy resolution | Merged and validated through PR #30 |
 | 21 | Offline policy-resolution reconciliation | Merged and validated through PR #32 |
+| 22 | Offline resolution-consequence planning | Implemented; exact-head validation pending |
 
 ## Integration topology
 
@@ -79,7 +81,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 manual review queue, non-effective release-hold proposal, digest ledger, and recovery evidence, the integrated Phase 20 bounded-synthetic accept/defer resolution stream, resolution ledger, checkpoint, and recovery evidence, and the integrated Phase 21 exact proposal/resolution reconciliation report, digest ledger, checkpoint, and recovery evidence.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, and the Phase 22 planning-only consequence-plan stream, digest ledger, checkpoint, and recovery candidate.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -129,6 +131,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 20 target marker: `offline-manual-policy-resolution-candidate`.
 - Historical Phase 21 candidate marker: `exact-head validation pending`.
 - Historical Phase 21 target marker: `offline-policy-resolution-reconciliation-candidate`.
+- Historical Phase 22 candidate marker: `exact-head validation pending`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -149,13 +152,11 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 21.
+- Atlas remains unchanged by Principia Phase 22.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
 ## Phase 11B result — Controlled Material Expansion
-
-The applied-material layer contains:
 
 - 4 complete routes;
 - 16 Reviewed artifacts;
@@ -175,7 +176,7 @@ RC1 preserves reviewed core, synthesis, and experience status; experience `relea
 
 ## Phase 13 result — Software foundation
 
-The content-native software foundation is merged and `foundation-validated`. It deterministically renders the repository material without promoting content status or activating integration.
+The content-native software foundation is merged and `foundation-validated`. It deterministically renders repository material without promoting content status or activating integration.
 
 ## Phase 14 result — Principia–Atlas bridge candidate
 
@@ -198,32 +199,23 @@ Atlas PR #20 subsequently accepted the exact export through a pinned read-only a
 
 ## Phase 15 result — Offline Integration Pilot
 
-`release/phase-15-offline-pilot.json` defines `offline-pilot-validated`.
-
-The pilot pins the exact Principia export, the accepted Atlas PR #20 implementation, and the Atlas PR #21 governance baseline. Current, deprecated, stale, and retracted scenarios remain non-mutating and `live: false`.
+`release/phase-15-offline-pilot.json` defines `offline-pilot-validated`. Current, deprecated, stale, and retracted scenarios remain non-mutating and `live: false`.
 
 ## Phase 16 result — Offline Multi-Artifact Integration Pilot
 
-`release/phase-16-offline-multi-artifact-pilot.json` defines `offline-multi-artifact-validated` for the three thermal-control artifacts. Atomic batch, receipt-chain, lifecycle fan-out, replay, corruption, sequence, status-inheritance, and live-activation cases remain machine-gated.
+`release/phase-16-offline-multi-artifact-pilot.json` defines `offline-multi-artifact-validated` for the three thermal-control artifacts. Atomicity, receipt-chain, replay, corruption, status-inheritance, and live-activation cases remain machine-gated.
 
 ## Phase 17 result — Offline Event-Protocol Candidate
 
-`release/phase-17-offline-event-protocol.json` preserves the immutable event-protocol candidate, and `release/phase-17-postmerge.json` pins its exact validated provenance. Two bounded-synthetic events map to `revalidate` and `block-release` acknowledgements without changing Principia status or release state.
+`release/phase-17-offline-event-protocol.json` preserves the immutable candidate, and `release/phase-17-postmerge.json` pins its exact validated provenance. Two bounded-synthetic events map to `revalidate` and `block-release` acknowledgements without changing status or release state.
 
 ## Phase 18 result — Offline Reconciliation Simulation
 
-`release/phase-18-offline-reconciliation.json` preserves the immutable reconciliation candidate, and `release/phase-18-postmerge.json` pins exact candidate head `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`, PR #25, merge `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`, and finalization merge `582117eb9ea9ecf489be5ef24464977195464d93`.
-
-The exact baseline reconciles two events and two acknowledgements with zero missing, orphan, stale-artifact, or action-mismatch findings. Decision: `reconciled-no-mutation`.
+`release/phase-18-postmerge.json` pins exact candidate head `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`, PR #25, merge `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`, and finalization merge `582117eb9ea9ecf489be5ef24464977195464d93`. Decision: `reconciled-no-mutation`.
 
 ## Phase 19 result — Offline Reconciliation Policy
 
-Phase 19 converts the finalized Phase 18 actions into two explicit proposals:
-
-- one manual review queue item for `revalidate`;
-- one release-hold proposal for `block-release`.
-
-Both cover the three exact thermal-control artifacts. The review item requires manual resolution. The hold remains proposed and non-effective. The digest ledger decision is `proposals-recorded-no-mutation`.
+Phase 19 records one manual review item and one non-effective release-hold proposal. Decision: `proposals-recorded-no-mutation`.
 
 ```yaml
 manual_review_items: 1
@@ -233,20 +225,11 @@ automatic_executions: 0
 live: false
 ```
 
-The recovery matrix contains 14 scenarios and rejects source drift, weakened action, automatic execution, effective holds, affected-set drift, duplicate identities, ledger drift, status inheritance, automatic mutation, and live activation.
-
-`release/phase-19-postmerge.json` separately pins the immutable candidate digest, exact tested head `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`, PR #28, merge commit `699689c7a60da645d59cf2bdfe169b89f137a899`, all 15 applicable workflows, authority boundaries, and final state `offline-reconciliation-policy-validated`.
+`release/phase-19-postmerge.json` pins exact tested head `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`, PR #28, merge `699689c7a60da645d59cf2bdfe169b89f137a899`, all 15 applicable workflows, and final state `offline-reconciliation-policy-validated`.
 
 ## Phase 20 result — Offline Manual Policy Resolution
 
-`release/phase-20-offline-manual-policy-resolution.json` preserves the immutable candidate `offline-manual-policy-resolution-candidate` with `mode: offline-manual-policy-resolution` and `live: false`.
-
-The bounded-synthetic fixture records two explicit proposal resolutions:
-
-- `accept` the manual-review proposal as `accepted-for-manual-review`;
-- `defer` the release-hold proposal as `deferred-no-hold-activation`.
-
-Both resolutions remain non-operational and cover the three exact thermal-control artifacts at revision 1. They do not claim real human authorization.
+The bounded-synthetic fixture records `accept` as `accepted-for-manual-review` and `defer` as `deferred-no-hold-activation`.
 
 ```yaml
 fixture_kind: bounded-synthetic
@@ -260,17 +243,11 @@ decision: resolutions-recorded-no-mutation
 live: false
 ```
 
-The ordered ledger pins each proposal-document digest, resolution digest, sequence, and predecessor. The checkpoint pins the stream and ledger while recording zero effective holds, operational effects, and status changes.
-
-The recovery matrix contains 17 scenarios and rejects Phase 19 source drift, proposal digest drift, unknown or duplicate identities, sequence and predecessor corruption, automatic execution, effective deferred holds, unsupported decisions, affected-set drift, status inheritance, automatic status or release action, repository mutation, and live activation.
-
-`release/phase-20-postmerge.json` separately pins the immutable candidate digest, exact tested head `d128d2c469b43fc07fe1db2f62ce9538841e4463`, PR #30, merge commit `724611a7d7ec0b3723ea217928cba4616ce2bebd`, all 16 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-manual-policy-resolution-validated`.
+`release/phase-20-postmerge.json` pins exact tested head `d128d2c469b43fc07fe1db2f62ce9538841e4463`, PR #30, merge `724611a7d7ec0b3723ea217928cba4616ce2bebd`, all 16 applicable workflows, `real_authorization_claimed: false`, and final state `offline-manual-policy-resolution-validated`.
 
 ## Phase 21 result — Offline Policy-Resolution Reconciliation
 
-`release/phase-21-offline-policy-resolution-reconciliation.json` preserves the immutable candidate `offline-policy-resolution-reconciliation-candidate` with `mode: offline-policy-resolution-reconciliation`, `fixture_kind: bounded-synthetic`, and `live: false`.
-
-The candidate independently reconciles the two exact Phase 19 proposal identities with the two Phase 20 synthetic resolutions. It validates proposal-document digests, canonical resolution digests, sequence, affected-artifact sets, reconciliation-ledger head, and checkpoint counts.
+Phase 21 reconciles the two exact proposals with the two synthetic resolutions.
 
 ```yaml
 proposal_count: 2
@@ -290,15 +267,39 @@ decision: reconciled-resolutions-no-mutation
 live: false
 ```
 
-The reconciliation covers the three exact thermal-control artifacts at revision 1. The accepted review proposal remains only an entry into a manual work path; the deferred hold remains non-effective. No actual human authorization is claimed.
+`release/phase-21-postmerge.json` pins candidate SHA-256 `d3485c7941588232121c74fc2d063d51c73aa121c5bd9a8e4fcbc5be2d5ba4af`, exact tested head `ff97a73d8fcba37eaf31220a9480d882c345c7c4`, PR #32, merge `7e14b700883018ca11c38d07f82418f165f542f5`, all 17 applicable workflows, `real_authorization_claimed: false`, and final state `offline-policy-resolution-reconciliation-validated`.
 
-The recovery matrix contains 29 deterministic scenarios and rejects source drift, missing or orphan resolutions, duplicate identities, proposal or resolution digest mismatch, decision or affected-set mismatch, sequence and ledger corruption, checkpoint drift, real-authorization claims, effective holds, operational effects, status changes, status inheritance, automatic authority changes, repository mutation, and live activation.
+## Phase 22 result — Offline Resolution-Consequence Planning Candidate
 
-`release/phase-21-postmerge.json` separately pins candidate SHA-256 `d3485c7941588232121c74fc2d063d51c73aa121c5bd9a8e4fcbc5be2d5ba4af`, exact tested head `ff97a73d8fcba37eaf31220a9480d882c345c7c4`, PR #32, merge commit `7e14b700883018ca11c38d07f82418f165f542f5`, all 17 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-policy-resolution-reconciliation-validated`.
+`release/phase-22-offline-resolution-consequence-planning.json` defines the immutable candidate `offline-resolution-consequence-planning-candidate` with `mode: offline-resolution-consequence-planning`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+The candidate records one manual-review work plan and one release-governance follow-up plan. All six steps remain `planned-not-started` with `execution_permitted: false`.
+
+```yaml
+plan_count: 2
+manual_review_plan_count: 1
+release_governance_plan_count: 1
+planned_step_count: 6
+started_plan_count: 0
+completed_plan_count: 0
+effective_hold_count: 0
+operational_effect_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: consequence-plans-recorded-no-execution
+live: false
+```
+
+The plans cover the same three exact thermal-control artifacts at revision 1. No review is completed, no release decision is selected, no content change is proposed, and no hold becomes effective.
+
+The recovery matrix contains 28 deterministic scenarios and rejects source drift, missing or orphan plans, duplicate identities, unknown resolutions, sequence or digest corruption, ledger or checkpoint drift, changed step counts, started or completed work, completed review, content-change proposals, status recommendations, effects, authorization claims, status inheritance, automatic authority changes, repository mutation, and live activation.
 
 ## Validation
 
 ```bash
+python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
+python3 scripts/validate_phase22_offline_resolution_consequence_planning.py
+python3 -m unittest software.tests.test_phase22_offline_resolution_consequence_planning -v
 python3 scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check
 python3 scripts/validate_phase21_offline_policy_resolution_reconciliation.py
 python3 scripts/validate_phase21_postmerge_record.py
@@ -330,6 +331,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-resolution-consequence-planning-candidate**.
+Next gate: **offline-consequence-plan-assurance-candidate**.
 
-The next bounded gate is an **offline resolution-consequence planning candidate**. It may describe non-executing follow-up plans for the accepted manual-review path and deferred release-hold proposal, but it must not claim real authorization, complete review work, activate a hold, change status, call Atlas, or mutate either repository automatically.
+The next bounded gate is an **offline consequence-plan assurance candidate**. It may independently verify plan completeness, source binding, digest continuity, and non-execution invariants, but it must not start work, complete review, activate a hold, claim authorization, call Atlas, or mutate either repository.
