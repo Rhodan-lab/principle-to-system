@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 22 — Offline Resolution-Consequence Planning merged and validated through PR #35.**
+**Phase 23 — Offline Consequence-Plan Assurance merged and validated through PR #37.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -17,7 +17,8 @@ Phase 18 state: **offline-reconciliation-simulation-validated** (`mode: offline-
 Phase 19 state: **offline-reconciliation-policy-validated** (`mode: offline-reconciliation-policy`, `live: false`).  
 Phase 20 state: **offline-manual-policy-resolution-validated** (`mode: offline-manual-policy-resolution`, `live: false`).  
 Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: offline-policy-resolution-reconciliation`, `live: false`).  
-Phase 22 state: **offline-resolution-consequence-planning-validated** (`mode: offline-resolution-consequence-planning`, `live: false`).
+Phase 22 state: **offline-resolution-consequence-planning-validated** (`mode: offline-resolution-consequence-planning`, `live: false`).  
+Phase 23 state: **offline-consequence-plan-assurance-validated** (`mode: offline-consequence-plan-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -49,6 +50,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 20 | Offline manual policy resolution | Merged and validated through PR #30 |
 | 21 | Offline policy-resolution reconciliation | Merged and validated through PR #32 |
 | 22 | Offline resolution-consequence planning | Merged and validated through PR #35 |
+| 23 | Offline consequence-plan assurance | Merged and validated through PR #37 |
 
 ## Integration topology
 
@@ -76,6 +78,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #32 was merged into `main` at commit `7e14b700883018ca11c38d07f82418f165f542f5`.
 - Phase 22 exact candidate validation passed at `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`.
 - PR #35 was merged into `main` at commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`.
+- Phase 23 exact candidate validation passed at `083e82eeea8e127e6f5b65bb020720b5c1c4edab`.
+- PR #37 was merged into `main` at commit `912a66343d2e262a7651e05ce116dabf747ae152`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -83,7 +87,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, and the integrated Phase 22 planning-only consequence-plan stream, digest ledger, checkpoint, and recovery evidence.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, and the integrated Phase 23 assurance report, assurance ledger, checkpoint, and recovery evidence.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
 
@@ -135,6 +139,9 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 21 target marker: `offline-policy-resolution-reconciliation-candidate`.
 - Historical Phase 22 candidate marker: `exact-head validation pending`.
 - Historical Phase 22 target marker: `offline-resolution-consequence-planning-candidate`.
+- Historical Phase 22 finalization marker: `Phase 22 — Offline Resolution-Consequence Planning merged and validated through PR #35`.
+- Historical Phase 23 candidate marker: `exact-head validation pending`.
+- Historical Phase 23 target marker: `offline-consequence-plan-assurance-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -155,7 +162,7 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 22.
+- Atlas remains unchanged by Principia Phase 23.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -299,9 +306,37 @@ The recovery matrix contains 28 deterministic scenarios and rejects source drift
 
 `release/phase-22-postmerge.json` separately pins candidate SHA-256 `ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8`, exact tested head `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`, PR #35, merge commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`, all 18 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-resolution-consequence-planning-validated`.
 
+## Phase 23 result — Offline Consequence-Plan Assurance
+
+`release/phase-23-offline-consequence-plan-assurance.json` preserves the immutable candidate `offline-consequence-plan-assurance-candidate` with `mode: offline-consequence-plan-assurance`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+Both Phase 22 plans and all six planning-only steps receive verdict `assured-planning-only`. Every step remains `planned-not-started` with `execution_permitted: false`.
+
+```yaml
+plan_count: 2
+assured_plan_count: 2
+assured_step_count: 6
+failed_assurance_count: 0
+started_plan_count: 0
+effective_hold_count: 0
+operational_effect_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: consequence-plans-assured-no-execution
+live: false
+```
+
+The recovery matrix contains 34 deterministic scenarios and rejects Phase 22 source drift, missing or orphan assurances, duplicate identities, plan and ledger digest drift, proposal or resolution mismatch, affected-set drift, step count or sequence drift, execution, effects, authorization claims, status inheritance, automatic authority changes, repository mutation, and live activation.
+
+`release/phase-23-postmerge.json` separately pins candidate SHA-256 `7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6`, exact tested head `083e82eeea8e127e6f5b65bb020720b5c1c4edab`, PR #37, merge commit `912a66343d2e262a7651e05ce116dabf747ae152`, all 17 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-assurance-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
+python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
+python3 scripts/validate_phase23_postmerge_record.py
+python3 -m unittest software.tests.test_phase23_offline_consequence_plan_assurance -v
 python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
 python3 scripts/validate_phase22_offline_resolution_consequence_planning.py
 python3 scripts/validate_phase22_postmerge_record.py
@@ -337,6 +372,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-readiness-candidate**.
 
-The next bounded gate is an **offline consequence-plan assurance candidate**. It may independently verify plan completeness, source binding, digest continuity, and non-execution invariants, but it must not start work, complete review, activate a hold, claim authorization, call Atlas, or mutate either repository.
+The next bounded gate may describe evidence prerequisites and readiness criteria, but it must not start a plan, claim human authorization, select a release outcome, or activate any content, status, hold, network, Atlas, or repository effect.
