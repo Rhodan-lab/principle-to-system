@@ -1,0 +1,167 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "baseline": {
+    "checkpoint_sha256": "cf404de36962a4909cf1d50329cce008598f0462b60648f1691abbcb1d763948",
+    "ledger_sha256": "3af5d93b1d11f2e03db33119151223ae97ec71bc16c6ace0d42de4912bce153b",
+    "reconciliation_sha256": "0f897261e88391cf6569f95118b6bf4c5661098775ccae0688394d1df55198b7"
+  },
+  "contract": "principia-offline-policy-resolution-reconciliation-recovery/0.1",
+  "live": false,
+  "mode": "offline-policy-resolution-reconciliation",
+  "recovery_id": "principia:offline-policy-resolution-reconciliation-recovery:thermal-control:0001",
+  "scenarios": [
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P21-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase20-postmerge-drift"
+    },
+    {
+      "expected_error": "E-P21-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase20-candidate-drift"
+    },
+    {
+      "expected_error": "E-P21-PROPOSAL-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "policy-ledger-file-drift"
+    },
+    {
+      "expected_error": "E-P21-RESOLUTION-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-stream-file-drift"
+    },
+    {
+      "expected_error": "E-P21-RESOLUTION-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-stream-document-drift"
+    },
+    {
+      "expected_error": "E-P21-LEDGER-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-ledger-file-drift"
+    },
+    {
+      "expected_error": "E-P21-LEDGER-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-ledger-document-drift"
+    },
+    {
+      "expected_error": "E-P21-CHECKPOINT-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-checkpoint-file-drift"
+    },
+    {
+      "expected_error": "E-P21-CHECKPOINT-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-checkpoint-document-drift"
+    },
+    {
+      "expected_error": "E-P21-PROPOSAL-ID",
+      "expected_outcome": "rejected",
+      "scenario_id": "proposal-id-mismatch"
+    },
+    {
+      "expected_error": "E-P21-RESOLUTION-ID",
+      "expected_outcome": "rejected",
+      "scenario_id": "resolution-id-mismatch"
+    },
+    {
+      "expected_error": "E-P21-MISSING",
+      "expected_outcome": "rejected",
+      "scenario_id": "missing-resolution"
+    },
+    {
+      "expected_error": "E-P21-ORPHAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "orphan-resolution"
+    },
+    {
+      "expected_error": "E-P21-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-resolution"
+    },
+    {
+      "expected_error": "E-P21-SEQUENCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "sequence-drift"
+    },
+    {
+      "expected_error": "E-P21-PREDECESSOR",
+      "expected_outcome": "rejected",
+      "scenario_id": "predecessor-drift"
+    },
+    {
+      "expected_error": "E-P21-DECISION",
+      "expected_outcome": "rejected",
+      "scenario_id": "decision-mismatch"
+    },
+    {
+      "expected_error": "E-P21-AFFECTED-SET",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P21-LEDGER",
+      "expected_outcome": "rejected",
+      "scenario_id": "reconciliation-ledger-head-drift"
+    },
+    {
+      "expected_error": "E-P21-CHECKPOINT",
+      "expected_outcome": "rejected",
+      "scenario_id": "checkpoint-count-drift"
+    },
+    {
+      "expected_error": "E-P21-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "real-authorization-claimed"
+    },
+    {
+      "expected_error": "E-P21-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "effective-hold"
+    },
+    {
+      "expected_error": "E-P21-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "operational-effect"
+    },
+    {
+      "expected_error": "E-P21-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-change"
+    },
+    {
+      "expected_error": "E-P21-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P21-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "repository-mutation"
+    },
+    {
+      "expected_error": "E-P21-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    }
+  ],
+  "summary": {
+    "accepted_count": 1,
+    "rejected_count": 27,
+    "scenario_count": 28
+  }
+}
