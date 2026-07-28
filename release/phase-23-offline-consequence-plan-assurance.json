@@ -1,0 +1,71 @@
+{
+  "artifacts": {
+    "checkpoint": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-checkpoint.v01.json",
+      "sha256": "e6cb3183635805c2d431ce61cc81054941a7db2a829c0da4c1880f36d7b127ce"
+    },
+    "ledger": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-ledger.v01.json",
+      "sha256": "ec43c3194a048f13e0263376d6eb220be039a82e6bf28816510f8f8e1d39f60b"
+    },
+    "recovery": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-recovery.v01.json",
+      "sha256": "c9e20b0ce4128986f67fdae2ef84676cdf3be9f7a61ad5d3f7988c19dee43cd2"
+    },
+    "report": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-report.v01.json",
+      "sha256": "7bda137c7c378c4beb1a7825c0df2c86c80e5b8732545126787a21029d68d1b7"
+    }
+  },
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-assurance/0.1",
+  "decision": "consequence-plans-assured-no-execution",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-assurance-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-assurance",
+  "next_gate": "offline-consequence-plan-review-readiness-candidate",
+  "phase": 23,
+  "real_authorization_claimed": false,
+  "result": {
+    "assured_plan_count": 2,
+    "assured_step_count": 6,
+    "effective_hold_count": 0,
+    "failed_assurance_count": 0,
+    "operational_effect_count": 0,
+    "plan_count": 2,
+    "real_authorization_claimed": false,
+    "started_plan_count": 0,
+    "status_change_count": 0
+  },
+  "source_phase22": {
+    "phase22_candidate_path": "release/phase-22-offline-resolution-consequence-planning.json",
+    "phase22_candidate_sha256": "ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8",
+    "phase22_finalization_merge_commit": "d42f26de8a9a606ae886306260960ba62be9b2cf",
+    "phase22_postmerge_path": "release/phase-22-postmerge.json",
+    "phase22_postmerge_sha256": "3161d510d0809a4194dfa3ee12a078471e2c1f83a8638d74e0f79f4a494d326b",
+    "plan_checkpoint_path": "integration/principia-atlas/pilot/thermal-control.resolution-consequence-plan-checkpoint.v01.json",
+    "plan_checkpoint_sha256": "c9359e4415f507274d99e729d15b4f1ba83b9a547b5eeedffcd8df8f3ae042e2",
+    "plan_ledger_path": "integration/principia-atlas/pilot/thermal-control.resolution-consequence-plan-ledger.v01.json",
+    "plan_ledger_sha256": "3c17fae6e18472f9d78b1d03b1f864e15210d89d764a838f46081ff2b9a00e87",
+    "plan_recovery_path": "integration/principia-atlas/pilot/thermal-control.resolution-consequence-plan-recovery.v01.json",
+    "plan_recovery_sha256": "03eeb6d78bf5b4ea72cb9b2ee2b7e644236bd544bb3f379aa31c5709a3e577ed",
+    "plan_stream_path": "integration/principia-atlas/pilot/thermal-control.resolution-consequence-plans.v01.json",
+    "plan_stream_sha256": "fcd4ae01732807bdb7f34e9aa758997fb456f80b27d9261134b7b95209b549c6"
+  },
+  "state": "offline-consequence-plan-assurance-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}
