@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - agent/phase-22-offline-resolution-consequence-planning
+      - agent/finalize-phase-22-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-21-postmerge.json'
       - 'release/phase-22-offline-resolution-consequence-planning.json'
+      - 'release/phase-22-postmerge.json'
       - 'reports/phase-22-offline-resolution-consequence-planning.md'
       - 'scripts/generate_phase22_offline_resolution_consequence_planning.py'
       - 'scripts/validate_phase22_offline_resolution_consequence_planning.py'
+      - 'scripts/validate_phase22_postmerge_record.py'
       - 'software/tests/test_phase22_offline_resolution_consequence_planning.py'
       - 'PROJECT_STATE.md'
       - '.github/workflows/validate-phase-22-offline-resolution-consequence-planning.yml'
@@ -30,7 +33,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Principia Phase 22 candidate
+      - name: Check out Principia Phase 22 evidence
         uses: actions/checkout@v4
 
       - name: Configure Python
@@ -42,6 +45,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase22_offline_resolution_consequence_planning.py
           python3 -m py_compile scripts/validate_phase22_offline_resolution_consequence_planning.py
+          python3 -m py_compile scripts/validate_phase22_postmerge_record.py
           python3 -m py_compile software/tests/test_phase22_offline_resolution_consequence_planning.py
           python3 -m py_compile scripts/validate_phase21_postmerge_record.py
           python3 -m py_compile scripts/validate_phase21_offline_policy_resolution_reconciliation.py
@@ -67,6 +71,7 @@ jobs:
           {
             run_check python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
             run_check python3 scripts/validate_phase22_offline_resolution_consequence_planning.py
+            run_check python3 scripts/validate_phase22_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase22_offline_resolution_consequence_planning -v
             run_check python3 scripts/validate_phase21_postmerge_record.py
             run_check python3 scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check

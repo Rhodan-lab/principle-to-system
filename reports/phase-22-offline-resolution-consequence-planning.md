@@ -1,9 +1,11 @@
-# Phase 22 — Offline Resolution-Consequence Planning Candidate
+# Phase 22 — Offline Resolution-Consequence Planning Candidate (Finalized)
 
 > Date: 2026-07-28  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 21 finalization merge: `1071b59ac6dcccbc2bb3831f7942916b06da8f09`  
-> Candidate state: `offline-resolution-consequence-planning-candidate`  
+> Exact tested head: `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`  
+> Merge commit: `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`  
+> Final state: `offline-resolution-consequence-planning-validated`  
 > Mode: `offline-resolution-consequence-planning`  
 > Fixture kind: `bounded-synthetic`  
 > Live: `false`
@@ -48,7 +50,8 @@ Both plans preserve the same three exact revision-1 artifacts:
 - `principia-offline-resolution-consequence-plan-ledger/0.1`;
 - `principia-offline-resolution-consequence-plan-checkpoint/0.1`;
 - `principia-offline-resolution-consequence-plan-recovery/0.1`;
-- `principia-offline-resolution-consequence-planning/0.1`.
+- `principia-offline-resolution-consequence-planning/0.1`;
+- `principia-offline-resolution-consequence-planning-finalization/0.1`.
 
 ## Result
 
@@ -66,7 +69,7 @@ real_authorization_claimed: false
 decision: consequence-plans-recorded-no-execution
 ```
 
-The candidate therefore contains **0 started plans** and no completed review or selected governance decision.
+The integrated result therefore contains **0 started plans** and no completed review or selected governance decision.
 
 ## Ledger and checkpoint
 
@@ -79,6 +82,17 @@ The checkpoint pins the plan stream and ledger while recording two plans, six pl
 The recovery matrix contains 28 deterministic scenarios. Only the exact planning-only baseline is accepted.
 
 Rejected cases include source drift, missing or orphan plans, duplicate plans, unknown resolutions, sequence or digest corruption, ledger and checkpoint drift, changed step counts, started or completed work, completed review, content-change proposals, status recommendations, effective holds, operational effects, status changes, authorization claims, status inheritance, automatic authority changes, repository mutation, and `live: true`.
+
+## Post-merge governance
+
+`release/phase-22-postmerge.json` separately pins:
+
+- immutable candidate SHA-256 `ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8`;
+- exact tested head `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`;
+- implementation PR #35;
+- merge commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`;
+- all 18 applicable workflows;
+- final state `offline-resolution-consequence-planning-validated`.
 
 ## Authority boundary
 
@@ -102,10 +116,11 @@ No Atlas call is made. No plan or step is started. No review is completed. No re
 ```bash
 python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
 python3 scripts/validate_phase22_offline_resolution_consequence_planning.py
+python3 scripts/validate_phase22_postmerge_record.py
 python3 -m unittest software.tests.test_phase22_offline_resolution_consequence_planning -v
 python3 scripts/validate_phase21_postmerge_record.py
 ```
 
 ## Next bounded gate
 
-After Phase 22 integration, the next bounded gate is an **offline consequence-plan assurance candidate**. It may independently verify plan completeness, source binding, and non-execution invariants, but it must not start work, complete review, activate a hold, claim authorization, call Atlas, or mutate either repository.
+The next bounded gate is an **offline consequence-plan assurance candidate**. It may independently verify plan completeness, source binding, and non-execution invariants, but it must not start work, complete review, activate a hold, claim authorization, call Atlas, or mutate either repository.
