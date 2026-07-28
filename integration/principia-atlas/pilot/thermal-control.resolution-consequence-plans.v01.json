@@ -1,0 +1,129 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-resolution-consequence-plans/0.1",
+  "decision": "consequence-plans-recorded-no-execution",
+  "fixture_kind": "bounded-synthetic",
+  "live": false,
+  "mode": "offline-resolution-consequence-planning",
+  "plan_stream_id": "principia:offline-resolution-consequence-plans:thermal-control:0001",
+  "plans": [
+    {
+      "affected_artifacts": [
+        "principia:failure-pattern:feedback-instability@1",
+        "principia:investigation:room-cooling@1",
+        "principia:system-dossier:refrigerator@1"
+      ],
+      "content_change_proposed": false,
+      "effective_hold": false,
+      "operational_effect": false,
+      "plan_id": "principia:resolution-consequence-plan:feedback-manual-review:0001",
+      "plan_kind": "manual-review-work-plan",
+      "real_authorization_claimed": false,
+      "review_completed": false,
+      "sequence": 1,
+      "source_decision": "accept",
+      "source_proposal_id": "principia:policy-review:feedback-deprecation:0001",
+      "source_resolution_id": "principia:manual-policy-resolution:feedback-deprecation:0001",
+      "state": "planned-not-started",
+      "status_recommendation_recorded": false,
+      "steps": [
+        {
+          "action": "prepare-review-scope-and-questions",
+          "execution_permitted": false,
+          "sequence": 1,
+          "state": "planned-not-started",
+          "step_id": "scope-review-questions"
+        },
+        {
+          "action": "document-evidence-needed-for-human-revalidation",
+          "execution_permitted": false,
+          "sequence": 2,
+          "state": "planned-not-started",
+          "step_id": "map-evidence-needs"
+        },
+        {
+          "action": "define-possible-human-review-outcomes-without-selecting-one",
+          "execution_permitted": false,
+          "sequence": 3,
+          "state": "planned-not-started",
+          "step_id": "define-review-outcomes"
+        }
+      ]
+    },
+    {
+      "affected_artifacts": [
+        "principia:failure-pattern:feedback-instability@1",
+        "principia:investigation:room-cooling@1",
+        "principia:system-dossier:refrigerator@1"
+      ],
+      "content_change_proposed": false,
+      "effective_hold": false,
+      "operational_effect": false,
+      "plan_id": "principia:resolution-consequence-plan:model-boundary-release-governance:0002",
+      "plan_kind": "release-governance-follow-up-plan",
+      "real_authorization_claimed": false,
+      "review_completed": false,
+      "sequence": 2,
+      "source_decision": "defer",
+      "source_proposal_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+      "source_resolution_id": "principia:manual-policy-resolution:model-boundary-retraction:0002",
+      "state": "planned-not-started",
+      "status_recommendation_recorded": false,
+      "steps": [
+        {
+          "action": "document-inputs-required-by-independent-release-authority",
+          "execution_permitted": false,
+          "sequence": 1,
+          "state": "planned-not-started",
+          "step_id": "define-authority-inputs"
+        },
+        {
+          "action": "describe-activate-defer-replace-or-reject-options-without-selecting-one",
+          "execution_permitted": false,
+          "sequence": 2,
+          "state": "planned-not-started",
+          "step_id": "define-decision-options"
+        },
+        {
+          "action": "prepare-non-executing-release-readiness-checklist",
+          "execution_permitted": false,
+          "sequence": 3,
+          "state": "planned-not-started",
+          "step_id": "define-readiness-check"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "phase21_candidate_path": "release/phase-21-offline-policy-resolution-reconciliation.json",
+    "phase21_candidate_sha256": "d3485c7941588232121c74fc2d063d51c73aa121c5bd9a8e4fcbc5be2d5ba4af",
+    "phase21_finalization_merge_commit": "1071b59ac6dcccbc2bb3831f7942916b06da8f09",
+    "phase21_postmerge_path": "release/phase-21-postmerge.json",
+    "phase21_postmerge_sha256": "86b51ac5a763ac9fb12b7bc867a93453e29452dbdef927ff76423e780e834961",
+    "reconciliation_checkpoint_path": "integration/principia-atlas/pilot/thermal-control.policy-resolution-reconciliation-checkpoint.v01.json",
+    "reconciliation_checkpoint_sha256": "8ed03459c77bc9cc2aea387ec9bd9fe7ee1e5e81c5c1169c3dc38edc08ea9cc9",
+    "reconciliation_ledger_path": "integration/principia-atlas/pilot/thermal-control.policy-resolution-reconciliation-ledger.v01.json",
+    "reconciliation_ledger_sha256": "9f2cd658f00c30e58046653823b13b70a3d25fb06647b79d68a712f47d40df95",
+    "reconciliation_report_path": "integration/principia-atlas/pilot/thermal-control.policy-resolution-reconciliation-report.v01.json",
+    "reconciliation_report_sha256": "451a3e13e5712122af93a78e370b720627027557dacb4fc3d58fce1a3b461a7b"
+  },
+  "summary": {
+    "completed_plan_count": 0,
+    "effective_hold_count": 0,
+    "manual_review_plan_count": 1,
+    "operational_effect_count": 0,
+    "plan_count": 2,
+    "planned_step_count": 6,
+    "release_governance_plan_count": 1,
+    "started_plan_count": 0,
+    "status_change_count": 0
+  }
+}
