@@ -1,9 +1,11 @@
-# Phase 23 — Offline Consequence-Plan Assurance Candidate
+# Phase 23 — Offline Consequence-Plan Assurance
 
 > Date: 2026-07-28  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 22 finalization merge: `d42f26de8a9a606ae886306260960ba62be9b2cf`  
-> Candidate state: `offline-consequence-plan-assurance-candidate`  
+> Exact tested head: `083e82eeea8e127e6f5b65bb020720b5c1c4edab`  
+> Merge commit: `912a66343d2e262a7651e05ce116dabf747ae152`  
+> Final state: `offline-consequence-plan-assurance-validated`  
 > Mode: `offline-consequence-plan-assurance`  
 > Live: `false`
 
@@ -28,7 +30,7 @@ real_authorization_claimed: false
 decision: consequence-plans-assured-no-execution
 ```
 
-The baseline therefore contains **2 assured plans**, **6 assured steps**, and **0 failed assurances**.
+The baseline contains **2 assured plans**, **6 assured steps**, and **0 failed assurances**.
 
 ## Assured plans
 
@@ -41,7 +43,7 @@ Both plans remain `planned-not-started`. Every step retains `execution_permitted
 
 ## Assurance checks
 
-Each plan is required to pass all ten checks:
+Each plan passes all ten checks:
 
 1. exact plan identity;
 2. exact canonical plan digest;
@@ -60,7 +62,8 @@ Each plan is required to pass all ten checks:
 - `principia-offline-consequence-plan-assurance-ledger/0.1`;
 - `principia-offline-consequence-plan-assurance-checkpoint/0.1`;
 - `principia-offline-consequence-plan-assurance-recovery/0.1`;
-- `principia-offline-consequence-plan-assurance/0.1`.
+- `principia-offline-consequence-plan-assurance/0.1`;
+- `principia-offline-consequence-plan-assurance-finalization/0.1`.
 
 ## Digest ledger and checkpoint
 
@@ -92,6 +95,12 @@ The recovery evidence contains 34 deterministic scenarios. Only the exact baseli
 - status inheritance or automatic authority changes;
 - repository mutation and live activation.
 
+## Finalization record
+
+PR #37 was merged into `main` at `912a66343d2e262a7651e05ce116dabf747ae152` after all 17 applicable workflows passed on exact head `083e82eeea8e127e6f5b65bb020720b5c1c4edab`.
+
+`release/phase-23-postmerge.json` preserves the immutable candidate byte-for-byte by pinning candidate SHA-256 `7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6`, PR #37, the exact tested head, merge provenance, the authority boundary, and final state `offline-consequence-plan-assurance-validated`.
+
 ## Authority boundary
 
 ```yaml
@@ -114,10 +123,13 @@ No Atlas call is made. No plan is started. No review or release decision is comp
 ```bash
 python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
 python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
+python3 scripts/validate_phase23_postmerge_record.py
 python3 -m unittest software.tests.test_phase23_offline_consequence_plan_assurance -v
 python3 scripts/validate_phase22_postmerge_record.py
 ```
 
 ## Next bounded gate
 
-After Phase 23 integration, the next gate is an **offline consequence-plan review-readiness candidate**. It may describe evidence prerequisites and readiness criteria, but it must not start a plan, claim human authorization, select a release outcome, or activate any content, status, hold, network, Atlas, or repository effect.
+Next gate: **offline-consequence-plan-review-readiness-candidate**.
+
+The next bounded gate may describe evidence prerequisites and readiness criteria, but it must not start a plan, claim human authorization, select a release outcome, or activate any content, status, hold, network, Atlas, or repository effect.

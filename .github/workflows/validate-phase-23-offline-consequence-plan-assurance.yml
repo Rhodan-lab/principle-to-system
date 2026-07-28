@@ -4,14 +4,18 @@ on:
   push:
     branches:
       - agent/phase-23-offline-consequence-plan-assurance
+      - agent/finalize-phase-23-record
     paths:
       - 'integration/principia-atlas/**'
       - 'release/phase-22-postmerge.json'
       - 'release/phase-23-offline-consequence-plan-assurance.json'
+      - 'release/phase-23-postmerge.json'
       - 'reports/phase-23-offline-consequence-plan-assurance.md'
       - 'scripts/generate_phase23_offline_consequence_plan_assurance.py'
       - 'scripts/validate_phase23_offline_consequence_plan_assurance.py'
+      - 'scripts/validate_phase23_postmerge_record.py'
       - 'software/tests/test_phase23_offline_consequence_plan_assurance.py'
+      - 'PROJECT_STATE.md'
       - '.github/workflows/validate-phase-23-offline-consequence-plan-assurance.yml'
   pull_request:
     branches:
@@ -41,6 +45,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase23_offline_consequence_plan_assurance.py
           python3 -m py_compile scripts/validate_phase23_offline_consequence_plan_assurance.py
+          python3 -m py_compile scripts/validate_phase23_postmerge_record.py
           python3 -m py_compile software/tests/test_phase23_offline_consequence_plan_assurance.py
           python3 -m py_compile scripts/validate_phase22_postmerge_record.py
           python3 -m py_compile scripts/validate_phase22_offline_resolution_consequence_planning.py
@@ -68,6 +73,7 @@ jobs:
           {
             run_check python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
             run_check python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
+            run_check python3 scripts/validate_phase23_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase23_offline_consequence_plan_assurance -v
             run_check python3 scripts/validate_phase22_postmerge_record.py
             run_check python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
