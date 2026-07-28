@@ -1,0 +1,197 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "baseline": {
+    "assurance_report_sha256": "a78601dfe3dcb2148695522e421f8d7a0578307e3c9457d149e446c3657055fc",
+    "checkpoint_sha256": "601c8a7340d7638d9f89c8116395144363d512240192395858989ee4f649a02d",
+    "ledger_sha256": "97d066191d33de1f12449fd05565eaa62cd8ebb4c9bdc23e0ca849338530264b"
+  },
+  "contract": "principia-offline-consequence-plan-assurance-recovery/0.1",
+  "live": false,
+  "mode": "offline-consequence-plan-assurance",
+  "recovery_id": "principia:offline-consequence-plan-assurance-recovery:thermal-control:0001",
+  "scenarios": [
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase22-postmerge-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase22-candidate-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-stream-file-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-ledger-file-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-checkpoint-file-drift"
+    },
+    {
+      "expected_error": "E-P23-MISSING",
+      "expected_outcome": "rejected",
+      "scenario_id": "missing-assurance"
+    },
+    {
+      "expected_error": "E-P23-ORPHAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "orphan-assurance"
+    },
+    {
+      "expected_error": "E-P23-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-assurance-id"
+    },
+    {
+      "expected_error": "E-P23-SEQUENCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-sequence-drift"
+    },
+    {
+      "expected_error": "E-P23-PLAN-ID",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-id-drift"
+    },
+    {
+      "expected_error": "E-P23-PLAN-DIGEST",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-digest-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-LEDGER",
+      "expected_outcome": "rejected",
+      "scenario_id": "ledger-entry-digest-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-proposal-drift"
+    },
+    {
+      "expected_error": "E-P23-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-resolution-drift"
+    },
+    {
+      "expected_error": "E-P23-AFFECTED-SET",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P23-STEPS",
+      "expected_outcome": "rejected",
+      "scenario_id": "step-count-drift"
+    },
+    {
+      "expected_error": "E-P23-STEPS",
+      "expected_outcome": "rejected",
+      "scenario_id": "step-sequence-drift"
+    },
+    {
+      "expected_error": "E-P23-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "step-execution-permitted"
+    },
+    {
+      "expected_error": "E-P23-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "step-started"
+    },
+    {
+      "expected_error": "E-P23-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-started"
+    },
+    {
+      "expected_error": "E-P23-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-completed"
+    },
+    {
+      "expected_error": "E-P23-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-completed"
+    },
+    {
+      "expected_error": "E-P23-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "content-change-proposed"
+    },
+    {
+      "expected_error": "E-P23-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-recommendation-recorded"
+    },
+    {
+      "expected_error": "E-P23-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "effective-hold"
+    },
+    {
+      "expected_error": "E-P23-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "operational-effect"
+    },
+    {
+      "expected_error": "E-P23-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-change"
+    },
+    {
+      "expected_error": "E-P23-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "real-authorization-claimed"
+    },
+    {
+      "expected_error": "E-P23-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P23-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-status-change"
+    },
+    {
+      "expected_error": "E-P23-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-release-action"
+    },
+    {
+      "expected_error": "E-P23-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "repository-mutation"
+    },
+    {
+      "expected_error": "E-P23-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    }
+  ],
+  "summary": {
+    "accepted_count": 1,
+    "rejected_count": 33,
+    "scenario_count": 34
+  }
+}

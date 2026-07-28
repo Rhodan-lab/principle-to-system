@@ -1,0 +1,28 @@
+{
+  "assurance_count": 2,
+  "assurance_report_sha256": "a78601dfe3dcb2148695522e421f8d7a0578307e3c9457d149e446c3657055fc",
+  "assured_plan_count": 2,
+  "assured_step_count": 6,
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "checkpoint_id": "principia:offline-consequence-plan-assurance-checkpoint:thermal-control:0001",
+  "contract": "principia-offline-consequence-plan-assurance-checkpoint/0.1",
+  "decision": "consequence-plans-assured-no-execution",
+  "effective_hold_count": 0,
+  "failed_assurance_count": 0,
+  "ledger_sha256": "97d066191d33de1f12449fd05565eaa62cd8ebb4c9bdc23e0ca849338530264b",
+  "live": false,
+  "mode": "offline-consequence-plan-assurance",
+  "operational_effect_count": 0,
+  "plan_count": 2,
+  "real_authorization_claimed": false,
+  "started_plan_count": 0,
+  "status_change_count": 0
+}
