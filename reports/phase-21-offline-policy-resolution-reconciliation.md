@@ -1,9 +1,11 @@
-# Phase 21 — Offline Policy-Resolution Reconciliation Candidate
+# Phase 21 — Offline Policy-Resolution Reconciliation
 
 > Date: 2026-07-28  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 20 finalization merge: `c8c0f83850d7e6c29f53239f84003263f02cbe43`  
-> Candidate state: `offline-policy-resolution-reconciliation-candidate`  
+> Exact tested head: `ff97a73d8fcba37eaf31220a9480d882c345c7c4`  
+> Merge commit: `7e14b700883018ca11c38d07f82418f165f542f5`  
+> Final state: `offline-policy-resolution-reconciliation-validated`  
 > Mode: `offline-policy-resolution-reconciliation`  
 > Live: `false`
 
@@ -32,7 +34,8 @@ Both pairs cover the same three exact revision-1 artifacts:
 - `principia-offline-policy-resolution-reconciliation-ledger/0.1`;
 - `principia-offline-policy-resolution-reconciliation-checkpoint/0.1`;
 - `principia-offline-policy-resolution-reconciliation-recovery/0.1`;
-- `principia-offline-policy-resolution-reconciliation/0.1`.
+- `principia-offline-policy-resolution-reconciliation/0.1`;
+- `principia-offline-policy-resolution-reconciliation-finalization/0.1`.
 
 ## Result
 
@@ -63,6 +66,12 @@ The reconciliation checkpoint pins the reconciliation report, reconciliation led
 
 The committed recovery matrix contains 29 deterministic scenarios. Only the exact baseline is accepted. It rejects source drift, proposal or resolution digest mismatch, missing or orphan records, duplicate identities, decision or affected-set mismatch, ordering and ledger corruption, checkpoint count drift, any real-authorization claim, effective holds, operational effects, status changes, status inheritance, automatic authority changes, repository mutation, and `live: true`.
 
+## Finalization record
+
+PR #32 was merged into `main` at `7e14b700883018ca11c38d07f82418f165f542f5` after all 17 applicable workflows passed on exact head `ff97a73d8fcba37eaf31220a9480d882c345c7c4`.
+
+`release/phase-21-postmerge.json` preserves the immutable candidate record byte-for-byte by pinning SHA-256 `d3485c7941588232121c74fc2d063d51c73aa121c5bd9a8e4fcbc5be2d5ba4af`, records PR #32 and the exact candidate head, and declares final state `offline-policy-resolution-reconciliation-validated`. It explicitly records `real_authorization_claimed: false`.
+
 ## Authority boundary
 
 ```yaml
@@ -85,10 +94,11 @@ No proposal is executed. No review is completed. No release hold becomes effecti
 ```bash
 python3 scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check
 python3 scripts/validate_phase21_offline_policy_resolution_reconciliation.py
+python3 scripts/validate_phase21_postmerge_record.py
 python3 -m unittest software.tests.test_phase21_offline_policy_resolution_reconciliation -v
 python3 scripts/validate_phase20_postmerge_record.py
 ```
 
 ## Next bounded gate
 
-After Phase 21 integration, the next bounded gate is an **offline resolution-consequence planning candidate**. It may describe non-executing follow-up plans for manual review and release governance, but it must not claim authorization, perform the review, activate a hold, change status, call Atlas, or mutate either repository automatically.
+The next bounded gate is an **offline resolution-consequence planning candidate**. It may describe non-executing follow-up plans for manual review and release governance, but it must not claim authorization, perform the review, activate a hold, change status, call Atlas, or mutate either repository automatically.
