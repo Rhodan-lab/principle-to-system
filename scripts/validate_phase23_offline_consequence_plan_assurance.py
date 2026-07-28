@@ -281,8 +281,13 @@ def main() -> int:
             errors.append(f"missing Phase 23 file: {path.relative_to(ROOT)}")
     if not errors:
         report_md = REPORT_MD_PATH.read_text(encoding="utf-8")
-        for marker in (
+        headings = (
             "# Phase 23 — Offline Consequence-Plan Assurance Candidate",
+            "# Phase 23 — Offline Consequence-Plan Assurance",
+        )
+        if not any(heading in report_md for heading in headings):
+            errors.append("Phase 23 report missing candidate or finalized heading")
+        for marker in (
             "`principia-offline-consequence-plan-assurance-report/0.1`",
             "2 assured plans", "6 assured steps", "0 failed assurances",
             "consequence-plans-assured-no-execution", "bounded-synthetic",
