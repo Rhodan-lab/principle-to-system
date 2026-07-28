@@ -1,0 +1,55 @@
+{
+  "authority": {
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "status_inheritance": "prohibited"
+  },
+  "baseline": {
+    "checkpoint_sha256": "b21995c49896c1ee6ac63177a2469bcf638047c2c856cc9face8086e31bc7708",
+    "ledger_sha256": "79bfd2b3888d194aaa4d60ef40d4e47289b991e31d8e491a67330d8ffffb76fe",
+    "plan_stream_sha256": "5d98b43c2bddd5f3f2c7f524fd3701a4240e569f8e2b601e549bcb5483418c15"
+  },
+  "contract": "principia-offline-resolution-consequence-plan-recovery/0.1",
+  "live": false,
+  "mode": "offline-resolution-consequence-planning",
+  "recovery_id": "principia:offline-resolution-consequence-plan-recovery:thermal-control:0001",
+  "scenarios": [
+    {"expected_error": null, "expected_outcome": "accepted", "scenario_id": "baseline"},
+    {"expected_error": "E-P22-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "phase21-postmerge-drift"},
+    {"expected_error": "E-P22-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "phase21-candidate-drift"},
+    {"expected_error": "E-P22-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "reconciliation-report-drift"},
+    {"expected_error": "E-P22-RESOLUTION-ID", "expected_outcome": "rejected", "scenario_id": "unknown-resolution"},
+    {"expected_error": "E-P22-DUPLICATE", "expected_outcome": "rejected", "scenario_id": "duplicate-plan"},
+    {"expected_error": "E-P22-MISSING", "expected_outcome": "rejected", "scenario_id": "missing-plan"},
+    {"expected_error": "E-P22-ORPHAN", "expected_outcome": "rejected", "scenario_id": "orphan-plan"},
+    {"expected_error": "E-P22-SEQUENCE", "expected_outcome": "rejected", "scenario_id": "sequence-drift"},
+    {"expected_error": "E-P22-DIGEST", "expected_outcome": "rejected", "scenario_id": "plan-digest-drift"},
+    {"expected_error": "E-P22-LEDGER", "expected_outcome": "rejected", "scenario_id": "ledger-head-drift"},
+    {"expected_error": "E-P22-CHECKPOINT", "expected_outcome": "rejected", "scenario_id": "checkpoint-count-drift"},
+    {"expected_error": "E-P22-STEPS", "expected_outcome": "rejected", "scenario_id": "step-count-drift"},
+    {"expected_error": "E-P22-EXECUTION", "expected_outcome": "rejected", "scenario_id": "step-started"},
+    {"expected_error": "E-P22-EXECUTION", "expected_outcome": "rejected", "scenario_id": "plan-started"},
+    {"expected_error": "E-P22-EXECUTION", "expected_outcome": "rejected", "scenario_id": "plan-completed"},
+    {"expected_error": "E-P22-EXECUTION", "expected_outcome": "rejected", "scenario_id": "review-completed"},
+    {"expected_error": "E-P22-EFFECT", "expected_outcome": "rejected", "scenario_id": "content-change-proposed"},
+    {"expected_error": "E-P22-EFFECT", "expected_outcome": "rejected", "scenario_id": "status-recommendation-recorded"},
+    {"expected_error": "E-P22-EFFECT", "expected_outcome": "rejected", "scenario_id": "effective-hold"},
+    {"expected_error": "E-P22-EFFECT", "expected_outcome": "rejected", "scenario_id": "operational-effect"},
+    {"expected_error": "E-P22-EFFECT", "expected_outcome": "rejected", "scenario_id": "status-change"},
+    {"expected_error": "E-P22-AUTHORIZATION", "expected_outcome": "rejected", "scenario_id": "real-authorization-claimed"},
+    {"expected_error": "E-P22-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "status-inheritance"},
+    {"expected_error": "E-P22-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-status-change"},
+    {"expected_error": "E-P22-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-release-action"},
+    {"expected_error": "E-P22-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "repository-mutation"},
+    {"expected_error": "E-P22-LIVE-FROZEN", "expected_outcome": "rejected", "scenario_id": "live-activation"}
+  ],
+  "summary": {
+    "accepted_count": 1,
+    "rejected_count": 27,
+    "scenario_count": 28
+  }
+}
