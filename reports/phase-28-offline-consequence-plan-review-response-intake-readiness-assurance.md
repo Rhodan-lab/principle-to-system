@@ -45,7 +45,7 @@ live: false
 
 ## Assurance model
 
-The accepted finalization contains **2 assured readiness records** and **40 passing invariant checks**. Each readiness record receives 20 checks covering exact Phase 27 source and finalization pins, readiness and ledger identity, packet bindings, schema identity and structure, required-field order, blank question slots, pending human gates, frozen response states, disabled review execution, authority separation, and zero effects.
+The accepted finalization contains **2 assured readiness records**, **40 passing invariant checks**, and **8 pending human gates**. Each readiness record receives 20 checks covering exact Phase 27 source and finalization pins, readiness and ledger identity, packet bindings, schema identity and structure, required-field order, blank question slots, pending human gates, frozen response states, disabled review execution, authority separation, and zero effects.
 
 Both records receive verdict `response-intake-readiness-assured-no-response`.
 
