@@ -1,10 +1,14 @@
-# Phase 28 — Offline Consequence-Plan Review-Response Intake Readiness Assurance Candidate
+# Phase 28 — Offline Consequence-Plan Review-Response Intake Readiness Assurance
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 27 finalization: `a54a4859cb7537767a3d77de769c213c6a2f6515`  
-> State: `offline-consequence-plan-review-response-intake-readiness-assurance-candidate`  
+> Exact tested head: `14a278af023f6cc623ed42cc50f661242b1c78a3`  
+> Merge commit: `90430186a9f2842fe41dfb5df4cb3bad6f8e5611`  
+> Final state: `offline-consequence-plan-review-response-intake-readiness-assurance-validated`  
 > Live: `false`
+
+Historical candidate report title: # Phase 28 — Offline Consequence-Plan Review-Response Intake Readiness Assurance Candidate
 
 ## Purpose
 
@@ -41,13 +45,15 @@ live: false
 
 ## Assurance model
 
-Each readiness record receives 20 passing invariant checks. The assurance covers exact Phase 27 source and finalization pins, readiness and ledger identity, packet bindings, schema identity and structure, required-field order, blank question slots, pending human gates, frozen response states, disabled review execution, authority separation, and zero effects.
+The accepted finalization contains **2 assured readiness records** and **40 passing invariant checks**. Each readiness record receives 20 checks covering exact Phase 27 source and finalization pins, readiness and ledger identity, packet bindings, schema identity and structure, required-field order, blank question slots, pending human gates, frozen response states, disabled review execution, authority separation, and zero effects.
 
 Both records receive verdict `response-intake-readiness-assured-no-response`.
 
 ## Recovery and provenance
 
-The candidate pins the exact Phase 27 candidate and finalization bytes. Its recovery matrix contains 77 deterministic scenarios: one accepted baseline and 76 rejected mutations covering source drift, assurance corruption, schema drift, fabricated reviewer data, filled responses, receipt authority, response processing, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+The immutable candidate pins the exact Phase 27 candidate and finalization bytes. Its recovery matrix contains **77 deterministic scenarios**: one accepted baseline and 76 rejected mutations covering source drift, assurance corruption, schema drift, fabricated reviewer data, filled responses, receipt authority, response processing, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+
+`release/phase-28-postmerge.json` pins candidate SHA-256 `ce21c69cd246db67d5b03d2ac84962789ae5ff78ace4fd1d5b90b79cf6301fda`, PR #47, exact tested head `14a278af023f6cc623ed42cc50f661242b1c78a3`, merge commit `90430186a9f2842fe41dfb5df4cb3bad6f8e5611`, all 22 applicable workflows, the frozen authority boundaries, and the final state.
 
 ## Frozen authority
 
