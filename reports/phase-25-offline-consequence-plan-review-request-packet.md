@@ -1,12 +1,20 @@
-# Phase 25 — Offline Consequence-Plan Review-Request Packet Candidate
+# Phase 25 — Offline Consequence-Plan Review-Request Packet
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 24 finalization: `46c2b286bde99fd0165f0ec97463ac0fb5af2b5e`  
-> Candidate state: `offline-consequence-plan-review-request-packet-candidate`  
+> Exact tested head: `86c543c542b038038732b50ff6fdf9a79b55c934`  
+> Merge commit: `3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9`  
+> Final state: `offline-consequence-plan-review-request-packet-validated`  
 > Mode: `offline-consequence-plan-review-request-packet`  
 > Fixture: `bounded-synthetic`  
 > Live: `false`
+
+## Finalization
+
+Implementation PR #41 passed all 19 applicable workflows at the exact candidate head before merge. `release/phase-25-postmerge.json` pins the immutable candidate digest, tested head, implementation merge, validation count, result, authority boundary, and next bounded gate.
+
+The finalized result contains **2 local-only packets** and **8 pending human gates**. No packet was dispatched and no review began.
 
 ## Purpose
 
@@ -107,13 +115,14 @@ Packet preparation does not permit dispatch, reviewer contact, review execution,
 ## Deterministic evidence
 
 ```yaml
+candidate_sha256: 38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3
 report_sha256: 1dcacaa08846601b2705f52fd4b10962a69cb568bf9c22e4a40f097a577a36d2
 ledger_sha256: d624e228820912b4cb3c7bfbc68b59db7d8fa79b50e8a6cd63b10fe90a10843c
 checkpoint_sha256: 065dd05f57cc1d933dd2cc24dc0442d1dd5642fa69b1d70241dd391068f14bb7
 recovery_sha256: 7c4e2b79ae9ab6e0dfa26336b2050c6f8731af6c477f772cbbaa10c042ab18a7
-candidate_sha256: 38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3
 recovery_scenario_count: 61
 rejected_mutation_count: 60
+applicable_workflows: 19
 ```
 
 The recovery matrix rejects source drift, missing or duplicate packets, readiness and plan binding drift, scope changes, malformed sections or questions, fabricated responses or human gates, recipient or delivery data, dispatch, reviewer contact, networking, review execution, outcomes, effects, authority escalation, Atlas access, repository mutation, and live activation.
@@ -123,6 +132,7 @@ The recovery matrix rejects source drift, missing or duplicate packets, readines
 ```bash
 python3 scripts/generate_phase25_offline_consequence_plan_review_request_packet.py --check
 python3 scripts/validate_phase25_offline_consequence_plan_review_request_packet.py
+python3 scripts/validate_phase25_postmerge_record.py
 python3 -m unittest software.tests.test_phase25_offline_consequence_plan_review_request_packet -v
 ```
 

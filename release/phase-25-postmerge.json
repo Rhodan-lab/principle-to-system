@@ -1,0 +1,65 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-25-offline-consequence-plan-review-request-packet.json",
+    "sha256": "38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-finalization/0.1",
+  "decision": "review-request-packets-prepared-no-dispatch",
+  "fixture_kind": "bounded-synthetic",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-request-packet",
+  "next_gate": "offline-consequence-plan-review-request-packet-assurance-candidate",
+  "phase": 25,
+  "principia": {
+    "candidate_head_commit": "86c543c542b038038732b50ff6fdf9a79b55c934",
+    "merge_commit": "3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9",
+    "pull_request": 41,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "effective_hold_count": 0,
+    "human_authorization_count": 0,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "packet_count": 2,
+    "packet_dispatch_count": 0,
+    "packet_local_only_count": 2,
+    "packet_prepared_count": 2,
+    "question_count": 6,
+    "real_authorization_claimed": false,
+    "response_submission_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "section_count": 12,
+    "status_change_count": 0
+  },
+  "state": "offline-consequence-plan-review-request-packet-validated",
+  "validation": {
+    "applicable_workflows": 19,
+    "candidate_head_commit": "86c543c542b038038732b50ff6fdf9a79b55c934",
+    "status": "success"
+  }
+}

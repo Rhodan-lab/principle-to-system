@@ -107,16 +107,22 @@ def main() -> int:
         "Historical Phase 19 candidate marker: `exact-head validation pending`",
         PHASE18_FINALIZATION_MERGE,
         "proposals-recorded-no-mutation",
-        "release-hold proposal",
         "live: false",
     ):
         if marker not in state:
             errors.append(f"PROJECT_STATE.md missing Phase 19 marker: {marker}")
-    # Later phases may describe the same immutable record as either a queue or an item.
-    # Accept both phrases while retaining all machine-readable policy checks above.
-    if "manual review queue" not in state and "manual review item" not in state:
+    # Later phases may retain the same immutable counts in structured YAML rather than prose.
+    if "release-hold proposal" not in state and "release_hold_proposals: 1" not in state:
         errors.append(
-            "PROJECT_STATE.md missing Phase 19 marker: manual review queue or manual review item"
+            "PROJECT_STATE.md missing Phase 19 marker: release-hold proposal or release_hold_proposals: 1"
+        )
+    if (
+        "manual review queue" not in state
+        and "manual review item" not in state
+        and "manual_review_items: 1" not in state
+    ):
+        errors.append(
+            "PROJECT_STATE.md missing Phase 19 marker: manual review queue, manual review item, or manual_review_items: 1"
         )
 
     report = REPORT_PATH.read_text(encoding="utf-8")

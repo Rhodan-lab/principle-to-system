@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 24 — Offline Consequence-Plan Review Readiness merged and validated through PR #39.**
+**Phase 25 — Offline Consequence-Plan Review-Request Packet merged and validated through PR #41.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -19,7 +19,8 @@ Phase 20 state: **offline-manual-policy-resolution-validated** (`mode: offline-m
 Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: offline-policy-resolution-reconciliation`, `live: false`).  
 Phase 22 state: **offline-resolution-consequence-planning-validated** (`mode: offline-resolution-consequence-planning`, `live: false`).  
 Phase 23 state: **offline-consequence-plan-assurance-validated** (`mode: offline-consequence-plan-assurance`, `live: false`).  
-Phase 24 state: **offline-consequence-plan-review-readiness-validated** (`mode: offline-consequence-plan-review-readiness`, `live: false`).
+Phase 24 state: **offline-consequence-plan-review-readiness-validated** (`mode: offline-consequence-plan-review-readiness`, `live: false`).  
+Phase 25 state: **offline-consequence-plan-review-request-packet-validated** (`mode: offline-consequence-plan-review-request-packet`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -53,6 +54,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 22 | Offline resolution-consequence planning | Merged and validated through PR #35 |
 | 23 | Offline consequence-plan assurance | Merged and validated through PR #37 |
 | 24 | Offline consequence-plan review readiness | Merged and validated through PR #39 |
+| 25 | Offline consequence-plan review-request packet | Merged and validated through PR #41 |
 
 ## Integration topology
 
@@ -84,6 +86,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #37 was merged into `main` at commit `912a66343d2e262a7651e05ce116dabf747ae152`.
 - Phase 24 exact candidate validation passed at `e385e3f418fc48517be20bfebc30eda2b5f319aa`.
 - PR #39 was merged into `main` at commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`.
+- Phase 25 exact candidate validation passed at `86c543c542b038038732b50ff6fdf9a79b55c934`.
+- PR #41 was merged into `main` at commit `3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -91,9 +95,9 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, and the integrated Phase 24 review-readiness report, ledger, checkpoint, recovery matrix, and immutable finalization record.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, the integrated Phase 24 review-readiness evidence, and the integrated Phase 25 local review-request packet report, ledger, checkpoint, recovery matrix, and immutable finalization record.
 
-No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, or changes either repository automatically.
+No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, contacts reviewers, starts review, or changes either repository automatically.
 
 ## Reviewed foundation and historical continuity
 
@@ -148,6 +152,8 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 23 target marker: `offline-consequence-plan-assurance-candidate`.
 - Historical Phase 24 candidate marker: `exact-head validation pending`.
 - Historical Phase 24 target marker: `offline-consequence-plan-review-readiness-candidate`.
+- Historical Phase 25 candidate marker: `exact-head validation pending`.
+- Historical Phase 25 target marker: `offline-consequence-plan-review-request-packet-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -156,7 +162,7 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - 7 crosscutting concepts: **Reviewed**;
 - 3 knowledge maps: **Reviewed**.
 
-Reviewed records focused machine validation; it does not merge Atlas status into Principia status.
+Reviewed records focus machine validation; they do not merge Atlas status into Principia status.
 
 ## Status and authority separation
 
@@ -168,11 +174,13 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 24.
+- Atlas remains unchanged by Principia Phase 25.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
-## Phase 11B result — Controlled Material Expansion
+## Foundation results
+
+### Phase 11B — Controlled Material Expansion
 
 - 4 complete routes;
 - 16 Reviewed artifacts;
@@ -184,17 +192,17 @@ release_status: draft
 
 All experience artifacts remain `artifact_revision: 1` and `release_status: draft`.
 
-## Phase 12 result — Release Candidate RC1
+### Phase 12 — Release Candidate RC1
 
 `release/phase-12-release-candidate.json` defines `principia-material-foundation-rc1`.
 
 RC1 preserves reviewed core, synthesis, and experience status; experience `release_status` remains draft; repository release decision remains **Hold**. The material foundation is machine-validated but not automatically published.
 
-## Phase 13 result — Software foundation
+### Phase 13 — Software foundation
 
 The content-native software foundation is merged and `foundation-validated`. It deterministically renders repository material without promoting content status or activating integration.
 
-## Phase 14 result — Principia–Atlas bridge candidate
+### Phase 14 — Principia–Atlas bridge candidate
 
 ```yaml
 mode: bridge-candidate
@@ -213,39 +221,30 @@ model:en:delayed-correction-recurrence@2
 
 Atlas PR #20 subsequently accepted the exact export through a pinned read-only adapter. No live cross-repository call is enabled.
 
-## Phase 15 result — Offline Integration Pilot
+## Phase 15–18 results
 
 `release/phase-15-offline-pilot.json` defines `offline-pilot-validated`. Current, deprecated, stale, and retracted scenarios remain non-mutating and `live: false`.
 
-## Phase 16 result — Offline Multi-Artifact Integration Pilot
-
 `release/phase-16-offline-multi-artifact-pilot.json` defines `offline-multi-artifact-validated` for the three thermal-control artifacts. Atomicity, receipt-chain, replay, corruption, status-inheritance, and live-activation cases remain machine-gated.
 
-## Phase 17 result — Offline Event-Protocol Candidate
-
 `release/phase-17-offline-event-protocol.json` preserves the immutable candidate, and `release/phase-17-postmerge.json` pins its exact validated provenance. Two bounded-synthetic events map to `revalidate` and `block-release` acknowledgements without changing status or release state.
-
-## Phase 18 result — Offline Reconciliation Simulation
 
 `release/phase-18-postmerge.json` pins exact candidate head `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`, PR #25, merge `4ecb41ad4f9f524e83cc0db43f672bd9dcf3b67a`, and finalization merge `582117eb9ea9ecf489be5ef24464977195464d93`. Decision: `reconciled-no-mutation`.
 
 ## Phase 19 result — Offline Reconciliation Policy
-
-Phase 19 records one manual review item and one non-effective release-hold proposal. Decision: `proposals-recorded-no-mutation`.
 
 ```yaml
 manual_review_items: 1
 release_hold_proposals: 1
 effective_holds: 0
 automatic_executions: 0
+decision: proposals-recorded-no-mutation
 live: false
 ```
 
 `release/phase-19-postmerge.json` pins exact tested head `da77e4b1a5f6f17e98a38f0438c5531d0fba5aac`, PR #28, merge `699689c7a60da645d59cf2bdfe169b89f137a899`, all 15 applicable workflows, and final state `offline-reconciliation-policy-validated`.
 
 ## Phase 20 result — Offline Manual Policy Resolution
-
-The bounded-synthetic fixture records `accept` as `accepted-for-manual-review` and `defer` as `deferred-no-hold-activation`.
 
 ```yaml
 fixture_kind: bounded-synthetic
@@ -256,14 +255,13 @@ effective_holds: 0
 operational_effects: 0
 status_changes: 0
 decision: resolutions-recorded-no-mutation
+real_authorization_claimed: false
 live: false
 ```
 
 `release/phase-20-postmerge.json` pins exact tested head `d128d2c469b43fc07fe1db2f62ce9538841e4463`, PR #30, merge `724611a7d7ec0b3723ea217928cba4616ce2bebd`, all 16 applicable workflows, `real_authorization_claimed: false`, and final state `offline-manual-policy-resolution-validated`.
 
 ## Phase 21 result — Offline Policy-Resolution Reconciliation
-
-Phase 21 reconciles the two exact proposals with the two synthetic resolutions.
 
 ```yaml
 proposal_count: 2
@@ -287,10 +285,6 @@ live: false
 
 ## Phase 22 result — Offline Resolution-Consequence Planning
 
-`release/phase-22-offline-resolution-consequence-planning.json` preserves the immutable candidate `offline-resolution-consequence-planning-candidate` with `mode: offline-resolution-consequence-planning`, `fixture_kind: bounded-synthetic`, and `live: false`.
-
-The integrated result records one manual-review work plan and one release-governance follow-up plan. All six steps remain `planned-not-started` with `execution_permitted: false`.
-
 ```yaml
 plan_count: 2
 manual_review_plan_count: 1
@@ -306,17 +300,9 @@ decision: consequence-plans-recorded-no-execution
 live: false
 ```
 
-The plans cover the same three exact thermal-control artifacts at revision 1. No review is completed, no release decision is selected, no content change is proposed, and no hold becomes effective.
-
-The recovery matrix contains 28 deterministic scenarios and rejects source drift, missing or orphan plans, duplicate identities, unknown resolutions, sequence or digest corruption, ledger or checkpoint drift, changed step counts, started or completed work, completed review, content-change proposals, status recommendations, effects, authorization claims, status inheritance, automatic authority changes, repository mutation, and live activation.
-
-`release/phase-22-postmerge.json` separately pins candidate SHA-256 `ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8`, exact tested head `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`, PR #35, merge commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`, all 18 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-resolution-consequence-planning-validated`.
+All six steps remain `planned-not-started` with `execution_permitted: false`. `release/phase-22-postmerge.json` pins candidate SHA-256 `ccb4b608f77ba291f65ef25e0453382a3905a16b4bc5901d878de00dbdc4c9c8`, exact tested head `43d10f7a9d24f92f8dcdf0c4c37f4f4d2233e38a`, PR #35, merge commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`, all 18 applicable workflows, and final state `offline-resolution-consequence-planning-validated`.
 
 ## Phase 23 result — Offline Consequence-Plan Assurance
-
-`release/phase-23-offline-consequence-plan-assurance.json` preserves the immutable candidate `offline-consequence-plan-assurance-candidate` with `mode: offline-consequence-plan-assurance`, `fixture_kind: bounded-synthetic`, and `live: false`.
-
-Both Phase 22 plans and all six planning-only steps receive verdict `assured-planning-only`. Every step remains `planned-not-started` with `execution_permitted: false`.
 
 ```yaml
 plan_count: 2
@@ -332,15 +318,9 @@ decision: consequence-plans-assured-no-execution
 live: false
 ```
 
-The recovery matrix contains 34 deterministic scenarios and rejects Phase 22 source drift, missing or orphan assurances, duplicate identities, plan and ledger digest drift, proposal or resolution mismatch, affected-set drift, step count or sequence drift, execution, effects, authorization claims, status inheritance, automatic authority changes, repository mutation, and live activation.
-
-`release/phase-23-postmerge.json` separately pins candidate SHA-256 `7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6`, exact tested head `083e82eeea8e127e6f5b65bb020720b5c1c4edab`, PR #37, merge commit `912a66343d2e262a7651e05ce116dabf747ae152`, all 17 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-assurance-validated`.
+Both plans receive verdict `assured-planning-only`. `release/phase-23-postmerge.json` pins candidate SHA-256 `7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6`, exact tested head `083e82eeea8e127e6f5b65bb020720b5c1c4edab`, PR #37, merge commit `912a66343d2e262a7651e05ce116dabf747ae152`, all 17 applicable workflows, and final state `offline-consequence-plan-assurance-validated`.
 
 ## Phase 24 result — Offline Consequence-Plan Review Readiness
-
-`release/phase-24-offline-consequence-plan-review-readiness.json` preserves the immutable candidate `offline-consequence-plan-review-readiness-candidate` with `mode: offline-consequence-plan-review-readiness`, `fixture_kind: bounded-synthetic`, and `live: false`.
-
-The two assured plans are machine-ready for deterministic local request-packet preparation, but all eight human gates remain pending.
 
 ```yaml
 plan_count: 2
@@ -362,15 +342,51 @@ decision: review-readiness-recorded-no-review-started
 live: false
 ```
 
-Every readiness record remains `machine-ready-human-gates-pending`. Reviewer identity, competence attestation, conflict declaration, and authorization record remain absent. Packet preparation does not permit dispatch, reviewer contact, review execution, outcome selection, content change, status recommendation, hold activation, Atlas access, external networking, or repository mutation.
+Every readiness record remains `machine-ready-human-gates-pending`. `release/phase-24-postmerge.json` pins candidate SHA-256 `45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85`, exact tested head `e385e3f418fc48517be20bfebc30eda2b5f319aa`, PR #39, merge commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`, all 18 applicable workflows, eight pending human gates, and final state `offline-consequence-plan-review-readiness-validated`.
 
-The recovery matrix contains 45 deterministic scenarios and rejects Phase 23 source drift, missing or orphan readiness records, duplicate identities, assurance or plan drift, affected-set drift, criterion drift, fabricated human gates, dispatch, review execution, outcomes, effects, authorization claims, inherited or automatic authority, repository mutation, networking, Atlas calls, and live activation.
+## Phase 25 result — Offline Consequence-Plan Review-Request Packet
 
-`release/phase-24-postmerge.json` separately pins candidate SHA-256 `45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85`, exact tested head `e385e3f418fc48517be20bfebc30eda2b5f319aa`, PR #39, merge commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`, all 18 applicable workflows, eight pending human gates, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-readiness-validated`.
+`release/phase-25-offline-consequence-plan-review-request-packet.json` preserves the immutable candidate `offline-consequence-plan-review-request-packet-candidate` with `mode: offline-consequence-plan-review-request-packet`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+Two packets are `prepared-local-not-dispatched`. Each packet contains six deterministic sections, three unanswered questions, four pending human gates, and a blank unsubmitted response template.
+
+```yaml
+packet_count: 2
+packet_prepared_count: 2
+packet_local_only_count: 2
+packet_dispatch_count: 0
+section_count: 12
+question_count: 6
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+reviewer_identity_count: 0
+reviewer_contact_count: 0
+response_submission_count: 0
+review_started_count: 0
+review_completed_count: 0
+outcome_selected_count: 0
+human_authorization_count: 0
+effective_hold_count: 0
+operational_effect_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: review-request-packets-prepared-no-dispatch
+live: false
+```
+
+No recipient, delivery channel, dispatch time, reviewer identity, competence attestation, conflict declaration, authorization, response, finding, recommendation, content change, status change, hold, Atlas call, network action, or repository effect is active.
+
+The recovery matrix contains 61 deterministic scenarios and rejects 60 mutations involving source drift, packet identity and structure drift, fabricated responses or human gates, dispatch, reviewer contact, networking, review execution, outcomes, effects, authority escalation, Atlas access, repository mutation, and live activation.
+
+`release/phase-25-postmerge.json` separately pins candidate SHA-256 `38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3`, exact tested head `86c543c542b038038732b50ff6fdf9a79b55c934`, PR #41, merge commit `3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9`, all 19 applicable workflows, eight pending human gates, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-request-packet-validated`.
 
 ## Validation
 
 ```bash
+python3 scripts/generate_phase25_offline_consequence_plan_review_request_packet.py --check
+python3 scripts/validate_phase25_offline_consequence_plan_review_request_packet.py
+python3 scripts/validate_phase25_postmerge_record.py
+python3 -m unittest software.tests.test_phase25_offline_consequence_plan_review_request_packet -v
 python3 scripts/generate_phase24_offline_consequence_plan_review_readiness.py --check
 python3 scripts/validate_phase24_offline_consequence_plan_review_readiness.py
 python3 scripts/validate_phase24_postmerge_record.py
@@ -379,21 +395,21 @@ python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
 python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
 python3 scripts/validate_phase23_postmerge_record.py
 python3 -m unittest software.tests.test_phase23_offline_consequence_plan_assurance -v
+python3 scripts/validate_phase22_postmerge_record.py
 python3 scripts/generate_phase22_offline_resolution_consequence_planning.py --check
 python3 scripts/validate_phase22_offline_resolution_consequence_planning.py
-python3 scripts/validate_phase22_postmerge_record.py
 python3 -m unittest software.tests.test_phase22_offline_resolution_consequence_planning -v
+python3 scripts/validate_phase21_postmerge_record.py
 python3 scripts/generate_phase21_offline_policy_resolution_reconciliation.py --check
 python3 scripts/validate_phase21_offline_policy_resolution_reconciliation.py
-python3 scripts/validate_phase21_postmerge_record.py
 python3 -m unittest software.tests.test_phase21_offline_policy_resolution_reconciliation -v
+python3 scripts/validate_phase20_postmerge_record.py
 python3 scripts/generate_phase20_offline_manual_policy_resolution.py --check
 python3 scripts/validate_phase20_offline_manual_policy_resolution.py
-python3 scripts/validate_phase20_postmerge_record.py
 python3 -m unittest software.tests.test_phase20_offline_manual_policy_resolution -v
+python3 scripts/validate_phase19_postmerge_record.py
 python3 scripts/generate_phase19_offline_reconciliation_policy.py --check
 python3 scripts/validate_phase19_offline_reconciliation_policy.py
-python3 scripts/validate_phase19_postmerge_record.py
 python3 -m unittest software.tests.test_phase19_offline_reconciliation_policy -v
 python3 scripts/validate_phase18_postmerge_record.py
 python3 scripts/generate_phase18_offline_reconciliation.py --check
@@ -414,6 +430,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-request-packet-candidate**.
+Next gate: **offline-consequence-plan-review-request-packet-assurance-candidate**.
 
-The next bounded gate may assemble deterministic local review-request packets from the two validated readiness records. It must not dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
+The next bounded gate may independently verify packet integrity, exact source bindings, blank responses, pending human gates, and non-dispatch authority. It must not dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
