@@ -21,6 +21,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
             scripts/validate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
+            scripts/validate_phase35_postmerge_record.py \
             scripts/validate_phase34_postmerge_record.py \
             scripts/generate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py \
             scripts/validate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py \
@@ -29,6 +30,7 @@ jobs:
         run: |
           python3 scripts/generate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py --check
           python3 scripts/validate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py
+          python3 scripts/validate_phase35_postmerge_record.py
           python3 -m unittest software.tests.test_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness -v
           python3 scripts/validate_phase34_postmerge_record.py
           python3 scripts/generate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py --check
@@ -47,6 +49,7 @@ jobs:
           name: phase-35-authorization-readiness-diagnostics
           path: |
             release/phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.json
+            release/phase-35-postmerge.json
             reports/phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.md
       - name: Verify permanent workflow immutability
         run: |
