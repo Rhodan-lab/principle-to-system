@@ -159,8 +159,9 @@ def main() -> int:
         errors.append("immutable candidate record must remain pending and non-self-referential")
 
     state = STATE_PATH.read_text(encoding="utf-8")
+    # Phase 18 may be summarized under a combined historical-results heading after later phases.
+    # Its immutable state, mode, live boundary, and decision remain mandatory.
     for marker in (
-        "Phase 18 result — Offline Reconciliation Simulation",
         "offline-reconciliation-simulation-validated",
         "mode: offline-reconciliation-simulation",
         "live: false",
