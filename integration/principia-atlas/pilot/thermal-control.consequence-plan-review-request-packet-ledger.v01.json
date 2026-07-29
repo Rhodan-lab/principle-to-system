@@ -1,0 +1,51 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-ledger/0.1",
+  "decision": "review-request-packets-prepared-no-dispatch",
+  "entries": [
+    {
+      "entry": {
+        "packet_id": "principia:consequence-plan-review-request-packet:feedback-manual-review:0001",
+        "packet_record_sha256": "4af2c1994563a4cbeeca42637f65f43f2d7d78171e44c6915dbecb13df86bbb4",
+        "previous_entry_sha256": null,
+        "readiness_id": "principia:consequence-plan-review-readiness:feedback-manual-review:0001",
+        "sequence": 1,
+        "verdict": "packet-prepared-local-not-dispatched"
+      },
+      "entry_sha256": "41293b264ddb9747752803d597815012a097a1a32a6f5fbc381c569300662899"
+    },
+    {
+      "entry": {
+        "packet_id": "principia:consequence-plan-review-request-packet:model-boundary-release-governance:0002",
+        "packet_record_sha256": "21019550db55a65950d1b0c07a0c1863307cb25becf679808571f0a90b1901e6",
+        "previous_entry_sha256": "41293b264ddb9747752803d597815012a097a1a32a6f5fbc381c569300662899",
+        "readiness_id": "principia:consequence-plan-review-readiness:model-boundary-release-governance:0002",
+        "sequence": 2,
+        "verdict": "packet-prepared-local-not-dispatched"
+      },
+      "entry_sha256": "f5c26d7f4308219418f75ef82be6f5a086a475045ab694cd138bd14a55434b9f"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "f5c26d7f4308219418f75ef82be6f5a086a475045ab694cd138bd14a55434b9f",
+  "ledger_id": "principia:offline-consequence-plan-review-request-packet-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-consequence-plan-review-request-packet",
+  "source_packet_report_sha256": "960b24045186bc7f08c5b2a764c6af12e4dff07cc3bafd211728ea635933fded"
+}
