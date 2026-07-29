@@ -6,6 +6,7 @@
 > Exact tested head: `58ffacbaff03301145ab0c68f4f692083641a7c1`  
 > Merge commit: `72bca34c7623c19fed0c7f625e19cd9b7291c47d`  
 > Final state: `offline-consequence-plan-review-request-packet-assurance-validated`  
+> Historical candidate heading: `# Phase 26 — Offline Consequence-Plan Review-Request Packet Assurance Candidate`  
 > Mode: `offline-consequence-plan-review-request-packet-assurance`  
 > Live: `false`
 
