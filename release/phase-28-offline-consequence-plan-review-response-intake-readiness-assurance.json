@@ -184,83 +184,314 @@
     "rejected_count": 76,
     "scenario_count": 77,
     "scenarios": [
-      {"expected": "accepted", "id": "baseline"},
-      {"expected": "rejected", "id": "phase27-candidate-drift"},
-      {"expected": "rejected", "id": "phase27-postmerge-drift"},
-      {"expected": "rejected", "id": "missing-assurance"},
-      {"expected": "rejected", "id": "orphan-assurance"},
-      {"expected": "rejected", "id": "duplicate-assurance"},
-      {"expected": "rejected", "id": "sequence-drift"},
-      {"expected": "rejected", "id": "readiness-id-drift"},
-      {"expected": "rejected", "id": "readiness-record-digest-drift"},
-      {"expected": "rejected", "id": "readiness-ledger-entry-drift"},
-      {"expected": "rejected", "id": "packet-assurance-id-drift"},
-      {"expected": "rejected", "id": "packet-id-drift"},
-      {"expected": "rejected", "id": "schema-id-drift"},
-      {"expected": "rejected", "id": "schema-version-drift"},
-      {"expected": "rejected", "id": "schema-media-type-drift"},
-      {"expected": "rejected", "id": "schema-encoding-drift"},
-      {"expected": "rejected", "id": "schema-section-count-drift"},
-      {"expected": "rejected", "id": "schema-section-order-drift"},
-      {"expected": "rejected", "id": "schema-section-state-drift"},
-      {"expected": "rejected", "id": "required-field-count-drift"},
-      {"expected": "rejected", "id": "required-field-order-drift"},
-      {"expected": "rejected", "id": "question-count-drift"},
-      {"expected": "rejected", "id": "question-id-drift"},
-      {"expected": "rejected", "id": "question-filled"},
-      {"expected": "rejected", "id": "question-accepted"},
-      {"expected": "rejected", "id": "template-submitted"},
-      {"expected": "rejected", "id": "response-id-recorded"},
-      {"expected": "rejected", "id": "source-digest-recorded"},
-      {"expected": "rejected", "id": "reviewer-identity-recorded"},
-      {"expected": "rejected", "id": "reviewer-role-recorded"},
-      {"expected": "rejected", "id": "competence-attestation-recorded"},
-      {"expected": "rejected", "id": "conflict-declaration-recorded"},
-      {"expected": "rejected", "id": "authorization-recorded"},
-      {"expected": "rejected", "id": "review-observation-recorded"},
-      {"expected": "rejected", "id": "review-recommendation-recorded"},
-      {"expected": "rejected", "id": "submitted-at-recorded"},
-      {"expected": "rejected", "id": "signature-recorded"},
-      {"expected": "rejected", "id": "human-gate-satisfied"},
-      {"expected": "rejected", "id": "response-intake-authorized"},
-      {"expected": "rejected", "id": "response-receipt-permitted"},
-      {"expected": "rejected", "id": "response-received"},
-      {"expected": "rejected", "id": "response-validated"},
-      {"expected": "rejected", "id": "response-accepted"},
-      {"expected": "rejected", "id": "response-rejected"},
-      {"expected": "rejected", "id": "response-quarantined"},
-      {"expected": "rejected", "id": "packet-dispatched"},
-      {"expected": "rejected", "id": "reviewer-contact-permitted"},
-      {"expected": "rejected", "id": "review-start-permitted"},
-      {"expected": "rejected", "id": "review-started"},
-      {"expected": "rejected", "id": "review-completed"},
-      {"expected": "rejected", "id": "outcome-selected"},
-      {"expected": "rejected", "id": "content-change-proposed"},
-      {"expected": "rejected", "id": "status-recommendation-recorded"},
-      {"expected": "rejected", "id": "effective-hold"},
-      {"expected": "rejected", "id": "operational-effect"},
-      {"expected": "rejected", "id": "status-change"},
-      {"expected": "rejected", "id": "human-authorization-claimed"},
-      {"expected": "rejected", "id": "real-authorization-claimed"},
-      {"expected": "rejected", "id": "status-inheritance-enabled"},
-      {"expected": "rejected", "id": "automatic-status-change"},
-      {"expected": "rejected", "id": "automatic-release-action"},
-      {"expected": "rejected", "id": "repository-mutation"},
-      {"expected": "rejected", "id": "external-network-required"},
-      {"expected": "rejected", "id": "external-delivery-permitted"},
-      {"expected": "rejected", "id": "atlas-call-permitted"},
-      {"expected": "rejected", "id": "live-activation"},
-      {"expected": "rejected", "id": "assurance-check-failed"},
-      {"expected": "rejected", "id": "assurance-verdict-drift"},
-      {"expected": "rejected", "id": "assurance-status-drift"},
-      {"expected": "rejected", "id": "assurance-locality-drift"},
-      {"expected": "rejected", "id": "assurance-ledger-drift"},
-      {"expected": "rejected", "id": "assurance-checkpoint-drift"},
-      {"expected": "rejected", "id": "summary-drift"},
-      {"expected": "rejected", "id": "authority-drift"},
-      {"expected": "rejected", "id": "source-pin-drift"},
-      {"expected": "rejected", "id": "assurance-count-drift"},
-      {"expected": "rejected", "id": "recovery-count-drift"}
+      {
+        "expected": "accepted",
+        "id": "baseline"
+      },
+      {
+        "expected": "rejected",
+        "id": "phase27-candidate-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "phase27-postmerge-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "missing-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "orphan-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "duplicate-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "sequence-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-record-digest-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-ledger-entry-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-assurance-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-version-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-media-type-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-encoding-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-order-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-state-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "required-field-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "required-field-order-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-filled"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-accepted"
+      },
+      {
+        "expected": "rejected",
+        "id": "template-submitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-id-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "source-digest-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-identity-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-role-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "competence-attestation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "conflict-declaration-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "authorization-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-observation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-recommendation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "submitted-at-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "signature-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "human-gate-satisfied"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-intake-authorized"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-receipt-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-received"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-validated"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-accepted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-rejected"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-quarantined"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-dispatched"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-contact-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-start-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-started"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-completed"
+      },
+      {
+        "expected": "rejected",
+        "id": "outcome-selected"
+      },
+      {
+        "expected": "rejected",
+        "id": "content-change-proposed"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-recommendation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "effective-hold"
+      },
+      {
+        "expected": "rejected",
+        "id": "operational-effect"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-change"
+      },
+      {
+        "expected": "rejected",
+        "id": "human-authorization-claimed"
+      },
+      {
+        "expected": "rejected",
+        "id": "real-authorization-claimed"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-inheritance-enabled"
+      },
+      {
+        "expected": "rejected",
+        "id": "automatic-status-change"
+      },
+      {
+        "expected": "rejected",
+        "id": "automatic-release-action"
+      },
+      {
+        "expected": "rejected",
+        "id": "repository-mutation"
+      },
+      {
+        "expected": "rejected",
+        "id": "external-network-required"
+      },
+      {
+        "expected": "rejected",
+        "id": "external-delivery-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "atlas-call-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "live-activation"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-check-failed"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-verdict-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-status-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-locality-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-ledger-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-checkpoint-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "summary-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "authority-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "source-pin-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "recovery-count-drift"
+      }
     ]
   },
   "result": {
