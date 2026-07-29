@@ -1,0 +1,63 @@
+name: Validate Phase 32 Offline Consequence Plan Review Response Intake Envelope Validation Readiness Assurance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia Phase 32 evidence
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Phase 32 and inherited validators
+        run: |
+          python3 -m py_compile \
+            scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py \
+            scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py \
+            scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py \
+            scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py \
+            scripts/validate_phase31_postmerge_record.py
+      - name: Run complete Phase 32 chain
+        run: |
+          set -o pipefail
+          {
+            python3 scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py --check
+            python3 scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py
+            python3 -m unittest software.tests.test_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance -v
+            python3 scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py --check
+            python3 scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py
+            python3 scripts/validate_phase31_postmerge_record.py
+            python3 -m unittest software.tests.test_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness -v
+            python3 scripts/generate_phase30_offline_consequence_plan_review_response_intake_envelope_readiness_assurance.py --check
+            python3 scripts/validate_phase30_offline_consequence_plan_review_response_intake_envelope_readiness_assurance.py
+            python3 scripts/validate_phase30_postmerge_record.py
+            python3 -m unittest software.tests.test_phase30_offline_consequence_plan_review_response_intake_envelope_readiness_assurance -v
+            python3 scripts/validate_principia_atlas_bridge.py
+            python3 scripts/validate_principia_atlas_audit.py
+            python3 scripts/validate_repo.py --strict
+            python3 -m unittest discover -s software/tests -v
+          } 2>&1 | tee phase32-validation.log
+      - name: Upload complete Phase 32 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase32-validation
+          path: phase32-validation.log
+      - name: Verify permanent workflow immutability
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow=Path('.github/workflows/validate-phase-32-offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance.yml').read_text()
+          forbidden=('contents'+': write','git '+'push','git '+'commit','pull_request'+'_target','repository: Rhodan-lab/'+'Atlas','cu'+'rl ','wg'+'et ')
+          assert 'contents: read' in workflow
+          for token in forbidden: assert token not in workflow, token
+          PY
