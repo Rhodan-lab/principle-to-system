@@ -1,0 +1,93 @@
+{
+  "artifacts": {
+    "checkpoint": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-assurance-checkpoint.v01.json",
+      "sha256": "f0c9d531206a7fb5ec5b383c7834d4a0df949b4b3fd34122eb7e4a66abddc5de"
+    },
+    "ledger": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-assurance-ledger.v01.json",
+      "sha256": "68dcf4460bdb012ef2edc73d7699968d405d48cd4d6fd7601278989a0df727c1"
+    },
+    "recovery": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-assurance-recovery.v01.json",
+      "sha256": "0301d135c6a467afbe57d7a89a354559611f3446eb3fd1bf5abaa257e9d40092"
+    },
+    "report": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-assurance-report.v01.json",
+      "sha256": "1b480d1309c55d87b28aa8eaf347aaa34fb446e53d1c51474c2bc0a1ddc6beb9"
+    }
+  },
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_assurance_permitted": true,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-assurance/0.1",
+  "decision": "review-request-packets-assured-no-dispatch",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-request-packet-assurance-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-request-packet-assurance",
+  "next_gate": "offline-consequence-plan-review-response-intake-readiness-candidate",
+  "phase": 26,
+  "real_authorization_claimed": false,
+  "result": {
+    "assured_packet_count": 2,
+    "blank_question_response_count": 6,
+    "effective_hold_count": 0,
+    "failed_assurance_count": 0,
+    "human_authorization_count": 0,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "packet_count": 2,
+    "packet_dispatch_count": 0,
+    "packet_local_only_count": 2,
+    "packet_prepared_count": 2,
+    "question_count": 6,
+    "real_authorization_claimed": false,
+    "response_submission_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "section_count": 12,
+    "status_change_count": 0
+  },
+  "source_phase25": {
+    "packet_checkpoint_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-checkpoint.v01.json",
+    "packet_checkpoint_sha256": "065dd05f57cc1d933dd2cc24dc0442d1dd5642fa69b1d70241dd391068f14bb7",
+    "packet_ledger_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-ledger.v01.json",
+    "packet_ledger_sha256": "d624e228820912b4cb3c7bfbc68b59db7d8fa79b50e8a6cd63b10fe90a10843c",
+    "packet_recovery_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-recovery.v01.json",
+    "packet_recovery_sha256": "7c4e2b79ae9ab6e0dfa26336b2050c6f8731af6c477f772cbbaa10c042ab18a7",
+    "packet_report_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-request-packet-report.v01.json",
+    "packet_report_sha256": "1dcacaa08846601b2705f52fd4b10962a69cb568bf9c22e4a40f097a577a36d2",
+    "phase25_candidate_path": "release/phase-25-offline-consequence-plan-review-request-packet.json",
+    "phase25_candidate_sha256": "38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3",
+    "phase25_finalization_commit": "46c2b286bde99fd0165f0ec97463ac0fb5af2b5e",
+    "phase25_postmerge_path": "release/phase-25-postmerge.json",
+    "phase25_postmerge_sha256": "89f161ab427de0e7bd91d6a3759b4bd5ab30270588551a4ac1bf5ec4ba365f2f"
+  },
+  "state": "offline-consequence-plan-review-request-packet-assurance-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}

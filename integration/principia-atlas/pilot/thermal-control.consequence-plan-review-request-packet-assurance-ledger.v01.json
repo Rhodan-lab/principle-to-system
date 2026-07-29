@@ -1,0 +1,54 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_assurance_permitted": true,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-assurance-ledger/0.1",
+  "decision": "review-request-packets-assured-no-dispatch",
+  "entries": [
+    {
+      "entry": {
+        "packet_assurance_id": "principia:consequence-plan-review-request-packet-assurance:feedback-manual-review:0001",
+        "packet_assurance_sha256": "1f92f4ba61d324907b5fbfaa6ee98ed01868d96c0dc00f9d84dfaeb7ff47ea5d",
+        "packet_id": "principia:consequence-plan-review-request-packet:feedback-manual-review:0001",
+        "packet_record_sha256": "4af2c1994563a4cbeeca42637f65f43f2d7d78171e44c6915dbecb13df86bbb4",
+        "previous_entry_sha256": null,
+        "sequence": 1,
+        "verdict": "packet-assured-local-no-dispatch"
+      },
+      "entry_sha256": "3284030ad30ddbb66c42094cbc27f72a31817cbd7e466d48a82ea9b0c6f06b3c"
+    },
+    {
+      "entry": {
+        "packet_assurance_id": "principia:consequence-plan-review-request-packet-assurance:model-boundary-release-governance:0002",
+        "packet_assurance_sha256": "6fc24790bf3ee693600667c8260c97352b1ba845b87696597d1a7595e41254a6",
+        "packet_id": "principia:consequence-plan-review-request-packet:model-boundary-release-governance:0002",
+        "packet_record_sha256": "21019550db55a65950d1b0c07a0c1863307cb25becf679808571f0a90b1901e6",
+        "previous_entry_sha256": "3284030ad30ddbb66c42094cbc27f72a31817cbd7e466d48a82ea9b0c6f06b3c",
+        "sequence": 2,
+        "verdict": "packet-assured-local-no-dispatch"
+      },
+      "entry_sha256": "da7e9e5d354db9907de15207a8702e84ed257f1d1b7f29da9f31aed912d960b7"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "da7e9e5d354db9907de15207a8702e84ed257f1d1b7f29da9f31aed912d960b7",
+  "ledger_id": "principia:offline-consequence-plan-review-request-packet-assurance-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-consequence-plan-review-request-packet-assurance",
+  "source_assurance_report_sha256": "cf46bd7b4e95196e053e29894e502c727cb0fa2f704e314c1c54396aaf16a4ca"
+}
