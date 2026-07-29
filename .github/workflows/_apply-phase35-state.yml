@@ -1,0 +1,32 @@
+name: Apply Phase 35 State Transition
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out finalization branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Apply exact Phase 35 state transition
+        run: python3 scripts/_apply_phase35_project_state.py
+      - name: Remove one-shot transition machinery
+        run: |
+          rm scripts/_apply_phase35_project_state.py
+          rm .github/workflows/_apply-phase35-state.yml
+      - name: Commit state transition to branch
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PROJECT_STATE.md
+          git add -u scripts/_apply_phase35_project_state.py .github/workflows/_apply-phase35-state.yml
+          git commit -m "Finalize Phase 35 project state"
+          git push origin "HEAD:${BRANCH}"
