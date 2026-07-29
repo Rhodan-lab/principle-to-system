@@ -48,9 +48,11 @@ def validate()->list[str]:
       "Historical Phase 34 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-assurance-candidate`",
       "Atlas remains unchanged by Principia Phase 34",
       "## Phase 34 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness Assurance",
-      CANDIDATE_SHA,HEAD,MERGE,"all 28 applicable workflows","121 deterministic scenarios","120 mutations",f"Next gate: **{NEXT}**")
+      CANDIDATE_SHA,HEAD,MERGE,"all 28 applicable workflows","121 deterministic scenarios","120 mutations")
     for marker in required:
         if marker not in state: errors.append(f"Phase 34 project-state marker missing: {marker}")
+    if f"Next gate: **{NEXT}**" not in state and f"Historical Phase 35 target marker: `{NEXT}`" not in state:
+        errors.append("Phase 34 next-gate history marker missing")
     if "Principia and Atlas remain separate repositories with separate lifecycle authority." not in state: errors.append("Repository authority separation lost")
     report=REPORT.read_text()
     for marker in ("# Phase 34 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness Assurance","State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-assurance-validated`",f"Candidate SHA-256: `{CANDIDATE_SHA}`",f"Exact tested head: `{HEAD}`","Candidate PR: `#59`",f"Candidate merge: `{MERGE}`","Applicable candidate workflows: `28`",f"Post-merge SHA-256: `{POST_SHA}`",f"Next gate: `{NEXT}`","121 deterministic scenarios","120 rejected mutations","No envelope was created or received"):
