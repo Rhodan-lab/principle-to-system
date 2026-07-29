@@ -51,9 +51,13 @@ def main()->int:
         "Atlas remains unchanged by Principia Phase 32.",
         "release/phase-32-postmerge.json",
         "python3 scripts/validate_phase32_postmerge_record.py",
-        "Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-candidate**.",
     ):
         if marker not in state: errors.append(f"PROJECT_STATE marker missing: {marker}")
+    former_gate="offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-candidate"
+    current_gate_marker=f"Next gate: **{former_gate}**."
+    historical_gate_marker=f"Historical Phase 33 target marker: `{former_gate}`."
+    if current_gate_marker not in state and historical_gate_marker not in state:
+        errors.append(f"PROJECT_STATE current or historical gate marker missing: {former_gate}")
     workflow=WORKFLOW.read_text() if WORKFLOW.is_file() else ""
     if "validate_phase32_postmerge_record.py" not in workflow:
         errors.append("Phase 32 workflow does not include post-merge validation")
@@ -65,7 +69,7 @@ def main()->int:
         print("Phase 32 post-merge record errors:",file=sys.stderr)
         for error in errors: print(f"- {error}",file=sys.stderr)
         return 1
-    print("Phase 32 post-merge validation passed: immutable provenance, state transition, and frozen authority.")
+    print("Phase 32 post-merge validation passed: immutable provenance, preserved historical gate, and frozen authority.")
     return 0
 
 if __name__=="__main__":
