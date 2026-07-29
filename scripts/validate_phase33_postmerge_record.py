@@ -4,7 +4,6 @@ from __future__ import annotations
 import hashlib, json, sys
 from pathlib import Path
 from typing import Any
-
 ROOT=Path(__file__).resolve().parent.parent
 CANDIDATE=ROOT/"release/phase-33-offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness.json"
 POST=ROOT/"release/phase-33-postmerge.json"
@@ -16,13 +15,11 @@ POST_SHA="666f6171fb1ef7c0a2e9e1b9fd4c8d521b3fcc6c12e945819b1d98f04ca50886"
 HEAD="8cd3580a2e12d6bd8d852b1a76f56850cc0c8a89"
 MERGE="d05db33982e0001c9ebc636043dc0cc64592c42d"
 NEXT="offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-assurance-candidate"
-
 def sha_file(path:Path)->str: return hashlib.sha256(path.read_bytes()).hexdigest()
 def load(path:Path)->dict[str,Any]:
     value=json.loads(path.read_text())
     if not isinstance(value,dict): raise ValueError(path)
     return value
-
 def validate()->list[str]:
     errors=[]
     for path,label in ((CANDIDATE,"candidate"),(POST,"postmerge"),(REPORT,"report"),(STATE,"project state"),(WORKFLOW,"workflow")):
@@ -39,54 +36,24 @@ def validate()->list[str]:
     if post.get("validation")!={"applicable_workflows":27,"candidate_head_commit":HEAD,"status":"success"}: errors.append("Phase 33 workflow provenance drift")
     if post.get("result")!=candidate.get("result"): errors.append("Phase 33 result binding drift")
     if post.get("authority")!=candidate.get("authority") or post.get("live") is not False or post.get("real_authorization_claimed") is not False: errors.append("Phase 33 authority drift")
-
     state=STATE.read_text()
-    required_state=(
-        "**Phase 33 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness merged and validated through PR #57.**",
-        "Phase 33 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-validated**",
-        "| 33 | Offline consequence-plan review-response intake envelope validation execution readiness | Merged and validated through PR #57 |",
-        f"Phase 33 exact candidate validation passed at `{HEAD}`",
-        f"PR #57 was merged into `main` at commit `{MERGE}`",
-        "Historical Phase 32 finalization marker: **Phase 32 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Assurance merged and validated through PR #55.**",
-        "Historical Phase 33 candidate marker: `exact-head validation pending`",
-        "Historical Phase 33 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-candidate`",
-        "Atlas remains unchanged by Principia Phase 33",
-        "## Phase 33 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness",
-        CANDIDATE_SHA,
-        HEAD,
-        MERGE,
-        "all 27 applicable workflows",
-        "119 deterministic scenarios",
-        "118 mutations",
-        f"Next gate: **{NEXT}**",
-    )
-    for marker in required_state:
+    required=("Phase 33 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-validated**","| 33 | Offline consequence-plan review-response intake envelope validation execution readiness | Merged and validated through PR #57 |",f"Phase 33 exact candidate validation passed at `{HEAD}`",f"PR #57 was merged into `main` at commit `{MERGE}`","Historical Phase 32 finalization marker: **Phase 32 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Assurance merged and validated through PR #55.**","Historical Phase 33 candidate marker: `exact-head validation pending`","Historical Phase 33 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-candidate`","Atlas remains unchanged by Principia Phase 33","## Phase 33 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness",CANDIDATE_SHA,HEAD,MERGE,"all 27 applicable workflows","119 deterministic scenarios","118 mutations")
+    for marker in required:
         if marker not in state: errors.append(f"Phase 33 project-state marker missing: {marker}")
+    current=f"Next gate: **{NEXT}**"
+    historical=f"Historical Phase 34 target marker: `{NEXT}`"
+    if current not in state and historical not in state: errors.append(f"Phase 33 project-state gate marker missing: {NEXT}")
     if "**Phase 32 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Assurance merged and validated through PR #55.**" not in state: errors.append("Phase 32 historical heading lost")
     if "Principia and Atlas remain separate repositories with separate lifecycle authority." not in state: errors.append("Repository authority separation lost")
-
     report=REPORT.read_text()
-    for marker in (
-        "# Phase 33 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness",
-        "State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-validated`",
-        f"Candidate SHA-256: `{CANDIDATE_SHA}`",
-        f"Exact tested head: `{HEAD}`",
-        "Candidate PR: `#57`",
-        f"Candidate merge: `{MERGE}`",
-        "Applicable candidate workflows: `27`",
-        f"Next gate: `{NEXT}`",
-        "119 deterministic scenarios",
-        "118 rejected mutations",
-    ):
+    for marker in ("# Phase 33 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Readiness","State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-validated`",f"Candidate SHA-256: `{CANDIDATE_SHA}`",f"Exact tested head: `{HEAD}`","Candidate PR: `#57`",f"Candidate merge: `{MERGE}`","Applicable candidate workflows: `27`",f"Next gate: `{NEXT}`","119 deterministic scenarios","118 rejected mutations"):
         if marker not in report: errors.append(f"Phase 33 report marker missing: {marker}")
-
     workflow=WORKFLOW.read_text()
     if "contents: read" not in workflow: errors.append("Phase 33 workflow is not read-only")
     if "validate_phase33_postmerge_record.py" not in workflow: errors.append("Phase 33 workflow does not validate postmerge record")
     for token in ("contents: write","pull_request_target","git push","git commit","repository: Rhodan-lab/Atlas"):
         if token in workflow: errors.append(f"Phase 33 workflow forbidden token: {token}")
     return errors
-
 def main()->int:
     errors=validate()
     if errors:
