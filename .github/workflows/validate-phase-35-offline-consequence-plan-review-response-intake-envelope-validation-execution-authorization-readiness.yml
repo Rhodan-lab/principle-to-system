@@ -1,3 +1,4 @@
+# Phase 35 finalized provenance validation is permanently enabled.
 name: Validate Phase 35 Offline Consequence Plan Review Response Intake Envelope Validation Execution Authorization Readiness
 on:
   pull_request:
