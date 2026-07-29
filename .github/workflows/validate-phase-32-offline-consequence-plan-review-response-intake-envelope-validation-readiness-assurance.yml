@@ -20,18 +20,15 @@ jobs:
           python-version: "3.12"
       - name: Compile Phase 32 and inherited validators
         run: |
-          python3 -m py_compile \
-            scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py \
-            scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py \
-            scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py \
-            scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py \
-            scripts/validate_phase31_postmerge_record.py
+          python3 -m py_compile             scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py             scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py             scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py             scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py             scripts/validate_phase31_postmerge_record.py
+          if [ -f scripts/validate_phase32_postmerge_record.py ]; then python3 -m py_compile scripts/validate_phase32_postmerge_record.py; fi
       - name: Run complete Phase 32 chain
         run: |
           set -o pipefail
           {
             python3 scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py --check
             python3 scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py
+            if [ -f scripts/validate_phase32_postmerge_record.py ]; then python3 scripts/validate_phase32_postmerge_record.py; fi
             python3 -m unittest software.tests.test_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance -v
             python3 scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py --check
             python3 scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py
