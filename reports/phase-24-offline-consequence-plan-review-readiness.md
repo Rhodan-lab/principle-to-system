@@ -1,15 +1,28 @@
-# Phase 24 — Offline Consequence-Plan Review Readiness Candidate
+# Phase 24 — Offline Consequence-Plan Review Readiness
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 23 finalization: `094a6fb0455fdf063574823f2f011d0e1b63d87f`  
-> Candidate state: `offline-consequence-plan-review-readiness-candidate`  
+> Exact tested head: `e385e3f418fc48517be20bfebc30eda2b5f319aa`  
+> Pull request: `#39`  
+> Merge commit: `ab97b345045264653cacdbf26b5ea5d8778d3d3b`  
+> Final state: `offline-consequence-plan-review-readiness-validated`  
 > Mode: `offline-consequence-plan-review-readiness`  
 > Live: `false`
 
-## Purpose
+## Finalization
 
-Phase 24 defines the evidence prerequisites and human gates required before either assured Phase 23 consequence plan could be submitted for review. It does not identify a real reviewer, dispatch a review request, authorize review, start work, complete review, select an outcome, create a hold, change content or status, call Atlas, use external networking, or mutate either repository.
+The exact Phase 24 candidate head passed all 18 applicable workflows and was merged through PR #39. The immutable finalization record is `release/phase-24-postmerge.json`.
+
+```yaml
+candidate_record_sha256: 45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85
+candidate_head_commit: e385e3f418fc48517be20bfebc30eda2b5f319aa
+merge_commit: ab97b345045264653cacdbf26b5ea5d8778d3d3b
+applicable_workflows: 18
+validation_status: success
+```
+
+Phase 24 validates **2 machine-ready plans** with **8 pending human gates**. It does not identify a real reviewer, dispatch a review request, authorize review, start work, complete review, select an outcome, create a hold, change content or status, call Atlas, use external networking, or mutate either repository.
 
 The bounded decision is:
 
@@ -19,7 +32,7 @@ decision: review-readiness-recorded-no-review-started
 
 ## Source binding
 
-The candidate is pinned to the accepted Phase 23 assurance candidate, its post-merge finalization, and all four assurance artifacts.
+The validated record is pinned to the accepted Phase 23 assurance candidate, its post-merge finalization, and all four assurance artifacts.
 
 ```yaml
 phase23_candidate_sha256: 7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6
@@ -30,7 +43,7 @@ assurance_checkpoint_sha256: e6cb3183635805c2d431ce61cc81054941a7db2a829c0da4c18
 assurance_recovery_sha256: c9e20b0ce4128986f67fdae2ef84676cdf3be9f7a61ad5d3f7988c19dee43cd2
 ```
 
-## Readiness model
+## Readiness result
 
 Both Phase 23 assured plans receive one deterministic readiness record.
 
@@ -52,7 +65,7 @@ status_change_count: 0
 real_authorization_claimed: false
 ```
 
-Each record has status:
+Each record remains:
 
 ```yaml
 readiness_status: machine-ready-human-gates-pending
@@ -68,7 +81,7 @@ Four criteria are satisfied for each plan:
 3. the future review evidence packet is enumerated;
 4. a non-executing review protocol is defined.
 
-These machine checks establish only that a review request packet could be prepared deterministically. They do not establish that a real reviewer is available, qualified, conflict-free, or authorized.
+These checks establish only that a review request packet can be prepared deterministically. They do not establish that a real reviewer is available, qualified, conflict-free, or authorized.
 
 ## Human gates
 
@@ -119,13 +132,14 @@ Atlas continues to own Atlas knowledge identity, evidence, provenance, lifecycle
 
 ## Deterministic artifacts
 
-Phase 24 generates:
+Phase 24 generates and validates:
 
 - `thermal-control.consequence-plan-review-readiness-report.v01.json`;
 - `thermal-control.consequence-plan-review-readiness-ledger.v01.json`;
 - `thermal-control.consequence-plan-review-readiness-checkpoint.v01.json`;
 - `thermal-control.consequence-plan-review-readiness-recovery.v01.json`;
-- `release/phase-24-offline-consequence-plan-review-readiness.json`.
+- `release/phase-24-offline-consequence-plan-review-readiness.json`;
+- `release/phase-24-postmerge.json`.
 
 The ledger chains both readiness records. The checkpoint binds the report and ledger digests. The recovery matrix contains 45 deterministic scenarios: one accepted baseline and 44 rejected mutations.
 
@@ -143,10 +157,10 @@ The recovery model rejects:
 - claimed real authorization, inherited status, automatic authority changes, or repository mutation;
 - external network requirements, Atlas calls, or live activation.
 
-## Candidate result
+## Validated result
 
 ```yaml
-state: offline-consequence-plan-review-readiness-candidate
+state: offline-consequence-plan-review-readiness-validated
 decision: review-readiness-recorded-no-review-started
 next_gate: offline-consequence-plan-review-request-packet-candidate
 live: false
