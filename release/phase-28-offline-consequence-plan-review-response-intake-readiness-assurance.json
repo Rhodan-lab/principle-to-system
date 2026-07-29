@@ -1,0 +1,534 @@
+{
+  "assurances": [
+    {
+      "assurance_check_count": 20,
+      "assurance_checks": {
+        "authority_boundary_preserved": true,
+        "blank_response_template_exact": true,
+        "human_gates_remain_pending": true,
+        "packet_assurance_binding_exact": true,
+        "packet_identity_exact": true,
+        "question_slots_blank": true,
+        "readiness_identity_exact": true,
+        "readiness_ledger_binding_exact": true,
+        "readiness_record_digest_exact": true,
+        "required_fields_exact": true,
+        "response_states_frozen": true,
+        "review_execution_frozen": true,
+        "schema_encoding_exact": true,
+        "schema_identity_exact": true,
+        "schema_media_type_exact": true,
+        "schema_sections_exact": true,
+        "schema_version_exact": true,
+        "source_candidate_exact": true,
+        "source_finalization_exact": true,
+        "zero_effect_boundary_preserved": true
+      },
+      "blank_question_slot_count": 3,
+      "human_gate_pending_count": 4,
+      "human_gate_satisfied_count": 0,
+      "intake_readiness_assurance_id": "principia:consequence-plan-review-response-intake-readiness-assurance:feedback-manual-review:0001",
+      "intake_readiness_id": "principia:consequence-plan-review-response-intake-readiness:feedback-manual-review:0001",
+      "intake_readiness_ledger_entry_sha256": "d514f6934ffd86e2478c9bf124340ceb162315bae351ff8ee5c4b66a925169a0",
+      "intake_readiness_record_sha256": "2a10068004e3417a2b70fbdf92add060eee265cfb7c95e0eb4947293e6d3ab6f",
+      "local_only": true,
+      "packet_assurance_id": "principia:consequence-plan-review-request-packet-assurance:feedback-manual-review:0001",
+      "packet_id": "principia:consequence-plan-review-request-packet:feedback-manual-review:0001",
+      "real_authorization_claimed": false,
+      "required_field_count": 15,
+      "response_accepted": false,
+      "response_intake_authorized": false,
+      "response_quarantined": false,
+      "response_receipt_permitted": false,
+      "response_received": false,
+      "response_rejected": false,
+      "response_schema_id": "principia:review-response-intake-schema:feedback-manual-review:0001",
+      "response_schema_section_count": 6,
+      "response_validated": false,
+      "review_completed": false,
+      "review_start_permitted": false,
+      "review_started": false,
+      "reviewer_contact_permitted": false,
+      "reviewer_identity_present": false,
+      "reviewer_role_required": "qualified-pedagogical-reviewer",
+      "sequence": 1,
+      "status_change": false,
+      "verdict": "response-intake-readiness-assured-no-response"
+    },
+    {
+      "assurance_check_count": 20,
+      "assurance_checks": {
+        "authority_boundary_preserved": true,
+        "blank_response_template_exact": true,
+        "human_gates_remain_pending": true,
+        "packet_assurance_binding_exact": true,
+        "packet_identity_exact": true,
+        "question_slots_blank": true,
+        "readiness_identity_exact": true,
+        "readiness_ledger_binding_exact": true,
+        "readiness_record_digest_exact": true,
+        "required_fields_exact": true,
+        "response_states_frozen": true,
+        "review_execution_frozen": true,
+        "schema_encoding_exact": true,
+        "schema_identity_exact": true,
+        "schema_media_type_exact": true,
+        "schema_sections_exact": true,
+        "schema_version_exact": true,
+        "source_candidate_exact": true,
+        "source_finalization_exact": true,
+        "zero_effect_boundary_preserved": true
+      },
+      "blank_question_slot_count": 3,
+      "human_gate_pending_count": 4,
+      "human_gate_satisfied_count": 0,
+      "intake_readiness_assurance_id": "principia:consequence-plan-review-response-intake-readiness-assurance:model-boundary-release-governance:0002",
+      "intake_readiness_id": "principia:consequence-plan-review-response-intake-readiness:model-boundary-release-governance:0002",
+      "intake_readiness_ledger_entry_sha256": "bcd693386b4d423f76497d46cc213efd6c4b9551bfbeb29585dc71fbab905a19",
+      "intake_readiness_record_sha256": "f43e0f9176438551d374d186f1d520fbbfa4d6706d2979ebb2e5d82b280ec1f7",
+      "local_only": true,
+      "packet_assurance_id": "principia:consequence-plan-review-request-packet-assurance:model-boundary-release-governance:0002",
+      "packet_id": "principia:consequence-plan-review-request-packet:model-boundary-release-governance:0002",
+      "real_authorization_claimed": false,
+      "required_field_count": 15,
+      "response_accepted": false,
+      "response_intake_authorized": false,
+      "response_quarantined": false,
+      "response_receipt_permitted": false,
+      "response_received": false,
+      "response_rejected": false,
+      "response_schema_id": "principia:review-response-intake-schema:model-boundary-release-governance:0002",
+      "response_schema_section_count": 6,
+      "response_validated": false,
+      "review_completed": false,
+      "review_start_permitted": false,
+      "review_started": false,
+      "reviewer_contact_permitted": false,
+      "reviewer_identity_present": false,
+      "reviewer_role_required": "qualified-release-governance-reviewer",
+      "sequence": 2,
+      "status_change": false,
+      "verdict": "response-intake-readiness-assured-no-response"
+    }
+  ],
+  "authority": {
+    "atlas_call_permitted": false,
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_response_intake_assurance_permitted": true,
+    "repository_mutation": false,
+    "response_intake_authorized": false,
+    "response_receipt_permitted": false,
+    "response_validation_authorized": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "checkpoint": {
+    "assurance_check_count": 40,
+    "assured_readiness_record_count": 2,
+    "failed_assurance_count": 0,
+    "human_gate_pending_count": 8,
+    "ledger_sha256": "ada78f1bd7103c3faf074289777a4b48b605c4629ae143710881acf7bb084171",
+    "response_received_count": 0,
+    "response_validated_count": 0,
+    "review_started_count": 0,
+    "status_change_count": 0
+  },
+  "contract": "principia-offline-consequence-plan-review-response-intake-readiness-assurance/0.1",
+  "decision": "response-intake-readiness-assured-no-response-received",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-response-intake-readiness-assurance-thermal-control",
+  "ledger": {
+    "entries": [
+      {
+        "entry": {
+          "intake_readiness_assurance_id": "principia:consequence-plan-review-response-intake-readiness-assurance:feedback-manual-review:0001",
+          "intake_readiness_id": "principia:consequence-plan-review-response-intake-readiness:feedback-manual-review:0001",
+          "intake_readiness_record_sha256": "2a10068004e3417a2b70fbdf92add060eee265cfb7c95e0eb4947293e6d3ab6f",
+          "previous_entry_sha256": null,
+          "record_sha256": "485376d8f2e39ae8f9050dce3ff42ba8ffb8f06391ddb1e8db22ad6db568ebd2",
+          "sequence": 1,
+          "verdict": "response-intake-readiness-assured-no-response"
+        },
+        "entry_sha256": "656544c79f245e3d72b408cd750732a151fe0a0aee74c1e5df3b0caa867a478a"
+      },
+      {
+        "entry": {
+          "intake_readiness_assurance_id": "principia:consequence-plan-review-response-intake-readiness-assurance:model-boundary-release-governance:0002",
+          "intake_readiness_id": "principia:consequence-plan-review-response-intake-readiness:model-boundary-release-governance:0002",
+          "intake_readiness_record_sha256": "f43e0f9176438551d374d186f1d520fbbfa4d6706d2979ebb2e5d82b280ec1f7",
+          "previous_entry_sha256": "656544c79f245e3d72b408cd750732a151fe0a0aee74c1e5df3b0caa867a478a",
+          "record_sha256": "a469959e96c84f4d5738efcebcd8cc78adc279b90fdfaf65bff70d623da448b6",
+          "sequence": 2,
+          "verdict": "response-intake-readiness-assured-no-response"
+        },
+        "entry_sha256": "1377b4d6073dd2840a57b2150e94b5824668a9f949a065b5abcdbf0a702d154a"
+      }
+    ],
+    "head_sequence": 2,
+    "head_sha256": "1377b4d6073dd2840a57b2150e94b5824668a9f949a065b5abcdbf0a702d154a"
+  },
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-response-intake-readiness-assurance",
+  "next_gate": "offline-consequence-plan-review-response-intake-envelope-readiness-candidate",
+  "phase": 28,
+  "real_authorization_claimed": false,
+  "recovery": {
+    "accepted_count": 1,
+    "rejected_count": 76,
+    "scenario_count": 77,
+    "scenarios": [
+      {
+        "expected": "accepted",
+        "id": "baseline"
+      },
+      {
+        "expected": "rejected",
+        "id": "phase27-candidate-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "phase27-postmerge-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "missing-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "orphan-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "duplicate-assurance"
+      },
+      {
+        "expected": "rejected",
+        "id": "sequence-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-record-digest-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "readiness-ledger-entry-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-assurance-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-version-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-media-type-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-encoding-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-order-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "schema-section-state-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "required-field-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "required-field-order-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-id-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-filled"
+      },
+      {
+        "expected": "rejected",
+        "id": "question-accepted"
+      },
+      {
+        "expected": "rejected",
+        "id": "template-submitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-id-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "source-digest-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-identity-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-role-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "competence-attestation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "conflict-declaration-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "authorization-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-observation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-recommendation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "submitted-at-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "signature-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "human-gate-satisfied"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-intake-authorized"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-receipt-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-received"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-validated"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-accepted"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-rejected"
+      },
+      {
+        "expected": "rejected",
+        "id": "response-quarantined"
+      },
+      {
+        "expected": "rejected",
+        "id": "packet-dispatched"
+      },
+      {
+        "expected": "rejected",
+        "id": "reviewer-contact-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-start-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-started"
+      },
+      {
+        "expected": "rejected",
+        "id": "review-completed"
+      },
+      {
+        "expected": "rejected",
+        "id": "outcome-selected"
+      },
+      {
+        "expected": "rejected",
+        "id": "content-change-proposed"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-recommendation-recorded"
+      },
+      {
+        "expected": "rejected",
+        "id": "effective-hold"
+      },
+      {
+        "expected": "rejected",
+        "id": "operational-effect"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-change"
+      },
+      {
+        "expected": "rejected",
+        "id": "human-authorization-claimed"
+      },
+      {
+        "expected": "rejected",
+        "id": "real-authorization-claimed"
+      },
+      {
+        "expected": "rejected",
+        "id": "status-inheritance-enabled"
+      },
+      {
+        "expected": "rejected",
+        "id": "automatic-status-change"
+      },
+      {
+        "expected": "rejected",
+        "id": "automatic-release-action"
+      },
+      {
+        "expected": "rejected",
+        "id": "repository-mutation"
+      },
+      {
+        "expected": "rejected",
+        "id": "external-network-required"
+      },
+      {
+        "expected": "rejected",
+        "id": "external-delivery-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "atlas-call-permitted"
+      },
+      {
+        "expected": "rejected",
+        "id": "live-activation"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-check-failed"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-verdict-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-status-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-locality-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-ledger-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-checkpoint-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "summary-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "authority-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "source-pin-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "assurance-count-drift"
+      },
+      {
+        "expected": "rejected",
+        "id": "recovery-count-drift"
+      }
+    ]
+  },
+  "result": {
+    "assurance_check_count": 40,
+    "assured_readiness_record_count": 2,
+    "blank_question_slot_count": 6,
+    "failed_assurance_count": 0,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "intake_readiness_record_count": 2,
+    "real_authorization_claimed": false,
+    "required_field_count": 30,
+    "response_accepted_count": 0,
+    "response_intake_authorized_count": 0,
+    "response_quarantined_count": 0,
+    "response_received_count": 0,
+    "response_rejected_count": 0,
+    "response_schema_count": 2,
+    "response_schema_section_count": 12,
+    "response_validated_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "status_change_count": 0
+  },
+  "source_phase27": {
+    "candidate_path": "release/phase-27-offline-consequence-plan-review-response-intake-readiness.json",
+    "candidate_sha256": "9175291eaca5cae5d43e0ba71f85232712e40d9ae16d2767fc360363b7828589",
+    "finalization_commit": "a54a4859cb7537767a3d77de769c213c6a2f6515",
+    "postmerge_path": "release/phase-27-postmerge.json",
+    "postmerge_sha256": "2ff65adb34b7790af3585de45254de5391ecf0d8dfbafa0286e8e21841966eca"
+  },
+  "state": "offline-consequence-plan-review-response-intake-readiness-assurance-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}
