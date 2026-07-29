@@ -7,6 +7,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from scripts.generate_phase25_offline_consequence_plan_review_request_packet import (
     ARTIFACTS,
     AUTHORITY,
@@ -28,8 +32,6 @@ from scripts.generate_phase25_offline_consequence_plan_review_request_packet imp
     render,
     verify_sources,
 )
-
-ROOT = Path(__file__).resolve().parent.parent
 
 
 def error(errors: list[str], code: str, message: str) -> None:
