@@ -1,0 +1,70 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_response_intake_readiness_permitted": true,
+    "repository_mutation": false,
+    "response_intake_authorized": false,
+    "response_receipt_permitted": false,
+    "response_validation_authorized": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-27-offline-consequence-plan-review-response-intake-readiness.json",
+    "sha256": "9175291eaca5cae5d43e0ba71f85232712e40d9ae16d2767fc360363b7828589"
+  },
+  "contract": "principia-offline-consequence-plan-review-response-intake-readiness-finalization/0.1",
+  "decision": "response-intake-readiness-recorded-no-response-received",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-response-intake-readiness-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-response-intake-readiness",
+  "next_gate": "offline-consequence-plan-review-response-intake-readiness-assurance-candidate",
+  "phase": 27,
+  "principia": {
+    "candidate_head_commit": "2a1cd76562e6392121b265e5f668c2608cf19a56",
+    "merge_commit": "b8b5ec9a4c56342f22162c759f3d63585ed7cf43",
+    "pull_request": 45,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "blank_question_slot_count": 6,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "intake_readiness_record_count": 2,
+    "packet_count": 2,
+    "question_slot_count": 6,
+    "real_authorization_claimed": false,
+    "required_field_count": 30,
+    "response_accepted_count": 0,
+    "response_intake_authorized_count": 0,
+    "response_quarantined_count": 0,
+    "response_received_count": 0,
+    "response_rejected_count": 0,
+    "response_schema_count": 2,
+    "response_schema_section_count": 12,
+    "response_template_count": 2,
+    "response_validated_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "status_change_count": 0,
+    "submitted_template_count": 0
+  },
+  "state": "offline-consequence-plan-review-response-intake-readiness-validated",
+  "validation": {
+    "applicable_workflows": 21,
+    "candidate_head_commit": "2a1cd76562e6392121b265e5f668c2608cf19a56",
+    "status": "success"
+  }
+}
