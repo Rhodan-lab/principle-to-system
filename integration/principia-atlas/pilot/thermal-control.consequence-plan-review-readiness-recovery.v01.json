@@ -1,0 +1,257 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "status_inheritance": "prohibited"
+  },
+  "baseline": {
+    "checkpoint_sha256": "b1c73bb2a863d142e3546318b9e73ee1cfc623a5bd243c6bc05d9cc19cba6c2c",
+    "ledger_sha256": "894254307e444f5f33395ce7a3de1ab8f93a03d98dd1c97140e3e2294ddbdda8",
+    "readiness_report_sha256": "51e76135520b13a810e7a06e950d8e478fd812fbd8e063c0ad65e6f043257a8b"
+  },
+  "contract": "principia-offline-consequence-plan-review-readiness-recovery/0.1",
+  "live": false,
+  "mode": "offline-consequence-plan-review-readiness",
+  "recovery_id": "principia:offline-consequence-plan-review-readiness-recovery:thermal-control:0001",
+  "scenarios": [
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase23-postmerge-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase23-candidate-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-report-file-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-ledger-file-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-checkpoint-file-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-recovery-file-drift"
+    },
+    {
+      "expected_error": "E-P24-MISSING",
+      "expected_outcome": "rejected",
+      "scenario_id": "missing-readiness-record"
+    },
+    {
+      "expected_error": "E-P24-ORPHAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "orphan-readiness-record"
+    },
+    {
+      "expected_error": "E-P24-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-readiness-id"
+    },
+    {
+      "expected_error": "E-P24-SEQUENCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "readiness-sequence-drift"
+    },
+    {
+      "expected_error": "E-P24-ASSURANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-id-drift"
+    },
+    {
+      "expected_error": "E-P24-ASSURANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-record-digest-drift"
+    },
+    {
+      "expected_error": "E-P24-PLAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-id-drift"
+    },
+    {
+      "expected_error": "E-P24-PLAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-digest-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-ledger-entry-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-proposal-drift"
+    },
+    {
+      "expected_error": "E-P24-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "source-resolution-drift"
+    },
+    {
+      "expected_error": "E-P24-AFFECTED-SET",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P24-CRITERIA",
+      "expected_outcome": "rejected",
+      "scenario_id": "criteria-count-drift"
+    },
+    {
+      "expected_error": "E-P24-CRITERIA",
+      "expected_outcome": "rejected",
+      "scenario_id": "criteria-sequence-drift"
+    },
+    {
+      "expected_error": "E-P24-CRITERIA",
+      "expected_outcome": "rejected",
+      "scenario_id": "machine-criterion-pending"
+    },
+    {
+      "expected_error": "E-P24-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-criterion-satisfied"
+    },
+    {
+      "expected_error": "E-P24-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "reviewer-identity-recorded"
+    },
+    {
+      "expected_error": "E-P24-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "competence-attestation-recorded"
+    },
+    {
+      "expected_error": "E-P24-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "conflict-declaration-recorded"
+    },
+    {
+      "expected_error": "E-P24-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "authorization-recorded"
+    },
+    {
+      "expected_error": "E-P24-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-request-dispatched"
+    },
+    {
+      "expected_error": "E-P24-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-start-permitted"
+    },
+    {
+      "expected_error": "E-P24-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-started"
+    },
+    {
+      "expected_error": "E-P24-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-completed"
+    },
+    {
+      "expected_error": "E-P24-OUTCOME",
+      "expected_outcome": "rejected",
+      "scenario_id": "outcome-selected"
+    },
+    {
+      "expected_error": "E-P24-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "content-change-proposed"
+    },
+    {
+      "expected_error": "E-P24-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-recommendation-recorded"
+    },
+    {
+      "expected_error": "E-P24-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "effective-hold"
+    },
+    {
+      "expected_error": "E-P24-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "operational-effect"
+    },
+    {
+      "expected_error": "E-P24-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-change"
+    },
+    {
+      "expected_error": "E-P24-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "real-authorization-claimed"
+    },
+    {
+      "expected_error": "E-P24-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P24-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-status-change"
+    },
+    {
+      "expected_error": "E-P24-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-release-action"
+    },
+    {
+      "expected_error": "E-P24-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "repository-mutation"
+    },
+    {
+      "expected_error": "E-P24-NETWORK",
+      "expected_outcome": "rejected",
+      "scenario_id": "external-network-required"
+    },
+    {
+      "expected_error": "E-P24-ATLAS",
+      "expected_outcome": "rejected",
+      "scenario_id": "atlas-call-permitted"
+    },
+    {
+      "expected_error": "E-P24-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    }
+  ],
+  "summary": {
+    "accepted_count": 1,
+    "rejected_count": 44,
+    "scenario_count": 45
+  }
+}

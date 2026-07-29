@@ -1,0 +1,50 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-readiness-ledger/0.1",
+  "decision": "review-readiness-recorded-no-review-started",
+  "entries": [
+    {
+      "entry": {
+        "assurance_id": "principia:consequence-plan-assurance:feedback-manual-review:0001",
+        "plan_id": "principia:resolution-consequence-plan:feedback-manual-review:0001",
+        "previous_entry_sha256": null,
+        "readiness_id": "principia:consequence-plan-review-readiness:feedback-manual-review:0001",
+        "readiness_record_sha256": "453be7c298341dcd19d3968645cd49c95e26259b4497510ffd9765aa31ef4c89",
+        "sequence": 1,
+        "verdict": "readiness-defined-review-not-authorized"
+      },
+      "entry_sha256": "f44e21139618175df45499f61c936a7e26750bf69efc0ce83c77574e1b8b3a18"
+    },
+    {
+      "entry": {
+        "assurance_id": "principia:consequence-plan-assurance:model-boundary-release-governance:0002",
+        "plan_id": "principia:resolution-consequence-plan:model-boundary-release-governance:0002",
+        "previous_entry_sha256": "f44e21139618175df45499f61c936a7e26750bf69efc0ce83c77574e1b8b3a18",
+        "readiness_id": "principia:consequence-plan-review-readiness:model-boundary-release-governance:0002",
+        "readiness_record_sha256": "24692de9e01038b79a241e64bd9947443995a2f2b834adedd490b6298a160dbd",
+        "sequence": 2,
+        "verdict": "readiness-defined-review-not-authorized"
+      },
+      "entry_sha256": "b3e1d3a5a4e99d1a84aca91468b7ea08a9cfc0a17c080c131afceeb7a2f89dcf"
+    }
+  ],
+  "head_sequence": 2,
+  "head_sha256": "b3e1d3a5a4e99d1a84aca91468b7ea08a9cfc0a17c080c131afceeb7a2f89dcf",
+  "ledger_id": "principia:offline-consequence-plan-review-readiness-ledger:thermal-control:0001",
+  "live": false,
+  "mode": "offline-consequence-plan-review-readiness",
+  "source_readiness_report_sha256": "51e76135520b13a810e7a06e950d8e478fd812fbd8e063c0ad65e6f043257a8b"
+}
