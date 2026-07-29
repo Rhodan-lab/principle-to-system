@@ -71,13 +71,13 @@ def main() -> int:
     }:
         errors.append("Phase 25 finalization candidate record pin is invalid")
 
-    principia = finalization.get("principia")
     expected_principia = {
         "repository": "Rhodan-lab/principle-to-system",
         "pull_request": 41,
         "candidate_head_commit": EXPECTED_CANDIDATE_HEAD,
         "merge_commit": EXPECTED_MERGE,
     }
+    principia = finalization.get("principia")
     if not isinstance(principia, Mapping) or any(
         principia.get(key) != value for key, value in expected_principia.items()
     ):
@@ -119,15 +119,9 @@ def main() -> int:
         errors.append("Phase 25 authority record is missing")
     else:
         for key in (
-            "atlas_call_permitted",
-            "automatic_status_change",
-            "automatic_release_action",
-            "external_delivery_permitted",
-            "external_network_required",
-            "human_authorization_claimed",
-            "repository_mutation",
-            "review_execution_authorized",
-            "review_request_dispatch_authorized",
+            "atlas_call_permitted", "automatic_status_change", "automatic_release_action",
+            "external_delivery_permitted", "external_network_required", "human_authorization_claimed",
+            "repository_mutation", "review_execution_authorized", "review_request_dispatch_authorized",
             "reviewer_contact_permitted",
         ):
             if authority.get(key) is not False:
@@ -138,8 +132,13 @@ def main() -> int:
             errors.append("Phase 25 finalization must prohibit status inheritance")
 
     state = STATE_PATH.read_text(encoding="utf-8")
-    for marker in (
+    current_or_historical = (
         "**Phase 25 — Offline Consequence-Plan Review-Request Packet merged and validated through PR #41.**",
+        "Historical Phase 25 finalization marker: `Phase 25 — Offline Consequence-Plan Review-Request Packet merged and validated through PR #41`",
+    )
+    if not any(marker in state for marker in current_or_historical):
+        errors.append("PROJECT_STATE.md missing Phase 25 current or historical finalization heading")
+    for marker in (
         "Phase 25 state: **offline-consequence-plan-review-request-packet-validated**",
         "| 25 | Offline consequence-plan review-request packet | Merged and validated through PR #41 |",
         f"Phase 25 exact candidate validation passed at `{EXPECTED_CANDIDATE_HEAD}`",
@@ -177,21 +176,14 @@ def main() -> int:
 
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
     for marker in (
-        "agent/finalize-phase-25-record",
-        "scripts/validate_phase25_postmerge_record.py",
-        "release/phase-25-postmerge.json",
-        "contents: read",
+        "agent/finalize-phase-25-record", "scripts/validate_phase25_postmerge_record.py",
+        "release/phase-25-postmerge.json", "contents: read",
     ):
         if marker not in workflow:
             errors.append(f"Phase 25 workflow missing finalization marker: {marker}")
     for forbidden in (
-        "contents" + ": write",
-        "git " + "push",
-        "git " + "commit",
-        "pull_request" + "_target",
-        "repository: Rhodan-lab/Atlas",
-        "curl ",
-        "wget ",
+        "contents" + ": write", "git " + "push", "git " + "commit",
+        "pull_request" + "_target", "repository: Rhodan-lab/Atlas", "curl ", "wget ",
     ):
         if forbidden in workflow:
             errors.append(f"Phase 25 workflow contains forbidden token: {forbidden}")
