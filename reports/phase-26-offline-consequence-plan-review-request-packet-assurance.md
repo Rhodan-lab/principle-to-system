@@ -1,9 +1,11 @@
-# Phase 26 — Offline Consequence-Plan Review-Request Packet Assurance Candidate
+# Phase 26 — Offline Consequence-Plan Review-Request Packet Assurance
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 25 finalization: `46c2b286bde99fd0165f0ec97463ac0fb5af2b5e`  
-> Candidate state: `offline-consequence-plan-review-request-packet-assurance-candidate`  
+> Exact tested head: `58ffacbaff03301145ab0c68f4f692083641a7c1`  
+> Merge commit: `72bca34c7623c19fed0c7f625e19cd9b7291c47d`  
+> Final state: `offline-consequence-plan-review-request-packet-assurance-validated`  
 > Mode: `offline-consequence-plan-review-request-packet-assurance`  
 > Live: `false`
 
@@ -35,7 +37,7 @@ live: false
 
 ## Exact source binding
 
-The assurance candidate pins the Phase 25 candidate, finalization, packet report, packet ledger, checkpoint, and recovery artifacts.
+The assurance record pins the Phase 25 candidate, finalization, packet report, packet ledger, checkpoint, and recovery artifacts.
 
 ```yaml
 phase25_candidate_sha256: 38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3
@@ -61,7 +63,7 @@ Each packet is checked for:
 
 The assurance verdict for both packets is `packet-assured-local-no-dispatch`.
 
-The accepted baseline therefore contains **2 assured packets**, **0 dispatched packets**, **0 started reviews**, **0 submitted responses**, and **8 human gates still pending**.
+The accepted baseline contains **2 assured packets**, **0 dispatched packets**, **0 started reviews**, **0 submitted responses**, and **8 human gates still pending**.
 
 ## Recovery matrix
 
@@ -87,6 +89,8 @@ candidate:
   sha256: cdf82f5e4792d43e21b3242fa4114a4063bab9849abb68be25abb44c3a51b22c
 ```
 
+`release/phase-26-postmerge.json` pins PR #43, the exact tested candidate head, merge commit, all 20 applicable workflows, the immutable candidate digest, the authority boundaries, and the final state.
+
 ## Frozen authority
 
 ```yaml
@@ -106,4 +110,6 @@ live: false
 
 ## Next gate
 
-The candidate may recommend `offline-consequence-plan-review-response-intake-readiness-candidate` only after separate post-merge finalization. That future gate may define deterministic local response-intake requirements but must not dispatch a packet, contact or identify a reviewer, fabricate a response, satisfy a human gate, authorize or start review, select an outcome, call Atlas, use external networking, or mutate either repository.
+Next gate: `offline-consequence-plan-review-response-intake-readiness-candidate`.
+
+That future gate may define deterministic local response-intake requirements but must not dispatch a packet, contact or identify a reviewer, fabricate or receive a response, satisfy a human gate, authorize or start review, select an outcome, call Atlas, use external networking, or mutate either repository.
