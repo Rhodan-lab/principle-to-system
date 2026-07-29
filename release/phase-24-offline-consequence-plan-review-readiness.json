@@ -1,0 +1,82 @@
+{
+  "artifacts": {
+    "checkpoint": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-checkpoint.v01.json",
+      "sha256": "7cc87aa8087f88e4923b44458c30c3fc700e748d22e2a75fd47453273e8c11f1"
+    },
+    "ledger": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-ledger.v01.json",
+      "sha256": "d939f334ff5e4a5a0fb40b2a156f42a5cea6349e39278efae8246ac3ddb7d1e8"
+    },
+    "recovery": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-recovery.v01.json",
+      "sha256": "8c79d4fe431c5f2e30a95532e599c3c3ac466c81daa8f23289545ab82fb786a0"
+    },
+    "report": {
+      "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-report.v01.json",
+      "sha256": "94e737822aa958f81e574b4ca7a8aaa4067e1a75096e9b33a6aa27bc96f2c7f7"
+    }
+  },
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-readiness/0.1",
+  "decision": "review-readiness-recorded-no-review-started",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-readiness-thermal-control",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-readiness",
+  "next_gate": "offline-consequence-plan-review-request-packet-candidate",
+  "phase": 24,
+  "real_authorization_claimed": false,
+  "result": {
+    "effective_hold_count": 0,
+    "human_authorization_count": 0,
+    "human_ready_count": 0,
+    "machine_ready_count": 2,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "plan_count": 2,
+    "readiness_record_count": 2,
+    "real_authorization_claimed": false,
+    "review_completed_count": 0,
+    "review_request_dispatch_count": 0,
+    "review_request_packet_preparation_count": 2,
+    "review_started_count": 0,
+    "status_change_count": 0,
+    "unmet_human_gate_count": 8
+  },
+  "source_phase23": {
+    "assurance_checkpoint_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-checkpoint.v01.json",
+    "assurance_checkpoint_sha256": "e6cb3183635805c2d431ce61cc81054941a7db2a829c0da4c1880f36d7b127ce",
+    "assurance_ledger_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-ledger.v01.json",
+    "assurance_ledger_sha256": "ec43c3194a048f13e0263376d6eb220be039a82e6bf28816510f8f8e1d39f60b",
+    "assurance_recovery_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-recovery.v01.json",
+    "assurance_recovery_sha256": "c9e20b0ce4128986f67fdae2ef84676cdf3be9f7a61ad5d3f7988c19dee43cd2",
+    "assurance_report_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-assurance-report.v01.json",
+    "assurance_report_sha256": "7bda137c7c378c4beb1a7825c0df2c86c80e5b8732545126787a21029d68d1b7",
+    "phase23_candidate_path": "release/phase-23-offline-consequence-plan-assurance.json",
+    "phase23_candidate_sha256": "7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6",
+    "phase23_finalization_commit": "094a6fb0455fdf063574823f2f011d0e1b63d87f",
+    "phase23_postmerge_path": "release/phase-23-postmerge.json",
+    "phase23_postmerge_sha256": "9c92ca19883434982dcebb3966b0368e7571cdfb292e2464d29bd4d031079312"
+  },
+  "state": "offline-consequence-plan-review-readiness-candidate",
+  "validation": {
+    "pull_request": null,
+    "status": "pending",
+    "tested_head_commit": null
+  }
+}
