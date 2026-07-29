@@ -1,10 +1,14 @@
-# Phase 27 — Offline Consequence-Plan Review-Response Intake Readiness Candidate
+# Phase 27 — Offline Consequence-Plan Review-Response Intake Readiness
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 26 finalization: `38bd86f9bbf81c7fcd865da51f17987d26c8e84f`  
-> State: `offline-consequence-plan-review-response-intake-readiness-candidate`  
+> Exact tested head: `2a1cd76562e6392121b265e5f668c2608cf19a56`  
+> Merge commit: `b8b5ec9a4c56342f22162c759f3d63585ed7cf43`  
+> Final state: `offline-consequence-plan-review-response-intake-readiness-validated`  
 > Live: `false`
+
+Historical candidate report title: # Phase 27 — Offline Consequence-Plan Review-Response Intake Readiness Candidate
 
 ## Purpose
 
@@ -23,6 +27,9 @@ human_gate_satisfied_count: 0
 response_intake_authorized_count: 0
 response_received_count: 0
 response_validated_count: 0
+response_accepted_count: 0
+response_rejected_count: 0
+response_quarantined_count: 0
 reviewer_identity_count: 0
 reviewer_contact_count: 0
 review_started_count: 0
@@ -40,7 +47,9 @@ Across both records there are **6 blank question slots** and **8 pending human g
 
 ## Recovery and provenance
 
-The candidate pins the Phase 26 candidate, finalization, assurance report, ledger, checkpoint, and recovery artifacts. Its recovery matrix contains **77 deterministic scenarios**: one accepted baseline and 76 rejected mutations covering source drift, schema corruption, fabricated reviewer data, filled responses, human-gate satisfaction, receipt, validation, dispatch, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+The immutable candidate pins the Phase 26 candidate, finalization, assurance report, ledger, checkpoint, and recovery artifacts. Its recovery matrix contains **77 deterministic scenarios**: one accepted baseline and 76 rejected mutations covering source drift, schema corruption, fabricated reviewer data, filled responses, human-gate satisfaction, receipt, validation, dispatch, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+
+`release/phase-27-postmerge.json` pins candidate SHA-256 `9175291eaca5cae5d43e0ba71f85232712e40d9ae16d2767fc360363b7828589`, PR #45, the exact tested head, merge commit, all 21 applicable workflows, the frozen authority boundaries, and the final state.
 
 ## Frozen authority
 
