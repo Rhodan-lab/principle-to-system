@@ -1,10 +1,15 @@
-# Phase 31 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Candidate
+# Phase 31 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 30 finalization: `112423a77d619da8d97afc8247b20959890defa3`  
-> State: `offline-consequence-plan-review-response-intake-envelope-validation-readiness-candidate`  
+> Exact tested head: `7d281af68d74404bc3f00d2bee8f368165433cb0`  
+> Merge commit: `eac5429eaa99f7902b338d87a8b6b9c981d5d1a3`  
+> Candidate SHA-256: `a764c145481d1ddba59df45dd29042636547ced8f308fbaf3f22b6ce79c0473c`  
+> Final state: `offline-consequence-plan-review-response-intake-envelope-validation-readiness-validated`  
 > Live: `false`
+
+Historical candidate report title: `# Phase 31 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Candidate`
 
 ## Purpose
 
@@ -48,6 +53,8 @@ live: false
 
 ## Validation model
 
+The finalized evidence contains **2 validation-readiness records**, **16 inactive stages**, **36 inactive controls**, **6 possible but unselected dispositions**, and **20 blank execution-specific receipt fields**.
+
 Each assured envelope receives one validation-readiness record containing eight ordered inactive stages and eighteen inactive controls. The profiles cover source provenance, structural validation, identity bindings, payload integrity, human-gate preconditions, duplicate detection, quarantine classification, and decision freeze.
 
 Each profile defines three possible dispositions—structural rejection, quarantine candidate, and validation-pass candidate—but none is active or selected. Each blank receipt keeps ten execution-specific fields empty, including validation-run identity, envelope and response identity, timestamps, evaluated digest, failed controls, disposition, quarantine reasons, and validator signature.
@@ -57,6 +64,8 @@ Both records receive verdict `response-envelope-validation-controls-ready-no-env
 ## Recovery and provenance
 
 The candidate pins Phase 30 candidate SHA-256 `f3a232a6895b153020a2ce49bf5a4cbc10d7adabb5b9780da4edfe4d1f764ce5`, Phase 30 post-merge SHA-256 `7f5be4be6efeb4b6223c9ef099be9b545eeebe3f8d467fe5e39f424ca2f3b6d0`, and finalization commit `112423a77d619da8d97afc8247b20959890defa3`.
+
+`release/phase-31-postmerge.json` pins candidate SHA-256 `a764c145481d1ddba59df45dd29042636547ced8f308fbaf3f22b6ce79c0473c`, PR #53, exact tested head `7d281af68d74404bc3f00d2bee8f368165433cb0`, merge commit `eac5429eaa99f7902b338d87a8b6b9c981d5d1a3`, 25 successfully completed candidate workflows, the frozen authority boundaries, and the final state.
 
 Its recovery matrix contains **110 deterministic scenarios**: one accepted baseline and 109 rejected mutations covering source drift, assurance or ledger corruption, profile drift, stage or control drift, receipt contamination, validation execution, disposition selection, envelope or response activity, reviewer contact, review execution, effects, networking, Atlas access, repository mutation, and live activation.
 
@@ -82,6 +91,8 @@ automatic_status_change: false
 automatic_release_action: false
 status_inheritance: prohibited
 ```
+
+No validation run, envelope, response, reviewer identity, review action, disposition, hold, status change, network action, Atlas call, or repository effect is active.
 
 ## Next gate
 
