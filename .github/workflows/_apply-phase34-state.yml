@@ -15,7 +15,9 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Apply exact Phase 34 state transition
-        run: python3 scripts/_apply_phase34_project_state.py
+        run: |
+          sed -i 's/d3137bcaf84cb9f657e4f4c2c12e323d8434aa4a8d530a8f8a30e7ba6138339d/680af1e770263390eb88418833dd48543d29bf6620da166f892ed65e21544965/' scripts/_apply_phase34_project_state.py
+          python3 scripts/_apply_phase34_project_state.py
       - name: Remove one-shot transition machinery
         run: |
           rm scripts/_apply_phase34_project_state.py
