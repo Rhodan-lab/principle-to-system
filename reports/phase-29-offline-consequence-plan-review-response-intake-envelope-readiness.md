@@ -1,10 +1,14 @@
-# Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness Candidate
+# Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 28 finalization: `7ba58a027e159d69ac7054effbe36e936b107c84`  
-> State: `offline-consequence-plan-review-response-intake-envelope-readiness-candidate`  
+> Exact tested head: `6dc0e71a54aa2b02a0249f889ad8b3153361d078`  
+> Merge commit: `a16a7a9490ca038a511b1fcc09d834a4b354b8d1`  
+> Final state: `offline-consequence-plan-review-response-intake-envelope-readiness-validated`  
 > Live: `false`
+
+Historical candidate report title: # Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness Candidate
 
 ## Purpose
 
@@ -54,7 +58,9 @@ Both records receive verdict `response-envelope-schema-ready-no-response`.
 
 ## Recovery and provenance
 
-The candidate pins the exact Phase 28 candidate and finalization bytes. Its recovery matrix contains **87 deterministic scenarios**: one accepted baseline and 86 rejected mutations covering source drift, identity or ledger corruption, envelope specification drift, integrity-rule drift, quarantine-policy drift, fabricated envelope fields, receipt or processing authority, response processing, reviewer contact, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+The immutable candidate pins the exact Phase 28 candidate and finalization bytes. Its recovery matrix contains **87 deterministic scenarios**: one accepted baseline and 86 rejected mutations covering source drift, identity or ledger corruption, envelope specification drift, integrity-rule drift, quarantine-policy drift, fabricated envelope fields, receipt or processing authority, response processing, reviewer contact, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+
+`release/phase-29-postmerge.json` pins candidate SHA-256 `1c921b77459b6cf46a0add6b47a7796e69e91c6a61f817750e3277de0685e74e`, PR #49, exact tested head `6dc0e71a54aa2b02a0249f889ad8b3153361d078`, merge commit `a16a7a9490ca038a511b1fcc09d834a4b354b8d1`, 23 applicable workflows, frozen authority boundaries, and the final state.
 
 ## Frozen authority
 
