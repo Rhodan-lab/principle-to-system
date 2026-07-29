@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 25 — Offline Consequence-Plan Review-Request Packet merged and validated through PR #41.**
+**Phase 26 — Offline Consequence-Plan Review-Request Packet Assurance merged and validated through PR #43.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -20,7 +20,8 @@ Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: o
 Phase 22 state: **offline-resolution-consequence-planning-validated** (`mode: offline-resolution-consequence-planning`, `live: false`).  
 Phase 23 state: **offline-consequence-plan-assurance-validated** (`mode: offline-consequence-plan-assurance`, `live: false`).  
 Phase 24 state: **offline-consequence-plan-review-readiness-validated** (`mode: offline-consequence-plan-review-readiness`, `live: false`).  
-Phase 25 state: **offline-consequence-plan-review-request-packet-validated** (`mode: offline-consequence-plan-review-request-packet`, `live: false`).
+Phase 25 state: **offline-consequence-plan-review-request-packet-validated** (`mode: offline-consequence-plan-review-request-packet`, `live: false`).  
+Phase 26 state: **offline-consequence-plan-review-request-packet-assurance-validated** (`mode: offline-consequence-plan-review-request-packet-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -55,6 +56,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 23 | Offline consequence-plan assurance | Merged and validated through PR #37 |
 | 24 | Offline consequence-plan review readiness | Merged and validated through PR #39 |
 | 25 | Offline consequence-plan review-request packet | Merged and validated through PR #41 |
+| 26 | Offline consequence-plan review-request packet assurance | Merged and validated through PR #43 |
 
 ## Integration topology
 
@@ -88,6 +90,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #39 was merged into `main` at commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`.
 - Phase 25 exact candidate validation passed at `86c543c542b038038732b50ff6fdf9a79b55c934`.
 - PR #41 was merged into `main` at commit `3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9`.
+- Phase 26 exact candidate validation passed at `58ffacbaff03301145ab0c68f4f692083641a7c1`.
+- PR #43 was merged into `main` at commit `72bca34c7623c19fed0c7f625e19cd9b7291c47d`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -95,9 +99,9 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, the integrated Phase 24 review-readiness evidence, and the integrated Phase 25 local review-request packet report, ledger, checkpoint, recovery matrix, and immutable finalization record.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, the integrated Phase 24 review-readiness evidence, the integrated Phase 25 local review-request packet evidence, and the integrated Phase 26 packet-assurance report, ledger, checkpoint, recovery matrix, and immutable finalization record.
 
-No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, contacts reviewers, starts review, or changes either repository automatically.
+No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, contacts reviewers, accepts responses, starts review, or changes either repository automatically.
 
 ## Reviewed foundation and historical continuity
 
@@ -154,6 +158,9 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 24 target marker: `offline-consequence-plan-review-readiness-candidate`.
 - Historical Phase 25 candidate marker: `exact-head validation pending`.
 - Historical Phase 25 target marker: `offline-consequence-plan-review-request-packet-candidate`.
+- Historical Phase 25 finalization marker: `Phase 25 — Offline Consequence-Plan Review-Request Packet merged and validated through PR #41`.
+- Historical Phase 26 candidate marker: `exact-head validation pending`.
+- Historical Phase 26 target marker: `offline-consequence-plan-review-request-packet-assurance-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -175,6 +182,7 @@ release_status: draft
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
 - Atlas remains unchanged by Principia Phase 25.
+- Atlas remains unchanged by Principia Phase 26.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -380,9 +388,50 @@ The recovery matrix contains 61 deterministic scenarios and rejects 60 mutations
 
 `release/phase-25-postmerge.json` separately pins candidate SHA-256 `38862c26ae18dc11c6570c33182c0da158ed8e59a19402073e1c733de6d154f3`, exact tested head `86c543c542b038038732b50ff6fdf9a79b55c934`, PR #41, merge commit `3612d9f185f1db99565ecfd7fd1a9288dd0cb3e9`, all 19 applicable workflows, eight pending human gates, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-request-packet-validated`.
 
+## Phase 26 result — Offline Consequence-Plan Review-Request Packet Assurance
+
+`release/phase-26-offline-consequence-plan-review-request-packet-assurance.json` preserves the immutable candidate `offline-consequence-plan-review-request-packet-assurance-candidate` with `mode: offline-consequence-plan-review-request-packet-assurance`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+Both packet records receive verdict `packet-assured-local-no-dispatch`. Each retains six prepared sections, three unanswered questions, four pending human gates, a blank unsubmitted response template, no reviewer identity, and disabled dispatch and review execution.
+
+```yaml
+packet_count: 2
+assured_packet_count: 2
+failed_assurance_count: 0
+packet_prepared_count: 2
+packet_local_only_count: 2
+packet_dispatch_count: 0
+section_count: 12
+question_count: 6
+blank_question_response_count: 6
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+reviewer_identity_count: 0
+reviewer_contact_count: 0
+response_submission_count: 0
+review_started_count: 0
+review_completed_count: 0
+outcome_selected_count: 0
+human_authorization_count: 0
+effective_hold_count: 0
+operational_effect_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: review-request-packets-assured-no-dispatch
+live: false
+```
+
+The recovery matrix contains 71 deterministic scenarios and rejects 70 mutations involving exact source or packet drift, structural corruption, fabricated responses or human gates, dispatch, reviewer contact, networking, review execution, outcomes, effects, authority escalation, Atlas access, repository mutation, and live activation.
+
+`release/phase-26-postmerge.json` separately pins candidate SHA-256 `cdf82f5e4792d43e21b3242fa4114a4063bab9849abb68be25abb44c3a51b22c`, exact tested head `58ffacbaff03301145ab0c68f4f692083641a7c1`, PR #43, merge commit `72bca34c7623c19fed0c7f625e19cd9b7291c47d`, all 20 applicable workflows, eight pending human gates, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-request-packet-assurance-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase26_offline_consequence_plan_review_request_packet_assurance.py --check
+python3 scripts/validate_phase26_offline_consequence_plan_review_request_packet_assurance.py
+python3 scripts/validate_phase26_postmerge_record.py
+python3 -m unittest software.tests.test_phase26_offline_consequence_plan_review_request_packet_assurance -v
 python3 scripts/generate_phase25_offline_consequence_plan_review_request_packet.py --check
 python3 scripts/validate_phase25_offline_consequence_plan_review_request_packet.py
 python3 scripts/validate_phase25_postmerge_record.py
@@ -430,6 +479,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-request-packet-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-response-intake-readiness-candidate**.
 
-The next bounded gate may independently verify packet integrity, exact source bindings, blank responses, pending human gates, and non-dispatch authority. It must not dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
+The next bounded gate may define deterministic local response-intake requirements for the two assured packets. It must not dispatch a request, identify or contact a reviewer, fabricate or receive a response, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
