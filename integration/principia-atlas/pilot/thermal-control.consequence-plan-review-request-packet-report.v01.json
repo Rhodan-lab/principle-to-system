@@ -1,0 +1,413 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-report/0.1",
+  "decision": "review-request-packets-prepared-no-dispatch",
+  "fixture_kind": "bounded-synthetic",
+  "live": false,
+  "mode": "offline-consequence-plan-review-request-packet",
+  "packets": [
+    {
+      "affected_artifacts": [
+        "principia:failure-pattern:feedback-instability@1",
+        "principia:investigation:room-cooling@1",
+        "principia:system-dossier:refrigerator@1"
+      ],
+      "assurance_id": "principia:consequence-plan-assurance:feedback-manual-review:0001",
+      "attachment_manifest": [
+        {
+          "path": "release/phase-24-postmerge.json",
+          "sha256": "67fdb408b871116fecf97e9c5c88efe9a8fb95dc420ac19adb0184a847a09ed9"
+        },
+        {
+          "path": "release/phase-24-offline-consequence-plan-review-readiness.json",
+          "sha256": "45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-report.v01.json",
+          "sha256": "94e737822aa958f81e574b4ca7a8aaa4067e1a75096e9b33a6aa27bc96f2c7f7"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-ledger.v01.json",
+          "sha256": "d939f334ff5e4a5a0fb40b2a156f42a5cea6349e39278efae8246ac3ddb7d1e8"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-checkpoint.v01.json",
+          "sha256": "7cc87aa8087f88e4923b44458c30c3fc700e748d22e2a75fd47453273e8c11f1"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-recovery.v01.json",
+          "sha256": "8c79d4fe431c5f2e30a95532e599c3c3ac466c81daa8f23289545ab82fb786a0"
+        }
+      ],
+      "authorization_record": null,
+      "checks": {
+        "affected_artifact_set_exact": true,
+        "attachment_manifest_exact": true,
+        "authority_boundary_preserved": true,
+        "blank_response_template_preserved": true,
+        "dispatch_disabled": true,
+        "human_gates_remain_pending": true,
+        "packet_sections_complete": true,
+        "plan_identity_exact": true,
+        "readiness_identity_exact": true,
+        "review_execution_disabled": true,
+        "reviewer_unidentified": true,
+        "zero_effect_boundary_preserved": true
+      },
+      "competence_attestation": null,
+      "conflict_declaration": null,
+      "content_change_proposed": false,
+      "dispatch": {
+        "authorized": false,
+        "channel": null,
+        "dispatched": false,
+        "dispatched_at": null,
+        "recipient": null,
+        "recipient_identifier": null
+      },
+      "effective_hold": false,
+      "human_gates": [
+        {
+          "criterion_id": "reviewer-identity-recorded",
+          "evidence_ref": null,
+          "sequence": 1,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "reviewer-competence-attested",
+          "evidence_ref": null,
+          "sequence": 2,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "conflict-declaration-recorded",
+          "evidence_ref": null,
+          "sequence": 3,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "authorization-to-start-recorded",
+          "evidence_ref": null,
+          "sequence": 4,
+          "state": "pending"
+        }
+      ],
+      "local_only": true,
+      "operational_effect": false,
+      "outcome_selected": false,
+      "packet_id": "principia:consequence-plan-review-request-packet:feedback-manual-review:0001",
+      "packet_kind": "pedagogical-review-request-packet",
+      "packet_prepared": true,
+      "packet_sections": [
+        {
+          "section_id": "review-context-and-purpose",
+          "sequence": 1,
+          "state": "prepared"
+        },
+        {
+          "section_id": "exact-source-bindings",
+          "sequence": 2,
+          "state": "prepared"
+        },
+        {
+          "section_id": "affected-artifact-scope",
+          "sequence": 3,
+          "state": "prepared"
+        },
+        {
+          "section_id": "pending-human-gates",
+          "sequence": 4,
+          "state": "prepared"
+        },
+        {
+          "section_id": "review-questions",
+          "sequence": 5,
+          "state": "prepared"
+        },
+        {
+          "section_id": "blank-response-template",
+          "sequence": 6,
+          "state": "prepared"
+        }
+      ],
+      "packet_status": "prepared-local-not-dispatched",
+      "plan_id": "principia:resolution-consequence-plan:feedback-manual-review:0001",
+      "plan_kind": "manual-review-work-plan",
+      "plan_sha256": "f2cf1f339f90e4c4a622440fbd86be9a97c53587f059abe0a092ad0bf01efca1",
+      "questions": [
+        {
+          "prompt": "Does the bounded material preserve the distinction between a model result and a claim about a real system?",
+          "question_id": "conceptual-boundary",
+          "response": null,
+          "sequence": 1
+        },
+        {
+          "prompt": "Are the exact source references sufficient for a future pedagogical review of the three affected artifacts?",
+          "question_id": "evidence-sufficiency",
+          "response": null,
+          "sequence": 2
+        },
+        {
+          "prompt": "Which unresolved pedagogical risks would require additional evidence before review could be authorized?",
+          "question_id": "unresolved-pedagogical-risk",
+          "response": null,
+          "sequence": 3
+        }
+      ],
+      "readiness_id": "principia:consequence-plan-review-readiness:feedback-manual-review:0001",
+      "readiness_ledger_entry_sha256": "f44e21139618175df45499f61c936a7e26750bf69efc0ce83c77574e1b8b3a18",
+      "readiness_record_sha256": "453be7c298341dcd19d3968645cd49c95e26259b4497510ffd9765aa31ef4c89",
+      "real_authorization_claimed": false,
+      "response_template": {
+        "authorization_to_start": null,
+        "competence_attestation": null,
+        "conflict_declaration": null,
+        "review_observations": [],
+        "review_recommendation": null,
+        "reviewer_identity": null,
+        "submitted": false
+      },
+      "review_completed": false,
+      "review_purpose": "evaluate the bounded feedback-instability material against the assured manual-review plan without starting or completing review",
+      "review_start_permitted": false,
+      "review_started": false,
+      "reviewer_contact_permitted": false,
+      "reviewer_identity": null,
+      "reviewer_role_required": "qualified-pedagogical-reviewer",
+      "sequence": 1,
+      "source_proposal_id": "principia:policy-review:feedback-deprecation:0001",
+      "source_resolution_id": "principia:manual-policy-resolution:feedback-deprecation:0001",
+      "status_change": false,
+      "status_recommendation_recorded": false,
+      "verdict": "packet-prepared-local-not-dispatched"
+    },
+    {
+      "affected_artifacts": [
+        "principia:failure-pattern:feedback-instability@1",
+        "principia:investigation:room-cooling@1",
+        "principia:system-dossier:refrigerator@1"
+      ],
+      "assurance_id": "principia:consequence-plan-assurance:model-boundary-release-governance:0002",
+      "attachment_manifest": [
+        {
+          "path": "release/phase-24-postmerge.json",
+          "sha256": "67fdb408b871116fecf97e9c5c88efe9a8fb95dc420ac19adb0184a847a09ed9"
+        },
+        {
+          "path": "release/phase-24-offline-consequence-plan-review-readiness.json",
+          "sha256": "45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-report.v01.json",
+          "sha256": "94e737822aa958f81e574b4ca7a8aaa4067e1a75096e9b33a6aa27bc96f2c7f7"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-ledger.v01.json",
+          "sha256": "d939f334ff5e4a5a0fb40b2a156f42a5cea6349e39278efae8246ac3ddb7d1e8"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-checkpoint.v01.json",
+          "sha256": "7cc87aa8087f88e4923b44458c30c3fc700e748d22e2a75fd47453273e8c11f1"
+        },
+        {
+          "path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-recovery.v01.json",
+          "sha256": "8c79d4fe431c5f2e30a95532e599c3c3ac466c81daa8f23289545ab82fb786a0"
+        }
+      ],
+      "authorization_record": null,
+      "checks": {
+        "affected_artifact_set_exact": true,
+        "attachment_manifest_exact": true,
+        "authority_boundary_preserved": true,
+        "blank_response_template_preserved": true,
+        "dispatch_disabled": true,
+        "human_gates_remain_pending": true,
+        "packet_sections_complete": true,
+        "plan_identity_exact": true,
+        "readiness_identity_exact": true,
+        "review_execution_disabled": true,
+        "reviewer_unidentified": true,
+        "zero_effect_boundary_preserved": true
+      },
+      "competence_attestation": null,
+      "conflict_declaration": null,
+      "content_change_proposed": false,
+      "dispatch": {
+        "authorized": false,
+        "channel": null,
+        "dispatched": false,
+        "dispatched_at": null,
+        "recipient": null,
+        "recipient_identifier": null
+      },
+      "effective_hold": false,
+      "human_gates": [
+        {
+          "criterion_id": "reviewer-identity-recorded",
+          "evidence_ref": null,
+          "sequence": 1,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "reviewer-competence-attested",
+          "evidence_ref": null,
+          "sequence": 2,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "conflict-declaration-recorded",
+          "evidence_ref": null,
+          "sequence": 3,
+          "state": "pending"
+        },
+        {
+          "criterion_id": "authorization-to-start-recorded",
+          "evidence_ref": null,
+          "sequence": 4,
+          "state": "pending"
+        }
+      ],
+      "local_only": true,
+      "operational_effect": false,
+      "outcome_selected": false,
+      "packet_id": "principia:consequence-plan-review-request-packet:model-boundary-release-governance:0002",
+      "packet_kind": "release-governance-review-request-packet",
+      "packet_prepared": true,
+      "packet_sections": [
+        {
+          "section_id": "review-context-and-purpose",
+          "sequence": 1,
+          "state": "prepared"
+        },
+        {
+          "section_id": "exact-source-bindings",
+          "sequence": 2,
+          "state": "prepared"
+        },
+        {
+          "section_id": "affected-artifact-scope",
+          "sequence": 3,
+          "state": "prepared"
+        },
+        {
+          "section_id": "pending-human-gates",
+          "sequence": 4,
+          "state": "prepared"
+        },
+        {
+          "section_id": "review-questions",
+          "sequence": 5,
+          "state": "prepared"
+        },
+        {
+          "section_id": "blank-response-template",
+          "sequence": 6,
+          "state": "prepared"
+        }
+      ],
+      "packet_status": "prepared-local-not-dispatched",
+      "plan_id": "principia:resolution-consequence-plan:model-boundary-release-governance:0002",
+      "plan_kind": "release-governance-follow-up-plan",
+      "plan_sha256": "f11b3c226fe9b457384387d1d52843e0874f4ebe246fdc4a7a8801cc374e3129",
+      "questions": [
+        {
+          "prompt": "Are the exact evidence references sufficient to support a future release-governance review?",
+          "question_id": "governance-evidence-sufficiency",
+          "response": null,
+          "sequence": 1
+        },
+        {
+          "prompt": "Which model-boundary risks remain unresolved without converting them into a release recommendation?",
+          "question_id": "model-boundary-risk",
+          "response": null,
+          "sequence": 2
+        },
+        {
+          "prompt": "What additional prerequisite evidence, if any, should exist before review could be authorized?",
+          "question_id": "missing-prerequisite",
+          "response": null,
+          "sequence": 3
+        }
+      ],
+      "readiness_id": "principia:consequence-plan-review-readiness:model-boundary-release-governance:0002",
+      "readiness_ledger_entry_sha256": "b3e1d3a5a4e99d1a84aca91468b7ea08a9cfc0a17c080c131afceeb7a2f89dcf",
+      "readiness_record_sha256": "24692de9e01038b79a241e64bd9947443995a2f2b834adedd490b6298a160dbd",
+      "real_authorization_claimed": false,
+      "response_template": {
+        "authorization_to_start": null,
+        "competence_attestation": null,
+        "conflict_declaration": null,
+        "review_observations": [],
+        "review_recommendation": null,
+        "reviewer_identity": null,
+        "submitted": false
+      },
+      "review_completed": false,
+      "review_purpose": "evaluate evidence prerequisites for a future release-governance review without selecting or recommending a release outcome",
+      "review_start_permitted": false,
+      "review_started": false,
+      "reviewer_contact_permitted": false,
+      "reviewer_identity": null,
+      "reviewer_role_required": "qualified-release-governance-reviewer",
+      "sequence": 2,
+      "source_proposal_id": "principia:release-hold-proposal:model-boundary-retraction:0001",
+      "source_resolution_id": "principia:manual-policy-resolution:model-boundary-retraction:0002",
+      "status_change": false,
+      "status_recommendation_recorded": false,
+      "verdict": "packet-prepared-local-not-dispatched"
+    }
+  ],
+  "report_id": "principia:offline-consequence-plan-review-request-packet-report:thermal-control:0001",
+  "source_phase24": {
+    "phase24_candidate_path": "release/phase-24-offline-consequence-plan-review-readiness.json",
+    "phase24_candidate_sha256": "45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85",
+    "phase24_checkpoint_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-checkpoint.v01.json",
+    "phase24_checkpoint_sha256": "7cc87aa8087f88e4923b44458c30c3fc700e748d22e2a75fd47453273e8c11f1",
+    "phase24_finalization_commit": "46c2b286bde99fd0165f0ec97463ac0fb5af2b5e",
+    "phase24_ledger_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-ledger.v01.json",
+    "phase24_ledger_sha256": "d939f334ff5e4a5a0fb40b2a156f42a5cea6349e39278efae8246ac3ddb7d1e8",
+    "phase24_postmerge_path": "release/phase-24-postmerge.json",
+    "phase24_postmerge_sha256": "67fdb408b871116fecf97e9c5c88efe9a8fb95dc420ac19adb0184a847a09ed9",
+    "phase24_recovery_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-recovery.v01.json",
+    "phase24_recovery_sha256": "8c79d4fe431c5f2e30a95532e599c3c3ac466c81daa8f23289545ab82fb786a0",
+    "phase24_report_path": "integration/principia-atlas/pilot/thermal-control.consequence-plan-review-readiness-report.v01.json",
+    "phase24_report_sha256": "94e737822aa958f81e574b4ca7a8aaa4067e1a75096e9b33a6aa27bc96f2c7f7"
+  },
+  "summary": {
+    "effective_hold_count": 0,
+    "human_authorization_count": 0,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "packet_count": 2,
+    "packet_dispatch_count": 0,
+    "packet_local_only_count": 2,
+    "packet_prepared_count": 2,
+    "question_count": 6,
+    "real_authorization_claimed": false,
+    "response_submission_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "section_count": 12,
+    "status_change_count": 0
+  }
+}
