@@ -1,14 +1,19 @@
-# Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness Candidate
+# Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness
 
 > Date: 2026-07-29  
 > Repository: `Rhodan-lab/principle-to-system`  
 > Source Phase 28 finalization: `7ba58a027e159d69ac7054effbe36e936b107c84`  
-> State: `offline-consequence-plan-review-response-intake-envelope-readiness-candidate`  
+> Exact tested head: `6dc0e71a54aa2b02a0249f889ad8b3153361d078`  
+> Merge commit: `a16a7a9490ca038a511b1fcc09d834a4b354b8d1`  
+> Candidate SHA-256: `1c921b77459b6cf46a0add6b47a7796e69e91c6a61f817750e3277de0685e74e`  
+> Final state: `offline-consequence-plan-review-response-intake-envelope-readiness-validated`  
 > Live: `false`
+
+Historical candidate report title: `# Phase 29 — Offline Consequence-Plan Review-Response Intake Envelope Readiness Candidate`
 
 ## Purpose
 
-Phase 29 defines deterministic local envelope, payload-integrity, and quarantine-routing requirements for the two Phase 28-assured response-intake schemas. It creates prebound blank envelope templates and inactive policies only.
+Phase 29 defines deterministic local envelope, payload-integrity, and quarantine-routing requirements for the two Phase 28-assured response-intake schemas. It prepares prebound blank envelope templates and inactive policies only.
 
 It does not create, receive, process, validate, accept, reject, or quarantine a response envelope.
 
@@ -46,15 +51,17 @@ live: false
 
 ## Envelope model
 
-Each assured schema receives one local envelope-readiness record with seven inactive sections, fourteen ordered required fields, a 128 KiB payload ceiling, SHA-256 integrity requirements, ten inactive integrity rules, and ten inactive quarantine reason codes.
+The finalized evidence contains **2 envelope readiness records**. Each assured schema receives one local envelope specification with seven inactive sections, fourteen ordered required fields, a 128 KiB payload ceiling, SHA-256 integrity requirements, ten inactive integrity rules, and ten inactive quarantine reason codes.
 
 The source identity, packet identity, assurance identity, schema identity, media type, and encoding are prebound. Response-specific fields remain blank: envelope ID, response ID, payload digest, source digest, submission time, and signature reference.
 
-Both records receive verdict `response-envelope-schema-ready-no-response`.
+Both records retain verdict `response-envelope-schema-ready-no-response`.
 
 ## Recovery and provenance
 
-The candidate pins the exact Phase 28 candidate and finalization bytes. Its recovery matrix contains **87 deterministic scenarios**: one accepted baseline and 86 rejected mutations covering source drift, identity or ledger corruption, envelope specification drift, integrity-rule drift, quarantine-policy drift, fabricated envelope fields, receipt or processing authority, response processing, reviewer contact, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+The immutable candidate pins the exact Phase 28 candidate and finalization bytes. Its recovery matrix contains **87 deterministic scenarios**: one accepted baseline and 86 rejected mutations covering source drift, identity or ledger corruption, envelope specification drift, integrity-rule drift, quarantine-policy drift, fabricated envelope fields, receipt or processing authority, response processing, reviewer contact, review execution, outcomes, effects, networking, Atlas access, repository mutation, and live activation.
+
+`release/phase-29-postmerge.json` pins candidate SHA-256 `1c921b77459b6cf46a0add6b47a7796e69e91c6a61f817750e3277de0685e74e`, PR #49, exact tested head `6dc0e71a54aa2b02a0249f889ad8b3153361d078`, merge commit `a16a7a9490ca038a511b1fcc09d834a4b354b8d1`, 22 successfully completed candidate workflows, the frozen authority boundaries, and the final state.
 
 ## Frozen authority
 
@@ -76,6 +83,8 @@ automatic_status_change: false
 automatic_release_action: false
 status_inheritance: prohibited
 ```
+
+No envelope, response, reviewer identity, review action, hold, status change, network action, Atlas call, or repository effect is active.
 
 ## Next gate
 
