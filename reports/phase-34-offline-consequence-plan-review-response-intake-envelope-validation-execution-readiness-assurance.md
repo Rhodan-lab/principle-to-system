@@ -15,6 +15,8 @@
 - Post-merge SHA-256: `c23152786eb92b8abfdba51dba95ff332dc71a8500d15c4148036099c0d85e65`
 - Next gate: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-candidate`
 
+The final state transition is independently checked by the permanent read-only Phase 34 validation chain.
+
 ## Finalized result
 
 ```yaml
