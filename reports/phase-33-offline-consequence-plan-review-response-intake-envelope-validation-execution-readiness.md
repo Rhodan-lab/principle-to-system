@@ -75,7 +75,7 @@ The candidate pins:
 - Phase 32 finalization commit `5c26c9ca839e011832922fbe4feba96d98a1a344`;
 - both exact Phase 32 assurance-record digests and assurance-ledger entries.
 
-The recovery matrix contains **118 deterministic scenarios**: one accepted baseline and 117 rejected mutations covering source drift, profile or control drift, stage and precondition corruption, resource-bound escalation, ticket contamination, execution authorization, runtime activity, result recording, disposition selection, envelope or response activity, reviewer contact, review execution, operational effects, networking, Atlas access, repository mutation, and live activation.
+The recovery matrix contains **119 deterministic scenarios**: one accepted baseline and 118 rejected mutations covering source drift, profile or control drift, stage and precondition corruption, resource-bound escalation, ticket contamination, execution authorization, runtime activity, result recording, disposition selection, envelope or response activity, reviewer contact, review execution, operational effects, networking, Atlas access, repository mutation, and live activation.
 
 ## Frozen authority
 
