@@ -20,11 +20,11 @@ jobs:
           base64 --decode /tmp/phase35-package.b64 > /tmp/phase35-package.tar.gz
           echo "ebeca609a027ebb2d23b94c95fab8e5a0e2b48be79975baa1d78fd002dde441c  /tmp/phase35-package.tar.gz" | sha256sum --check
           tar -xzf /tmp/phase35-package.tar.gz
-      - name: Remove one-shot publishing machinery
+          rm .github/workflows/validate-phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.yml
+      - name: Remove package chunks
         run: |
           rm .phase35-package.part00 .phase35-package.part01 .phase35-package.part02 .phase35-package.part03 .phase35-package.part04
-          rm .github/workflows/_apply-phase35-candidate.yml
-      - name: Commit Phase 35 candidate package
+      - name: Commit non-workflow Phase 35 candidate files
         env:
           BRANCH: ${{ github.head_ref }}
         run: |
@@ -34,9 +34,8 @@ jobs:
             scripts/generate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
             scripts/validate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
             software/tests/test_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
-            .github/workflows/validate-phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.yml \
             reports/phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.md \
             release/phase-35-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness.json
-          git add -u .phase35-package.part00 .phase35-package.part01 .phase35-package.part02 .phase35-package.part03 .phase35-package.part04 .github/workflows/_apply-phase35-candidate.yml
-          git commit -m "Add Phase 35 authorization-readiness candidate"
+          git add -u .phase35-package.part00 .phase35-package.part01 .phase35-package.part02 .phase35-package.part03 .phase35-package.part04
+          git commit -m "Add Phase 35 authorization-readiness evidence"
           git push origin "HEAD:${BRANCH}"
