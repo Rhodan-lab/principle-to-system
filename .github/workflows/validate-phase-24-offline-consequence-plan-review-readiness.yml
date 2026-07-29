@@ -45,6 +45,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/generate_phase24_offline_consequence_plan_review_readiness.py
           python3 -m py_compile scripts/validate_phase24_offline_consequence_plan_review_readiness.py
+          python3 -m py_compile scripts/validate_phase24_postmerge_record.py
           python3 -m py_compile software/tests/test_phase24_offline_consequence_plan_review_readiness.py
           python3 -m py_compile scripts/generate_phase23_offline_consequence_plan_assurance.py
           python3 -m py_compile scripts/validate_phase23_offline_consequence_plan_assurance.py
@@ -75,6 +76,7 @@ jobs:
           {
             run_check python3 scripts/generate_phase24_offline_consequence_plan_review_readiness.py --check
             run_check python3 scripts/validate_phase24_offline_consequence_plan_review_readiness.py
+            run_check python3 scripts/validate_phase24_postmerge_record.py
             run_check python3 -m unittest software.tests.test_phase24_offline_consequence_plan_review_readiness -v
             run_check python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
             run_check python3 scripts/validate_phase23_offline_consequence_plan_assurance.py

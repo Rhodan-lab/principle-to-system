@@ -1,10 +1,10 @@
 # Project State
 
-> Last updated: 2026-07-28
+> Last updated: 2026-07-29
 
 ## Current phase
 
-**Phase 23 — Offline Consequence-Plan Assurance merged and validated through PR #37.**
+**Phase 24 — Offline Consequence-Plan Review Readiness merged and validated through PR #39.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -18,7 +18,8 @@ Phase 19 state: **offline-reconciliation-policy-validated** (`mode: offline-reco
 Phase 20 state: **offline-manual-policy-resolution-validated** (`mode: offline-manual-policy-resolution`, `live: false`).  
 Phase 21 state: **offline-policy-resolution-reconciliation-validated** (`mode: offline-policy-resolution-reconciliation`, `live: false`).  
 Phase 22 state: **offline-resolution-consequence-planning-validated** (`mode: offline-resolution-consequence-planning`, `live: false`).  
-Phase 23 state: **offline-consequence-plan-assurance-validated** (`mode: offline-consequence-plan-assurance`, `live: false`).
+Phase 23 state: **offline-consequence-plan-assurance-validated** (`mode: offline-consequence-plan-assurance`, `live: false`).  
+Phase 24 state: **offline-consequence-plan-review-readiness-validated** (`mode: offline-consequence-plan-review-readiness`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -51,6 +52,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 21 | Offline policy-resolution reconciliation | Merged and validated through PR #32 |
 | 22 | Offline resolution-consequence planning | Merged and validated through PR #35 |
 | 23 | Offline consequence-plan assurance | Merged and validated through PR #37 |
+| 24 | Offline consequence-plan review readiness | Merged and validated through PR #39 |
 
 ## Integration topology
 
@@ -80,6 +82,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #35 was merged into `main` at commit `54dcbaa12a4ac57ecd31a8936e6549c35393d04b`.
 - Phase 23 exact candidate validation passed at `083e82eeea8e127e6f5b65bb020720b5c1c4edab`.
 - PR #37 was merged into `main` at commit `912a66343d2e262a7651e05ce116dabf747ae152`.
+- Phase 24 exact candidate validation passed at `e385e3f418fc48517be20bfebc30eda2b5f319aa`.
+- PR #39 was merged into `main` at commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -87,9 +91,9 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, and the integrated Phase 23 assurance report, assurance ledger, checkpoint, and recovery evidence.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, and the integrated Phase 24 review-readiness report, ledger, checkpoint, recovery matrix, and immutable finalization record.
 
-No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, or changes either repository automatically.
+No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, or changes either repository automatically.
 
 ## Reviewed foundation and historical continuity
 
@@ -142,6 +146,8 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 22 finalization marker: `Phase 22 — Offline Resolution-Consequence Planning merged and validated through PR #35`.
 - Historical Phase 23 candidate marker: `exact-head validation pending`.
 - Historical Phase 23 target marker: `offline-consequence-plan-assurance-candidate`.
+- Historical Phase 24 candidate marker: `exact-head validation pending`.
+- Historical Phase 24 target marker: `offline-consequence-plan-review-readiness-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -162,7 +168,7 @@ release_status: draft
 
 - Atlas owns knowledge identity, evidence, provenance, exact revision, review level, lifecycle, and staleness.
 - Principia owns pedagogical `status`, artifact revision, and publication `release_status`.
-- Atlas remains unchanged by Principia Phase 23.
+- Atlas remains unchanged by Principia Phase 24.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -330,9 +336,45 @@ The recovery matrix contains 34 deterministic scenarios and rejects Phase 22 sou
 
 `release/phase-23-postmerge.json` separately pins candidate SHA-256 `7fb1e743dee555e33ccf2d395c589256ecad4748568bc2d92c1256adc135dce6`, exact tested head `083e82eeea8e127e6f5b65bb020720b5c1c4edab`, PR #37, merge commit `912a66343d2e262a7651e05ce116dabf747ae152`, all 17 applicable workflows, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-assurance-validated`.
 
+## Phase 24 result — Offline Consequence-Plan Review Readiness
+
+`release/phase-24-offline-consequence-plan-review-readiness.json` preserves the immutable candidate `offline-consequence-plan-review-readiness-candidate` with `mode: offline-consequence-plan-review-readiness`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+The two assured plans are machine-ready for deterministic local request-packet preparation, but all eight human gates remain pending.
+
+```yaml
+plan_count: 2
+readiness_record_count: 2
+machine_ready_count: 2
+human_ready_count: 0
+unmet_human_gate_count: 8
+review_request_packet_preparation_count: 2
+review_request_dispatch_count: 0
+review_started_count: 0
+review_completed_count: 0
+outcome_selected_count: 0
+human_authorization_count: 0
+effective_hold_count: 0
+operational_effect_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: review-readiness-recorded-no-review-started
+live: false
+```
+
+Every readiness record remains `machine-ready-human-gates-pending`. Reviewer identity, competence attestation, conflict declaration, and authorization record remain absent. Packet preparation does not permit dispatch, reviewer contact, review execution, outcome selection, content change, status recommendation, hold activation, Atlas access, external networking, or repository mutation.
+
+The recovery matrix contains 45 deterministic scenarios and rejects Phase 23 source drift, missing or orphan readiness records, duplicate identities, assurance or plan drift, affected-set drift, criterion drift, fabricated human gates, dispatch, review execution, outcomes, effects, authorization claims, inherited or automatic authority, repository mutation, networking, Atlas calls, and live activation.
+
+`release/phase-24-postmerge.json` separately pins candidate SHA-256 `45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85`, exact tested head `e385e3f418fc48517be20bfebc30eda2b5f319aa`, PR #39, merge commit `ab97b345045264653cacdbf26b5ea5d8778d3d3b`, all 18 applicable workflows, eight pending human gates, authority boundaries, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-readiness-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase24_offline_consequence_plan_review_readiness.py --check
+python3 scripts/validate_phase24_offline_consequence_plan_review_readiness.py
+python3 scripts/validate_phase24_postmerge_record.py
+python3 -m unittest software.tests.test_phase24_offline_consequence_plan_review_readiness -v
 python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
 python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
 python3 scripts/validate_phase23_postmerge_record.py
@@ -372,6 +414,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-readiness-candidate**.
+Next gate: **offline-consequence-plan-review-request-packet-candidate**.
 
-The next bounded gate may describe evidence prerequisites and readiness criteria, but it must not start a plan, claim human authorization, select a release outcome, or activate any content, status, hold, network, Atlas, or repository effect.
+The next bounded gate may assemble deterministic local review-request packets from the two validated readiness records. It must not dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.

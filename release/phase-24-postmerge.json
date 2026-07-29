@@ -1,0 +1,59 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-24-offline-consequence-plan-review-readiness.json",
+    "sha256": "45ca01dd5af4cfc550abcacb4d5b6cf090c7e138ff2b4663a077fde43d615a85"
+  },
+  "contract": "principia-offline-consequence-plan-review-readiness-finalization/0.1",
+  "decision": "review-readiness-recorded-no-review-started",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-readiness-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-readiness",
+  "next_gate": "offline-consequence-plan-review-request-packet-candidate",
+  "phase": 24,
+  "principia": {
+    "candidate_head_commit": "e385e3f418fc48517be20bfebc30eda2b5f319aa",
+    "merge_commit": "ab97b345045264653cacdbf26b5ea5d8778d3d3b",
+    "pull_request": 39,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "effective_hold_count": 0,
+    "human_authorization_count": 0,
+    "human_ready_count": 0,
+    "machine_ready_count": 2,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "plan_count": 2,
+    "readiness_record_count": 2,
+    "real_authorization_claimed": false,
+    "review_completed_count": 0,
+    "review_request_dispatch_count": 0,
+    "review_request_packet_preparation_count": 2,
+    "review_started_count": 0,
+    "status_change_count": 0,
+    "unmet_human_gate_count": 8
+  },
+  "state": "offline-consequence-plan-review-readiness-validated",
+  "validation": {
+    "applicable_workflows": 18,
+    "candidate_head_commit": "e385e3f418fc48517be20bfebc30eda2b5f319aa",
+    "status": "success"
+  }
+}

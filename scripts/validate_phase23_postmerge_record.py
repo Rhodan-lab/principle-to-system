@@ -99,8 +99,9 @@ def main() -> int:
         if authority.get("status_inheritance") != "prohibited":
             errors.append("Phase 23 finalization must prohibit status inheritance")
     state = STATE_PATH.read_text(encoding="utf-8")
+    # Phase 23 may no longer be the current heading after a later phase is validated.
+    # Its immutable row, provenance, candidate history, and next-gate record remain required.
     for marker in (
-        "**Phase 23 — Offline Consequence-Plan Assurance merged and validated through PR #37.**",
         "Phase 23 state: **offline-consequence-plan-assurance-validated**",
         "| 23 | Offline consequence-plan assurance | Merged and validated through PR #37 |",
         f"Phase 23 exact candidate validation passed at `{EXPECTED_CANDIDATE_HEAD}`",
