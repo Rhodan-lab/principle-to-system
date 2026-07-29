@@ -1,0 +1,70 @@
+{
+  "authority": {
+    "atlas_call_permitted": false,
+    "atlas_knowledge_status_authority": "Atlas",
+    "automatic_release_action": false,
+    "automatic_status_change": false,
+    "external_delivery_permitted": false,
+    "external_network_required": false,
+    "human_authorization_claimed": false,
+    "local_assurance_permitted": true,
+    "local_packet_preparation_permitted": true,
+    "principia_pedagogical_status_authority": "Principia",
+    "principia_release_status_authority": "Principia",
+    "repository_mutation": false,
+    "review_execution_authorized": false,
+    "review_request_dispatch_authorized": false,
+    "reviewer_contact_permitted": false,
+    "status_inheritance": "prohibited"
+  },
+  "candidate_record": {
+    "path": "release/phase-26-offline-consequence-plan-review-request-packet-assurance.json",
+    "sha256": "cdf82f5e4792d43e21b3242fa4114a4063bab9849abb68be25abb44c3a51b22c"
+  },
+  "contract": "principia-offline-consequence-plan-review-request-packet-assurance-finalization/0.1",
+  "decision": "review-request-packets-assured-no-dispatch",
+  "fixture_kind": "bounded-synthetic",
+  "id": "principia-atlas-offline-consequence-plan-review-request-packet-assurance-thermal-control-finalization",
+  "live": false,
+  "live_activation_permitted": false,
+  "mode": "offline-consequence-plan-review-request-packet-assurance",
+  "next_gate": "offline-consequence-plan-review-response-intake-readiness-candidate",
+  "phase": 26,
+  "principia": {
+    "candidate_head_commit": "58ffacbaff03301145ab0c68f4f692083641a7c1",
+    "merge_commit": "72bca34c7623c19fed0c7f625e19cd9b7291c47d",
+    "pull_request": 43,
+    "repository": "Rhodan-lab/principle-to-system"
+  },
+  "real_authorization_claimed": false,
+  "result": {
+    "assured_packet_count": 2,
+    "blank_question_response_count": 6,
+    "effective_hold_count": 0,
+    "failed_assurance_count": 0,
+    "human_authorization_count": 0,
+    "human_gate_pending_count": 8,
+    "human_gate_satisfied_count": 0,
+    "operational_effect_count": 0,
+    "outcome_selected_count": 0,
+    "packet_count": 2,
+    "packet_dispatch_count": 0,
+    "packet_local_only_count": 2,
+    "packet_prepared_count": 2,
+    "question_count": 6,
+    "real_authorization_claimed": false,
+    "response_submission_count": 0,
+    "review_completed_count": 0,
+    "review_started_count": 0,
+    "reviewer_contact_count": 0,
+    "reviewer_identity_count": 0,
+    "section_count": 12,
+    "status_change_count": 0
+  },
+  "state": "offline-consequence-plan-review-request-packet-assurance-validated",
+  "validation": {
+    "applicable_workflows": 20,
+    "candidate_head_commit": "58ffacbaff03301145ab0c68f4f692083641a7c1",
+    "status": "success"
+  }
+}
