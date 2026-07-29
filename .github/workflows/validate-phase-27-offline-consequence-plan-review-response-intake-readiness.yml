@@ -1,0 +1,110 @@
+name: Validate Phase 27 Offline Consequence Plan Review Response Intake Readiness
+
+on:
+  push:
+    branches:
+      - agent/phase-27-offline-consequence-plan-review-response-intake-readiness
+      - agent/finalize-phase-27-record
+    paths:
+      - 'release/phase-26-postmerge.json'
+      - 'release/phase-27-offline-consequence-plan-review-response-intake-readiness.json'
+      - 'release/phase-27-postmerge.json'
+      - 'reports/phase-27-offline-consequence-plan-review-response-intake-readiness.md'
+      - 'scripts/generate_phase27_offline_consequence_plan_review_response_intake_readiness.py'
+      - 'scripts/validate_phase27_offline_consequence_plan_review_response_intake_readiness.py'
+      - 'scripts/validate_phase27_postmerge_record.py'
+      - 'software/tests/test_phase27_offline_consequence_plan_review_response_intake_readiness.py'
+      - 'PROJECT_STATE.md'
+      - '.github/workflows/validate-phase-27-offline-consequence-plan-review-response-intake-readiness.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-phase-27-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia Phase 27 evidence
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile Phase 27 and inherited validators
+        run: |
+          python3 -m py_compile scripts/generate_phase27_offline_consequence_plan_review_response_intake_readiness.py
+          python3 -m py_compile scripts/validate_phase27_offline_consequence_plan_review_response_intake_readiness.py
+          python3 -m py_compile software/tests/test_phase27_offline_consequence_plan_review_response_intake_readiness.py
+          if [ -f scripts/validate_phase27_postmerge_record.py ]; then python3 -m py_compile scripts/validate_phase27_postmerge_record.py; fi
+          python3 -m py_compile scripts/generate_phase26_offline_consequence_plan_review_request_packet_assurance.py
+          python3 -m py_compile scripts/validate_phase26_offline_consequence_plan_review_request_packet_assurance.py
+          python3 -m py_compile scripts/validate_phase26_postmerge_record.py
+      - name: Run complete Phase 27 chain
+        id: phase27_chain
+        shell: bash
+        run: |
+          set +e
+          status=0
+          run_check() { printf '\n$'; printf ' %q' "$@"; printf '\n'; "$@" || status=1; }
+          {
+            run_check python3 scripts/generate_phase27_offline_consequence_plan_review_response_intake_readiness.py --check
+            run_check python3 scripts/validate_phase27_offline_consequence_plan_review_response_intake_readiness.py
+            if [ -f scripts/validate_phase27_postmerge_record.py ]; then run_check python3 scripts/validate_phase27_postmerge_record.py; fi
+            run_check python3 -m unittest software.tests.test_phase27_offline_consequence_plan_review_response_intake_readiness -v
+            run_check python3 scripts/generate_phase26_offline_consequence_plan_review_request_packet_assurance.py --check
+            run_check python3 scripts/validate_phase26_offline_consequence_plan_review_request_packet_assurance.py
+            run_check python3 scripts/validate_phase26_postmerge_record.py
+            run_check python3 -m unittest software.tests.test_phase26_offline_consequence_plan_review_request_packet_assurance -v
+            run_check python3 scripts/generate_phase25_offline_consequence_plan_review_request_packet.py --check
+            run_check python3 scripts/validate_phase25_offline_consequence_plan_review_request_packet.py
+            run_check python3 scripts/validate_phase25_postmerge_record.py
+            run_check python3 scripts/generate_phase24_offline_consequence_plan_review_readiness.py --check
+            run_check python3 scripts/validate_phase24_offline_consequence_plan_review_readiness.py
+            run_check python3 scripts/validate_phase24_postmerge_record.py
+            run_check python3 scripts/generate_phase23_offline_consequence_plan_assurance.py --check
+            run_check python3 scripts/validate_phase23_offline_consequence_plan_assurance.py
+            run_check python3 scripts/validate_phase23_postmerge_record.py
+            run_check python3 scripts/validate_phase22_postmerge_record.py
+            run_check python3 scripts/validate_phase21_postmerge_record.py
+            run_check python3 scripts/validate_phase20_postmerge_record.py
+            run_check python3 scripts/validate_phase19_postmerge_record.py
+            run_check python3 scripts/validate_phase18_postmerge_record.py
+            run_check python3 scripts/validate_phase17_postmerge_record.py
+            run_check python3 scripts/validate_phase16_postmerge_record.py
+            run_check python3 scripts/validate_phase15_postmerge_record.py
+            run_check python3 scripts/validate_principia_atlas_bridge.py
+            run_check python3 scripts/validate_principia_atlas_audit.py
+            run_check python3 scripts/validate_experiences.py --strict
+            run_check python3 scripts/validate_repo.py --strict
+            run_check python3 scripts/validate_phase12_release_candidate.py
+            run_check python3 -m unittest discover -s software/tests -v
+            run_check python3 scripts/validate_phase13_software.py
+          } > phase27-validation.log 2>&1
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat phase27-validation.log
+          exit 0
+      - name: Upload complete Phase 27 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase27-response-intake-readiness-diagnostics
+          path: phase27-validation.log
+      - name: Stop on Phase 27 errors
+        if: steps.phase27_chain.outputs.status != '0'
+        run: exit 1
+      - name: Verify permanent workflow immutability
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow=Path('.github/workflows/validate-phase-27-offline-consequence-plan-review-response-intake-readiness.yml').read_text()
+          forbidden=('contents'+': write','git '+'push','git '+'commit','pull_request'+'_target','repository: Rhodan-lab/'+'Atlas','cu'+'rl ','wg'+'et ')
+          assert 'contents: read' in workflow
+          for token in forbidden: assert token not in workflow, token
+          PY
