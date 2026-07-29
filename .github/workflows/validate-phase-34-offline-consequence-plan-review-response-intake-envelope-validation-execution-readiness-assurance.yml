@@ -1,0 +1,56 @@
+name: Validate Phase 34 Offline Consequence Plan Review Response Intake Envelope Validation Execution Readiness Assurance
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia Phase 34 evidence
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Phase 34 and inherited validators
+        run: |
+          python3 -m py_compile \
+            scripts/generate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py \
+            scripts/validate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py \
+            scripts/generate_phase33_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness.py \
+            scripts/validate_phase33_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness.py \
+            scripts/validate_phase33_postmerge_record.py
+          if [ -f scripts/validate_phase34_postmerge_record.py ]; then python3 -m py_compile scripts/validate_phase34_postmerge_record.py; fi
+      - name: Run complete Phase 34 chain
+        run: |
+          set -o pipefail
+          {
+            python3 scripts/generate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py --check
+            python3 scripts/validate_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance.py
+            if [ -f scripts/validate_phase34_postmerge_record.py ]; then python3 scripts/validate_phase34_postmerge_record.py; fi
+            python3 -m unittest software.tests.test_phase34_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness_assurance -v
+            python3 scripts/generate_phase33_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness.py --check
+            python3 scripts/validate_phase33_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness.py
+            python3 scripts/validate_phase33_postmerge_record.py
+            python3 -m unittest software.tests.test_phase33_offline_consequence_plan_review_response_intake_envelope_validation_execution_readiness -v
+            python3 scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py --check
+            python3 scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py
+            python3 scripts/validate_phase32_postmerge_record.py
+            python3 -m unittest software.tests.test_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance -v
+            python3 scripts/validate_principia_atlas_bridge.py
+            python3 scripts/validate_principia_atlas_audit.py
+            python3 scripts/validate_repo.py --strict
+            python3 -m unittest discover -s software/tests -v
+          } 2>&1 | tee phase34-validation.log
+      - name: Upload complete Phase 34 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase34-validation
+          path: phase34-validation.log
+      - name: Verify permanent workflow immutability
+        run: |
+          test -z "$(git status --porcelain --untracked-files=no)"
