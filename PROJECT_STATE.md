@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 31 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness merged and validated through PR #53.**
+**Phase 32 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Assurance merged and validated through PR #55.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -26,7 +26,8 @@ Phase 27 state: **offline-consequence-plan-review-response-intake-readiness-vali
 Phase 28 state: **offline-consequence-plan-review-response-intake-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-readiness-assurance`, `live: false`).  
 Phase 29 state: **offline-consequence-plan-review-response-intake-envelope-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-readiness`, `live: false`).  
 Phase 30 state: **offline-consequence-plan-review-response-intake-envelope-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-readiness-assurance`, `live: false`).  
-Phase 31 state: **offline-consequence-plan-review-response-intake-envelope-validation-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-readiness`, `live: false`).
+Phase 31 state: **offline-consequence-plan-review-response-intake-envelope-validation-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-readiness`, `live: false`).  
+Phase 32 state: **offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -67,6 +68,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 29 | Offline consequence-plan review-response intake envelope readiness | Merged and validated through PR #49 |
 | 30 | Offline consequence-plan review-response intake envelope readiness assurance | Merged and validated through PR #51 |
 | 31 | Offline consequence-plan review-response intake envelope validation readiness | Merged and validated through PR #53 |
+| 32 | Offline consequence-plan review-response intake envelope validation readiness assurance | Merged and validated through PR #55 |
 
 ## Integration topology
 
@@ -112,6 +114,8 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - PR #51 was merged into `main` at commit `74582568efa727617cc83d9dd93ba81f0692bdc7`.
 - Phase 31 exact candidate validation passed at `7d281af68d74404bc3f00d2bee8f368165433cb0`.
 - PR #53 was merged into `main` at commit `eac5429eaa99f7902b338d87a8b6b9c981d5d1a3`.
+- Phase 32 exact candidate validation passed at `9936f996205ed4637c80bcf8ec2c83203f807f10`.
+- PR #55 was merged into `main` at commit `645bb4567df6328aa47788b63206192fad2eeef4`.
 - Atlas PR #20 merged the importer implementation at `1cc4aec6908a8703a7f505478329c633a23b4ef9`.
 - Atlas PR #21 finalized the accepted importer baseline at `9370cc746e9756e433ac3772d56d079c9803b144`.
 - Phase 16 candidate validation passed at `67d6ec98c51188dabcffd48dad968a83653ea584`.
@@ -119,7 +123,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 - Phase 17 exact candidate validation passed at `e260417ef7631ebf4f87c89faff7da45d571b63c`.
 - Phase 18 exact candidate validation passed at `740ab7752bb03fc7dafe6bb9c076f5cb44a5f44f`.
 
-Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, the integrated Phase 24 review-readiness evidence, the integrated Phase 25 local review-request packet evidence, the integrated Phase 26 packet-assurance evidence, the integrated Phase 27 response-intake readiness evidence, the integrated Phase 28 readiness-assurance evidence, the integrated Phase 29 envelope-readiness evidence, the integrated Phase 30 envelope-readiness assurance evidence, and the integrated Phase 31 envelope-validation readiness profiles, inactive stages and controls, blank receipts, possible but unselected dispositions, ledger, checkpoint, recovery matrix, and immutable finalization record.
+Main contains the reviewed material foundation, synthesis layer, four applied-learning routes, static software foundation, non-live exact-revision bridge candidate, pinned Atlas importer baseline, deterministic Phase 15 receipt, the integrated Phase 16 atomic three-artifact batch, the integrated Phase 17 event protocol, the finalized Phase 18 reconciliation evidence, the integrated Phase 19 policy proposals, the integrated Phase 20 bounded-synthetic resolution evidence, the integrated Phase 21 proposal/resolution reconciliation evidence, the integrated Phase 22 planning-only consequence-plan evidence, the integrated Phase 23 assurance evidence, the integrated Phase 24 review-readiness evidence, the integrated Phase 25 local review-request packet evidence, the integrated Phase 26 packet-assurance evidence, the integrated Phase 27 response-intake readiness evidence, the integrated Phase 28 readiness-assurance evidence, the integrated Phase 29 envelope-readiness evidence, the integrated Phase 30 envelope-readiness assurance evidence, the integrated Phase 31 envelope-validation readiness evidence, and the integrated Phase 32 validation-readiness assurance records, 66 invariant checks, ledger, checkpoint, recovery matrix, and immutable finalization record.
 
 No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas, imports Atlas status, dispatches review requests, contacts reviewers, accepts responses, starts review, or changes either repository automatically.
 
@@ -196,6 +200,9 @@ No live Atlas dependency is declared. No workflow clones Atlas, writes to Atlas,
 - Historical Phase 30 finalization marker: **Phase 30 — Offline Consequence-Plan Review-Response Intake Envelope Readiness Assurance merged and validated through PR #51.**
 - Historical Phase 31 candidate marker: `exact-head validation pending`.
 - Historical Phase 31 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-readiness-candidate`.
+- Historical Phase 31 finalization marker: **Phase 31 — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness merged and validated through PR #53.**
+- Historical Phase 32 candidate marker: `exact-head validation pending`.
+- Historical Phase 32 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance-candidate`.
 - Permanent CI is read-only.
 
 ### Reconciled synthesis layer
@@ -223,6 +230,7 @@ release_status: draft
 - Atlas remains unchanged by Principia Phase 29.
 - Atlas remains unchanged by Principia Phase 30.
 - Atlas remains unchanged by Principia Phase 31.
+- Atlas remains unchanged by Principia Phase 32.
 - status remains separate across repositories.
 - automatic status inheritance is prohibited.
 
@@ -665,9 +673,59 @@ The recovery matrix contains 110 deterministic scenarios and rejects 109 mutatio
 
 `release/phase-31-postmerge.json` separately pins candidate SHA-256 `a764c145481d1ddba59df45dd29042636547ced8f308fbaf3f22b6ce79c0473c`, exact tested head `7d281af68d74404bc3f00d2bee8f368165433cb0`, PR #53, merge commit `eac5429eaa99f7902b338d87a8b6b9c981d5d1a3`, all 25 applicable workflows, eight pending human gates, frozen zero-validation authority, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-response-intake-envelope-validation-readiness-validated`.
 
+## Phase 32 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Readiness Assurance
+
+`release/phase-32-offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance.json` preserves the immutable candidate `offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance-candidate` with `mode: offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance`, `fixture_kind: bounded-synthetic`, and `live: false`.
+
+Both records receive verdict `response-envelope-validation-readiness-assured-no-envelope`. Each preserves 33 passing invariant checks, exact Phase 31 record and ledger bindings, eight inactive validation stages, eighteen inactive controls, three possible but unselected dispositions, ten blank validation-receipt fields, four pending human gates, zero validation execution, and zero review execution authority.
+
+```yaml
+validation_readiness_record_count: 2
+assured_validation_readiness_record_count: 2
+failed_assurance_count: 0
+assurance_check_count: 66
+validation_profile_count: 2
+validation_stage_count: 16
+validation_control_count: 36
+possible_disposition_count: 6
+blank_validation_receipt_count: 2
+blank_validation_receipt_field_count: 20
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+validation_run_count: 0
+validation_started_count: 0
+validation_completed_count: 0
+validation_result_recorded_count: 0
+disposition_selected_count: 0
+response_envelope_created_count: 0
+response_envelope_received_count: 0
+response_envelope_processed_count: 0
+response_received_count: 0
+response_validated_count: 0
+response_accepted_count: 0
+response_rejected_count: 0
+response_quarantined_count: 0
+reviewer_identity_count: 0
+reviewer_contact_count: 0
+review_started_count: 0
+review_completed_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: response-intake-envelope-validation-readiness-assured-no-envelope-received
+live: false
+```
+
+The recovery matrix contains 112 deterministic scenarios and rejects 111 mutations involving Phase 31 source drift, validation-readiness or ledger corruption, profile drift, stage or control drift, blank-receipt contamination, fabricated validation execution, disposition selection, envelope or response activity, reviewer contact, review execution, effects, networking, Atlas access, repository mutation, and live activation.
+
+`release/phase-32-postmerge.json` separately pins candidate SHA-256 `b7c178bd026b453dff59f7caff588922206239313155daa59f4fd72c5306f92d`, exact tested head `9936f996205ed4637c80bcf8ec2c83203f807f10`, PR #55, merge commit `645bb4567df6328aa47788b63206192fad2eeef4`, all 26 applicable workflows, eight pending human gates, frozen zero-validation authority, `real_authorization_claimed: false`, and final state `offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py --check
+python3 scripts/validate_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance.py
+python3 scripts/validate_phase32_postmerge_record.py
+python3 -m unittest software.tests.test_phase32_offline_consequence_plan_review_response_intake_envelope_validation_readiness_assurance -v
 python3 scripts/generate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py --check
 python3 scripts/validate_phase31_offline_consequence_plan_review_response_intake_envelope_validation_readiness.py
 python3 scripts/validate_phase31_postmerge_record.py
@@ -739,6 +797,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-readiness-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-readiness-candidate**.
 
-The next bounded gate may independently assure the two validation profiles, inactive stages and controls, blank receipts, possible but unselected dispositions, exact Phase 30 bindings, chained evidence, and zero-validation authority. It must not create or receive an envelope, execute validation, select a disposition, dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
+The next bounded gate may define deterministic local validation-execution readiness controls over the two assured profiles. It must not create or receive an envelope, execute validation, record a result, select a disposition, dispatch a request, identify or contact a reviewer, satisfy a human gate, claim authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
