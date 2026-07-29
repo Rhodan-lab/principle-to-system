@@ -27,77 +27,361 @@
   "mode": "offline-consequence-plan-review-request-packet-assurance",
   "recovery_id": "principia:offline-consequence-plan-review-request-packet-assurance-recovery:thermal-control:0001",
   "scenarios": [
-    {"expected_error": null, "expected_outcome": "accepted", "scenario_id": "baseline"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "phase25-postmerge-drift"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "phase25-candidate-drift"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "packet-report-file-drift"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "packet-ledger-file-drift"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "packet-checkpoint-file-drift"},
-    {"expected_error": "E-P26-SOURCE-PIN", "expected_outcome": "rejected", "scenario_id": "packet-recovery-file-drift"},
-    {"expected_error": "E-P26-MISSING", "expected_outcome": "rejected", "scenario_id": "missing-assurance"},
-    {"expected_error": "E-P26-ORPHAN", "expected_outcome": "rejected", "scenario_id": "orphan-assurance"},
-    {"expected_error": "E-P26-DUPLICATE", "expected_outcome": "rejected", "scenario_id": "duplicate-assurance-id"},
-    {"expected_error": "E-P26-SEQUENCE", "expected_outcome": "rejected", "scenario_id": "assurance-sequence-drift"},
-    {"expected_error": "E-P26-PACKET-BINDING", "expected_outcome": "rejected", "scenario_id": "packet-id-drift"},
-    {"expected_error": "E-P26-PACKET-BINDING", "expected_outcome": "rejected", "scenario_id": "packet-record-digest-drift"},
-    {"expected_error": "E-P26-PACKET-BINDING", "expected_outcome": "rejected", "scenario_id": "packet-ledger-entry-drift"},
-    {"expected_error": "E-P26-PACKET-BINDING", "expected_outcome": "rejected", "scenario_id": "readiness-id-drift"},
-    {"expected_error": "E-P26-SOURCE-BINDING", "expected_outcome": "rejected", "scenario_id": "plan-id-drift"},
-    {"expected_error": "E-P26-SOURCE-BINDING", "expected_outcome": "rejected", "scenario_id": "packet-kind-drift"},
-    {"expected_error": "E-P26-SOURCE-BINDING", "expected_outcome": "rejected", "scenario_id": "affected-set-drift"},
-    {"expected_error": "E-P26-SECTION", "expected_outcome": "rejected", "scenario_id": "section-count-drift"},
-    {"expected_error": "E-P26-SECTION", "expected_outcome": "rejected", "scenario_id": "section-sequence-drift"},
-    {"expected_error": "E-P26-SECTION", "expected_outcome": "rejected", "scenario_id": "section-state-drift"},
-    {"expected_error": "E-P26-QUESTION", "expected_outcome": "rejected", "scenario_id": "question-count-drift"},
-    {"expected_error": "E-P26-QUESTION", "expected_outcome": "rejected", "scenario_id": "question-sequence-drift"},
-    {"expected_error": "E-P26-QUESTION", "expected_outcome": "rejected", "scenario_id": "question-response-recorded"},
-    {"expected_error": "E-P26-QUESTION", "expected_outcome": "rejected", "scenario_id": "question-prompt-drift"},
-    {"expected_error": "E-P26-HUMAN-GATE", "expected_outcome": "rejected", "scenario_id": "human-gate-count-drift"},
-    {"expected_error": "E-P26-HUMAN-GATE", "expected_outcome": "rejected", "scenario_id": "human-gate-sequence-drift"},
-    {"expected_error": "E-P26-HUMAN-GATE", "expected_outcome": "rejected", "scenario_id": "human-gate-satisfied"},
-    {"expected_error": "E-P26-HUMAN-GATE", "expected_outcome": "rejected", "scenario_id": "human-gate-evidence-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "response-template-submitted"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "reviewer-identity-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "competence-attestation-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "conflict-declaration-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "authorization-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "review-observation-recorded"},
-    {"expected_error": "E-P26-RESPONSE", "expected_outcome": "rejected", "scenario_id": "review-recommendation-recorded"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "dispatch-authorized"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "delivery-channel-recorded"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "packet-dispatched"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "dispatch-time-recorded"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "recipient-recorded"},
-    {"expected_error": "E-P26-DISPATCH", "expected_outcome": "rejected", "scenario_id": "recipient-identifier-recorded"},
-    {"expected_error": "E-P26-PACKET-STATE", "expected_outcome": "rejected", "scenario_id": "packet-not-local-only"},
-    {"expected_error": "E-P26-PACKET-STATE", "expected_outcome": "rejected", "scenario_id": "packet-not-prepared"},
-    {"expected_error": "E-P26-PACKET-STATE", "expected_outcome": "rejected", "scenario_id": "packet-status-drift"},
-    {"expected_error": "E-P26-PACKET-STATE", "expected_outcome": "rejected", "scenario_id": "packet-verdict-drift"},
-    {"expected_error": "E-P26-CONTACT", "expected_outcome": "rejected", "scenario_id": "reviewer-contact-permitted"},
-    {"expected_error": "E-P26-CONTACT", "expected_outcome": "rejected", "scenario_id": "reviewer-contact-recorded"},
-    {"expected_error": "E-P26-EXECUTION", "expected_outcome": "rejected", "scenario_id": "review-start-permitted"},
-    {"expected_error": "E-P26-EXECUTION", "expected_outcome": "rejected", "scenario_id": "review-started"},
-    {"expected_error": "E-P26-EXECUTION", "expected_outcome": "rejected", "scenario_id": "review-completed"},
-    {"expected_error": "E-P26-OUTCOME", "expected_outcome": "rejected", "scenario_id": "outcome-selected"},
-    {"expected_error": "E-P26-EFFECT", "expected_outcome": "rejected", "scenario_id": "content-change-proposed"},
-    {"expected_error": "E-P26-EFFECT", "expected_outcome": "rejected", "scenario_id": "status-recommendation-recorded"},
-    {"expected_error": "E-P26-EFFECT", "expected_outcome": "rejected", "scenario_id": "effective-hold"},
-    {"expected_error": "E-P26-EFFECT", "expected_outcome": "rejected", "scenario_id": "operational-effect"},
-    {"expected_error": "E-P26-EFFECT", "expected_outcome": "rejected", "scenario_id": "status-change"},
-    {"expected_error": "E-P26-AUTHORIZATION", "expected_outcome": "rejected", "scenario_id": "human-authorization-claimed"},
-    {"expected_error": "E-P26-AUTHORIZATION", "expected_outcome": "rejected", "scenario_id": "real-authorization-claimed"},
-    {"expected_error": "E-P26-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "status-inheritance"},
-    {"expected_error": "E-P26-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-status-change"},
-    {"expected_error": "E-P26-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "automatic-release-action"},
-    {"expected_error": "E-P26-AUTHORITY", "expected_outcome": "rejected", "scenario_id": "repository-mutation"},
-    {"expected_error": "E-P26-NETWORK", "expected_outcome": "rejected", "scenario_id": "external-network-required"},
-    {"expected_error": "E-P26-NETWORK", "expected_outcome": "rejected", "scenario_id": "external-delivery-permitted"},
-    {"expected_error": "E-P26-ATLAS", "expected_outcome": "rejected", "scenario_id": "atlas-call-permitted"},
-    {"expected_error": "E-P26-LIVE-FROZEN", "expected_outcome": "rejected", "scenario_id": "live-activation"},
-    {"expected_error": "E-P26-ASSURANCE", "expected_outcome": "rejected", "scenario_id": "assurance-check-failed"},
-    {"expected_error": "E-P26-ASSURANCE", "expected_outcome": "rejected", "scenario_id": "assurance-verdict-drift"},
-    {"expected_error": "E-P26-LEDGER", "expected_outcome": "rejected", "scenario_id": "assurance-ledger-drift"},
-    {"expected_error": "E-P26-CHECKPOINT", "expected_outcome": "rejected", "scenario_id": "assurance-checkpoint-drift"}
+    {
+      "expected_error": null,
+      "expected_outcome": "accepted",
+      "scenario_id": "baseline"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase25-postmerge-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "phase25-candidate-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-report-file-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-ledger-file-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-checkpoint-file-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-PIN",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-recovery-file-drift"
+    },
+    {
+      "expected_error": "E-P26-MISSING",
+      "expected_outcome": "rejected",
+      "scenario_id": "missing-assurance"
+    },
+    {
+      "expected_error": "E-P26-ORPHAN",
+      "expected_outcome": "rejected",
+      "scenario_id": "orphan-assurance"
+    },
+    {
+      "expected_error": "E-P26-DUPLICATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "duplicate-assurance-id"
+    },
+    {
+      "expected_error": "E-P26-SEQUENCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-sequence-drift"
+    },
+    {
+      "expected_error": "E-P26-PACKET-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-id-drift"
+    },
+    {
+      "expected_error": "E-P26-PACKET-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-record-digest-drift"
+    },
+    {
+      "expected_error": "E-P26-PACKET-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-ledger-entry-drift"
+    },
+    {
+      "expected_error": "E-P26-PACKET-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "readiness-id-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "plan-id-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-kind-drift"
+    },
+    {
+      "expected_error": "E-P26-SOURCE-BINDING",
+      "expected_outcome": "rejected",
+      "scenario_id": "affected-set-drift"
+    },
+    {
+      "expected_error": "E-P26-SECTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "section-count-drift"
+    },
+    {
+      "expected_error": "E-P26-SECTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "section-sequence-drift"
+    },
+    {
+      "expected_error": "E-P26-SECTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "section-state-drift"
+    },
+    {
+      "expected_error": "E-P26-QUESTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "question-count-drift"
+    },
+    {
+      "expected_error": "E-P26-QUESTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "question-sequence-drift"
+    },
+    {
+      "expected_error": "E-P26-QUESTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "question-response-recorded"
+    },
+    {
+      "expected_error": "E-P26-QUESTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "question-prompt-drift"
+    },
+    {
+      "expected_error": "E-P26-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-gate-count-drift"
+    },
+    {
+      "expected_error": "E-P26-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-gate-sequence-drift"
+    },
+    {
+      "expected_error": "E-P26-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-gate-satisfied"
+    },
+    {
+      "expected_error": "E-P26-HUMAN-GATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-gate-evidence-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "response-template-submitted"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "reviewer-identity-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "competence-attestation-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "conflict-declaration-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "authorization-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-observation-recorded"
+    },
+    {
+      "expected_error": "E-P26-RESPONSE",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-recommendation-recorded"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "dispatch-authorized"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "delivery-channel-recorded"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-dispatched"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "dispatch-time-recorded"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "recipient-recorded"
+    },
+    {
+      "expected_error": "E-P26-DISPATCH",
+      "expected_outcome": "rejected",
+      "scenario_id": "recipient-identifier-recorded"
+    },
+    {
+      "expected_error": "E-P26-PACKET-STATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-not-local-only"
+    },
+    {
+      "expected_error": "E-P26-PACKET-STATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-not-prepared"
+    },
+    {
+      "expected_error": "E-P26-PACKET-STATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-status-drift"
+    },
+    {
+      "expected_error": "E-P26-PACKET-STATE",
+      "expected_outcome": "rejected",
+      "scenario_id": "packet-verdict-drift"
+    },
+    {
+      "expected_error": "E-P26-CONTACT",
+      "expected_outcome": "rejected",
+      "scenario_id": "reviewer-contact-permitted"
+    },
+    {
+      "expected_error": "E-P26-CONTACT",
+      "expected_outcome": "rejected",
+      "scenario_id": "reviewer-contact-recorded"
+    },
+    {
+      "expected_error": "E-P26-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-start-permitted"
+    },
+    {
+      "expected_error": "E-P26-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-started"
+    },
+    {
+      "expected_error": "E-P26-EXECUTION",
+      "expected_outcome": "rejected",
+      "scenario_id": "review-completed"
+    },
+    {
+      "expected_error": "E-P26-OUTCOME",
+      "expected_outcome": "rejected",
+      "scenario_id": "outcome-selected"
+    },
+    {
+      "expected_error": "E-P26-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "content-change-proposed"
+    },
+    {
+      "expected_error": "E-P26-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-recommendation-recorded"
+    },
+    {
+      "expected_error": "E-P26-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "effective-hold"
+    },
+    {
+      "expected_error": "E-P26-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "operational-effect"
+    },
+    {
+      "expected_error": "E-P26-EFFECT",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-change"
+    },
+    {
+      "expected_error": "E-P26-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "human-authorization-claimed"
+    },
+    {
+      "expected_error": "E-P26-AUTHORIZATION",
+      "expected_outcome": "rejected",
+      "scenario_id": "real-authorization-claimed"
+    },
+    {
+      "expected_error": "E-P26-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "status-inheritance"
+    },
+    {
+      "expected_error": "E-P26-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-status-change"
+    },
+    {
+      "expected_error": "E-P26-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "automatic-release-action"
+    },
+    {
+      "expected_error": "E-P26-AUTHORITY",
+      "expected_outcome": "rejected",
+      "scenario_id": "repository-mutation"
+    },
+    {
+      "expected_error": "E-P26-NETWORK",
+      "expected_outcome": "rejected",
+      "scenario_id": "external-network-required"
+    },
+    {
+      "expected_error": "E-P26-NETWORK",
+      "expected_outcome": "rejected",
+      "scenario_id": "external-delivery-permitted"
+    },
+    {
+      "expected_error": "E-P26-ATLAS",
+      "expected_outcome": "rejected",
+      "scenario_id": "atlas-call-permitted"
+    },
+    {
+      "expected_error": "E-P26-LIVE-FROZEN",
+      "expected_outcome": "rejected",
+      "scenario_id": "live-activation"
+    },
+    {
+      "expected_error": "E-P26-ASSURANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-check-failed"
+    },
+    {
+      "expected_error": "E-P26-ASSURANCE",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-verdict-drift"
+    },
+    {
+      "expected_error": "E-P26-LEDGER",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-ledger-drift"
+    },
+    {
+      "expected_error": "E-P26-CHECKPOINT",
+      "expected_outcome": "rejected",
+      "scenario_id": "assurance-checkpoint-drift"
+    }
   ],
   "summary": {
     "accepted_count": 1,
