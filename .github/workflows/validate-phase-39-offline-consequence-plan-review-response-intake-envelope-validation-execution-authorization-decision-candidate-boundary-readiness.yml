@@ -21,6 +21,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
             scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
+            scripts/validate_phase39_postmerge_record.py \
             scripts/validate_phase38_postmerge_record.py \
             scripts/generate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py \
             scripts/validate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py \
@@ -29,6 +30,7 @@ jobs:
         run: |
           python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check
           python3 scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
+          python3 scripts/validate_phase39_postmerge_record.py
           python3 -m unittest software.tests.test_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness -v
           python3 scripts/validate_phase38_postmerge_record.py
           python3 scripts/generate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py --check
@@ -44,6 +46,7 @@ jobs:
           name: phase-39-authorization-decision-candidate-boundary-readiness-diagnostics
           path: |
             release/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness.json
+            release/phase-39-postmerge.json
             reports/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness.md
       - name: Verify permanent workflow immutability
         run: |
