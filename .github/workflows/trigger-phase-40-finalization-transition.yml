@@ -1,0 +1,121 @@
+name: Trigger Phase 40 Finalization Transition
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  transition:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 40 finalization branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/finalize-phase-40-record
+          fetch-depth: 0
+      - name: Apply validated Phase 40 transition
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          state_path=Path('PROJECT_STATE.md')
+          state=state_path.read_text(encoding='utf-8')
+          old_heading='**Phase 39 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Boundary Readiness merged and validated through PR #69.**'
+          new_heading='**Phase 40 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Boundary Readiness Assurance merged and validated through PR #71.**'
+          assert old_heading in state and new_heading not in state
+          state=state.replace(old_heading,new_heading,1)
+          p39='Phase 39 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness`, `live: false`).'
+          p40='Phase 40 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance`, `live: false`).'
+          assert p39 in state and p40 not in state
+          state=state.replace(p39,p39+'\n'+p40,1)
+          row39='| 39 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate boundary readiness | Merged and validated through PR #69 |'
+          row40='| 40 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate boundary readiness assurance | Merged and validated through PR #71 |'
+          assert row39 in state and row40 not in state
+          state=state.replace(row39,row39+'\n'+row40,1)
+          section='''## Phase 40 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Boundary Readiness Assurance
+
+Historical Phase 39 finalization marker: **Phase 39 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Boundary Readiness merged and validated through PR #69.**
+
+Historical Phase 40 candidate marker: `exact-head validation pending`
+
+Historical Phase 40 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`
+
+Phase 40 exact candidate validation passed at `89b5ad5efb559bcf5c5f1b6c61621d97ca32c8e2`. PR #71 was merged into `main` at commit `893c00336ddca21c5b5c36d423f6666c0cfb3531` after all 34 applicable workflows passed.
+
+Atlas remains unchanged by Principia Phase 40. Principia and Atlas retain separate lifecycle authority.
+
+```yaml
+candidate_sha256: a935dbfcc1758b0aab68fb358968801d2b380690a9ebcd6efdc12416d2ef58c8
+candidate_tested_head: 89b5ad5efb559bcf5c5f1b6c61621d97ca32c8e2
+candidate_pull_request: 71
+candidate_merge_commit: 893c00336ddca21c5b5c36d423f6666c0cfb3531
+applicable_candidate_workflows: 34
+assurance_record_count: 2
+assurance_check_count: 168
+failed_assurance_check_count: 0
+boundary_policy_count: 1
+boundary_profile_count: 2
+candidate_boundary_readiness_record_count: 2
+boundary_stage_count: 24
+boundary_requirement_count: 60
+boundary_requirement_evaluated_count: 0
+candidate_template_count: 2
+candidate_template_field_count: 36
+audit_event_recorded_count: 0
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+authorization_decision_candidate_created_count: 0
+authorization_decision_recorded_count: 0
+authorization_granted_count: 0
+authorization_token_issued_count: 0
+execution_run_count: 0
+response_envelope_received_count: 0
+reviewer_contact_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assured-no-candidate-created
+live: false
+```
+
+The recovery matrix contains 210 deterministic scenarios and rejects 209 mutations. No candidate, decision, grant, token, ticket, envelope, execution, reviewer contact, Atlas call, repository effect, or live activation occurred.
+
+`release/phase-40-postmerge.json` pins candidate SHA-256 `a935dbfcc1758b0aab68fb358968801d2b380690a9ebcd6efdc12416d2ef58c8`, exact tested head `89b5ad5efb559bcf5c5f1b6c61621d97ca32c8e2`, PR #71, merge commit `893c00336ddca21c5b5c36d423f6666c0cfb3531`, all 34 applicable workflows, 168 passing assurance checks, frozen zero-candidate authority, and final state `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-validated`.
+
+'''
+          assert '## Phase 40 result —' not in state
+          state=state.replace('## Validation\n',section+'## Validation\n',1)
+          cmd='python3 scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py --check\npython3 scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py\npython3 scripts/validate_phase40_postmerge_record.py\npython3 -m unittest software.tests.test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance -v\n'
+          anchor='python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check\n'
+          assert anchor in state and cmd not in state
+          state=state.replace(anchor,cmd+anchor,1)
+          old_next='Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate**.'
+          new_next='Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-candidate**.'
+          assert old_next in state
+          state=state.replace(old_next,new_next,1)
+          old_desc='The next bounded gate may independently assure the Phase 39 boundary policy, profiles, requirements, templates, exact Phase 38 bindings, chained evidence, and zero-candidate authority. It must not create or populate a candidate, record or select a decision, grant authorization, issue a token or execution ticket, receive or process an envelope, execute validation, record a result, identify or contact a reviewer, satisfy a human gate, mutate content or status, call Atlas, require external networking, or write to either repository automatically.'
+          new_desc='The next bounded gate may define deterministic preparation requirements for a still-uncreated authorization-decision candidate. It must not create or populate a candidate, record or select a decision, grant authorization, issue a token or execution ticket, receive or process an envelope, execute validation, record a result, identify or contact a reviewer, satisfy a human gate, mutate content or status, call Atlas, require external networking, or write to either repository automatically.'
+          assert old_desc in state
+          state=state.replace(old_desc,new_desc,1)
+          state_path.write_text(state,encoding='utf-8')
+          v=Path('scripts/validate_phase39_postmerge_record.py')
+          text=v.read_text(encoding='utf-8')
+          old='f"Next gate: **{NEXT}**",'
+          new='"Historical Phase 40 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`",'
+          assert old in text
+          v.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
+          python3 scripts/validate_phase40_postmerge_record.py
+          python3 scripts/validate_phase39_postmerge_record.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/apply-phase-40-state-transition.yml
+          git add -u
+          git commit -m 'Finalize Phase 40 project state'
+          git push origin HEAD:agent/finalize-phase-40-record
+      - name: Remove temporary trigger from main
+        run: |
+          git fetch origin main
+          git switch -C main origin/main
+          rm -f .github/workflows/trigger-phase-40-finalization-transition.yml
+          git add -u
+          git commit -m 'Remove temporary Phase 40 finalization trigger'
+          git push origin HEAD:main
