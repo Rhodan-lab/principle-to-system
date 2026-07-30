@@ -2,6 +2,9 @@ name: Apply Phase 42 State Transition
 on:
   pull_request:
     branches: [main]
+  push:
+    branches:
+      - agent/finalize-phase-42-record
 permissions:
   contents: write
 jobs:
