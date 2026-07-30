@@ -1,3 +1,4 @@
+<!-- Phase 36 finalized provenance validation is permanently enabled. -->
 # Phase 36 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Readiness Assurance
 
 > Date: 2026-07-30  
