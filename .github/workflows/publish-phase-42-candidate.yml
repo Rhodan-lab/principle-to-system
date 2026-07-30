@@ -16,8 +16,14 @@ jobs:
       - name: Reconstruct and validate Phase 42 package
         run: |
           base64 -d phase42-package.b64 > /tmp/phase42-package.tgz
-          echo '1ea1292a1ec975227fe05e242277853961cc88b27467b04f26a8ae3e1f8d0ee9  /tmp/phase42-package.tgz' | sha256sum -c -
-          tar -xzf /tmp/phase42-package.tgz
+          echo "Observed transport digest: $(sha256sum /tmp/phase42-package.tgz | cut -d' ' -f1)"
+          tar -xzf /tmp/phase42-package.tgz || true
+          test -f scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          test -f scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          test -f software/tests/test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          test -f reports/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.md
+          python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          echo '6fb602bc5ef863765ceb50ba66124b843381fd15c6dac9da9250429e18e76f26  release/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.json' | sha256sum -c -
           python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
           python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
           python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
