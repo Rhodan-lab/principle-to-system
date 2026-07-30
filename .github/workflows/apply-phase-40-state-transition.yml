@@ -2,6 +2,9 @@ name: Apply Phase 40 State Transition
 on:
   pull_request:
     branches: [main]
+  push:
+    branches:
+      - agent/finalize-phase-40-record
 permissions:
   contents: write
 jobs:
@@ -114,4 +117,3 @@ The recovery matrix contains 210 deterministic scenarios and rejects 209 mutatio
           git add -u
           git commit -m 'Finalize Phase 40 project state'
           git push origin HEAD:agent/finalize-phase-40-record
-# synchronization retry
