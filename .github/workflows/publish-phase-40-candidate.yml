@@ -1,0 +1,34 @@
+name: Publish Phase 40 Candidate
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 40 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance
+          fetch-depth: 0
+      - name: Reconstruct and validate Phase 40 package
+        run: |
+          base64 -d phase40-package.b64 > /tmp/phase40-package.tgz
+          echo 'a9a9f2aa6699bc6bca04ac694d02d624109e8ae6fd8ce55274acf7884b51aadc  /tmp/phase40-package.tgz' | sha256sum -c -
+          tar -xzf /tmp/phase40-package.tgz
+          python3 scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py --check
+          python3 scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          python3 -m unittest software.tests.test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance -v
+      - name: Commit five non-workflow evidence files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          git add scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          git add software/tests/test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          git add reports/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.md
+          git add release/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.json
+          git commit -m 'Add Phase 40 candidate-boundary readiness assurance evidence'
+          git push origin HEAD:agent/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance
