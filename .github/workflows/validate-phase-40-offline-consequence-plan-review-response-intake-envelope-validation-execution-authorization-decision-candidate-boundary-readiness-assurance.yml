@@ -21,6 +21,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
             scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
+            scripts/validate_phase40_postmerge_record.py \
             scripts/validate_phase39_postmerge_record.py \
             scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
             scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
@@ -29,6 +30,7 @@ jobs:
         run: |
           python3 scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py --check
           python3 scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          python3 scripts/validate_phase40_postmerge_record.py
           python3 -m unittest software.tests.test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance -v
           python3 scripts/validate_phase39_postmerge_record.py
           python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check
@@ -44,6 +46,7 @@ jobs:
           name: phase-40-authorization-decision-candidate-boundary-readiness-assurance-diagnostics
           path: |
             release/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.json
+            release/phase-40-postmerge.json
             reports/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.md
       - name: Verify permanent workflow immutability
         run: |
