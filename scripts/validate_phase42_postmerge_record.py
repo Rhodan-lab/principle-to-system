@@ -16,6 +16,7 @@ HEAD = "0597916365d489b2738fbb905f0f40991f42a4b7"
 MERGE = "057da54503e2c3b1ea1e86150c4015a99628dfed"
 PREVIOUS_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate"
+# The authoritative current gate must appear in the final Next phase section, not only in historical text.
 
 
 def sha(path: Path) -> str:
