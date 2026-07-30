@@ -71,11 +71,13 @@ def validate()->list[str]:
         "Historical Phase 36 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-assurance-candidate`",
         "Atlas remains unchanged by Principia Phase 36",
         "## Phase 36 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Readiness Assurance",
-        CANDIDATE_SHA,HEAD,MERGE,"all 30 applicable workflows","132 deterministic scenarios","131 mutations",f"Next gate: **{NEXT}**",
+        CANDIDATE_SHA,HEAD,MERGE,"all 30 applicable workflows","132 deterministic scenarios","131 mutations",
     )
     for marker in required:
         if marker not in state:
             errors.append(f"Phase 36 project-state marker missing: {marker}")
+    if f"Next gate: **{NEXT}**" not in state and "Historical Phase 37 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-candidate`" not in state:
+        errors.append("Phase 36 next gate is neither current nor preserved historically")
     if "Principia and Atlas remain separate repositories with separate lifecycle authority." not in state:
         errors.append("Repository authority separation lost")
     report=REPORT.read_text()
