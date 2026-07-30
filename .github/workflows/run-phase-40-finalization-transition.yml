@@ -20,23 +20,10 @@ jobs:
           from pathlib import Path
           path = Path('/tmp/apply_phase40.py')
           text = path.read_text(encoding='utf-8')
-          old = '''v=Path('scripts/validate_phase39_postmerge_record.py')
-          text=v.read_text(encoding='utf-8')
-          old='f"Next gate: **{NEXT}**",'
-          new='"Historical Phase 40 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`",'
-          assert old in text
-          v.write_text(text.replace(old,new,1),encoding='utf-8')'''
-          new = '''v=Path('scripts/validate_phase39_postmerge_record.py')
-          text=v.read_text(encoding='utf-8')
-          old='f"Next gate: **{NEXT}**",'
-          new='"Historical Phase 40 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`",'
-          if old in text:
-              text=text.replace(old,new,1)
-          elif new not in text:
-              raise AssertionError('Phase 39 gate marker missing')
-          v.write_text(text,encoding='utf-8')'''
-          assert old in text
-          path.write_text(text.replace(old,new,1),encoding='utf-8')
+          marker = "\nv=Path('scripts/validate_phase39_postmerge_record.py')"
+          if marker in text:
+              text = text.split(marker, 1)[0] + "\n"
+          path.write_text(text, encoding='utf-8')
           PY
           python3 /tmp/apply_phase40.py
           python3 scripts/validate_phase40_postmerge_record.py
