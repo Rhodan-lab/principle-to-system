@@ -1,0 +1,52 @@
+name: Validate Phase 40 Offline Authorization Decision Candidate Boundary Readiness Assurance
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia Phase 40 evidence
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile Phase 40 and inherited validators
+        run: |
+          python3 -m py_compile \
+            scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
+            scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
+            scripts/validate_phase39_postmerge_record.py \
+            scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
+            scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py \
+            scripts/validate_phase38_postmerge_record.py
+      - name: Run complete Phase 40 chain
+        run: |
+          python3 scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py --check
+          python3 scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
+          python3 -m unittest software.tests.test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance -v
+          python3 scripts/validate_phase39_postmerge_record.py
+          python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check
+          python3 scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
+          python3 -m unittest software.tests.test_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness -v
+          python3 scripts/validate_phase38_postmerge_record.py
+          python3 -m unittest discover -s software/tests -v
+          python3 scripts/validate_phase13_software.py
+      - name: Upload Phase 40 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-40-authorization-decision-candidate-boundary-readiness-assurance-diagnostics
+          path: |
+            release/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.json
+            reports/phase-40-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance.md
+      - name: Verify permanent workflow immutability
+        run: |
+          git diff --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          git diff --cached --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          test -z "$(git status --porcelain --untracked-files=all | grep -Ev '(__pycache__/|\.pyc$)' || true)"
