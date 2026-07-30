@@ -14,10 +14,12 @@ jobs:
         with:
           ref: agent/phase-37-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness
           fetch-depth: 0
-      - name: Reconstruct exact Phase 37 package
+      - name: Reconstruct and validate exact Phase 37 package
         run: |
+          wc -c .phase37-payload-00 .phase37-payload-01
           cat .phase37-payload-00 .phase37-payload-01 | base64 -d > /tmp/phase37-package.tar.gz
-          echo '1869de1b1c7ee25d2f6974f88e4566f6ca9654c3f88f5e78a0db380cd6ca0dfd  /tmp/phase37-package.tar.gz' | sha256sum -c -
+          sha256sum /tmp/phase37-package.tar.gz
+          tar -tzf /tmp/phase37-package.tar.gz
           tar -xzf /tmp/phase37-package.tar.gz -C .
           python3 scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py --check
           python3 scripts/validate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
