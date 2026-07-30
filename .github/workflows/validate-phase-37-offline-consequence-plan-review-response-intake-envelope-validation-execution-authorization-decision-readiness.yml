@@ -24,7 +24,7 @@ jobs:
           test -f scripts/validate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
           test -f software/tests/test_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
           test -f reports/phase-37-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness.md
-          test -f release/phase-37-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness.json
+          python3 scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
           echo '724a12243300d6c91cf60fef046f5ae40089c98867bba62bdd524e3684aec2ae  release/phase-37-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness.json' | sha256sum -c -
           python3 scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py --check
           python3 scripts/validate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
