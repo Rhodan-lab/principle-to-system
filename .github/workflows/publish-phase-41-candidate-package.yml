@@ -6,12 +6,18 @@ on:
       - agent/phase-41-candidate-preparation-readiness
     paths:
       - .github/workflows/publish-phase-41-candidate-package.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-phase-41-candidate-package.yml
 
 permissions:
   contents: write
 
 jobs:
   publish:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
