@@ -1,30 +1,28 @@
-# Phase 42 — Offline Authorization-Decision Candidate Preparation Readiness Assurance Candidate
+# Phase 42 — Offline Authorization-Decision Candidate Preparation Readiness Assurance
 
 > Date: 2026-07-31  
 > Repository: `Rhodan-lab/principle-to-system`  
-> Mode: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance`
+> State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-validated`
 
-## Purpose
+## Immutable provenance
 
-Phase 42 independently assures the deterministic Phase 41 preparation controls for a still-uncreated authorization-decision candidate. It binds the exact Phase 41 candidate, post-merge record, tested head, candidate merge, finalization commit, preparation policy, two profiles, ordered field-source plans, inactive stages, unevaluated requirements, human-gate freeze, and zero-effect authority.
+- Candidate SHA-256: `6fb602bc5ef863765ceb50ba66124b843381fd15c6dac9da9250429e18e76f26`
+- Exact tested head: `0597916365d489b2738fbb905f0f40991f42a4b7`
+- Candidate PR: `#75`
+- Candidate merge: `057da54503e2c3b1ea1e86150c4015a99628dfed`
+- Applicable candidate workflows: `36`
+- Post-merge SHA-256: `887aa4a6c23be70b0c619c09b024e58f4321acf19ea2181bbb0f5734c1fe5cf4`
 
-It does not create, populate, assemble, persist, sign, or submit an authorization-decision candidate.
-
-## Candidate result
+## Finalized result
 
 ```yaml
-source_phase41_candidate_sha256: c45f148554f66bf21db03fa446475e55746086a47da0bb56841b95012be1d33b
-source_phase41_postmerge_sha256: 864ef4e905df2c5a4cc4bac1b9ebdc035211c36a8c927eec9741c45fc6f5d1b0
-source_phase41_candidate_head: 4700bd61823d66b2296b9513ad7f564d84bb0e73
-source_phase41_candidate_merge: 25073fd7765a9faf3f53235cded3356839861917
-source_phase41_finalization_commit: e819d08d6dac4ec6fba0943bf8ec0c1e55da01a5
-assurance_policies: 1
-assurance_records: 2
+candidate_preparation_readiness_assurance_policies: 1
+candidate_preparation_readiness_assurance_records: 2
 assurance_checks_passed: 204
 failed_assurance_checks: 0
-preparation_policies: 1
-preparation_profiles: 2
-preparation_readiness_records: 2
+candidate_preparation_policies: 1
+candidate_preparation_profiles: 2
+candidate_preparation_readiness_records: 2
 inactive_preparation_stages: 28
 unevaluated_preparation_requirements: 88
 candidate_field_plans: 36
@@ -45,11 +43,9 @@ real_authorization_claimed: false
 live: false
 ```
 
-The recovery matrix contains 226 deterministic scenarios: one accepted baseline and 225 rejected mutations. Each assurance record contains 102 exact invariants.
+The recovery matrix contains 226 deterministic scenarios: one accepted baseline and 225 rejected mutations. Each of the two assurance records passes 102 exact invariants binding Phase 41 provenance, preparation policy and profiles, inactive stages, unevaluated requirements, unpopulated field plans, pending human gates, audit boundaries, and frozen zero-effect authority.
 
-## Authority boundary
-
-Only local Phase 41 preparation-readiness assurance is permitted. No candidate is created, populated, assembled, signed, persisted, or submitted. No decision is selected or recorded, no authorization is granted, no token or execution ticket is issued, no envelope is received, no validation runs, no reviewer is identified or contacted, no human gate is satisfied, no status changes, no external network is required, and Atlas is neither called nor modified.
+No authorization-decision candidate was created, populated, assembled, persisted, signed, or submitted. No decision was recorded, no authorization was granted, no token or execution ticket was issued, no envelope was received, no validation ran, no reviewer was identified or contacted, no status changed, no external network was required, and Atlas was neither called nor modified.
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -58,11 +54,15 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 ```bash
 python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
 python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+python3 scripts/validate_phase42_postmerge_record.py
 python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
+python3 scripts/validate_phase41_postmerge_record.py
+python3 -m unittest discover -s software/tests -v
+python3 scripts/validate_phase13_software.py
 ```
 
 ## Next bounded gate
 
-`offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate`
+Next gate: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate`
 
-That future gate may define deterministic assembly preconditions for a still-uncreated candidate. It must not create, populate, assemble, persist, sign, or submit a candidate; record a decision; grant authorization; issue a token or ticket; receive an envelope; execute validation; contact reviewers; call Atlas; or alter repository status.
+That gate may define deterministic assembly requirements for a still-uncreated candidate. It must not create, populate, assemble, persist, sign, or submit a candidate; record or select a decision; grant authorization; issue a token or execution ticket; receive or process an envelope; execute validation; record a result; identify or contact a reviewer; satisfy a human gate; call Atlas; require external networking; or alter repository status.
