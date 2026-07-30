@@ -2,20 +2,9 @@ name: Validate Phase 41 Offline Authorization Decision Candidate Preparation Rea
 
 on:
   pull_request:
-    paths:
-      - "release/phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.json"
-      - "reports/phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.md"
-      - "scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py"
-      - "scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py"
-      - "software/tests/test_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py"
-      - ".github/workflows/validate-phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.yml"
+    branches: [main]
   push:
-    branches:
-      - main
-    paths:
-      - "release/phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.json"
-      - "scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py"
-      - "scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py"
+    branches: [main]
 
 permissions:
   contents: read
@@ -24,28 +13,46 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out Principia Phase 41 evidence
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - name: Compile Phase 41 controls
+          python-version: '3.12'
+      - name: Compile Phase 41 and inherited validators
         run: |
           python3 -m py_compile \
             scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py \
-            scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py
-      - name: Validate Phase 41 deterministic evidence
+            scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py \
+            scripts/validate_phase41_postmerge_record.py \
+            scripts/validate_phase40_postmerge_record.py \
+            scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
+            scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py \
+            scripts/validate_phase39_postmerge_record.py
+      - name: Run complete Phase 41 chain
         run: |
           python3 scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py --check
           python3 scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py
+          python3 scripts/validate_phase41_postmerge_record.py
           python3 -m unittest software.tests.test_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness -v
-      - name: Revalidate Phase 40 source
-        run: |
+          python3 scripts/validate_phase40_postmerge_record.py
           python3 scripts/generate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py --check
           python3 scripts/validate_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance.py
-          python3 scripts/validate_phase40_postmerge_record.py
-      - uses: actions/upload-artifact@v4
+          python3 -m unittest software.tests.test_phase40_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness_assurance -v
+          python3 scripts/validate_phase39_postmerge_record.py
+          python3 -m unittest discover -s software/tests -v
+          python3 scripts/validate_phase13_software.py
+      - name: Upload Phase 41 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: phase-41-authorization-decision-candidate-preparation-readiness-diagnostics
           path: |
             release/phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.json
+            release/phase-41-postmerge.json
             reports/phase-41-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness.md
+      - name: Verify permanent workflow immutability
+        run: |
+          git diff --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          git diff --cached --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          test -z "$(git status --porcelain --untracked-files=all | grep -Ev '(__pycache__/|\.pyc$)' || true)"
