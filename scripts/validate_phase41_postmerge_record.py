@@ -61,7 +61,7 @@ def validate():
         "all 35 applicable workflows",
         "198 deterministic scenarios",
         "197 mutations",
-        f"Next gate: **{NEXT}**",
+        "Historical Phase 42 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate`",
     ):
         if marker not in state_text:
             errors.append(f"state marker missing: {marker}")
