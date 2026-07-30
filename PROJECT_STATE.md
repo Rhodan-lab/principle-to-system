@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 41 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Preparation Readiness merged and validated through PR #73.**
+**Phase 42 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Preparation Readiness Assurance merged and validated through PR #75.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -37,6 +37,7 @@ Phase 38 state: **offline-consequence-plan-review-response-intake-envelope-valid
 Phase 39 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness`, `live: false`).
 Phase 40 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance`, `live: false`).
 Phase 41 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness`, `live: false`).
+Phase 42 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -87,6 +88,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 39 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate boundary readiness | Merged and validated through PR #69 |
 | 40 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate boundary readiness assurance | Merged and validated through PR #71 |
 | 41 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate preparation readiness | Merged and validated through PR #73 |
+| 42 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate preparation readiness assurance | Merged and validated through PR #75 |
 
 ## Integration topology
 
@@ -1201,9 +1203,66 @@ The recovery matrix contains 198 deterministic scenarios and rejects 197 mutatio
 
 `release/phase-41-postmerge.json` pins candidate SHA-256 `c45f148554f66bf21db03fa446475e55746086a47da0bb56841b95012be1d33b`, exact tested head `4700bd61823d66b2296b9513ad7f564d84bb0e73`, PR #73, merge commit `25073fd7765a9faf3f53235cded3356839861917`, all 35 applicable workflows, 180 passing preparation checks, frozen zero-candidate authority, and final state `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-validated`.
 
+## Phase 42 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Preparation Readiness Assurance
+
+Historical Phase 41 finalization marker: **Phase 41 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Preparation Readiness merged and validated through PR #73.**
+
+Historical Phase 42 candidate marker: `exact-head validation pending`
+
+Historical Phase 42 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate`
+
+Historical Phase 41 next-gate marker: Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate**.
+
+Phase 42 exact candidate validation passed at `0597916365d489b2738fbb905f0f40991f42a4b7`. PR #75 was merged into `main` at commit `057da54503e2c3b1ea1e86150c4015a99628dfed` after all 36 applicable workflows passed.
+
+Atlas remains unchanged by Principia Phase 42. Principia and Atlas retain separate lifecycle authority.
+
+```yaml
+candidate_sha256: 6fb602bc5ef863765ceb50ba66124b843381fd15c6dac9da9250429e18e76f26
+candidate_tested_head: 0597916365d489b2738fbb905f0f40991f42a4b7
+candidate_pull_request: 75
+candidate_merge_commit: 057da54503e2c3b1ea1e86150c4015a99628dfed
+applicable_candidate_workflows: 36
+candidate_preparation_readiness_assurance_policy_count: 1
+candidate_preparation_readiness_assurance_record_count: 2
+candidate_preparation_readiness_assurance_check_count: 204
+failed_candidate_preparation_readiness_assurance_check_count: 0
+candidate_preparation_policy_count: 1
+candidate_preparation_profile_count: 2
+candidate_preparation_readiness_record_count: 2
+candidate_preparation_stage_count: 28
+candidate_preparation_requirement_count: 88
+candidate_preparation_requirement_evaluated_count: 0
+candidate_field_plan_count: 36
+candidate_field_populated_count: 0
+audit_event_recorded_count: 0
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+authorization_decision_candidate_created_count: 0
+authorization_decision_recorded_count: 0
+authorization_granted_count: 0
+authorization_token_issued_count: 0
+execution_ticket_issued_count: 0
+execution_run_count: 0
+response_envelope_received_count: 0
+reviewer_contact_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assured-no-candidate-created
+live: false
+```
+
+The recovery matrix contains 226 deterministic scenarios and rejects 225 mutations. No candidate creation, population, assembly, persistence, signing, submission, decision, grant, token, ticket, envelope, execution, reviewer contact, Atlas call, repository effect, or live activation occurred.
+
+`release/phase-42-postmerge.json` pins candidate SHA-256 `6fb602bc5ef863765ceb50ba66124b843381fd15c6dac9da9250429e18e76f26`, exact tested head `0597916365d489b2738fbb905f0f40991f42a4b7`, PR #75, merge commit `057da54503e2c3b1ea1e86150c4015a99628dfed`, all 36 applicable workflows, 204 passing assurance checks, frozen zero-candidate authority, and final state `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
+python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+python3 scripts/validate_phase42_postmerge_record.py
+python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
 python3 scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py --check
 python3 scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py
 python3 scripts/validate_phase41_postmerge_record.py
@@ -1317,4 +1376,4 @@ python3 scripts/validate_phase13_software.py
 
 Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate**.
 
-The next bounded gate may independently assure the Phase 41 preparation policy, profiles, field-source plans, exact Phase 40 bindings, chained evidence, and zero-candidate authority. It must not create or populate a candidate, record or select a decision, grant authorization, issue a token or execution ticket, receive or process an envelope, execute validation, record a result, identify or contact a reviewer, satisfy a human gate, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
+The next bounded gate may define deterministic assembly requirements for a still-uncreated authorization-decision candidate. It must not create, populate, assemble, persist, sign, or submit a candidate; record or select a decision; grant authorization; issue a token or execution ticket; receive or process an envelope; execute validation; record a result; identify or contact a reviewer; satisfy a human gate; mutate content or status; call Atlas; require external networking; or write to either repository automatically.

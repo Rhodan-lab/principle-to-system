@@ -21,6 +21,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py \
             scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py \
+            scripts/validate_phase42_postmerge_record.py \
             scripts/validate_phase41_postmerge_record.py \
             scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py \
             scripts/validate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py \
@@ -29,6 +30,7 @@ jobs:
         run: |
           python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
           python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          python3 scripts/validate_phase42_postmerge_record.py
           python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
           python3 scripts/validate_phase41_postmerge_record.py
           python3 scripts/generate_phase41_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness.py --check
@@ -44,6 +46,7 @@ jobs:
           name: phase-42-authorization-decision-candidate-preparation-readiness-assurance-diagnostics
           path: |
             release/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.json
+            release/phase-42-postmerge.json
             reports/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.md
       - name: Verify permanent workflow immutability
         run: |
