@@ -66,4 +66,4 @@ Next gate: `offline-consequence-plan-review-response-intake-envelope-validation-
 
 That gate may define deterministic preparation requirements for a still-uncreated authorization-decision candidate. It still must not create or populate a candidate, record or select a decision, grant authorization, issue a token or ticket, receive an envelope, execute validation, contact reviewers, call Atlas, or alter repository status.
 
-<!-- Permanent Phase 40 finalization transition trigger. -->
+<!-- Corrected Phase 40 finalization transition synchronization. -->
