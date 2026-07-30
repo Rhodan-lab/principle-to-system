@@ -1,21 +1,21 @@
-# Phase 39 — Offline Authorization-Decision Candidate Boundary Readiness Candidate
+# Phase 39 — Offline Authorization-Decision Candidate Boundary Readiness
 
 > Date: 2026-07-30  
 > Repository: `Rhodan-lab/principle-to-system`  
-> Mode: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness`
+> State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-validated`
 
-## Purpose
+## Immutable provenance
 
-Phase 39 defines the deterministic boundary conditions that would have to be satisfied before an authorization-decision candidate could be prepared. It does not create or populate a candidate. It binds the exact Phase 38 assurance records to source identity, role separation, conflict declaration, approval evidence, rationale, validity, revocation, audit, and zero-effect controls.
+- Candidate SHA-256: `e15063165a54ced8bbae95f4dcea9c9ff92c540135d67d3a8b10791dbc771c40`
+- Exact tested head: `c9bf3c5a0bdab6f6204d8fa8dd571f8d82b01896`
+- Candidate PR: `#69`
+- Candidate merge: `e2b81e9ac1ff5385ab054392bb0b33f5c3907b55`
+- Applicable candidate workflows: `33`
+- Post-merge SHA-256: `17cab6bc36cffeb475065fe92116486fb47e8ac813a643205d0cbd18e774fea2`
 
-## Candidate result
+## Finalized result
 
 ```yaml
-source_phase38_candidate_sha256: b3c5d8ea8da88cd2975531ccd149b0dde980dc480b9e7385425cafad3e024ec8
-source_phase38_postmerge_sha256: 5c6e146edfe4d8e8743b8cbf38bf19593383c5fde34e5111c6eb6a6d28c0b2af
-source_phase38_finalization_commit: 013dab928f00b886899f281540b836b589408fa7
-candidate_sha256: e15063165a54ced8bbae95f4dcea9c9ff92c540135d67d3a8b10791dbc771c40
-candidate_bytes: 33774
 boundary_policies: 1
 boundary_profiles: 2
 boundary_readiness_records: 2
@@ -41,16 +41,26 @@ real_authorization_claimed: false
 live: false
 ```
 
-The recovery matrix contains 181 deterministic scenarios: one accepted baseline and 180 rejected mutations. Each readiness record contains 77 passing boundary invariants.
+The recovery matrix contains 181 deterministic scenarios and 180 rejected mutations. Each of the two boundary-readiness records passes 77 exact invariants binding Phase 38 assurances, roles, conflicts, evidence, rationale, validity, revocation, audit, blank candidate templates, and frozen zero-effect authority.
 
-## Authority boundary
-
-Only local boundary-readiness construction and validation are permitted. No decision candidate is created or populated, no decision is recorded, no authorization is granted, no token or execution ticket is issued, no envelope is received, no validation runs, no reviewer is identified or contacted, no human gate is satisfied, no status changes, no external network is required, and Atlas is neither called nor modified.
+No authorization-decision candidate was created or populated. No decision was recorded, no authorization was granted, no token or execution ticket was issued, no envelope was received, no validation ran, no reviewer was identified or contacted, no status changed, no external network was required, and Atlas was neither called nor modified.
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
+## Validation
+
+```bash
+python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check
+python3 scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
+python3 scripts/validate_phase39_postmerge_record.py
+python3 -m unittest software.tests.test_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness -v
+python3 scripts/validate_phase38_postmerge_record.py
+python3 -m unittest discover -s software/tests -v
+python3 scripts/validate_phase13_software.py
+```
+
 ## Next bounded gate
 
-`offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`
+Next gate: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`
 
-That future gate may independently assure these boundary-readiness records. It must not create a candidate, record a decision, grant authorization, issue a token or ticket, receive an envelope, execute validation, contact reviewers, call Atlas, or alter repository status.
+That gate may independently assure the Phase 39 boundary policy, profiles, requirements, templates, source bindings, and zero-candidate authority. It still must not create or populate a candidate, record a decision, grant authorization, issue a token or ticket, receive an envelope, execute validation, contact reviewers, call Atlas, or alter repository status.
