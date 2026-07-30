@@ -1,3 +1,4 @@
+# Phase 36 finalized provenance validation is permanently enabled.
 name: Validate Phase 36 Offline Consequence Plan Review Response Intake Envelope Validation Execution Authorization Readiness Assurance
 on:
   pull_request:
@@ -21,6 +22,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase36_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness_assurance.py \
             scripts/validate_phase36_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness_assurance.py \
+            scripts/validate_phase36_postmerge_record.py \
             scripts/validate_phase35_postmerge_record.py \
             scripts/generate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
             scripts/validate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py \
@@ -29,6 +31,7 @@ jobs:
         run: |
           python3 scripts/generate_phase36_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness_assurance.py --check
           python3 scripts/validate_phase36_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness_assurance.py
+          python3 scripts/validate_phase36_postmerge_record.py
           python3 -m unittest software.tests.test_phase36_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness_assurance -v
           python3 scripts/validate_phase35_postmerge_record.py
           python3 scripts/generate_phase35_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_readiness.py --check
@@ -44,6 +47,7 @@ jobs:
           name: phase-36-authorization-readiness-assurance-diagnostics
           path: |
             release/phase-36-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-assurance.json
+            release/phase-36-postmerge.json
             reports/phase-36-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-assurance.md
       - name: Verify permanent workflow immutability
         run: |
