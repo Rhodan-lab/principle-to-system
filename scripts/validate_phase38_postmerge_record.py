@@ -90,11 +90,16 @@ def validate() -> list[str]:
         "all 32 applicable workflows",
         "206 deterministic scenarios",
         "205 mutations",
-        f"Next gate: **{NEXT}**",
     )
     for marker in required:
         if marker not in state:
             errors.append(f"Phase 38 project-state marker missing: {marker}")
+    gate_markers = (
+        f"Next gate: **{NEXT}**",
+        f"Historical Phase 39 target marker: `{NEXT}`",
+    )
+    if not any(marker in state for marker in gate_markers):
+        errors.append("Phase 38 project-state gate marker missing")
     if "Principia and Atlas remain separate repositories with separate lifecycle authority." not in state:
         errors.append("Repository authority separation lost")
 
