@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 37 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness merged and validated through PR #65.**
+**Phase 38 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness Assurance merged and validated through PR #67.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -33,6 +33,7 @@ Phase 34 state: **offline-consequence-plan-review-response-intake-envelope-valid
 Phase 35 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness`, `live: false`).
 Phase 36 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-readiness-assurance`, `live: false`).
 Phase 37 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness`, `live: false`).
+Phase 38 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -79,6 +80,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 35 | Offline consequence-plan review-response intake envelope validation execution authorization readiness | Merged and validated through PR #61 |
 | 36 | Offline consequence-plan review-response intake envelope validation execution authorization readiness assurance | Merged and validated through PR #63 |
 | 37 | Offline consequence-plan review-response intake envelope validation execution authorization decision readiness | Merged and validated through PR #65 |
+| 38 | Offline consequence-plan review-response intake envelope validation execution authorization decision readiness assurance | Merged and validated through PR #67 |
 
 ## Integration topology
 
@@ -993,9 +995,65 @@ The recovery matrix contains 138 deterministic scenarios and rejects 137 mutatio
 
 `release/phase-37-postmerge.json` pins candidate SHA-256 `724a12243300d6c91cf60fef046f5ae40089c98867bba62bdd524e3684aec2ae`, exact tested head `b3b5cb7ce580b83b96e03dc91830c210aeb50ddd`, PR #65, merge commit `16516cd5b67b480a572b949996e8ebceaa8d1acb`, all 31 applicable workflows, frozen zero-decision authority, and final state `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-validated`.
 
+## Phase 38 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness Assurance
+
+Historical Phase 37 finalization marker: **Phase 37 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness merged and validated through PR #65.**
+
+Historical Phase 38 candidate marker: `exact-head validation pending`
+
+Historical Phase 38 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-candidate`
+
+Phase 38 exact candidate validation passed at `08b75c7d280f3482b746a5de9c5c6d48541e3cf6`. PR #67 was merged into `main` at commit `be3f305f7234875be541e6f5e2bb8fb1bf0c0f43` after all 32 applicable workflows passed.
+
+Atlas remains unchanged by Principia Phase 38. Principia and Atlas retain separate lifecycle authority.
+
+```yaml
+candidate_sha256: b3c5d8ea8da88cd2975531ccd149b0dde980dc480b9e7385425cafad3e024ec8
+candidate_tested_head: 08b75c7d280f3482b746a5de9c5c6d48541e3cf6
+candidate_pull_request: 67
+candidate_merge_commit: be3f305f7234875be541e6f5e2bb8fb1bf0c0f43
+applicable_candidate_workflows: 32
+decision_policy_count: 1
+decision_profile_count: 2
+decision_readiness_record_count: 2
+assured_decision_readiness_record_count: 2
+assurance_check_count: 144
+failed_assurance_check_count: 0
+decision_stage_count: 24
+decision_requirement_count: 52
+decision_requirement_evaluated_count: 0
+decision_option_count: 3
+decision_option_selected_count: 0
+blank_decision_record_count: 2
+blank_decision_record_field_count: 32
+required_decision_role_count: 4
+dual_control_profile_count: 2
+human_gate_pending_count: 8
+human_gate_satisfied_count: 0
+authorization_decision_candidate_created_count: 0
+authorization_decision_recorded_count: 0
+authorization_granted_count: 0
+authorization_token_issued_count: 0
+execution_run_count: 0
+response_envelope_received_count: 0
+reviewer_contact_count: 0
+status_change_count: 0
+real_authorization_claimed: false
+decision: response-intake-envelope-validation-execution-authorization-decision-readiness-assured-no-decision-candidate-created
+live: false
+```
+
+The recovery matrix contains 206 deterministic scenarios and rejects 205 mutations. No decision candidate, decision, grant, token, ticket, envelope, execution, reviewer contact, Atlas call, repository effect, or live activation occurred.
+
+`release/phase-38-postmerge.json` pins candidate SHA-256 `b3c5d8ea8da88cd2975531ccd149b0dde980dc480b9e7385425cafad3e024ec8`, exact tested head `08b75c7d280f3482b746a5de9c5c6d48541e3cf6`, PR #67, merge commit `be3f305f7234875be541e6f5e2bb8fb1bf0c0f43`, all 32 applicable workflows, 144 passing assurance checks, frozen zero-decision authority, and final state `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-validated`.
+
 ## Validation
 
 ```bash
+python3 scripts/generate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py --check
+python3 scripts/validate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py
+python3 scripts/validate_phase38_postmerge_record.py
+python3 -m unittest software.tests.test_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance -v
 python3 scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py --check
 python3 scripts/validate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py
 python3 scripts/validate_phase37_postmerge_record.py
@@ -1091,6 +1149,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-candidate**.
 
-The next bounded gate may independently assure the two authorization-decision readiness records, shared decision policy, profiles, inactive stages, unevaluated requirements, unselectable options, blank decision records, exact Phase 36 bindings, chained evidence, and zero-decision authority. It must not create a decision candidate, record a decision, grant authorization, issue or populate a token, receive an envelope, issue an execution ticket, evaluate a requirement, execute validation, record a result, select a disposition, dispatch a request, identify or contact a reviewer, satisfy a human gate, claim real authorization, start or complete review, select an outcome, activate a hold, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
+The next bounded gate may define the exact source, role, conflict, approval-evidence, expiry, revocation, audit, and zero-effect boundaries that would have to exist before an authorization-decision candidate could be prepared. It must not create or populate a candidate, record or select a decision, grant authorization, issue a token or execution ticket, receive or process an envelope, evaluate a decision requirement, execute validation, record a result, select a disposition, identify or contact a reviewer, satisfy a human gate, mutate content or status, call Atlas, require external networking, or write to either repository automatically.
