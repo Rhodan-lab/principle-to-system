@@ -1,3 +1,4 @@
+<!-- Phase 37 finalized provenance validation is permanently enabled. -->
 # Phase 37 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness
 
 > Date: 2026-07-30  
