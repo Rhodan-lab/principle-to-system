@@ -1,0 +1,34 @@
+name: Publish Phase 42 Candidate
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Phase 42 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance
+          fetch-depth: 0
+      - name: Reconstruct and validate Phase 42 package
+        run: |
+          base64 -d phase42-package.b64 > /tmp/phase42-package.tgz
+          echo '1ea1292a1ec975227fe05e242277853961cc88b27467b04f26a8ae3e1f8d0ee9  /tmp/phase42-package.tgz' | sha256sum -c -
+          tar -xzf /tmp/phase42-package.tgz
+          python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
+          python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
+      - name: Commit five non-workflow evidence files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          git add scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          git add software/tests/test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
+          git add reports/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.md
+          git add release/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.json
+          git commit -m 'Add Phase 42 candidate-preparation readiness assurance evidence'
+          git push origin HEAD:agent/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance
