@@ -50,6 +50,8 @@ No authorization-decision candidate was created. No decision was recorded, no au
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
+This finalized report is also the connector-authored trigger for the permanent post-transition validation matrix; it does not alter evidence, authority, or result counts.
+
 ## Validation
 
 ```bash
