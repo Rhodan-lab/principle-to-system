@@ -1,11 +1,11 @@
-name: Publish Phase 39 Candidate
+name: Remove Temporary Phase 39 Publisher
 on:
   pull_request:
     branches: [main]
 permissions:
   contents: write
 jobs:
-  publish:
+  cleanup:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Phase 39 branch
@@ -13,22 +13,10 @@ jobs:
         with:
           ref: agent/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness
           fetch-depth: 0
-      - name: Reconstruct and validate Phase 39 package
-        run: |
-          base64 -d phase39-package.b64 > /tmp/phase39-package.tgz
-          echo '3b9ba7c0929d8e0b20021e140b5c30267af73802f39d03fb0c2a125a2e73bf92  /tmp/phase39-package.tgz' | sha256sum -c -
-          tar -xzf /tmp/phase39-package.tgz
-          python3 scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py --check
-          python3 scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
-          python3 -m unittest software.tests.test_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness -v
-      - name: Commit five non-workflow evidence files
+      - name: Remove temporary publisher and push
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/generate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
-          git add scripts/validate_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
-          git add software/tests/test_phase39_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_boundary_readiness.py
-          git add reports/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness.md
-          git add release/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness.json
-          git commit -m 'Add Phase 39 authorization-decision candidate-boundary readiness evidence'
+          git rm .github/workflows/publish-phase-39-candidate.yml
+          git commit -m 'Remove temporary Phase 39 candidate publisher'
           git push origin HEAD:agent/phase-39-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness
