@@ -13,6 +13,8 @@
 - Applicable candidate workflows: `36`
 - Post-merge SHA-256: `887aa4a6c23be70b0c619c09b024e58f4321acf19ea2181bbb0f5734c1fe5cf4`
 
+The permanent finalization matrix is evaluated only against the clean PR head containing the six durable provenance, state, report, validator, and read-only workflow files.
+
 ## Finalized result
 
 ```yaml
@@ -55,7 +57,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 python3 scripts/generate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py --check
 python3 scripts/validate_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance.py
 python3 scripts/validate_phase42_postmerge_record.py
-python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_preparation_readiness_assurance -v
+python3 -m unittest software.tests.test_phase42_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate-preparation-readiness-assurance -v
 python3 scripts/validate_phase41_postmerge_record.py
 python3 -m unittest discover -s software/tests -v
 python3 scripts/validate_phase13_software.py
