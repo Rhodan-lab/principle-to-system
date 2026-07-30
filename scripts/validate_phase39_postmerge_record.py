@@ -49,7 +49,8 @@ def validate()->list[str]:
       'Historical Phase 39 candidate marker: `exact-head validation pending`',
       'Historical Phase 39 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-candidate`',
       'Atlas remains unchanged by Principia Phase 39','## Phase 39 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Boundary Readiness',
-      CANDIDATE_SHA,HEAD,MERGE,'all 33 applicable workflows','181 deterministic scenarios','180 mutations',f'Next gate: **{NEXT}**')
+      CANDIDATE_SHA,HEAD,MERGE,'all 33 applicable workflows','181 deterministic scenarios','180 mutations',
+      'Historical Phase 40 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-boundary-readiness-assurance-candidate`')
     for m in required:
         if m not in state: errors.append(f'Phase 39 project-state marker missing: {m}')
     if 'Principia and Atlas remain separate repositories with separate lifecycle authority.' not in state: errors.append('Repository authority separation lost')
