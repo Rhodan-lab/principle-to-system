@@ -13,6 +13,8 @@
 - Applicable candidate workflows: `33`
 - Post-merge SHA-256: `17cab6bc36cffeb475065fe92116486fb47e8ac813a643205d0cbd18e774fea2`
 
+The permanent finalization chain validates this provenance, the authoritative project-state transition, and the preserved Phase 38 historical gate on the exact finalization head.
+
 ## Finalized result
 
 ```yaml
