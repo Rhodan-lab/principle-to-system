@@ -1211,7 +1211,7 @@ Historical Phase 42 candidate marker: `exact-head validation pending`
 
 Historical Phase 42 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate`
 
-Historical Phase 41 next-gate marker: Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate**.
+Historical Phase 41 next-gate marker: Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate**.
 
 Phase 42 exact candidate validation passed at `0597916365d489b2738fbb905f0f40991f42a4b7`. PR #75 was merged into `main` at commit `057da54503e2c3b1ea1e86150c4015a99628dfed` after all 36 applicable workflows passed.
 
@@ -1374,6 +1374,6 @@ python3 scripts/validate_phase13_software.py
 
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate**.
 
 The next bounded gate may define deterministic assembly requirements for a still-uncreated authorization-decision candidate. It must not create, populate, assemble, persist, sign, or submit a candidate; record or select a decision; grant authorization; issue a token or execution ticket; receive or process an envelope; execute validation; record a result; identify or contact a reviewer; satisfy a human gate; mutate content or status; call Atlas; require external networking; or write to either repository automatically.
