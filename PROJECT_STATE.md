@@ -1159,6 +1159,8 @@ Historical Phase 41 candidate marker: `exact-head validation pending`
 
 Historical Phase 41 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-candidate`
 
+Historical Phase 40 next-gate marker: Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-candidate**.
+
 Phase 41 exact candidate validation passed at `4700bd61823d66b2296b9513ad7f564d84bb0e73`. PR #73 was merged into `main` at commit `25073fd7765a9faf3f53235cded3356839861917` after all 35 applicable workflows passed.
 
 Atlas remains unchanged by Principia Phase 41. Principia and Atlas retain separate lifecycle authority.
