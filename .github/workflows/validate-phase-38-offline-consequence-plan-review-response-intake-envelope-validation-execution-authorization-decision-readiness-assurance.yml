@@ -21,6 +21,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py \
             scripts/validate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py \
+            scripts/validate_phase38_postmerge_record.py \
             scripts/validate_phase37_postmerge_record.py \
             scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py \
             scripts/validate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py \
@@ -29,6 +30,7 @@ jobs:
         run: |
           python3 scripts/generate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py --check
           python3 scripts/validate_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance.py
+          python3 scripts/validate_phase38_postmerge_record.py
           python3 -m unittest software.tests.test_phase38_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness_assurance -v
           python3 scripts/validate_phase37_postmerge_record.py
           python3 scripts/generate_phase37_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_readiness.py --check
@@ -44,6 +46,7 @@ jobs:
           name: phase-38-authorization-decision-readiness-assurance-diagnostics
           path: |
             release/phase-38-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance.json
+            release/phase-38-postmerge.json
             reports/phase-38-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance.md
       - name: Verify permanent workflow immutability
         run: |

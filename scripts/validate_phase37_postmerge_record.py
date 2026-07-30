@@ -17,14 +17,17 @@ HEAD="b3b5cb7ce580b83b96e03dc91830c210aeb50ddd"
 MERGE="16516cd5b67b480a572b949996e8ebceaa8d1acb"
 NEXT="offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-candidate"
 
+
 def sha_file(path:Path)->str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
 
 def load(path:Path)->dict[str,Any]:
     value=json.loads(path.read_text())
     if not isinstance(value,dict):
         raise ValueError(path)
     return value
+
 
 def validate()->list[str]:
     errors=[]
@@ -64,10 +67,10 @@ def validate()->list[str]:
         "Historical Phase 36 finalization marker: **Phase 36 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Readiness Assurance merged and validated through PR #63.**",
         "Historical Phase 37 candidate marker: `exact-head validation pending`",
         "Historical Phase 37 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-candidate`",
+        "Historical Phase 38 target marker: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-readiness-assurance-candidate`",
         "Atlas remains unchanged by Principia Phase 37",
         "## Phase 37 result — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Readiness",
         CANDIDATE_SHA,HEAD,MERGE,"all 31 applicable workflows","138 deterministic scenarios","137 mutations",
-        f"Next gate: **{NEXT}**",
     )
     for marker in required:
         if marker not in state:
@@ -94,6 +97,7 @@ def validate()->list[str]:
             errors.append(f"Phase 37 workflow forbidden token: {token}")
     return errors
 
+
 def main()->int:
     errors=validate()
     if errors:
@@ -103,6 +107,7 @@ def main()->int:
         return 1
     print(f"Phase 37 post-merge record passed: candidate={CANDIDATE_SHA}, postmerge={POST_SHA}, head={HEAD}, merge={MERGE}, workflows=31.")
     return 0
+
 
 if __name__=="__main__":
     raise SystemExit(main())
