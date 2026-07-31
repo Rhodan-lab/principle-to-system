@@ -1,0 +1,100 @@
+{
+  "id": "refrigerator",
+  "title": "Why a refrigerator heats the room",
+  "subtitle": "Follow energy, information, control, failure, and redesign through one familiar machine.",
+  "sources": {
+    "system": "system-dossiers/refrigerator.md",
+    "failure": "failure-atlas/feedback-instability.md",
+    "investigation": "investigations/room-cooling.md",
+    "design": "design-challenges/passive-cooler.md"
+  },
+  "failure_section": "4. Amplifying mechanism",
+  "investigation_section": "10. Model revision",
+  "design_section": "3. Requirements and success measures",
+  "steps": [
+    {
+      "id": "observe",
+      "prompt": "What evidence shows that the machine moves thermal energy rather than creating cold?"
+    },
+    {
+      "id": "map",
+      "prompt": "Choose the system boundary. Which flows cross it, and which quantities are stored inside?"
+    },
+    {
+      "id": "model",
+      "prompt": "Change one parameter at a time. Predict the cabinet-temperature response before running the model."
+    },
+    {
+      "id": "diagnose",
+      "prompt": "Distinguish normal bounded cycling from a fault that causes harmful short-cycling or loss of control."
+    },
+    {
+      "id": "redesign",
+      "prompt": "Improve thermal resilience without pretending that one design removes every trade-off."
+    }
+  ],
+  "model": {
+    "equation": "C dT/dt = UA(T_room - T) + Q_load - Q_cool",
+    "initial_temperature_c": 8,
+    "duration_minutes": 180,
+    "time_step_seconds": 30,
+    "defaults": {
+      "room_temperature_c": 28,
+      "thermal_capacitance_j_per_k": 180000,
+      "ua_w_per_k": 3.2,
+      "load_w": 18,
+      "cooling_w": 95,
+      "cooling_on": true
+    },
+    "limits": {
+      "room_temperature_c": [
+        18,
+        40
+      ],
+      "ua_w_per_k": [
+        1,
+        8
+      ],
+      "load_w": [
+        0,
+        80
+      ],
+      "cooling_w": [
+        40,
+        180
+      ]
+    },
+    "limitations": [
+      "The cabinet is treated as one uniform temperature.",
+      "Refrigerant pressure dynamics and compressor startup are omitted.",
+      "The model is for reasoning, not appliance repair or safety decisions."
+    ]
+  },
+  "challenge": {
+    "question": "The cabinet temperature stays inside its intended band, but the compressor switches every 45 seconds. What is the best first conclusion?",
+    "options": [
+      "The system is mathematically unstable.",
+      "The switching is automatically normal because temperature remains bounded.",
+      "The behavior is abnormal short-cycling and needs diagnosis, but bounded oscillation alone does not prove instability.",
+      "The refrigerator has created too much cold."
+    ],
+    "correct_index": 2,
+    "explanation": "Bounded temperature does not make every switching pattern acceptable. Switching frequency must be compared with the intended hysteresis, equipment constraints, sensor behavior, and thermal load."
+  },
+  "atlas_references": [
+    {
+      "entity_id": "model:en:delayed-correction-recurrence",
+      "revision": 2,
+      "review_level": "ai-reviewed",
+      "human_verified": false,
+      "purpose": "Clarifies that repeated or periodic behavior is not, by itself, proof of instability."
+    },
+    {
+      "entity_id": "claim:en:model-oscillation-does-not-prove-real-system",
+      "revision": 1,
+      "review_level": "ai-reviewed",
+      "human_verified": false,
+      "purpose": "Preserves the boundary between a simplified model and evidence about a real refrigerator."
+    }
+  ]
+}

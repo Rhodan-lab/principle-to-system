@@ -1,0 +1,41 @@
+name: Validate Product Alpha
+
+on:
+  pull_request:
+    paths:
+      - "software/product_alpha/**"
+      - "software/tests/test_product_alpha.py"
+      - "system-dossiers/refrigerator.md"
+      - "failure-atlas/feedback-instability.md"
+      - "investigations/room-cooling.md"
+      - "design-challenges/passive-cooler.md"
+      - ".github/workflows/validate-product-alpha.yml"
+  push:
+    paths:
+      - "software/product_alpha/**"
+      - "software/tests/test_product_alpha.py"
+      - "system-dossiers/refrigerator.md"
+      - "failure-atlas/feedback-instability.md"
+      - "investigations/room-cooling.md"
+      - "design-challenges/passive-cooler.md"
+      - ".github/workflows/validate-product-alpha.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Product Alpha
+        run: python3 -m py_compile software/product_alpha/build.py
+      - name: Verify deterministic build
+        run: python3 software/product_alpha/build.py check
+      - name: Run Product Alpha tests
+        run: python3 -m unittest discover -s software/tests -p 'test_product_alpha.py' -v
+      - name: Verify clean repository
+        run: git diff --exit-code
