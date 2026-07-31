@@ -1,228 +1,183 @@
-# Principle to System
+# Principle to System — Principia
 
-**Learn how foundational science becomes technology—and how to reason with the systems that result.**
+**Principia** is an open, evidence-aware learning system for understanding how scientific principles become mechanisms, models, technologies, failures, investigations, and redesigns.
 
-Principle to System is the current repository identity and the future product identity **Principia**. It is an open-source knowledge repository for curious independent learners. It explains how scientific understanding is built, how it becomes engineered technology, and how real systems can be investigated, redesigned, and understood through their failures.
+> **Current program:** **Product Alpha 0.1 — pilot-ready.** The active milestone is a real learner pilot of the refrigerator route, not another numbered governance phase. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) for the current decision state. The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
 
-Principia is being prepared to work beside the separate [`Rhodan-lab/Atlas`](https://github.com/Rhodan-lab/Atlas) repository as a future **Principia & Atlas** product:
+## What Principia does
 
-- Principia owns causal explanation, pedagogy, pathways, systems, investigations, failure analysis, and design experiences.
-- Atlas owns structured knowledge identity, evidence, provenance, exact revision, review, lifecycle, staleness, translation lineage, and promotion governance.
-- Neither repository inherits the other's status automatically.
-- The repositories remain independently buildable and independently validatable.
-
-Core modules follow this arc:
+Principia teaches through complete system journeys rather than isolated facts:
 
 ```text
 observation
-→ scientific concept
-→ mechanism
-→ mathematical model
-→ engineered component
-→ technological system
-→ limitation and trade-off
+→ system boundary and flows
+→ causal mechanism
+→ quantitative model
+→ failure diagnosis
+→ evidence boundary
+→ redesign under constraints
 ```
 
-Applied materials continue it:
+The canonical learning corpus remains Markdown and JSON in this repository. The product layer reads that material; it does not replace it with a second content database.
+
+## Product Alpha 0.1
+
+The first learner-facing route uses a domestic refrigerator and five steps:
+
+1. **Observe** surprising cycling behavior.
+2. **Map** the boundary, stores, inputs, outputs, and flows.
+3. **Model** the cabinet’s thermal response.
+4. **Diagnose** normal cycling versus abnormal short-cycling.
+5. **Redesign** under explicit constraints and trade-offs.
+
+The alpha includes:
+
+- a responsive learner interface;
+- a dependency-free thermal model;
+- a diagnosis challenge;
+- exact-revision Atlas evidence presentation;
+- a local anonymous facilitator recorder;
+- a deterministic evaluation summarizer;
+- focused Product Alpha CI.
+
+### Run locally
+
+```bash
+python3 software/product_alpha/build.py build
+python3 -m http.server 8000 --directory software/product_alpha/dist
+```
+
+Open:
+
+- learner route: `http://127.0.0.1:8000/`
+- facilitator recorder: `http://127.0.0.1:8000/facilitator.html`
+
+The recorder exports one anonymous JSONL record per learner. It creates no account, writes no browser storage, submits no network request, makes no live Atlas call, and performs no repository mutation.
+
+### Validate
+
+```bash
+python3 software/product_alpha/build.py check
+python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
+```
+
+### Next evidence gate
+
+Run the documented 5–8 learner pilot before adding another route or production infrastructure. Evaluate route completion, mechanism explanation, model reasoning, failure diagnosis, evidence-boundary understanding, redesign trade-offs, recurring confusion, and voluntary continuation.
+
+The pilot protocol is [`software/product_alpha/PILOT.md`](software/product_alpha/PILOT.md).
+
+## Principia and Atlas
+
+Principia owns explanation, pedagogy, pathways, systems, investigations, failure analysis, and design.
+
+Atlas owns structured identity, exact revisions, evidence, provenance, review state, lifecycle, staleness, translation lineage, and governance.
+
+The product relationship is:
 
 ```text
-notice a system
-→ choose a boundary
-→ identify flows and state variables
-→ propose competing mechanisms
-→ build the smallest useful model
-→ test it against evidence
-→ redesign under constraints
-→ explain remaining uncertainty
+Principia = learner-facing product
+Atlas      = read-only trust substrate
 ```
 
-This is not an exam course or an encyclopaedia of disconnected facts. It is a connected map of causal explanations and reasoning practices.
+Atlas references are pinned and advisory. Principia does not inherit Atlas status, and Product Alpha makes no live Atlas calls.
 
-## Who this is for
+## Validated foundation
 
-Independent learners who want to understand *why* technology works, not merely *that* it works. No grades or formal enrolment are assumed. Mathematics is used where it improves explanation, with symbols, units, assumptions, and model limits made explicit.
+The following historical foundation remains machine-validated. These statements are retained as compatibility evidence, not as the active product roadmap.
 
-## Repository structure
+### Four complete routes
 
-| Folder | Contents |
-| --- | --- |
-| `foundations/` | Modules 01–05: reasoning, measurement, mathematics, probability, and computation |
-| `science/` | Modules 06–16: natural science from quantum matter to planetary systems |
-| `technology/` | Modules 17–20: materials, electronics, software, control, and infrastructure |
-| `concepts/` | Seven crosscutting ideas used across disciplines |
-| `pathways/` | Six end-to-end science-to-technology chains |
-| `maps/` | Dependency and enabling-relationship maps |
-| `synthesis/` | Phase-level canonical graphs and reconciliation contracts |
-| `experiences/` | Shared rules, four-route navigation, and the Phase 11B inventory |
-| `system-dossiers/` | Reverse-engineering complete technologies |
-| `failure-atlas/` | Recurring causal failure patterns and redesign strategies |
-| `investigations/` | Safe model-comparison inquiries with uncertainty |
-| `design-challenges/` | Engineering decisions under measurable constraints |
-| `templates/` | Reusable authoring structures for the four experience families |
-| `contracts/principia-atlas/` | Versioned Principia-side compatibility contracts |
-| `integration/principia-atlas/` | Non-live bridge-candidate manifests, exact-revision exports, and invalid fixtures |
-| `release/` | Phase 12 candidate scope, terminology, equations, lifecycle scenarios, and pilot readiness |
-| `sources/` | Normalized module and experience source ledgers |
-| `scripts/` | Module, experience, synthesis, expansion, compatibility, and release validators |
+- 4 route files in `experiences/`
+- 16 applied artifacts
+- 28 applied-material source records
 
-Every core module contains `overview.md`, `technology.md`, and `explore.md`. Applied materials use family-specific standards and templates.
+All route and applied-artifact records remain canonical inputs to Product Alpha and future system journeys.
 
-## Four ways to learn
+### Current release state
 
-### 1. Foundations upward
+All learner-facing material remains in a draft release state under `candidate-hold`.
 
-Open [`INDEX.md`](INDEX.md), begin with scientific reasoning, and follow prerequisites toward a technology module.
+Live Atlas integration remains disabled. Product Alpha is pilot-ready, not a public learning-effectiveness claim and not a production SaaS release.
 
-### 2. Goal-directed pathways
+### Principia–Atlas bridge candidate
 
-Choose a route in [`pathways/`](pathways/), such as [`atoms-to-computers.md`](pathways/atoms-to-computers.md).
+The retained bridge candidate is `claim-delayed-correction-r2`, pinned to `model-delayed-correction@2`.
 
-### 3. Reverse-engineer a system
+The candidate does not inherit Atlas status. The candidate imports no glossary term. Live integration remains disabled. The candidate does not change the Phase 12 hold.
 
-Choose one reviewed dossier:
+### Phase 13 software foundation
 
-- [`system-dossiers/refrigerator.md`](system-dossiers/refrigerator.md)
-- [`system-dossiers/solar-battery-microgrid.md`](system-dossiers/solar-battery-microgrid.md)
-- [`system-dossiers/drinking-water-network.md`](system-dossiers/drinking-water-network.md)
-- [`system-dossiers/web-service-request.md`](system-dossiers/web-service-request.md)
+The historical Phase 13 static foundation remains `machine-only` and operationally inert outside explicit local build commands.
 
-Trace energy, matter, information, control, and failure boundaries; remove a component mentally; predict the result; compare alternative architectures.
+The generated foundation contains 92 learner-facing documents and 20 module pages. It is not a production application.
 
-### 4. Explain, diagnose, investigate, design
+### Canonical material inventory
 
-[`experiences/phase-11b-inventory.json`](experiences/phase-11b-inventory.json) defines four complete routes:
+- 20 reviewed modules across foundations, physical science, life and Earth systems, and technology;
+- 16 reviewed files in `synthesis/`;
+- four complete applied routes;
+- system dossiers, failure patterns, investigations, and design challenges;
+- deterministic source and compatibility validation.
 
-| Route | System | Failure | Investigation | Design |
-| --- | --- | --- | --- | --- |
-| thermal-control | Refrigerator | Feedback instability | Room cooling | Passive cooler |
-| resilient-energy | Solar–battery microgrid | Protection coordination | Solar shading | Resilient charging hub |
-| water-infrastructure | Drinking-water network | Sensor drift | Filter loading | Non-potable rainwater buffer |
-| distributed-information | Web-service request | Retry storm | Queue delay | Resilient school information service |
+## Repository map
 
-Each route examines one system through explanation, failure, evidence, and design.
+| Path | Purpose |
+|---|---|
+| `foundations/` | Scientific reasoning, measurement, models, probability, and computation |
+| `science/` | Physical, chemical, biological, Earth, and systems science |
+| `technology/` | Materials, electronics, software, AI, sensors, control, and infrastructure |
+| `pathways/` | Cross-domain learning sequences |
+| `concepts/` | Shared concepts used across modules |
+| `maps/` | Dependency and systems maps |
+| `synthesis/` | Cross-domain synthesis documents |
+| `experiences/` | Route definitions |
+| `system-dossiers/` | End-to-end system explanations |
+| `failure-atlas/` | Recurring failure patterns |
+| `investigations/` | Evidence-gathering activities |
+| `design-challenges/` | Redesign tasks under constraints |
+| `software/product_alpha/` | Current learner route, pilot recorder, and evaluation tools |
+| `integration/principia-atlas/` | Offline exact-revision compatibility fixtures |
+| `contracts/` | Machine-readable authority boundaries |
+| `sources/` | Source ledgers and review records |
+| `reports/` | Audits and historical validation evidence |
+| `release/` | Historical release and governance records |
 
-## Content and artifact status
+## Core principles
 
-File presence does not imply review completion. Module status is tracked in [`INDEX.md`](INDEX.md); repository blockers and review order are tracked in [`PROJECT_STATE.md`](PROJECT_STATE.md) and [`AUDIT.md`](AUDIT.md).
+### Mechanism before memorization
 
-The sixteen applied-material artifacts have completed focused source, safety, structure, and metadata review. Their pedagogical `status` is `reviewed`, not `complete`.
+Learners should explain how parts interact and why behavior emerges.
 
-Applied experiences also carry:
+### Models with boundaries
 
-- `artifact_revision` — the exact Principia revision exposed to dependency reporting;
-- `release_status` — publication readiness, currently `draft` for every experience.
+Every model should expose assumptions, useful scope, and failure conditions.
 
-Pedagogical review, release readiness, and Atlas knowledge status are separate decisions.
+### Failure as evidence
 
-## Phase 12 release candidate
+Breakdowns and surprises reveal hidden architecture and causal dependencies.
 
-[`release/phase-12-release-candidate.json`](release/phase-12-release-candidate.json) defines `principia-material-foundation-rc1`.
+### Evidence without status inheritance
 
-RC1 evaluates:
+Review or acceptance in Atlas never automatically promotes a Principia learning claim.
 
-- 20 core modules and 60 learner-facing files;
-- 16 synthesis files;
-- 4 complete routes and 16 Reviewed experiences;
-- 143 core source records and 28 experience-source records;
-- terminology, equation, accessibility, lifecycle, revision-impact, and compatibility contracts.
+### Progressive disclosure
 
-The repository state is intentionally:
+A learner should be able to move from intuition to mechanism, model, deep evidence, and challenge without facing the full corpus at once.
 
-```yaml
-repository_release_state: candidate-hold
-experience_release_status: draft
-live_atlas_integration: false
-```
+## Status files
 
-The Phase 12 validator passes on draft PR #14 and establishes machine-checkable RC1 conformance only. It cannot grant independent scientific, editorial, accessibility, safety, attribution, release-owner, or Atlas-side approval. The release decision remains Hold.
-
-## Phase 13 software foundation
-
-[`software/`](software/) contains a dependency-free static reference implementation generated directly from repository Markdown and JSON.
-
-The active authority mode is `machine-only`: human review is not a blocking gate. Progression depends on the Phase 12 continuity checks, strict repository validation, unit tests, deterministic double-build verification, generated-link integrity, graph integrity, search completeness, and read-only workflow checks.
-
-Build and preview:
-
-```bash
-python3 software/principia_site.py build --output software/dist
-python3 software/principia_site.py serve --output software/dist --port 8000
-```
-
-Routine content additions do not require application-code changes. Rebuilding updates document pages, module navigation, collection indexes, search data, catalog JSON, and dependency graph output automatically.
-
-The Phase 13 machine gate passes on draft PR #15. The reference implementation is `foundation-validated`, and the generated site is reproducible from repository content.
-
-## Safety boundaries
-
-- Energy experiences use diagrams, public data, and simulation; they do not authorize wiring, battery modification, islanding, backfeed, or grid testing.
-- Water experiences explain regulated systems without providing a procedure for producing safe drinking water; the rainwater design is explicitly non-potable.
-- Distributed-information experiences use synthetic traffic and fictional data; they do not authorize scanning, flooding, credential use, private-data access, or testing live services.
-
-## Principia & Atlas compatibility
-
-[`contracts/principia-atlas/0.1/`](contracts/principia-atlas/0.1/) defines `principia-atlas-bridge/0.1`. The current Principia-side state is:
-
-```yaml
-mode: bridge-candidate
-live: false
-```
-
-The candidate pins `model:en:delayed-correction-recurrence@2` while retaining the delayed-feedback claim and concepts at revision 1. Its deterministic `principia-atlas-external-dependent/0.2` export preserves legacy `depends_on` IDs and adds `depends_on_exact` records for Atlas Phase 2 exact-revision lookup and dependency-impact queries.
-
-Principia does not clone or modify Atlas during validation. Atlas knowledge status, Principia pedagogical `status`, and Principia `release_status` remain separate, and the export contains none of those status fields. No live cross-repository call is enabled.
-
-## Validation
-
-Core repository audit:
-
-```bash
-python3 scripts/validate_repo.py
-python3 scripts/validate_repo.py --strict
-```
-
-Applied-material foundation and controlled expansion:
-
-```bash
-python3 scripts/validate_experiences.py --strict
-python3 scripts/validate_phase11b_expansion.py
-```
-
-Principia & Atlas compatibility:
-
-```bash
-python3 scripts/export_principia_atlas_dependents.py --check
-python3 scripts/validate_principia_atlas_bridge.py
-python3 scripts/validate_principia_atlas_audit.py
-```
-
-Phase 13 software foundation:
-
-```bash
-python3 -m unittest discover -s software/tests -v
-python3 scripts/validate_phase13_software.py
-python3 software/principia_site.py build --output software/dist
-```
-
-Phase 12 release candidate:
-
-```bash
-python3 scripts/validate_phase12_release_candidate.py
-```
-
-GitHub Actions runs focused metadata, source, scientific-review, synthesis, applied-material, expansion, compatibility, and release-candidate validation. Compatibility, Phase 11B, and Phase 12 CI are read-only and do not import Atlas.
-
-## Sources
-
-Reviewed module sources are recorded in [`sources/source-ledger.md`](sources/source-ledger.md). Applied materials use [`sources/experience-source-ledger.md`](sources/experience-source-ledger.md), which contains 28 one-source-per-row records after Phase 11B.
-
-## Contributing
-
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CONTENT_GUIDE.md`](CONTENT_GUIDE.md), [`SOURCE_POLICY.md`](SOURCE_POLICY.md), and [`release/README.md`](release/README.md). New applied materials must begin from the appropriate file in [`templates/`](templates/), enter the machine-readable experience inventory, and pass strict expansion validation. Bridgeable artifacts must use positive exact `artifact_revision` values and explicit `release_status`.
+- [`PRODUCT_STATE.md`](PRODUCT_STATE.md): canonical current product decision state.
+- [`PROJECT_STATE.md`](PROJECT_STATE.md): detailed historical phase and governance ledger.
+- [`AUDIT.md`](AUDIT.md): editorial, scientific, and structural audit history.
+- [`INDEX.md`](INDEX.md): canonical module index.
 
 ## Licensing
 
-- Code and scripts: [Apache License 2.0](LICENSE)
-- Original educational content: [CC BY 4.0](LICENSE-CONTENT)
+- Code and repository tooling: [`LICENSE`](LICENSE)
+- Educational content: [`LICENSE-CONTENT`](LICENSE-CONTENT)
+- Citation metadata: [`CITATION.cff`](CITATION.cff)
 
-When reusing content, attribute “Principle to System contributors” and link to this repository. See [`CITATION.cff`](CITATION.cff).
+## Contributing
+
+Contributions should preserve canonical content authority, exact source attribution, deterministic validation, product privacy boundaries, and the separation between Principia learning status and Atlas evidence status. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
