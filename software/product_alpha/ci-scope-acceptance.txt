@@ -1,0 +1,3 @@
+Product Alpha CI scope acceptance fixture.
+
+This file exists only to verify that a Product Alpha-only pull request triggers the focused Product Alpha workflow and no historical phase workflows.
