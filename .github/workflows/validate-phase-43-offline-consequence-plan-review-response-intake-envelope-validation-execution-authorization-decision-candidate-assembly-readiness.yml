@@ -1,0 +1,50 @@
+name: Validate Phase 43 candidate assembly readiness
+
+on:
+  pull_request:
+    paths:
+      - "release/phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.json"
+      - "reports/phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.md"
+      - "scripts/generate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - "scripts/validate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - "software/tests/test_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - ".github/workflows/validate-phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.yml"
+      - "release/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.json"
+      - "release/phase-42-postmerge.json"
+  push:
+    paths:
+      - "release/phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.json"
+      - "reports/phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.md"
+      - "scripts/generate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - "scripts/validate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - "software/tests/test_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py"
+      - ".github/workflows/validate-phase-43-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness.yml"
+      - "release/phase-42-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance.json"
+      - "release/phase-42-postmerge.json"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check deterministic candidate bytes
+        run: python3 scripts/generate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py --check
+
+      - name: Run independent Phase 43 validator
+        run: python3 scripts/validate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py
+
+      - name: Run Phase 43 mutation tests
+        run: python3 -m unittest software.tests.test_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness -v
+
+      - name: Revalidate Phase 42 post-merge record
+        run: python3 scripts/validate_phase42_postmerge_record.py
