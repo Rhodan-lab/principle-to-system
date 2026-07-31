@@ -105,7 +105,7 @@ Live Atlas integration remains disabled. Product Alpha is pilot-ready as softwar
 
 ### Principia & Atlas compatibility
 
-The historical `bridge-candidate` compatibility surface remains explicit: the delayed-correction evidence reference `delayed-correction-recurrence@2` uses the exact-dependency relation `depends_on_exact`. These markers preserve validator compatibility only; they do not activate live Atlas integration or grant learner-facing status.
+The historical `bridge-candidate` compatibility surface remains explicit: the delayed-correction evidence reference `delayed-correction-recurrence@2` uses the exact-dependency relation `depends_on_exact`. The finalized offline bridge profile is `principia-atlas-external-dependent/0.2`. No live cross-repository call is enabled. These markers preserve validator compatibility only; they do not activate live Atlas integration or grant learner-facing status.
 
 ### Principia–Atlas bridge candidate
 
