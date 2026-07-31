@@ -29,10 +29,24 @@ Open `http://127.0.0.1:8000`.
 
 ```bash
 python3 software/product_alpha/build.py check
-python3 -m unittest discover -s software/tests -p 'test_product_alpha.py' -v
+python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, and the absence of external runtime dependencies.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, the absence of external runtime dependencies, anonymous pilot-record boundaries, route-order integrity, and deterministic evaluation summaries.
+
+## Learner pilot
+
+Use [`PILOT.md`](PILOT.md) before adding another route. It defines a 5–8 learner protocol, a 0–2 comprehension rubric, anonymous session records, recommended confusion tags, and evidence-based revision thresholds.
+
+Begin each record from `evaluation/session-template.json`, store one JSON object per line, and summarize the anonymous local file with:
+
+```bash
+python3 software/product_alpha/evaluation/summarize.py \
+  --input path/to/anonymous-sessions.jsonl \
+  --format markdown
+```
+
+The summarizer reports completion, duration, learning scores, recurring confusion, and voluntary continuation. It rejects known personal-data fields and malformed route progress. Facilitator notes must also remain anonymous.
 
 ## Boundaries
 
@@ -43,4 +57,5 @@ The validation checks deterministic output, canonical-source extraction, five-st
 - no live Atlas call;
 - no inherited Atlas or Principia status;
 - learner notes remain only in the current browser tab;
+- pilot records remain local, anonymous, and facilitator-controlled;
 - the thermal model supports reasoning and is not repair or safety guidance.
