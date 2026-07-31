@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 45 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Population Readiness merged and validated through PR #82.**
+**Phase 46 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Population Readiness Assurance merged and validated through PR #84.**
 
 Material baseline: `principia-material-foundation-rc1`  
 Active transition: **machine-gated-development**  
@@ -41,6 +41,7 @@ Phase 42 state: **offline-consequence-plan-review-response-intake-envelope-valid
 Phase 43 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness`, `live: false`).
 Phase 44 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance`, `live: false`).
 Phase 45 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness`, `live: false`).
+Phase 46 state: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance-validated** (`mode: offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance`, `live: false`).
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -95,6 +96,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 | 43 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate assembly readiness | Merged and validated through PR #78 |
 | 44 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate assembly readiness assurance | Merged and validated through PR #80 |
 | 45 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate population readiness | Merged and validated through PR #82 |
+| 46 | Offline consequence-plan review-response intake envelope validation execution authorization decision candidate population readiness assurance | Merged and validated through PR #84 |
 
 ## Integration topology
 
@@ -1513,8 +1515,22 @@ python3 scripts/validate_phase13_software.py
 - No candidate, population run, decision, grant, token, ticket, execution, envelope, reviewer contact, validation result, audit event, or status change exists.
 - Atlas remains unchanged by Principia Phase 45.
 
+## Phase 46 result — Offline Candidate Population Readiness Assurance
+
+- Historical Phase 45 finalization marker: **Phase 45 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Population Readiness merged and validated through PR #82.**
+- Phase 46 exact candidate validation passed at `e108372f76503ca819afd3e6573e7efaf8e5a295`.
+- PR #84 was merged into `main` at commit `d24fee31b04e7e312106cb020116c9b1e753117c`.
+- Candidate SHA-256: `2b7ced60688ff02ea11231bc53bad3e39e0ec22aa10a233e5f270b0d586039ad`.
+- Post-merge SHA-256: `b9ccbd2125db1538bb1b4028b3dd15411971baba72bf059448d64fa32ccee121`.
+- Candidate validation passed across all 39 applicable workflows.
+- The recovery matrix contains 198 deterministic scenarios and rejects 197 mutations.
+- All 36 population slots remain empty and blocked; all 36 source references remain symbolic and unresolved.
+- All 36 population stages remain inactive, all 72 requirements remain unevaluated, and all 10 human gates remain pending.
+- No candidate, population run, decision, grant, token, ticket, execution, envelope, reviewer contact, validation result, audit event, or status change exists.
+- Atlas remains unchanged by Principia Phase 46.
+
 ## Next phase
 
-Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance-candidate**.
+Next gate: **offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-candidate**.
 
-Phase 46 may independently assure the deterministic Phase 45 population-readiness evidence for a still-uncreated candidate. It must keep every population slot empty and blocked; preserve symbolic unresolved references, inactive stages, unevaluated requirements, and pending human gates; and must not create, assemble, populate, persist, sign, or submit a candidate, select or record a decision, grant authorization, issue a token or ticket, contact a reviewer, call Atlas, require external networking, or alter repository status.
+Phase 47 may define deterministic population-execution-readiness preconditions for a still-uncreated and unpopulated authorization-decision candidate. It must keep all population slots empty and blocked; preserve symbolic unresolved references, inactive stages, unevaluated requirements, and pending human gates; and must not create, assemble, populate, persist, sign, or submit a candidate, start a population run, select or record a decision, grant authorization, issue a token or ticket, contact a reviewer, call Atlas, require external networking, or alter repository status.
