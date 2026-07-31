@@ -1,0 +1,33 @@
+name: Publish Phase 46 candidate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/publish_phase46_candidate.py"
+      - "scripts/.phase46-payload-*"
+      - ".github/workflows/publish-phase-46-candidate.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/phase-46-offline-authorization-decision-candidate-population-readiness-assurance
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish deterministic Phase 46 package
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          if [ ! -f scripts/publish_phase46_candidate.py ]; then
+            echo "Publisher already removed."
+            exit 0
+          fi
+          python3 scripts/publish_phase46_candidate.py
