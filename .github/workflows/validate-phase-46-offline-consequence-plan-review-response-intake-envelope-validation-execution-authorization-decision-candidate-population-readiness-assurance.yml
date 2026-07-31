@@ -1,6 +1,14 @@
 name: Validate Phase 46 population-readiness assurance
 
-on: [pull_request, push]
+on:
+  pull_request:
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
+  push:
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
 
 permissions:
   contents: read

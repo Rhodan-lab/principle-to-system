@@ -24,6 +24,9 @@ on:
     branches:
       - main
       - agent/phase-6-foundations-review
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
   workflow_dispatch:
 
 permissions:

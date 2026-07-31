@@ -1,8 +1,14 @@
 name: Validate Phase 34 Offline Consequence Plan Review Response Intake Envelope Validation Execution Readiness Assurance
 on:
   pull_request:
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
   push:
     branches: [main]
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
 permissions:
   contents: read
 jobs:
