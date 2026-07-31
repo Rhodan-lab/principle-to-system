@@ -48,14 +48,13 @@ jobs:
           PY
           python3 scripts/validate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py
           for phase in 48 47 46 45 44 43 42; do python3 scripts/validate_phase${phase}_postmerge_record.py; done
-      - name: Commit finalization
+      - name: Commit non-workflow finalization
         shell: bash
         run: |
           git config user.name "principia-phase-bot"
           git config user.email "actions@users.noreply.github.com"
           git add PROJECT_STATE.md release/phase-48-postmerge.json scripts/validate_phase42_postmerge_record.py scripts/validate_phase43_postmerge_record.py scripts/validate_phase44_postmerge_record.py scripts/validate_phase45_postmerge_record.py scripts/validate_phase46_postmerge_record.py scripts/validate_phase47_postmerge_record.py scripts/validate_phase48_postmerge_record.py
-          git add -f .github/workflows/validate-phase-48-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance.yml
           git commit -m "Finalize Phase 48 assurance state"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
-# synchronize: 1
+# synchronize: 2
