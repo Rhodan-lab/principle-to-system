@@ -14,33 +14,46 @@ The first route asks a learner to understand a domestic refrigerator through fiv
 
 Canonical Principia Markdown remains authoritative. The build extracts required sections from the existing system dossier, failure pattern, investigation, and design challenge. The route configuration contains interaction structure, prompts, a bounded model, and pinned Atlas references; it does not duplicate the canonical learning corpus.
 
-## Build
+## Run the pilot
 
-From the repository root:
+From the repository root, use the loopback-only launcher:
+
+```bash
+python3 software/product_alpha/run_pilot.py --open
+```
+
+The launcher builds Product Alpha, binds only to `127.0.0.1`, prints the learner and facilitator URLs, and stores no session data. Use `Ctrl+C` to stop it.
+
+Useful options:
+
+```bash
+# Select any available local port
+python3 software/product_alpha/run_pilot.py --port 0 --open
+
+# Verify the deterministic build without starting a server
+python3 software/product_alpha/run_pilot.py check
+```
+
+### Manual build
+
+The underlying manual workflow remains available:
 
 ```bash
 python3 software/product_alpha/build.py build
-python3 -m http.server 8000 --directory software/product_alpha/dist
+python3 -m http.server 8000 --bind 127.0.0.1 --directory software/product_alpha/dist
 ```
 
-Open the learner route at `http://127.0.0.1:8000`.
-
-For a facilitated pilot, open the local recorder in a separate tab at:
-
-```text
-http://127.0.0.1:8000/facilitator.html
-```
-
-The recorder loads the committed rubric and session template from the same local build, validates an anonymous session record in the browser, and downloads one JSONL line. It does not submit data, create accounts, call Atlas, or write browser storage.
+Open the learner route at `http://127.0.0.1:8000/` and the facilitator recorder at `http://127.0.0.1:8000/facilitator.html`.
 
 ## Validation
 
 ```bash
 python3 software/product_alpha/build.py check
+python3 software/product_alpha/run_pilot.py check
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, the absence of external runtime dependencies, anonymous pilot-record boundaries, route-order integrity, deterministic evaluation summaries, and inclusion of the local facilitator recorder.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, the absence of external runtime dependencies, anonymous pilot-record boundaries, route-order integrity, deterministic evaluation summaries, and loopback-only pilot serving.
 
 ## Learner pilot
 
@@ -66,5 +79,5 @@ The summarizer reports completion, duration, learning scores, recurring confusio
 - no inherited Atlas or Principia status;
 - learner notes remain only in the current browser tab;
 - pilot records remain local, anonymous, and facilitator-controlled;
-- the recorder writes no browser storage and exports only on explicit facilitator action;
+- the launcher binds only to `127.0.0.1` and stores no session data;
 - the thermal model supports reasoning and is not repair or safety guidance.
