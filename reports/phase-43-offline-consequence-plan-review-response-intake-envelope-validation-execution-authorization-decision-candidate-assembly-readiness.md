@@ -2,21 +2,20 @@
 
 > Date: 2026-07-31  
 > Repository: `Rhodan-lab/principle-to-system`  
-> State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate`
+> State: `offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-validated`
 
-## Immutable source boundary
+## Immutable provenance
 
-- Phase 42 candidate SHA-256: `6fb602bc5ef863765ceb50ba66124b843381fd15c6dac9da9250429e18e76f26`
-- Phase 42 post-merge SHA-256: `887aa4a6c23be70b0c619c09b024e58f4321acf19ea2181bbb0f5734c1fe5cf4`
-- Phase 42 exact tested head: `0597916365d489b2738fbb905f0f40991f42a4b7`
-- Phase 42 merge commit: `057da54503e2c3b1ea1e86150c4015a99628dfed`
-- Phase 42 authoritative finalization commit: `c1b05c6fae7eddf3b535093df3f382f65cc7fe10`
-- Phase 42 applicable workflows: `36`
-- Phase 43 candidate SHA-256: `5ffd6005a907742ac0c02c4077d68d8f1f646963a030405e53daed2219802ef3`
+- Candidate SHA-256: `5ffd6005a907742ac0c02c4077d68d8f1f646963a030405e53daed2219802ef3`
+- Exact tested head: `faa7b7f698767722bc58cd8785e04f1ac278f927`
+- Candidate PR: `#78`
+- Candidate merge: `0c1938169137ef9b5eead27f39e2b7c07f614f5b`
+- Applicable candidate workflows: `37`
+- Post-merge SHA-256: `bbec0856c15c3286e9698d1a738cd9a7e77b13fc110b8aa0571cd4f9632d8488`
 
-The Phase 43 candidate binds only to finalized Phase 42 evidence. It does not inherit operational authority from the source manifest or repository state.
+The permanent finalization matrix binds the exact candidate bytes, tested head, merge provenance, complete successful workflow set, Phase 42 source boundary, frozen authority, and deterministic zero-effect result.
 
-## Candidate result
+## Finalized result
 
 ```yaml
 candidate_assembly_readiness_policies: 1
@@ -49,13 +48,13 @@ real_authorization_claimed: false
 live: false
 ```
 
-The policy defines 64 deterministic checks, an ordered 18-slot candidate schema, 16 inactive assembly stages, and 32 unevaluated requirements. Two symbolic profiles bind those definitions to the two Phase 42 assurance sequences without copying or materializing candidate data.
+The policy retains 64 deterministic checks, an ordered 18-slot symbolic schema per record, 16 inactive stages per record, and 32 unevaluated requirements per record. The two records pass all 128 checks while leaving every assembly slot unpopulated and every operational stage inactive.
 
-The recovery model contains 150 deterministic scenarios: one accepted baseline and 149 rejected mutations. It covers 64 check families per record, eight structural mutation families per record, and five global record or binding mutations.
+The recovery model contains 150 deterministic scenarios: one accepted baseline and 149 rejected mutations.
 
 ## Frozen effects
 
-No authorization-decision candidate is created, populated, assembled, persisted, signed, or submitted. No decision is selected or recorded. No authorization is granted. No token or execution ticket is issued. No response envelope is received or processed. No validation executes. No reviewer is identified or contacted. No human gate is satisfied. No audit event or status change is recorded. Atlas is neither called nor modified, no external network is required, and neither repository is mutated automatically.
+No authorization-decision candidate was created, populated, assembled, persisted, signed, or submitted. No decision was selected or recorded. No authorization was granted. No token or execution ticket was issued. No response envelope was received or processed. No validation executed. No reviewer was identified or contacted. No human gate was satisfied. No audit event or status change was recorded. Atlas was neither called nor modified, no external network was required, and neither repository was mutated automatically.
 
 Principia and Atlas remain separate repositories with separate lifecycle authority.
 
@@ -64,6 +63,7 @@ Principia and Atlas remain separate repositories with separate lifecycle authori
 ```bash
 python3 scripts/generate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py --check
 python3 scripts/validate_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness.py
+python3 scripts/validate_phase43_postmerge_record.py
 python3 -m unittest software.tests.test_phase43_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_assembly_readiness -v
 python3 scripts/validate_phase42_postmerge_record.py
 ```
