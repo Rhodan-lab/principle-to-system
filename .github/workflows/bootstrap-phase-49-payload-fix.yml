@@ -1,0 +1,48 @@
+name: Bootstrap Phase 49 payload fix
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/bootstrap-phase-49-payload-fix.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Extract validated Phase 49 payload
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, re
+          from pathlib import Path
+          source = Path('.github/workflows/bootstrap-phase-49-payload.yml').read_text(encoding='utf-8')
+          match = re.search(r"cat > /tmp/phase49\.tgz\.b64 <<'B64'\n\s*([A-Za-z0-9+/=\n ]+?)\n\s*B64", source)
+          if not match:
+              raise SystemExit('Phase 49 payload not found')
+          Path('/tmp/phase49.tgz').write_bytes(base64.b64decode(''.join(match.group(1).split())))
+          PY
+          tar -xzf /tmp/phase49.tgz -C .
+          python3 scripts/generate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py --check
+          python3 scripts/validate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py
+          python3 -m unittest discover -s software/tests -p 'test_phase49*population_execution_authorization_readiness.py' -v
+          python3 scripts/validate_phase48_postmerge_record.py
+      - name: Commit Phase 49 payload
+        shell: bash
+        run: |
+          git config user.name "principia-phase-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f release/phase-49-* reports/phase-49-* scripts/generate_phase49_* scripts/validate_phase49_* software/tests/test_phase49_*
+          git commit -m "Add Phase 49 population execution authorization readiness"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
