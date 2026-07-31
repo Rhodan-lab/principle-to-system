@@ -27,7 +27,7 @@ jobs:
           python3 - <<'PY'
           import base64
           from pathlib import Path
-          payload = ''.join(Path('.phase50-payload-corrected.b64').read_text(encoding='utf-8').split())
+          payload = ''.join(Path('.phase50-payload.part1').read_text(encoding='utf-8').split())
           Path('/tmp/phase50.tgz').write_bytes(base64.b64decode(payload))
           PY
           tar -xzf /tmp/phase50.tgz -C .
@@ -43,4 +43,4 @@ jobs:
           git commit -m "Add Phase 50 population execution authorization readiness assurance"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
-# synchronize: 2
+# synchronize: 3
