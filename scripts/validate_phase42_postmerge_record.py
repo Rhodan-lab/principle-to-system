@@ -16,7 +16,8 @@ HEAD = "0597916365d489b2738fbb905f0f40991f42a4b7"
 MERGE = "057da54503e2c3b1ea1e86150c4015a99628dfed"
 PREVIOUS_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-preparation-readiness-assurance-candidate"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate"
-# The authoritative current gate must appear in the final Next phase section, not only in historical text.
+CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-candidate"
+# Phase 42 keeps its immutable next-gate binding while the authoritative project gate advances through Phase 43 finalization.
 
 
 def sha(path: Path) -> str:
@@ -59,6 +60,7 @@ def validate():
         "Historical Phase 41 finalization marker:",
         "Historical Phase 42 target marker:",
         f"Historical Phase 41 next-gate marker: Next gate: **{PREVIOUS_NEXT}**.",
+        f"Historical Phase 42 next-gate marker: Next gate: **{NEXT}**.",
         "Atlas remains unchanged by Principia Phase 42",
         CANDIDATE_SHA,
         "all 36 applicable workflows",
@@ -71,8 +73,10 @@ def validate():
         errors.append("current next-phase section missing")
     else:
         current_gate_section = state_text.rsplit("## Next phase", 1)[1]
-        if f"Next gate: **{NEXT}**." not in current_gate_section:
-            errors.append("current Phase 43 gate missing from next-phase section")
+        if f"Next gate: **{CURRENT_NEXT}**." not in current_gate_section:
+            errors.append("current Phase 44 assurance gate missing from next-phase section")
+        if f"Next gate: **{NEXT}**." in current_gate_section:
+            errors.append("historical Phase 43 candidate gate remains current")
         if f"Next gate: **{PREVIOUS_NEXT}**." in current_gate_section:
             errors.append("historical Phase 42 assurance gate remains current")
     report_text = REPORT.read_text(encoding="utf-8")
