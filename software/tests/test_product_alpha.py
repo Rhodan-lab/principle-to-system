@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parent / "build.py"
+MODULE_PATH = Path(__file__).resolve().parents[1] / "product_alpha" / "build.py"
 SPEC = importlib.util.spec_from_file_location("product_alpha_build", MODULE_PATH)
 assert SPEC and SPEC.loader
 build_module = importlib.util.module_from_spec(SPEC)
