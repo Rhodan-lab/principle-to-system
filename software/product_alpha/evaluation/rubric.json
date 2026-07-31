@@ -1,0 +1,44 @@
+{
+  "schema": "principia-product-alpha-pilot-rubric/0.1",
+  "route_id": "refrigerator-v1",
+  "score_scale": {
+    "0": "Missing, contradicted, or copied without explanation.",
+    "1": "Partly correct but incomplete, fragile, or poorly bounded.",
+    "2": "Mechanistic, appropriately bounded, and transferable."
+  },
+  "measures": {
+    "mechanism_explanation": {
+      "prompt": "Explain why the refrigerator cycles and what moves energy across the system boundary.",
+      "score_2_evidence": "Connects cabinet temperature, heat leakage, compressor action, sensing, and hysteresis without treating cold as a substance."
+    },
+    "model_reasoning": {
+      "prompt": "Predict how changing one model control changes the temperature trajectory, then explain why.",
+      "score_2_evidence": "Predicts direction before observing, links the result to the model mechanism, and states a model limitation."
+    },
+    "failure_diagnosis": {
+      "prompt": "Distinguish normal cycling from abnormal short-cycling and name an observation that would help decide.",
+      "score_2_evidence": "Uses timing, amplitude, limit crossing, or mechanism evidence and avoids equating every oscillation with instability."
+    },
+    "evidence_boundary": {
+      "prompt": "State what the pinned Atlas revision supports and what it does not prove about a physical refrigerator.",
+      "score_2_evidence": "Notices exact revision and review status, preserves limitations, and separates model-derived claims from real-system identification."
+    },
+    "redesign_tradeoff": {
+      "prompt": "Choose one redesign under a stated constraint and explain its benefit, cost, and remaining risk.",
+      "score_2_evidence": "Links the redesign to a mechanism, names a real trade-off, and identifies evidence that could change the choice."
+    }
+  },
+  "recommended_confusion_tags": [
+    "navigation",
+    "reading-density",
+    "system-boundary",
+    "energy-versus-cold",
+    "model-controls",
+    "model-to-world-transfer",
+    "cycling-versus-failure",
+    "oscillation-versus-instability",
+    "evidence-status",
+    "revision-meaning",
+    "redesign-tradeoff"
+  ]
+}
