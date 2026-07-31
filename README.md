@@ -2,7 +2,7 @@
 
 **Principia** is an open, evidence-aware learning system for understanding how scientific principles become mechanisms, models, technologies, failures, investigations, and redesigns.
 
-> **Current program:** **Product Alpha 0.1 — pilot-ready.** The active milestone is a real learner pilot of the refrigerator route, not another numbered governance phase. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) for the current decision state. The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
+> **Current program:** **Product Alpha 0.1 — evidence integrity recovery.** The active milestone is completion of a verifiable real learner pilot of the refrigerator route, not another numbered governance phase. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) for the current decision state. The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
 
 ## What Principia does
 
@@ -38,16 +38,16 @@ The alpha includes:
 - exact-revision Atlas evidence presentation;
 - a local anonymous facilitator recorder;
 - a deterministic evaluation summarizer;
+- a loopback-only one-command pilot launcher;
 - focused Product Alpha CI.
 
 ### Run locally
 
 ```bash
-python3 software/product_alpha/build.py build
-python3 -m http.server 8000 --directory software/product_alpha/dist
+python3 software/product_alpha/run_pilot.py --open
 ```
 
-Open:
+The launcher builds Product Alpha, binds only to `127.0.0.1`, and opens:
 
 - learner route: `http://127.0.0.1:8000/`
 - facilitator recorder: `http://127.0.0.1:8000/facilitator.html`
@@ -58,14 +58,15 @@ The recorder exports one anonymous JSONL record per learner. It creates no accou
 
 ```bash
 python3 software/product_alpha/build.py check
+python3 software/product_alpha/run_pilot.py check
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
 ### Next evidence gate
 
-Run the documented 5–8 learner pilot before adding another route or production infrastructure. Evaluate route completion, mechanism explanation, model reasoning, failure diagnosis, evidence-boundary understanding, redesign trade-offs, recurring confusion, and voluntary continuation.
+Run or verify the documented 5–8 learner pilot before adding another route or production infrastructure. Evaluate route completion, mechanism explanation, model reasoning, failure diagnosis, evidence-boundary understanding, redesign trade-offs, recurring confusion, and voluntary continuation.
 
-The pilot protocol is [`software/product_alpha/PILOT.md`](software/product_alpha/PILOT.md).
+The pilot protocol is [`software/product_alpha/PILOT.md`](software/product_alpha/PILOT.md). The current evidence review is [`reports/product-alpha-0-1-pilot-summary.md`](reports/product-alpha-0-1-pilot-summary.md); unavailable cohort values remain **not reportable** until derived from real anonymous records.
 
 ## Principia and Atlas
 
@@ -98,7 +99,11 @@ All route and applied-artifact records remain canonical inputs to Product Alpha 
 
 All learner-facing material remains in a draft release state under `candidate-hold`.
 
-Live Atlas integration remains disabled. Product Alpha is pilot-ready, not a public learning-effectiveness claim and not a production SaaS release.
+Live Atlas integration remains disabled. Product Alpha is pilot-ready as software, not a public learning-effectiveness claim and not a production SaaS release.
+
+### Principia & Atlas compatibility
+
+The historical `bridge-candidate` compatibility surface remains explicit: the delayed-correction evidence reference `delayed-correction-recurrence@2` uses the exact-dependency relation `depends_on_exact`. These markers preserve validator compatibility only; they do not activate live Atlas integration or grant learner-facing status.
 
 ### Principia–Atlas bridge candidate
 
