@@ -5,6 +5,12 @@ on:
     paths:
       - "scripts/publish_phase44_finalization.py"
       - ".github/workflows/publish-phase-44-finalization.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/publish_phase44_finalization.py"
+      - ".github/workflows/publish-phase-44-finalization.yml"
 
 permissions:
   contents: write
