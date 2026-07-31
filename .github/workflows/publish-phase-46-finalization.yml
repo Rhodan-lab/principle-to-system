@@ -35,9 +35,14 @@ jobs:
 
           path = Path("scripts/publish_phase46_finalization.py")
           text = path.read_text(encoding="utf-8")
-          old = "    (\"python3\", 'scripts/generate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py', \"--check\"),\n"
-          if text.count(old) != 1:
+          late_check = "    (\"python3\", 'scripts/generate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py', \"--check\"),\n"
+          if text.count(late_check) != 1:
               raise SystemExit("Phase 46 late deterministic-check marker drift")
-          path.write_text(text.replace(old, "", 1), encoding="utf-8")
+          text = text.replace(late_check, "", 1)
+          old_gate = "## Next gate\n\n`{NEXT}`\n\"\"\""
+          new_gate = "## Next gate\n\nNext gate: `{NEXT}`\n\"\"\""
+          if text.count(old_gate) != 1:
+              raise SystemExit("Phase 46 report gate marker drift")
+          path.write_text(text.replace(old_gate, new_gate, 1), encoding="utf-8")
           PY
           python3 scripts/publish_phase46_finalization.py
