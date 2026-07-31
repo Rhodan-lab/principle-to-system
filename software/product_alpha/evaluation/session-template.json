@@ -1,0 +1,17 @@
+{
+  "session_id": "anonymous-001",
+  "route_id": "refrigerator-v1",
+  "started": true,
+  "completed_steps": [],
+  "duration_minutes": 0,
+  "scores": {
+    "mechanism_explanation": 0,
+    "model_reasoning": 0,
+    "failure_diagnosis": 0,
+    "evidence_boundary": 0,
+    "redesign_tradeoff": 0
+  },
+  "confusion_tags": [],
+  "voluntary_continue": null,
+  "facilitator_notes": ""
+}
