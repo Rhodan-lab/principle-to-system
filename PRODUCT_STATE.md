@@ -3,31 +3,35 @@ title: "Principia current product state"
 slug: principia-current-product-state
 domain: product
 status: draft
-artifact_revision: 1
+artifact_revision: 2
 release_status: alpha
 prerequisites: []
 connections: [product-alpha-refrigerator, product-alpha-learner-pilot]
-last_reviewed: 2026-07-31
+last_reviewed: 2026-08-01
 content_license: CC-BY-4.0
 ---
 
 # Principia current product state
 
-**Last updated:** 2026-07-31  
-**Active milestone:** Product Alpha 0.1 — pilot-ready  
+**Last updated:** 2026-08-01  
+**Active milestone:** Product Alpha 0.1 — evidence integrity recovery  
 **Active repository:** `Rhodan-lab/principle-to-system`  
 **Supporting repository:** `Rhodan-lab/Atlas`  
-**Decision authority:** real learner evidence, not phase-count growth
+**Decision authority:** verifiable real learner evidence, not phase-count growth or issue-closure status
 
 ## Current decision
 
-Principia is the learner-facing product. Atlas remains a read-only trust and provenance substrate.
+Principia remains the learner-facing product. Atlas remains a read-only trust and provenance substrate.
 
-The next milestone is **not Phase 51**. The next milestone is execution of the documented refrigerator learner pilot and evidence-based revision of Product Alpha 0.1.
+The current primary decision is:
+
+> Keep the refrigerator route stable and repeat or complete the documented 5–8 learner pilot before adding another route, expanding Atlas, or building SaaS and production infrastructure.
+
+The next milestone is **not Phase 51**. It is completion of the Product Alpha evidence chain with real anonymous learner records and a de-identified aggregate report.
 
 ## Completed product foundation
 
-Product Alpha 0.1 now includes:
+Product Alpha 0.1 includes:
 
 - a five-step refrigerator journey: Observe → Map → Model → Diagnose → Redesign;
 - canonical content extraction from existing Principia artifacts;
@@ -35,6 +39,7 @@ Product Alpha 0.1 now includes:
 - pinned exact-revision Atlas references with separate status authority;
 - a local anonymous facilitator recorder;
 - a deterministic JSONL pilot summarizer;
+- a loopback-only one-command pilot launcher;
 - focused CI that runs Product Alpha checks without launching the full historical phase chain.
 
 Relevant merged work:
@@ -45,30 +50,55 @@ Relevant merged work:
 | PR #95 | Anonymous pilot protocol, rubric, records, and summarizer |
 | PR #96 | Product Alpha CI ownership and legacy fan-out reduction |
 | PR #98 | Local facilitator recorder and deterministic packaging |
+| PR #99 | Product Alpha established as the current program state |
+| PR #100 | Loopback-only one-command pilot launcher |
 
-## Evidence state
+## Evidence integrity finding
 
-The software and pilot instrumentation are validated. **No real learner cohort result is recorded in this repository yet.**
+The software and pilot instrumentation are validated. The repository still does not contain a de-identified aggregate cohort report with reportable completion, duration, rubric, confusion, and continuation metrics.
 
-Therefore the project may claim:
+Issue #101 was closed while its aggregate-report, cohort-metrics, and product-decision checklist items remained incomplete. Closure status is not learner evidence. The evidence gate must therefore remain open.
+
+The current evidence review is recorded in:
+
+- `reports/product-alpha-0-1-pilot-summary.md`
+
+That report intentionally marks cohort values as **not reportable** rather than inventing, estimating, or simulating learner outcomes.
+
+## What the project may claim
+
+The project may claim:
 
 - the route builds deterministically;
-- the local interface and recorder are testable;
+- the local learner interface and facilitator recorder are testable;
 - the pilot record contract is machine-validated;
-- Product Alpha is ready for a small formative pilot.
+- the cohort summarizer is available;
+- the pilot launcher binds only to `127.0.0.1`;
+- Product Alpha is technically ready for a small formative pilot.
+
+## What the project may not claim
 
 The project may not yet claim:
 
+- verified completion of a 5–8 learner cohort;
 - demonstrated learning effectiveness;
-- validated retention or transfer at population scale;
+- validated retention or transfer;
+- evidence that the refrigerator route meets progression thresholds;
+- justification for a second route;
 - public-release readiness;
 - product-market fit;
 - SaaS readiness;
 - production security, availability, or compliance.
 
-## Next evidence gate
+## Active evidence gate
 
-Run the protocol in `software/product_alpha/PILOT.md` with 5–8 learners who did not author the route.
+Run `software/product_alpha/PILOT.md` with 5–8 learners who did not author or review the route.
+
+Start the local pilot with:
+
+```bash
+python3 software/product_alpha/run_pilot.py --open
+```
 
 For each anonymous session, record:
 
@@ -83,6 +113,8 @@ For each anonymous session, record:
 - voluntary continuation;
 - anonymous product-focused facilitator notes.
 
+Keep raw records private and local. Do not commit names, contact information, school details, raw JSONL records, or identifiable free-text notes.
+
 Then summarize the cohort with:
 
 ```bash
@@ -90,6 +122,8 @@ python3 software/product_alpha/evaluation/summarize.py \
   --input path/to/anonymous-sessions.jsonl \
   --format markdown
 ```
+
+Use the output to replace the **not reportable** entries in `reports/product-alpha-0-1-pilot-summary.md`.
 
 ## Revision triggers
 
@@ -128,15 +162,15 @@ Do not expand Atlas retrieval, embeddings, generalized search, or production syn
 
 Phases 0–50 remain preserved in `PROJECT_STATE.md`, `release/`, `reports/`, validators, and tests as research and compatibility history.
 
-They are not the active product roadmap. No new recursive readiness or assurance phase should be added without a product requirement that cannot be served by the current generic validation architecture.
+They are not the active product roadmap. No recursive readiness or assurance phase should be added without a product requirement that cannot be served by the current generic validation architecture.
 
-## Decision after the pilot
+## Decision after verifiable evidence
 
-After reviewing the learner evidence, choose exactly one primary action:
+After reviewing the real aggregate learner evidence, choose exactly one primary action:
 
 1. revise the refrigerator route;
 2. repeat the pilot after a targeted revision;
 3. add a second route only when the first route meets the documented evidence threshold;
 4. stop or narrow the product hypothesis when learners do not gain or continue.
 
-Production infrastructure, accounts, deployment, and monetization remain later decisions.
+Until that evidence exists, the selected action is **repeat and complete the learner pilot**. Production infrastructure, accounts, deployment, monetization, and additional routes remain deferred.
