@@ -1,0 +1,46 @@
+name: Validate Workflow Scope
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'ci/workflow-scope-policy.json'
+      - 'scripts/apply_ci_product_alpha_scope.py'
+      - 'scripts/validate_workflow_scope.py'
+      - 'software/tests/test_workflow_scope.py'
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'ci/workflow-scope-policy.json'
+      - 'scripts/apply_ci_product_alpha_scope.py'
+      - 'scripts/validate_workflow_scope.py'
+      - 'software/tests/test_workflow_scope.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-workflow-scope-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile workflow scope tools
+        run: |
+          python3 -m py_compile scripts/apply_ci_product_alpha_scope.py
+          python3 -m py_compile scripts/validate_workflow_scope.py
+          python3 -m py_compile software/tests/test_workflow_scope.py
+      - name: Verify generated workflow scope
+        run: python3 scripts/apply_ci_product_alpha_scope.py --check
+      - name: Validate Product Alpha-only fixture
+        run: python3 scripts/validate_workflow_scope.py
+      - name: Run workflow scope tests
+        run: python3 -m unittest software.tests.test_workflow_scope -v
+      - name: Verify clean repository
+        run: git diff --exit-code
