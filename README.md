@@ -97,7 +97,7 @@ All route and applied-artifact records remain canonical inputs to Product Alpha 
 
 ### Current release state
 
-All learner-facing material remains in a draft release state under `candidate-hold`.
+The retained Phase 12 release-candidate record is [`release/phase-12-release-candidate.json`](release/phase-12-release-candidate.json). All learner-facing material remains in a draft release state under `candidate-hold`.
 
 Live Atlas integration remains disabled. Product Alpha is pilot-ready as software, not a public learning-effectiveness claim and not a production SaaS release.
 
