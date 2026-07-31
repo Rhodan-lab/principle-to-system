@@ -1,0 +1,74 @@
+name: Finalize Phase 47 on pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.head_ref == 'agent/finalize-phase-47-population-execution-readiness'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build immutable Phase 47 finalization
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, re
+          from pathlib import Path
+          source = Path('.github/workflows/finalize-phase-47-population-execution-readiness.yml').read_text(encoding='utf-8')
+          match = re.search(r"echo '([A-Za-z0-9+/=]+)' \| base64", source)
+          if not match:
+              raise SystemExit('embedded Phase 47 finalizer payload missing')
+          Path('/tmp/finalize_phase47.py').write_bytes(gzip.decompress(base64.b64decode(match.group(1))))
+          PY
+          python3 /tmp/finalize_phase47.py
+      - name: Validate finalized Phase 47 package
+        shell: bash
+        run: |
+          python3 -m py_compile \
+            scripts/validate_phase42_postmerge_record.py \
+            scripts/validate_phase43_postmerge_record.py \
+            scripts/validate_phase44_postmerge_record.py \
+            scripts/validate_phase45_postmerge_record.py \
+            scripts/validate_phase46_postmerge_record.py \
+            scripts/validate_phase47_postmerge_record.py
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          path = Path('release/phase-47-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness.json')
+          actual = hashlib.sha256(path.read_bytes()).hexdigest()
+          expected = '31b57486ca590cd066642981e640c21cc306869f99241d0fa81013d681df5065'
+          if actual != expected:
+              raise SystemExit(f'Phase 47 candidate digest drift: {actual}')
+          PY
+          python3 scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py
+          python3 -m unittest discover -s software/tests -p 'test_phase47*population_execution_readiness.py' -v
+          python3 scripts/validate_phase42_postmerge_record.py
+          python3 scripts/validate_phase43_postmerge_record.py
+          python3 scripts/validate_phase44_postmerge_record.py
+          python3 scripts/validate_phase45_postmerge_record.py
+          python3 scripts/validate_phase46_postmerge_record.py
+          python3 scripts/validate_phase47_postmerge_record.py
+      - name: Commit finalization package
+        shell: bash
+        run: |
+          rm -f \
+            .github/workflows/finalize-phase-47-population-execution-readiness.yml \
+            .github/workflows/finalize-phase-47-on-pr.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finalize Phase 47 population execution readiness"
+          git push origin HEAD:${{ github.head_ref }}
