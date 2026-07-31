@@ -29,4 +29,15 @@ jobs:
       - name: Publish immutable finalization
         env:
           PYTHONDONTWRITEBYTECODE: "1"
-        run: python3 scripts/publish_phase44_finalization.py
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/publish_phase44_finalization.py')
+          text = path.read_text(encoding='utf-8')
+          old = 'run("git", "add",\n'
+          new = 'run("git", "add", "-f",\n'
+          if text.count(old) != 1:
+              raise SystemExit('publisher git-add marker drift')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          python3 scripts/publish_phase44_finalization.py
