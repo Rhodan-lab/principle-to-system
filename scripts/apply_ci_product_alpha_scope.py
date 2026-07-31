@@ -96,8 +96,49 @@ def _event_sections(
     return sections
 
 
-def _has_path_filter(section: list[str]) -> bool:
-    return any(re.match(r"^    paths(?:-ignore)?:\s*$", line) for line in section[1:])
+def _strip_pattern(line: str) -> str | None:
+    match = re.match(r"^\s*-\s*['\"]?([^'\"]+)['\"]?\s*$", line)
+    return match.group(1).strip() if match else None
+
+
+def _section_path_filter(
+    section: list[str],
+) -> tuple[str, list[str], int] | None:
+    """Return filter kind, patterns, and insertion index within an event section."""
+    for idx, line in enumerate(section[1:], start=1):
+        key_match = re.match(r"^    (paths|paths-ignore):\s*$", line)
+        if not key_match:
+            continue
+        kind = key_match.group(1)
+        patterns: list[str] = []
+        insertion = idx + 1
+        while insertion < len(section):
+            candidate = section[insertion]
+            if re.match(r"^    [A-Za-z0-9_-]+:\s*", candidate):
+                break
+            pattern = _strip_pattern(candidate)
+            if pattern is not None:
+                patterns.append(pattern)
+            insertion += 1
+        return kind, patterns, insertion
+    return None
+
+
+def _matches_positive_patterns(path: str, patterns: list[str]) -> bool:
+    matched = False
+    for pattern in patterns:
+        negative = pattern.startswith("!")
+        candidate = pattern[1:] if negative else pattern
+        if fnmatch.fnmatchcase(path, candidate):
+            matched = not negative
+    return matched
+
+
+def _positive_filter_matches_fixture(patterns: list[str]) -> bool:
+    return any(
+        _matches_positive_patterns(path, patterns)
+        for path in PRODUCT_FIXTURE_PATHS
+    )
 
 
 def _expand_empty_event(line: str, event: str) -> list[str]:
@@ -129,7 +170,19 @@ def transform_workflow(text: str, filename: str) -> str:
         if event not in {"pull_request", "push"}:
             continue
         section = lines[section_start:section_end]
-        if _has_path_filter(section):
+        filter_info = _section_path_filter(section)
+
+        if filter_info is not None:
+            kind, patterns, insertion = filter_info
+            if kind == "paths-ignore" or not _positive_filter_matches_fixture(patterns):
+                continue
+            missing = [f"!{pattern}" for pattern in PRODUCT_PATHS if f"!{pattern}" not in patterns]
+            if not missing:
+                continue
+            replacement = section[:insertion]
+            replacement.extend(f"      - '{pattern}'\n" for pattern in missing)
+            replacement.extend(section[insertion:])
+            replacements.append((section_start, section_end, replacement))
             continue
 
         event_line = section[0]
@@ -173,11 +226,6 @@ def apply(root: Path = WORKFLOW_DIR, write: bool = False) -> list[str]:
     return changed
 
 
-def _strip_pattern(line: str) -> str | None:
-    match = re.match(r"^\s*-\s*['\"]?([^'\"]+)['\"]?\s*$", line)
-    return match.group(1).strip() if match else None
-
-
 def event_path_filters(text: str, event: str) -> dict[str, list[str]] | None:
     """Extract simple paths/paths-ignore lists for one workflow event."""
     lines = text.splitlines(keepends=True)
@@ -203,32 +251,11 @@ def event_path_filters(text: str, event: str) -> dict[str, list[str]] | None:
     if section is None:
         return None
 
-    result: dict[str, list[str]] = {}
-    current: str | None = None
-    for line in section[1:]:
-        key_match = re.match(r"^    (paths|paths-ignore):\s*$", line)
-        if key_match:
-            current = key_match.group(1)
-            result[current] = []
-            continue
-        if current is not None:
-            pattern = _strip_pattern(line)
-            if pattern is not None:
-                result[current].append(pattern)
-                continue
-            if line.strip() and not line.startswith("      "):
-                current = None
-    return result
-
-
-def _matches_positive_patterns(path: str, patterns: list[str]) -> bool:
-    matched = False
-    for pattern in patterns:
-        negative = pattern.startswith("!")
-        candidate = pattern[1:] if negative else pattern
-        if fnmatch.fnmatchcase(path, candidate):
-            matched = not negative
-    return matched
+    filter_info = _section_path_filter(section)
+    if filter_info is None:
+        return {}
+    kind, patterns, _ = filter_info
+    return {kind: patterns}
 
 
 def event_runs_for_paths(text: str, event: str, changed_paths: tuple[str, ...]) -> bool:
