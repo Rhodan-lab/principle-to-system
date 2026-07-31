@@ -1,0 +1,47 @@
+name: Publish Phase 44 finalization
+
+on:
+  push:
+    paths:
+      - "scripts/publish_phase44_finalization.py"
+      - ".github/workflows/publish-phase-44-finalization.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/publish_phase44_finalization.py"
+      - ".github/workflows/publish-phase-44-finalization.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/finalize-phase-44-assembly-readiness-assurance
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish immutable finalization
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/publish_phase44_finalization.py')
+          text = path.read_text(encoding='utf-8')
+          start = text.index('    run("git", "add",\n')
+          end = text.index('    run("git", "diff", "--cached", "--check")', start)
+          block = text[start:end]
+          block = ''.join(
+              line for line in block.splitlines(keepends=True)
+              if '".github/workflows/' not in line
+          )
+          block = block.replace('run("git", "add",', 'run("git", "add", "-f",', 1)
+          path.write_text(text[:start] + block + text[end:], encoding='utf-8')
+          PY
+          python3 scripts/publish_phase44_finalization.py
