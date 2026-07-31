@@ -1,0 +1,34 @@
+name: Restore Phase 47 tracked bytecode
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [synchronize, converted_to_draft]
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.head_ref == 'agent/finalize-phase-47-population-execution-readiness'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Restore unrelated tracked bytecode
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout origin/main -- scripts/__pycache__
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/__pycache__
+          if git diff --cached --quiet; then
+            echo "Tracked bytecode already matches main."
+            exit 0
+          fi
+          git commit -m "Restore unrelated tracked bytecode"
+          git push origin HEAD:${{ github.head_ref }}
