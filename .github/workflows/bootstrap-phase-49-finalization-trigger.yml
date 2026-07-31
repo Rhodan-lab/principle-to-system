@@ -1,0 +1,48 @@
+name: Bootstrap Phase 49 finalization trigger
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/bootstrap-phase-49-finalization-trigger.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rebuild and validate Phase 49 finalization
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, re
+          from pathlib import Path
+          source = Path('.github/workflows/bootstrap-phase-49-finalization.yml').read_text(encoding='utf-8')
+          match = re.search(r"cat > /tmp/finalize_phase49\.b64 <<'B64'\n\s*([A-Za-z0-9+/=\n ]+?)\n\s*B64", source)
+          if not match:
+              raise SystemExit('Phase 49 finalizer payload not found')
+          payload = ''.join(match.group(1).split())
+          Path('/tmp/finalize_phase49.py').write_bytes(gzip.decompress(base64.b64decode(payload)))
+          PY
+          python3 /tmp/finalize_phase49.py
+          python3 scripts/generate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py --check
+          python3 scripts/validate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py
+          python3 scripts/validate_phase49_postmerge_record.py
+          for phase in 48 47 46 45 44 43 42; do python3 scripts/validate_phase${phase}_postmerge_record.py; done
+      - name: Commit non-workflow finalization
+        run: |
+          git config user.name "principia-phase-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add PROJECT_STATE.md release/phase-49-postmerge.json scripts/validate_phase42_postmerge_record.py scripts/validate_phase43_postmerge_record.py scripts/validate_phase44_postmerge_record.py scripts/validate_phase45_postmerge_record.py scripts/validate_phase46_postmerge_record.py scripts/validate_phase47_postmerge_record.py scripts/validate_phase48_postmerge_record.py scripts/validate_phase49_postmerge_record.py
+          git commit -m "Finalize Phase 49 authorization readiness"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
