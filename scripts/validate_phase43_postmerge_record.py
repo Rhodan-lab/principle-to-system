@@ -16,7 +16,9 @@ HEAD = "faa7b7f698767722bc58cd8785e04f1ac278f927"
 MERGE = "0c1938169137ef9b5eead27f39e2b7c07f614f5b"
 PREVIOUS_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-candidate"
+CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-candidate"
 FINAL_STATE = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-validated"
+# Phase 43 keeps its immutable next-gate binding while the authoritative project gate advances through Phase 44 finalization.
 
 
 def sha(path: Path) -> str:
@@ -62,6 +64,7 @@ def validate():
         "Historical Phase 42 finalization marker:",
         "Historical Phase 43 target marker:",
         f"Historical Phase 42 next-gate marker: Next gate: **{PREVIOUS_NEXT}**.",
+        f"Historical Phase 43 next-gate marker: Next gate: **{NEXT}**.",
         "Atlas remains unchanged by Principia Phase 43",
         CANDIDATE_SHA,
         "all 37 applicable workflows",
@@ -74,8 +77,10 @@ def validate():
         errors.append("current next-phase section missing")
     else:
         current_gate_section = state_text.rsplit("## Next phase", 1)[1]
-        if f"Next gate: **{NEXT}**." not in current_gate_section:
-            errors.append("current Phase 44 assurance gate missing from next-phase section")
+        if f"Next gate: **{CURRENT_NEXT}**." not in current_gate_section:
+            errors.append("current Phase 45 population-readiness gate missing")
+        if f"Next gate: **{NEXT}**." in current_gate_section:
+            errors.append("historical Phase 44 assurance gate remains current")
         if f"Next gate: **{PREVIOUS_NEXT}**." in current_gate_section:
             errors.append("historical Phase 43 candidate gate remains current")
 
