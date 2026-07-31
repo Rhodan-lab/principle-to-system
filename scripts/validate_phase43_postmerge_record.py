@@ -16,7 +16,7 @@ HEAD = "faa7b7f698767722bc58cd8785e04f1ac278f927"
 MERGE = "0c1938169137ef9b5eead27f39e2b7c07f614f5b"
 PREVIOUS_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-candidate"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-candidate"
-CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance-candidate"
+CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-candidate"
 FINAL_STATE = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-validated"
 # Phase 43 keeps its immutable next-gate binding while the authoritative project gate advances through Phase 44 finalization.
 
@@ -78,7 +78,7 @@ def validate():
     else:
         current_gate_section = state_text.rsplit("## Next phase", 1)[1]
         if f"Next gate: **{CURRENT_NEXT}**." not in current_gate_section:
-            errors.append("current Phase 46 population-readiness assurance gate missing")
+            errors.append("current Phase 47 population-execution-readiness gate missing")
         if f"Next gate: **{NEXT}**." in current_gate_section:
             errors.append("historical Phase 44 assurance gate remains current")
         if f"Next gate: **{PREVIOUS_NEXT}**." in current_gate_section:
