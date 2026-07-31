@@ -49,6 +49,11 @@ jobs:
           if source.count(marker) != 1:
               raise SystemExit("Phase 45 validator-template marker drift")
           source = source.replace(marker, replacement, 1)
+          block_marker = "block = f'''## Phase 45 result — Offline Candidate Population Readiness\n\n"
+          block_replacement = block_marker + "- Historical Phase 44 finalization marker: **Phase 44 — Offline Consequence-Plan Review-Response Intake Envelope Validation Execution Authorization Decision Candidate Assembly Readiness Assurance merged and validated through PR #80.**\n"
+          if source.count(block_marker) != 1:
+              raise SystemExit("Phase 45 historical-marker insertion drift")
+          source = source.replace(block_marker, block_replacement, 1)
           path.write_text(source, encoding="utf-8")
           PY
           python3 scripts/publish_phase45_finalization.py
