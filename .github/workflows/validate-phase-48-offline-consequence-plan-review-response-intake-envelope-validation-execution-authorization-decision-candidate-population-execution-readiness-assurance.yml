@@ -1,0 +1,62 @@
+name: Validate Phase 48 population-execution-readiness assurance
+
+on: [pull_request, push]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Phase 48 validation chain
+        run: |
+          python3 -m py_compile \
+            scripts/generate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py \
+            scripts/validate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py \
+            scripts/validate_phase47_postmerge_record.py \
+            scripts/validate_phase46_postmerge_record.py \
+            scripts/validate_phase45_postmerge_record.py \
+            scripts/validate_phase44_postmerge_record.py \
+            scripts/validate_phase43_postmerge_record.py \
+            scripts/validate_phase42_postmerge_record.py
+      - name: Check deterministic Phase 48 bytes
+        run: python3 scripts/generate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py --check
+      - name: Check frozen Phase 48 candidate manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          path = Path("release/phase-48-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance.json")
+          expected = "9bfebeca19a7ce8f15c2e377db773fea78a479e773735318ac1cfc4d97f3e628"
+          actual = hashlib.sha256(path.read_bytes()).hexdigest()
+          if actual != expected:
+              raise SystemExit(f"Phase 48 candidate manifest digest drift: {actual}")
+          print(f"Phase 48 frozen candidate manifest passed: sha256={actual}")
+          PY
+      - name: Run independent Phase 48 validator
+        run: python3 scripts/validate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py
+      - name: Run Phase 48 mutation tests
+        run: python3 -m unittest discover -s software/tests -p 'test_phase48*population_execution_readiness_assurance.py' -v
+      - name: Revalidate Phase 47 finalization
+        run: python3 scripts/validate_phase47_postmerge_record.py
+      - name: Revalidate Phase 46 finalization
+        run: python3 scripts/validate_phase46_postmerge_record.py
+      - name: Revalidate Phase 45 finalization
+        run: python3 scripts/validate_phase45_postmerge_record.py
+      - name: Revalidate Phase 44 finalization
+        run: python3 scripts/validate_phase44_postmerge_record.py
+      - name: Revalidate Phase 43 finalization
+        run: python3 scripts/validate_phase43_postmerge_record.py
+      - name: Revalidate Phase 42 finalization
+        run: python3 scripts/validate_phase42_postmerge_record.py
+      - name: Verify permanent workflow immutability
+        run: |
+          git diff --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          git diff --cached --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          test -z "$(git status --porcelain --untracked-files=all | grep -Ev '(__pycache__/|\.pyc$)' || true)"
