@@ -47,3 +47,5 @@ jobs:
           git add release/phase-49-* reports/phase-49-* scripts/generate_phase49_* scripts/validate_phase49_* software/tests/test_phase49_*
           git commit -m "Add Phase 49 population execution authorization readiness"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+# synchronize: 1
