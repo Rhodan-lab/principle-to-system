@@ -45,3 +45,5 @@ jobs:
           git add -f release/phase-50-* reports/phase-50-* scripts/generate_phase50_* scripts/validate_phase50_* software/tests/test_phase50_*
           git commit -m "Add Phase 50 population execution authorization readiness assurance"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+# synchronize: 1
