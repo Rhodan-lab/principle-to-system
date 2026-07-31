@@ -23,8 +23,19 @@ jobs:
             scripts/validate_phase44_postmerge_record.py \
             scripts/validate_phase43_postmerge_record.py \
             scripts/validate_phase42_postmerge_record.py
-      - name: Check deterministic Phase 46 bytes
-        run: python3 scripts/generate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py --check
+      - name: Check frozen Phase 46 candidate manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          path = Path("release/phase-46-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance.json")
+          expected = "2b7ced60688ff02ea11231bc53bad3e39e0ec22aa10a233e5f270b0d586039ad"
+          actual = hashlib.sha256(path.read_bytes()).hexdigest()
+          if actual != expected:
+              raise SystemExit(f"Phase 46 candidate manifest digest drift: {actual}")
+          print(f"Phase 46 frozen candidate manifest passed: sha256={actual}")
+          PY
       - name: Run independent Phase 46 validator
         run: python3 scripts/validate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py
       - name: Validate Phase 46 post-merge record
