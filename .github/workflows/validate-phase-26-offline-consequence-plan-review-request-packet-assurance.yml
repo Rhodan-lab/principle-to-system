@@ -20,6 +20,9 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
   workflow_dispatch:
 
 permissions:

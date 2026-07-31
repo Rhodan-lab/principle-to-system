@@ -2,8 +2,14 @@ name: Validate Phase 42 Offline Authorization Decision Candidate Preparation Rea
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
   push:
     branches: [main]
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
 permissions:
   contents: read
 jobs:

@@ -19,6 +19,9 @@ on:
       - '.github/workflows/validate-phase-29-offline-consequence-plan-review-response-intake-envelope-readiness.yml'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'software/product_alpha/**'
+      - 'software/tests/test_product_alpha*.py'
   workflow_dispatch:
 
 permissions:
