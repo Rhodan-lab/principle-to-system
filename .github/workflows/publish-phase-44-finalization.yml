@@ -1,0 +1,26 @@
+name: Publish Phase 44 finalization
+
+on:
+  push:
+    paths:
+      - "scripts/publish_phase44_finalization.py"
+      - ".github/workflows/publish-phase-44-finalization.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/finalize-phase-44-assembly-readiness-assurance
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish immutable finalization
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python3 scripts/publish_phase44_finalization.py
