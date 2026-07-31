@@ -99,6 +99,8 @@ All route and applied-artifact records remain canonical inputs to Product Alpha 
 
 The retained Phase 12 release-candidate record is [`release/phase-12-release-candidate.json`](release/phase-12-release-candidate.json). All learner-facing material remains in a draft release state under `candidate-hold`.
 
+Historical compatibility record: The Phase 12 validator passes on draft PR #14; the release decision remains Hold; the retained candidate identifier is `principia-material-foundation-rc1`. These phrases describe the archived Phase 12 record and do not supersede the current Product Alpha evidence gate.
+
 Live Atlas integration remains disabled. Product Alpha is pilot-ready as software, not a public learning-effectiveness claim and not a production SaaS release.
 
 ### Principia & Atlas compatibility
