@@ -29,4 +29,15 @@ jobs:
             echo "Publisher already removed."
             exit 0
           fi
+          python3 scripts/generate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py --check
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/publish_phase46_finalization.py")
+          text = path.read_text(encoding="utf-8")
+          old = "    (\"python3\", 'scripts/generate_phase46_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_readiness_assurance.py', \"--check\"),\n"
+          if text.count(old) != 1:
+              raise SystemExit("Phase 46 late deterministic-check marker drift")
+          path.write_text(text.replace(old, "", 1), encoding="utf-8")
+          PY
           python3 scripts/publish_phase46_finalization.py
