@@ -47,6 +47,32 @@ jobs: {}
         )
         self.assertEqual(scope.transform_workflow(updated, "legacy.yml"), updated)
 
+    def test_broad_positive_paths_receive_negative_exclusions(self) -> None:
+        original = """name: test
+
+on:
+  push:
+    paths:
+      - 'software/**'
+      - 'scripts/**'
+
+jobs: {}
+"""
+        updated = scope.transform_workflow(original, "legacy.yml")
+        self.assertIn("- '!software/product_alpha/**'", updated)
+        self.assertIn("- '!software/tests/test_product_alpha*.py'", updated)
+        self.assertFalse(
+            scope.event_runs_for_paths(updated, "push", scope.PRODUCT_FIXTURE_PATHS)
+        )
+        self.assertTrue(
+            scope.event_runs_for_paths(
+                updated,
+                "push",
+                ("software/product_alpha/index.html", "software/principia_site.py"),
+            )
+        )
+        self.assertEqual(scope.transform_workflow(updated, "legacy.yml"), updated)
+
     def test_mixed_change_keeps_legacy_event_eligible(self) -> None:
         workflow = scope.transform_workflow(
             "name: test\n\non: [pull_request, push]\n\njobs: {}\n",
