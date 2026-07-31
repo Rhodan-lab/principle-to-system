@@ -47,3 +47,5 @@ jobs:
             scripts/validate_phase48_postmerge_record.py
           git commit -m "Finalize Phase 48 assurance state"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+# synchronize: 1
