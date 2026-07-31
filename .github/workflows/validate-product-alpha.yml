@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "software/product_alpha/**"
-      - "software/tests/test_product_alpha.py"
+      - "software/tests/test_product_alpha*.py"
       - "system-dossiers/refrigerator.md"
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
@@ -13,7 +13,7 @@ on:
   push:
     paths:
       - "software/product_alpha/**"
-      - "software/tests/test_product_alpha.py"
+      - "software/tests/test_product_alpha*.py"
       - "system-dossiers/refrigerator.md"
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
@@ -32,10 +32,17 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile Product Alpha
-        run: python3 -m py_compile software/product_alpha/build.py
+        run: |
+          python3 -m py_compile \
+            software/product_alpha/build.py \
+            software/product_alpha/evaluation/summarize.py
+      - name: Verify evaluation JSON
+        run: |
+          python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
+          python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
       - name: Verify deterministic build
         run: python3 software/product_alpha/build.py check
       - name: Run Product Alpha tests
-        run: python3 -m unittest discover -s software/tests -p 'test_product_alpha.py' -v
+        run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
