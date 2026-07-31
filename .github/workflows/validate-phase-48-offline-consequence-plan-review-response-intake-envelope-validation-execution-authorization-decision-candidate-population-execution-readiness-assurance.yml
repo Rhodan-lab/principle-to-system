@@ -18,6 +18,7 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py \
             scripts/validate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py \
+            scripts/validate_phase48_postmerge_record.py \
             scripts/validate_phase47_postmerge_record.py \
             scripts/validate_phase46_postmerge_record.py \
             scripts/validate_phase45_postmerge_record.py \
@@ -41,6 +42,8 @@ jobs:
           PY
       - name: Run independent Phase 48 validator
         run: python3 scripts/validate_phase48_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness_assurance.py
+      - name: Validate Phase 48 post-merge record
+        run: python3 scripts/validate_phase48_postmerge_record.py
       - name: Run Phase 48 mutation tests
         run: python3 -m unittest discover -s software/tests -p 'test_phase48*population_execution_readiness_assurance.py' -v
       - name: Revalidate Phase 47 finalization
