@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_ROUTE = "refrigerator"
+STATIC_ASSETS = ("index.html", "facilitator.html")
+EVALUATION_ASSETS = (
+    "evaluation/rubric.json",
+    "evaluation/session-template.json",
+)
 
 
 @dataclass(frozen=True)
@@ -53,7 +58,11 @@ def parse_sections(body: str) -> tuple[str, dict[str, str]]:
             sections.setdefault(current, [])
             continue
         sections.setdefault(current, []).append(line)
-    cleaned = {key: "\n".join(value).strip() for key, value in sections.items() if "\n".join(value).strip()}
+    cleaned = {
+        key: "\n".join(value).strip()
+        for key, value in sections.items()
+        if "\n".join(value).strip()
+    }
     return title, cleaned
 
 
@@ -76,7 +85,10 @@ def section(document: SourceDocument, name: str) -> str:
 
 
 def canonical_json(data: Any) -> bytes:
-    return (json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+    return (
+        json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode("utf-8")
 
 
 def sha256(data: bytes) -> str:
@@ -99,7 +111,9 @@ def load_config(root: Path, route: str) -> dict[str, Any]:
 
 def build_route(root: Path, route: str) -> dict[str, Any]:
     config = load_config(root, route)
-    documents = {name: load_document(root, path) for name, path in config["sources"].items()}
+    documents = {
+        name: load_document(root, path) for name, path in config["sources"].items()
+    }
 
     dossier = documents["system"]
     failure = documents["failure"]
@@ -131,7 +145,10 @@ def build_route(root: Path, route: str) -> dict[str, Any]:
         "diagnose": {
             "heading": "Diagnose a failure",
             "body": "\n\n".join(
-                [section(failure, config["failure_section"]), section(dossier, "9. Failure modes")]
+                [
+                    section(failure, config["failure_section"]),
+                    section(dossier, "9. Failure modes"),
+                ]
             ),
             "prompt": config["steps"][3]["prompt"],
             "challenge": config["challenge"],
@@ -186,15 +203,17 @@ def build_route(root: Path, route: str) -> dict[str, Any]:
 def copy_static_files(root: Path, output: Path) -> list[dict[str, str]]:
     assets = root / "software" / "product_alpha"
     copied: list[dict[str, str]] = []
-    for name in ("index.html",):
-        source = assets / name
+    for relative_path in (*STATIC_ASSETS, *EVALUATION_ASSETS):
+        source = assets / relative_path
         if not source.is_file():
-            raise FileNotFoundError(f"missing Product Alpha asset: {source.relative_to(root)}")
-        destination = output / name
+            raise FileNotFoundError(
+                f"missing Product Alpha asset: {source.relative_to(root)}"
+            )
+        destination = output / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)
         data = source.read_bytes()
         destination.write_bytes(data)
-        copied.append({"path": name, "sha256": sha256(data)})
+        copied.append({"path": relative_path, "sha256": sha256(data)})
     return copied
 
 
@@ -230,8 +249,12 @@ def check_determinism(root: Path, route: str) -> None:
         second = Path(second_dir)
         build(root, first, route)
         build(root, second, route)
-        first_files = sorted(path.relative_to(first) for path in first.rglob("*") if path.is_file())
-        second_files = sorted(path.relative_to(second) for path in second.rglob("*") if path.is_file())
+        first_files = sorted(
+            path.relative_to(first) for path in first.rglob("*") if path.is_file()
+        )
+        second_files = sorted(
+            path.relative_to(second) for path in second.rglob("*") if path.is_file()
+        )
         if first_files != second_files:
             raise SystemExit("Product Alpha build file sets differ")
         for relative in first_files:
@@ -242,7 +265,9 @@ def check_determinism(root: Path, route: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("build", "check"))
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument(
+        "--root", type=Path, default=Path(__file__).resolve().parents[2]
+    )
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--route", default=DEFAULT_ROUTE)
     return parser.parse_args()
@@ -257,7 +282,10 @@ def main() -> int:
         return 0
     output = (args.output or root / "software" / "product_alpha" / "dist").resolve()
     manifest = build(root, output, args.route)
-    print(f"Built Product Alpha route {args.route}: {manifest['file_count']} files -> {output}")
+    print(
+        f"Built Product Alpha route {args.route}: "
+        f"{manifest['file_count']} files -> {output}"
+    )
     return 0
 
 
