@@ -17,6 +17,7 @@ MERGE = "cd89c6728f841c18c2a797d246c22c581454359e"
 MODE = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance"
 FINAL_STATE = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance-validated"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-authorization-readiness-candidate"
+CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-authorization-readiness-assurance-candidate"
 WORKFLOWS = 41
 
 def sha(path: Path) -> str:
@@ -54,7 +55,7 @@ def validate():
     if "## Next phase" not in state_text: errors.append("current next-phase section missing")
     else:
         section = state_text.rsplit("## Next phase",1)[1]
-        if "Next gate: **%s**." % NEXT not in section: errors.append("current Phase 49 gate missing")
+        if "Next gate: **%s**." % CURRENT_NEXT not in section: errors.append("current Phase 50 population-execution-authorization-readiness-assurance gate missing")
         if "Next gate: **%s**." % (MODE + "-candidate") in section: errors.append("historical Phase 48 gate remains current")
     report_text = REPORT.read_text(encoding="utf-8")
     for marker in ("Phase 48 candidate SHA-256: `%s`" % CANDIDATE_SHA, "Next gate", NEXT):
