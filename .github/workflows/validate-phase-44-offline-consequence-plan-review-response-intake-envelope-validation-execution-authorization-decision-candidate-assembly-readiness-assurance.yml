@@ -14,11 +14,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile validators
-        run: python3 -m py_compile scripts/*phase44*assurance.py scripts/validate_phase43_postmerge_record.py
+        run: python3 -m py_compile scripts/*phase44*assurance.py scripts/validate_phase44_postmerge_record.py scripts/validate_phase43_postmerge_record.py
       - name: Check deterministic bytes
         run: python3 scripts/generate_phase44_*_assurance.py --check
       - name: Validate candidate
         run: python3 scripts/validate_phase44_*_assurance.py
+      - name: Validate post-merge record
+        run: python3 scripts/validate_phase44_postmerge_record.py
       - name: Run mutation tests
         run: python3 -m unittest discover -s software/tests -p 'test_phase44*assurance.py' -v
       - name: Revalidate Phase 43
