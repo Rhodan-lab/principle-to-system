@@ -1,0 +1,33 @@
+name: Publish Phase 45 finalization
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/publish_phase45_finalization.py"
+      - ".github/workflows/publish-phase-45-finalization.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/finalize-phase-45-population-readiness
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish immutable Phase 45 finalization
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          if [ ! -f scripts/publish_phase45_finalization.py ]; then
+            echo "Publisher already removed."
+            exit 0
+          fi
+          python3 scripts/publish_phase45_finalization.py
