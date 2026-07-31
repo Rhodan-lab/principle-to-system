@@ -117,6 +117,8 @@ The candidate does not inherit Atlas status. The candidate imports no glossary t
 
 The historical Phase 13 static foundation remains `machine-only` and operationally inert outside explicit local build commands.
 
+Historical compatibility record: The Phase 13 machine gate passes on draft PR #15; the archived software state is `foundation-validated`; and the generated site is reproducible. These markers describe the preserved Phase 13 foundation rather than the current learner-evidence milestone.
+
 The generated foundation contains 92 learner-facing documents and 20 module pages. It is not a production application.
 
 ### Canonical material inventory
