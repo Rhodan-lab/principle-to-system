@@ -18,15 +18,40 @@ jobs:
           python3 -m py_compile \
             scripts/generate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py \
             scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py \
-            scripts/validate_phase46_postmerge_record.py
-      - name: Check deterministic Phase 47 bytes
-        run: python3 scripts/generate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py --check
+            scripts/validate_phase47_postmerge_record.py \
+            scripts/validate_phase46_postmerge_record.py \
+            scripts/validate_phase45_postmerge_record.py \
+            scripts/validate_phase44_postmerge_record.py \
+            scripts/validate_phase43_postmerge_record.py \
+            scripts/validate_phase42_postmerge_record.py
+      - name: Check frozen Phase 47 candidate manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          path = Path("release/phase-47-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness.json")
+          expected = "31b57486ca590cd066642981e640c21cc306869f99241d0fa81013d681df5065"
+          actual = hashlib.sha256(path.read_bytes()).hexdigest()
+          if actual != expected:
+              raise SystemExit(f"Phase 47 candidate manifest digest drift: {actual}")
+          print(f"Phase 47 frozen candidate manifest passed: sha256={actual}")
+          PY
       - name: Run independent Phase 47 validator
         run: python3 scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py
+      - name: Validate Phase 47 post-merge record
+        run: python3 scripts/validate_phase47_postmerge_record.py
       - name: Run Phase 47 mutation tests
         run: python3 -m unittest discover -s software/tests -p 'test_phase47*population_execution_readiness.py' -v
       - name: Revalidate Phase 46 finalization
         run: python3 scripts/validate_phase46_postmerge_record.py
+      - name: Revalidate Phase 45 finalization
+        run: python3 scripts/validate_phase45_postmerge_record.py
+      - name: Revalidate Phase 44 finalization
+        run: python3 scripts/validate_phase44_postmerge_record.py
+      - name: Revalidate Phase 43 finalization
+        run: python3 scripts/validate_phase43_postmerge_record.py
+      - name: Revalidate Phase 42 finalization
+        run: python3 scripts/validate_phase42_postmerge_record.py
       - name: Verify permanent workflow immutability
         run: |
           git diff --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
