@@ -25,13 +25,10 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
-          import base64, re
+          import base64
           from pathlib import Path
-          source = Path('.github/workflows/bootstrap-phase-50-payload.yml').read_text(encoding='utf-8')
-          match = re.search(r"cat > /tmp/phase50\.tgz\.b64 <<'B64'\n\s*([A-Za-z0-9+/=\n ]+?)\n\s*B64", source)
-          if not match:
-              raise SystemExit('Phase 50 payload not found')
-          Path('/tmp/phase50.tgz').write_bytes(base64.b64decode(''.join(match.group(1).split())))
+          payload = ''.join(Path('.phase50-payload-corrected.b64').read_text(encoding='utf-8').split())
+          Path('/tmp/phase50.tgz').write_bytes(base64.b64decode(payload))
           PY
           tar -xzf /tmp/phase50.tgz -C .
           python3 scripts/generate_phase50_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness_assurance.py --check
@@ -46,4 +43,4 @@ jobs:
           git commit -m "Add Phase 50 population execution authorization readiness assurance"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
-# synchronize: 1
+# synchronize: 2
