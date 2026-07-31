@@ -1,0 +1,34 @@
+name: Validate Phase 47 population-execution readiness
+
+on: [pull_request, push]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Phase 47 validation chain
+        run: |
+          python3 -m py_compile \
+            scripts/generate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py \
+            scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py \
+            scripts/validate_phase46_postmerge_record.py
+      - name: Check deterministic Phase 47 bytes
+        run: python3 scripts/generate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py --check
+      - name: Run independent Phase 47 validator
+        run: python3 scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py
+      - name: Run Phase 47 mutation tests
+        run: python3 -m unittest discover -s software/tests -p 'test_phase47*population_execution_readiness.py' -v
+      - name: Revalidate Phase 46 finalization
+        run: python3 scripts/validate_phase46_postmerge_record.py
+      - name: Verify permanent workflow immutability
+        run: |
+          git diff --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          git diff --cached --exit-code -- . ':(exclude)**/__pycache__/**' ':(exclude)**/*.pyc'
+          test -z "$(git status --porcelain --untracked-files=all | grep -Ev '(__pycache__/|\.pyc$)' || true)"
