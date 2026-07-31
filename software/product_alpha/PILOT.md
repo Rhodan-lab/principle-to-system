@@ -1,3 +1,17 @@
+---
+title: "Product Alpha 0.1 learner pilot"
+slug: product-alpha-0-1-learner-pilot
+domain: experience
+experience_type: pilot-protocol
+status: draft
+artifact_revision: 1
+release_status: draft
+prerequisites: [system-dossier-refrigerator]
+connections: [investigation-room-cooling, design-challenge-passive-cooler]
+last_reviewed: 2026-07-31
+content_license: CC-BY-4.0
+---
+
 # Product Alpha 0.1 learner pilot
 
 This protocol tests whether the refrigerator route helps a learner explain a system, reason with a bounded model, distinguish normal cycling from failure, use evidence cautiously, and propose a defensible redesign.
