@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - '.github/workflows/apply-ci-product-alpha-scope.yml'
+      - 'scripts/apply_ci_product_alpha_scope.py'
+      - 'software/tests/test_workflow_scope.py'
   push:
     branches:
       - agent/ci-product-alpha-scope
     paths:
       - '.github/workflows/apply-ci-product-alpha-scope.yml'
+      - 'scripts/apply_ci_product_alpha_scope.py'
+      - 'software/tests/test_workflow_scope.py'
 
 permissions:
   contents: write
@@ -34,6 +38,7 @@ jobs:
           python3 scripts/validate_workflow_scope.py
           python3 -m unittest software.tests.test_workflow_scope -v
       - name: Upload generated workflow tree
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: generated-ci-product-alpha-scope
