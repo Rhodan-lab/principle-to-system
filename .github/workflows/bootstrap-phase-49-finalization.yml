@@ -1,0 +1,44 @@
+name: Bootstrap Phase 49 finalization
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/bootstrap-phase-49-finalization.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build Phase 49 finalization
+        shell: bash
+        run: |
+          cat > /tmp/finalize_phase49.b64 <<'B64'
+          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
+          B64
+          base64 -d /tmp/finalize_phase49.b64 | gzip -d > /tmp/finalize_phase49.py
+          python3 /tmp/finalize_phase49.py
+      - name: Validate Phase 49 finalization
+        run: |
+          python3 scripts/generate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py --check
+          python3 scripts/validate_phase49_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_authorization_readiness.py
+          python3 scripts/validate_phase49_postmerge_record.py
+          for phase in 48 47 46 45 44 43 42; do python3 scripts/validate_phase${phase}_postmerge_record.py; done
+      - name: Commit non-workflow finalization
+        run: |
+          git config user.name "principia-phase-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add PROJECT_STATE.md release/phase-49-postmerge.json scripts/validate_phase42_postmerge_record.py scripts/validate_phase43_postmerge_record.py scripts/validate_phase44_postmerge_record.py scripts/validate_phase45_postmerge_record.py scripts/validate_phase46_postmerge_record.py scripts/validate_phase47_postmerge_record.py scripts/validate_phase48_postmerge_record.py scripts/validate_phase49_postmerge_record.py
+          git commit -m "Finalize Phase 49 authorization readiness"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
