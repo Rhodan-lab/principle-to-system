@@ -30,4 +30,25 @@ jobs:
             echo "Publisher already removed."
             exit 0
           fi
+          python3 - <<'PY'
+          import base64
+          import re
+          import zlib
+          from pathlib import Path
+
+          path = Path("scripts/publish_phase45_finalization.py")
+          bootstrap = path.read_text(encoding="utf-8")
+          match = re.search(r'PAYLOAD = "([A-Za-z0-9+/=]+)"', bootstrap)
+          if match is None:
+              raise SystemExit("Phase 45 bootstrap payload missing")
+          source = zlib.decompress(base64.b64decode(match.group(1))).decode("utf-8")
+          source = source.replace("validator = f'''#!/usr/bin/env python3", "validator = '''#!/usr/bin/env python3", 1)
+          source = source.replace("POST_SHA = {POST_SHA!r}", "POST_SHA = __POST_SHA_REPR__", 1)
+          marker = "'''\nPOST_VALIDATOR.write_text(validator, encoding=\"utf-8\")"
+          replacement = "'''\nvalidator = validator.replace(\"__POST_SHA_REPR__\", repr(POST_SHA))\nPOST_VALIDATOR.write_text(validator, encoding=\"utf-8\")"
+          if source.count(marker) != 1:
+              raise SystemExit("Phase 45 validator-template marker drift")
+          source = source.replace(marker, replacement, 1)
+          path.write_text(source, encoding="utf-8")
+          PY
           python3 scripts/publish_phase45_finalization.py
