@@ -17,7 +17,7 @@ MERGE = '63948f6a148f3ab733b16508fea3406374f7e4ab'
 MODE = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness'
 FINAL_STATE = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-validated'
 NEXT = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-assurance-candidate'
-CURRENT_NEXT = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance-candidate'
+CURRENT_NEXT = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-authorization-readiness-candidate'
 WORKFLOWS = 38
 
 def sha(path: Path) -> str:
@@ -72,7 +72,7 @@ def validate():
     else:
         section = state_text.rsplit("## Next phase", 1)[1]
         if f"Next gate: **{CURRENT_NEXT}**." not in section:
-            errors.append("current Phase 48 population-execution-readiness-assurance gate missing")
+            errors.append("current Phase 49 population-execution-authorization-readiness gate missing")
         if f"Next gate: **{NEXT}**." in section:
             errors.append("historical Phase 46 assurance gate remains current")
         if f"Next gate: **{MODE}-candidate**." in section:
