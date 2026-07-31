@@ -1,0 +1,62 @@
+name: Finalize Phase 47 population-execution readiness
+
+on:
+  push:
+    branches:
+      - agent/finalize-phase-47-population-execution-readiness
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build immutable Phase 47 finalization
+        shell: bash
+        run: |
+          echo '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' | base64 -d | gzip -d > /tmp/finalize_phase47.py
+          python3 /tmp/finalize_phase47.py
+      - name: Validate finalized Phase 47 package
+        shell: bash
+        run: |
+          python3 -m py_compile \
+            scripts/validate_phase42_postmerge_record.py \
+            scripts/validate_phase43_postmerge_record.py \
+            scripts/validate_phase44_postmerge_record.py \
+            scripts/validate_phase45_postmerge_record.py \
+            scripts/validate_phase46_postmerge_record.py \
+            scripts/validate_phase47_postmerge_record.py
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          path = Path('release/phase-47-offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness.json')
+          actual = hashlib.sha256(path.read_bytes()).hexdigest()
+          expected = '31b57486ca590cd066642981e640c21cc306869f99241d0fa81013d681df5065'
+          if actual != expected:
+              raise SystemExit(f'Phase 47 candidate digest drift: {actual}')
+          PY
+          python3 scripts/validate_phase47_offline_consequence_plan_review_response_intake_envelope_validation_execution_authorization_decision_candidate_population_execution_readiness.py
+          python3 -m unittest discover -s software/tests -p 'test_phase47*population_execution_readiness.py' -v
+          python3 scripts/validate_phase42_postmerge_record.py
+          python3 scripts/validate_phase43_postmerge_record.py
+          python3 scripts/validate_phase44_postmerge_record.py
+          python3 scripts/validate_phase45_postmerge_record.py
+          python3 scripts/validate_phase46_postmerge_record.py
+          python3 scripts/validate_phase47_postmerge_record.py
+      - name: Commit finalization package
+        shell: bash
+        run: |
+          rm -f .github/workflows/finalize-phase-47-population-execution-readiness.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finalize Phase 47 population execution readiness"
+          git push origin HEAD:${{ github.ref_name }}
