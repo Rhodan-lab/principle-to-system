@@ -16,7 +16,7 @@ HEAD = "b58811f3b01dbb68992c4ee638978a06bbb095e7"
 MERGE = "d5756679785e283f044b191e01945009a506e8ec"
 PREVIOUS_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-candidate"
 NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-readiness-candidate"
-CURRENT_NEXT = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-readiness-assurance-candidate"
+CURRENT_NEXT = 'offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-population-execution-authorization-readiness-candidate'
 FINAL_STATE = "offline-consequence-plan-review-response-intake-envelope-validation-execution-authorization-decision-candidate-assembly-readiness-assurance-validated"
 
 
@@ -76,7 +76,7 @@ def validate():
     else:
         current_gate_section = state_text.rsplit("## Next phase", 1)[1]
         if f"Next gate: **{CURRENT_NEXT}**." not in current_gate_section:
-            errors.append("current Phase 48 population-execution-readiness-assurance gate missing")
+            errors.append("current Phase 49 population-execution-authorization-readiness gate missing")
         if f"Next gate: **{NEXT}**." in current_gate_section:
             errors.append("historical Phase 45 population-readiness gate remains current")
         if f"Next gate: **{PREVIOUS_NEXT}**." in current_gate_section:
