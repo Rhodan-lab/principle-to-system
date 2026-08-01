@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -20,6 +21,22 @@ ALLOWED_PRIMARY_ACTIONS = (
     "hold-current-route",
     "advance-to-next-product-planning-review",
 )
+KNOWN_CONFUSION_TAGS = frozenset(
+    {
+        "navigation",
+        "reading-density",
+        "system-boundary",
+        "energy-versus-cold",
+        "model-controls",
+        "model-to-world-transfer",
+        "cycling-versus-failure",
+        "oscillation-versus-instability",
+        "evidence-status",
+        "revision-meaning",
+        "redesign-tradeoff",
+    }
+)
+REDACTED_CUSTOM_TAG = "other-custom-tag"
 
 
 def canonical_json(value: Any) -> bytes:
@@ -56,32 +73,63 @@ def review_output_paths(prefix: Path) -> tuple[Path, Path]:
     return json_path, markdown_path
 
 
+def deidentify_summary(summary: dict[str, Any]) -> tuple[dict[str, Any], int]:
+    """Remove facilitator-authored custom tag text from the packet summary."""
+    confusion_counts = summary.get("confusion_counts")
+    if not isinstance(confusion_counts, dict):
+        raise ValueError("verified summary confusion_counts must be an object")
+
+    safe_counts: dict[str, int] = {}
+    custom_occurrences = 0
+    for tag, count in confusion_counts.items():
+        if not isinstance(tag, str) or not isinstance(count, int) or count < 0:
+            raise ValueError("verified summary confusion counts are invalid")
+        if tag in KNOWN_CONFUSION_TAGS:
+            safe_counts[tag] = safe_counts.get(tag, 0) + count
+        else:
+            custom_occurrences += count
+    if custom_occurrences:
+        safe_counts[REDACTED_CUSTOM_TAG] = custom_occurrences
+
+    sanitized = copy.deepcopy(summary)
+    sanitized["confusion_counts"] = dict(
+        sorted(safe_counts.items(), key=lambda item: (-item[1], item[0]))
+    )
+    sanitized["revision_signals"] = verify_cohort.pilot_summary.revision_signals(
+        sanitized
+    )
+    return sanitized, custom_occurrences
+
+
 def build_review_packet(
     input_path: Path,
     expected_build_id: str,
 ) -> dict[str, Any]:
     """Verify one cohort and return a deterministic de-identified review packet."""
     raw_input = input_path.read_bytes()
-    summary = verify_cohort.verify_cohort(input_path, expected_build_id)
-    summary_bytes = canonical_json(summary)
-    revision_signals = summary["revision_signals"]
+    verified_summary = verify_cohort.verify_cohort(input_path, expected_build_id)
+    packet_summary, custom_occurrences = deidentify_summary(verified_summary)
+    verified_summary_bytes = canonical_json(verified_summary)
+    packet_summary_bytes = canonical_json(packet_summary)
+    revision_signals = packet_summary["revision_signals"]
     if not isinstance(revision_signals, list):
-        raise ValueError("verified summary revision_signals must be a list")
+        raise ValueError("packet summary revision_signals must be a list")
 
     return {
         "contract": CONTRACT,
-        "pilot_build_id": summary["pilot_build_id"],
-        "route_id": summary["route_id"],
+        "pilot_build_id": packet_summary["pilot_build_id"],
+        "route_id": packet_summary["route_id"],
         "evidence_binding": {
             "input_sha256": sha256(raw_input),
             "input_byte_count": len(raw_input),
-            "summary_contract": summary["contract"],
-            "summary_sha256": sha256(summary_bytes),
+            "summary_contract": packet_summary["contract"],
+            "verified_summary_sha256": sha256(verified_summary_bytes),
+            "packet_summary_sha256": sha256(packet_summary_bytes),
         },
-        "aggregate_summary": summary,
+        "aggregate_summary": packet_summary,
         "review": {
             "status": "human-review-required",
-            "planning_review_eligible": summary["evidence_status"]
+            "planning_review_eligible": packet_summary["evidence_status"]
             == "ready-for-human-review",
             "allowed_primary_actions": list(ALLOWED_PRIMARY_ACTIONS),
             "primary_action": None,
@@ -94,6 +142,8 @@ def build_review_packet(
         "boundaries": {
             "raw_session_records_included": False,
             "facilitator_notes_included": False,
+            "custom_confusion_tag_text_included": False,
+            "custom_confusion_tag_occurrences_redacted": custom_occurrences,
             "automatic_product_decision": False,
             "automatic_repository_mutation": False,
             "second_route_authorized": False,
@@ -108,6 +158,7 @@ def render_markdown(packet: dict[str, Any]) -> str:
     summary = packet["aggregate_summary"]
     evidence = packet["evidence_binding"]
     review = packet["review"]
+    boundaries = packet["boundaries"]
     lines = [
         "# Product Alpha Pilot Human Review",
         "",
@@ -121,10 +172,16 @@ def render_markdown(packet: dict[str, Any]) -> str:
         ),
         f"- Planning review eligible: **{str(review['planning_review_eligible']).lower()}**",
         f"- Exact private input SHA-256: `{evidence['input_sha256']}`",
-        f"- De-identified summary SHA-256: `{evidence['summary_sha256']}`",
+        f"- Verified private summary SHA-256: `{evidence['verified_summary_sha256']}`",
+        f"- Packet summary SHA-256: `{evidence['packet_summary_sha256']}`",
+        (
+            "- Custom confusion-tag occurrences redacted: "
+            f"{boundaries['custom_confusion_tag_occurrences_redacted']}"
+        ),
         "",
-        "> The hashes bind this worksheet to one verified local cohort. The raw "
-        "session file and facilitator notes are not included and must remain private.",
+        "> The hashes bind this worksheet to one verified local cohort. Raw session "
+        "records, facilitator notes, and facilitator-authored custom tag text are not "
+        "included and must remain private.",
         "",
         "## Aggregate evidence",
         "",
@@ -237,7 +294,7 @@ def write_review_outputs(
     return json_path, markdown_path, sha256(json_bytes)
 
 
-def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--input",
@@ -256,28 +313,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         required=True,
         help="private output prefix; writes matching .json and .md files",
     )
-    return parser.parse_args(argv)
+    return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--input",
-        type=Path,
-        required=True,
-        help="combined private JSONL pilot session file",
-    )
-    parser.add_argument(
-        "--expect-build-id",
-        required=True,
-        help="full 64-character Pilot build ID printed by run_pilot.py",
-    )
-    parser.add_argument(
-        "--output-prefix",
-        type=Path,
-        required=True,
-        help="private output prefix; writes matching .json and .md files",
-    )
+    parser = build_parser()
     args = parser.parse_args(argv)
 
     try:
