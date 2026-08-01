@@ -35,11 +35,25 @@ jobs:
         run: |
           python3 -m py_compile \
             software/product_alpha/build.py \
+            software/product_alpha/run_pilot.py \
             software/product_alpha/evaluation/summarize.py
       - name: Verify evaluation JSON
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
+      - name: Verify Pilot Lab JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path("software/product_alpha/pilot-lab.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+          if len(scripts) != 1:
+              raise SystemExit("pilot-lab.html must contain exactly one inline script")
+          Path("/tmp/principia-pilot-lab.js").write_text(scripts[0], encoding="utf-8")
+          PY
+          node --check /tmp/principia-pilot-lab.js
       - name: Verify deterministic build
         run: python3 software/product_alpha/build.py check
       - name: Run Product Alpha tests

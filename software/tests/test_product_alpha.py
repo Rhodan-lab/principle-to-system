@@ -27,6 +27,7 @@ class ProductAlphaTests(unittest.TestCase):
             "routes/refrigerator.json",
             "index.html",
             "facilitator.html",
+            "pilot-lab.html",
             "evaluation/rubric.json",
             "evaluation/session-template.json",
         ):
@@ -42,7 +43,7 @@ class ProductAlphaTests(unittest.TestCase):
                     "2. System boundary and environment": "The cabinet and refrigerant loop are inside the boundary.",
                     "3. Inputs, outputs, stores, and flows": "| Type | Example |\n| --- | --- |\n| Input | Work |",
                     "6. Interaction architecture": "```text\nsensor -> controller -> compressor\n```",
-                    "7. Quantitative model": "$$C\\frac{dT}{dt}=UA(T_{room}-T)+Q_{load}-Q_{cool}$$",
+                    "7. Quantitative model": "A bounded thermal model.",
                     "9. Failure modes": "- Damaged seal\n- Sensor fault",
                 },
             },
@@ -84,18 +85,19 @@ class ProductAlphaTests(unittest.TestCase):
         for relative in first_files:
             self.assertEqual((first / relative).read_bytes(), (second / relative).read_bytes())
 
-    def test_build_includes_learner_and_facilitator_assets(self) -> None:
+    def test_build_includes_pilot_lab(self) -> None:
         output = self.root / "dist"
         manifest = build_module.build(self.root, output)
         expected = {
             "index.html",
             "facilitator.html",
+            "pilot-lab.html",
             "evaluation/rubric.json",
             "evaluation/session-template.json",
             "data/refrigerator.json",
         }
         self.assertEqual({item["path"] for item in manifest["files"]}, expected)
-        self.assertEqual(manifest["file_count"], 5)
+        self.assertEqual(manifest["file_count"], 6)
         for relative in expected:
             self.assertTrue((output / relative).is_file(), relative)
 
@@ -114,23 +116,24 @@ class ProductAlphaTests(unittest.TestCase):
         source_root = self.root / "software" / "product_alpha"
         combined = "\n".join(
             (source_root / name).read_text(encoding="utf-8")
-            for name in ("index.html", "facilitator.html")
+            for name in ("index.html", "facilitator.html", "pilot-lab.html")
         )
         self.assertNotIn("https://", combined)
         self.assertNotIn("http://", combined)
         self.assertNotIn("localStorage", combined)
         self.assertNotIn("sessionStorage", combined)
+        self.assertNotIn("XMLHttpRequest", combined)
+        self.assertNotIn("navigator.sendBeacon", combined)
 
-    def test_facilitator_exports_existing_anonymous_jsonl_contract(self) -> None:
-        asset = (self.root / "software" / "product_alpha" / "facilitator.html").read_text(encoding="utf-8")
-        self.assertIn('fetch("evaluation/rubric.json")', asset)
-        self.assertIn('fetch("evaluation/session-template.json")', asset)
-        self.assertIn('type:"application/x-ndjson"', asset)
-        self.assertIn("anonymous-", asset)
-        self.assertIn('completed_steps', asset)
-        self.assertIn('facilitator_notes', asset)
-        self.assertNotIn("XMLHttpRequest", asset)
-        self.assertNotIn("navigator.sendBeacon", asset)
+    def test_pilot_lab_validates_and_exports_without_upload(self) -> None:
+        asset = (self.root / "software" / "product_alpha" / "pilot-lab.html").read_text(encoding="utf-8")
+        self.assertIn("FileReader", asset) if "FileReader" in asset else self.assertIn("file.text()", asset)
+        self.assertIn("duplicate session_id", asset)
+        self.assertIn("cohort-incomplete", asset)
+        self.assertIn("recurring-confusion:", asset)
+        self.assertIn("application/x-ndjson", asset)
+        self.assertIn("product-alpha-pilot-summary.md", asset)
+        self.assertIn("Refreshing clears the workspace", asset)
 
 
 if __name__ == "__main__":

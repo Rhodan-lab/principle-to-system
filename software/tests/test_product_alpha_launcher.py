@@ -23,6 +23,7 @@ class ProductAlphaLauncherTests(unittest.TestCase):
             {
                 "learner": "http://127.0.0.1:8123/",
                 "facilitator": "http://127.0.0.1:8123/facilitator.html",
+                "pilot_lab": "http://127.0.0.1:8123/pilot-lab.html",
             },
         )
 
@@ -60,6 +61,11 @@ class ProductAlphaLauncherTests(unittest.TestCase):
                 self.assertGreater(int(server.server_address[1]), 0)
             finally:
                 server.server_close()
+
+    def test_launcher_requires_pilot_lab_asset(self) -> None:
+        self.assertIn("pilot-lab.html", launcher.REQUIRED_OUTPUTS)
+        self.assertIn("facilitator.html", launcher.REQUIRED_OUTPUTS)
+        self.assertIn("evaluation/rubric.json", launcher.REQUIRED_OUTPUTS)
 
     def test_launcher_source_has_no_external_or_persistent_data_path(self) -> None:
         source = MODULE_PATH.read_text(encoding="utf-8")

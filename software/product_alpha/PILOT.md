@@ -4,11 +4,11 @@ slug: product-alpha-0-1-learner-pilot
 domain: experience
 experience_type: pilot-protocol
 status: draft
-artifact_revision: 2
+artifact_revision: 3
 release_status: draft
 prerequisites: [system-dossier-refrigerator]
 connections: [investigation-room-cooling, design-challenge-passive-cooler]
-last_reviewed: 2026-07-31
+last_reviewed: 2026-08-01
 content_license: CC-BY-4.0
 ---
 
@@ -25,18 +25,18 @@ The pilot is an evidence-gathering activity, not a release gate and not a test o
 - Reserve 25–35 minutes.
 - Use the same route build and facilitator prompts for every session.
 - Do not collect names, email addresses, school details, birth dates, usernames, or other identifying information.
-- Use an anonymous session label such as `anonymous-001`.
+- Use a unique anonymous session label such as `anonymous-001`.
 
 ## Materials
 
-1. Build and serve Product Alpha locally.
-2. Open the learner route and `facilitator.html` in separate browser tabs.
-3. Keep this protocol visible separately from both interfaces.
+1. Start Product Alpha with `python3 software/product_alpha/run_pilot.py --open`.
+2. Keep the learner route, `facilitator.html`, and `pilot-lab.html` available in separate tabs.
+3. Keep this protocol visible separately from the product interfaces.
 4. Export one anonymous JSONL record from the recorder after each session.
 5. Store exported records in a private local folder controlled by the facilitator.
 6. Do not modify appliances or ask learners to perform physical repair work.
 
-The recorder loads `evaluation/rubric.json` and `evaluation/session-template.json` from the local build. It performs browser-side contract checks and downloads one compact JSON object. It does not upload records, use browser storage, create accounts, or call Atlas.
+The recorder performs browser-side contract checks and downloads one compact JSON object. The Pilot Lab reads selected files locally, rejects malformed or duplicate records, and produces aggregate previews. Neither interface uploads records, uses browser storage, creates accounts, or calls Atlas.
 
 ## Facilitator protocol
 
@@ -108,7 +108,7 @@ Score the learner's final explanation for each measure. Use confusion tags to ca
 
 Use `facilitator.html` to record the ordered route prefix, duration, five rubric scores, confusion tags, voluntary continuation, and anonymous product observations. The recorder prevents export until its local validation passes and applies basic checks for common identity or contact-information patterns.
 
-The recorder is a convenience boundary, not a guarantee that free-text notes are anonymous. The facilitator remains responsible for reviewing notes before export. `evaluation/session-template.json` remains the machine-readable fallback when a browser is unavailable.
+The recorder is a convenience boundary, not a guarantee that free-text notes are anonymous. The facilitator remains responsible for reviewing notes before export. Every session label must begin with `anonymous-` and must be unique within the cohort.
 
 Suggested confusion tags:
 
@@ -126,7 +126,20 @@ Suggested confusion tags:
 
 Add a new tag only when the existing set cannot describe the observation.
 
-## Summarize
+## Cohort review with Pilot Lab
+
+1. Open `pilot-lab.html` from the loopback launcher.
+2. Select or drop the exported JSONL files.
+3. Review rejected records and duplicate session labels.
+4. Confirm that at least five valid unique sessions are present before treating the cohort as complete.
+5. Review the aggregate metrics and every revision signal.
+6. Export the aggregate Markdown or JSON for de-identified review.
+7. Keep the validated combined JSONL export private; it still contains raw anonymous session records and facilitator notes.
+8. Refresh the page after the review to clear the in-memory workspace.
+
+The Pilot Lab aggregate intentionally omits facilitator notes. It does not edit the repository or update the official report automatically.
+
+## Independent command-line verification
 
 Combine the exported JSONL lines into one local file, one compact JSON object per line, then run:
 
@@ -136,11 +149,11 @@ python3 software/product_alpha/evaluation/summarize.py \
   --format markdown
 ```
 
-The summarizer independently validates route order, score ranges, anonymous-data boundaries, and produces completion, duration, score, confusion, and voluntary-continuation summaries.
+The summarizer independently validates route order, score ranges, anonymous labels, personal-data fields, duplicate session IDs, and produces completion, duration, score, confusion, continuation, evidence-status, and revision-signal summaries.
 
 ## Decision rule
 
-Do not add a second route merely because the first route runs without errors. Review the pilot evidence first.
+Do not add a second route merely because the interface runs without errors or because the five-session minimum is reached. Review the evidence first.
 
 Prioritize revision when:
 
@@ -151,4 +164,4 @@ Prioritize revision when:
 - learners repeatedly treat Atlas status as proof that a physical conclusion is true;
 - learners finish but do not voluntarily continue.
 
-A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation.
+A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab surfaces these triggers; a human reviewer still chooses the product action.
