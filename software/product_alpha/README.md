@@ -16,7 +16,15 @@ Canonical Principia Markdown remains authoritative. The build extracts required 
 
 ## Run the pilot
 
-From the repository root, use the loopback-only launcher:
+Before the first participant session on a pilot day, run the complete loopback smoke gate:
+
+```bash
+python3 software/product_alpha/run_pilot.py smoke
+```
+
+The smoke command performs the deterministic build check, packages a fresh temporary build, starts it on an OS-selected `127.0.0.1` port, and fetches the learner page, build-bound recorder, build-bound Pilot Lab, route payload, and exact build manifest. It verifies the no-store and security response headers, confirms the served manifest bytes match the printed 64-character Pilot build ID, stores no session data, and shuts down automatically. Do not begin participant sessions when this command fails.
+
+After the smoke gate passes, start the long-running loopback-only launcher:
 
 ```bash
 python3 software/product_alpha/run_pilot.py --open
@@ -27,16 +35,19 @@ The launcher builds Product Alpha, binds only to `127.0.0.1`, derives and prints
 Useful options:
 
 ```bash
-# Select any available local port
+# Select any available local port for the long-running pilot
 python3 software/product_alpha/run_pilot.py --port 0 --open
 
-# Verify the deterministic build and print its build ID without starting a server
+# Verify deterministic files and build identity without exercising HTTP
 python3 software/product_alpha/run_pilot.py check
+
+# Exercise the complete ephemeral loopback HTTP path
+python3 software/product_alpha/run_pilot.py smoke
 ```
 
 ### Static inspection only
 
-A bare `python3 -m http.server` launch does not create the supported build-bound recorder and Pilot Lab URLs. It may be used to inspect static output, but it must not be used to collect pilot evidence. Use `run_pilot.py` for every real learner session.
+A bare `python3 -m http.server` launch does not create the supported build-bound recorder and Pilot Lab URLs or the pilot smoke guarantees. It may be used to inspect static output, but it must not be used to collect pilot evidence. Use `run_pilot.py` for every real learner session.
 
 ## Pilot Lab
 
@@ -78,10 +89,11 @@ A tool-generated status never authorizes a second route, public release, SaaS ex
 ```bash
 python3 software/product_alpha/build.py check
 python3 software/product_alpha/run_pilot.py check
+python3 software/product_alpha/run_pilot.py smoke
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, Pilot Lab packaging, and loopback-only serving.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
 
 ## Learner pilot
 
@@ -98,6 +110,6 @@ Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review
 - learner notes remain only in the current browser tab;
 - recorder and Pilot Lab state remain only in the current browser tab;
 - raw pilot records remain local, anonymous, private, and facilitator-controlled;
-- the launcher binds only to `127.0.0.1` and stores no session data;
+- the launcher and smoke gate bind only to `127.0.0.1` and store no session data;
 - the thermal model supports reasoning and is not repair or safety guidance;
 - aggregate evidence remains descriptive and requires human review.

@@ -4,7 +4,7 @@ slug: product-alpha-0-1-learner-pilot
 domain: experience
 experience_type: pilot-protocol
 status: draft
-artifact_revision: 4
+artifact_revision: 5
 release_status: draft
 prerequisites: [system-dossier-refrigerator]
 connections: [investigation-room-cooling, design-challenge-passive-cooler]
@@ -29,15 +29,18 @@ The pilot is an evidence-gathering activity, not a release gate and not a test o
 
 ## Materials
 
-1. Start Product Alpha with `python3 software/product_alpha/run_pilot.py --open`.
-2. Copy the printed 64-character Pilot build ID into the private cohort folder before the first session.
-3. Keep the learner route, `facilitator.html`, and `pilot-lab.html` available in separate tabs.
-4. Keep this protocol visible separately from the product interfaces.
-5. Export one anonymous JSONL record from the recorder after each session.
-6. Store exported records in a private local folder controlled by the facilitator.
-7. Do not modify appliances or ask learners to perform physical repair work.
+1. Run the pilot-day gate with `python3 software/product_alpha/run_pilot.py smoke`.
+2. Do not begin any participant session unless the smoke command reports `pilot smoke passed`.
+3. Record the full 64-character Pilot build ID printed by the smoke command in the private cohort folder.
+4. Start Product Alpha with `python3 software/product_alpha/run_pilot.py --open`.
+5. Confirm that the long-running launcher prints the same Pilot build ID recorded from the smoke command.
+6. Keep the learner route, build-bound recorder, and build-bound Pilot Lab available in separate tabs.
+7. Keep this protocol visible separately from the product interfaces.
+8. Export one anonymous JSONL record from the recorder after each session.
+9. Store exported records in a private local folder controlled by the facilitator.
+10. Do not modify appliances or ask learners to perform physical repair work.
 
-The recorder performs browser-side contract checks and downloads one compact JSON object. The Pilot Lab reads selected files locally, rejects malformed or duplicate records, and produces aggregate previews. Neither interface uploads records, uses browser storage, creates accounts, or calls Atlas.
+The smoke command starts an ephemeral loopback server, verifies the packaged learner page, recorder, Pilot Lab, route payload, exact manifest, and required no-store/security headers, then shuts down. The long-running recorder performs browser-side contract checks and downloads one compact JSON object. The Pilot Lab reads selected files locally, rejects malformed or duplicate records, and produces aggregate previews. None of these tools uploads records, uses browser storage, creates accounts, or calls Atlas.
 
 ## Pilot build identity
 
@@ -46,12 +49,18 @@ The launcher derives the Pilot build ID from the exact bytes of the deterministi
 Use one Pilot build ID for every session in a cohort. Before the first session, run:
 
 ```bash
+python3 software/product_alpha/run_pilot.py smoke
+```
+
+The smoke gate performs the deterministic build check and verifies the actual loopback HTTP path. A lower-level file-only check remains available as:
+
+```bash
 python3 software/product_alpha/run_pilot.py check
 ```
 
-Keep the printed full build ID with the private local cohort records. Confirm that the launcher prints the same ID before every session. If the ID changes, do not combine the new sessions with the earlier cohort; start a separate cohort or explicitly repeat the earlier sessions on the new build.
+Keep the full smoke build ID with the private local cohort records. Confirm that the long-running launcher prints the same ID before every session. If the ID changes, do not combine the new sessions with the earlier cohort; start a separate cohort or explicitly repeat the earlier sessions on the new build.
 
-The build ID contains no learner data. Matching IDs establish build consistency only; they do not establish learning effectiveness, publication readiness, or permission to add another route.
+A smoke pass establishes only that the packaged local product path is internally consistent and reachable. Matching build IDs establish build consistency only. Neither establishes learning effectiveness, publication readiness, or permission to add another route.
 
 ## Facilitator protocol
 
@@ -121,7 +130,7 @@ Score the learner's final explanation for each measure. Use confusion tags to ca
 
 ## Session record
 
-Use `facilitator.html` to record the ordered route prefix, duration, five rubric scores, confusion tags, voluntary continuation, and anonymous product observations. The recorder prevents export until its local validation passes and applies basic checks for common identity or contact-information patterns.
+Use the build-bound `facilitator.html` URL printed by the launcher to record the ordered route prefix, duration, five rubric scores, confusion tags, voluntary continuation, and anonymous product observations. The recorder prevents export until its local validation passes and applies basic checks for common identity or contact-information patterns.
 
 The recorder is a convenience boundary, not a guarantee that free-text notes are anonymous. The facilitator remains responsible for reviewing notes before export. Every session label must begin with `anonymous-` and must be unique within the cohort.
 
@@ -143,7 +152,7 @@ Add a new tag only when the existing set cannot describe the observation.
 
 ## Cohort review with Pilot Lab
 
-1. Open `pilot-lab.html` from the loopback launcher.
+1. Open the build-bound Pilot Lab URL printed by the loopback launcher.
 2. Select or drop the exported JSONL files.
 3. Review rejected records and duplicate session labels.
 4. Confirm that every session belongs to the same recorded Pilot build ID.
@@ -157,19 +166,22 @@ The Pilot Lab aggregate intentionally omits facilitator notes. It does not edit 
 
 ## Independent command-line verification
 
-Combine the exported JSONL lines into one local file, one compact JSON object per line, then run:
+Combine the exported JSONL lines into one local file, one compact JSON object per line, then verify the cohort against the independently recorded smoke/launcher build ID:
 
 ```bash
-python3 software/product_alpha/evaluation/summarize.py \
+python3 software/product_alpha/evaluation/verify_cohort.py \
   --input path/to/anonymous-sessions.jsonl \
+  --expect-build-id <64-character-pilot-build-id> \
   --format markdown
 ```
 
-The summarizer independently validates route order, score ranges, anonymous labels, personal-data fields, duplicate session IDs, and produces completion, duration, score, confusion, continuation, evidence-status, and revision-signal summaries.
+The verifier independently validates route order, score ranges, anonymous labels, personal-data fields, duplicate session IDs, mixed-build rejection, and exact agreement with the expected launcher build. It then produces completion, duration, score, confusion, continuation, evidence-status, and revision-signal summaries.
+
+`evaluation/summarize.py` remains the lower-level uniform-cohort summarizer. It does not compare a cohort with an independently recorded launcher ID and is not the supported final verification command.
 
 ## Decision rule
 
-Do not add a second route merely because the interface runs without errors or because the five-session minimum is reached. Review the evidence first.
+Do not add a second route merely because the interface runs without errors, because the smoke gate passes, or because the five-session minimum is reached. Review the evidence first.
 
 Prioritize revision when:
 
