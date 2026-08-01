@@ -59,30 +59,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--input",
-        type=Path,
-        required=True,
-        help="combined JSONL pilot session file",
-    )
-    parser.add_argument(
-        "--expect-build-id",
-        required=True,
-        help="full 64-character Pilot build ID printed by run_pilot.py",
-    )
-    parser.add_argument(
-        "--format",
-        choices=("markdown", "json"),
-        default="markdown",
-        help="output format",
-    )
-    args = parser.parse_args(argv)
-
+    args = parse_args(argv)
     try:
         summary = verify_cohort(args.input, args.expect_build_id)
     except (OSError, ValueError) as exc:
-        parser.error(str(exc))
+        raise SystemExit(f"cohort verification failed: {exc}") from exc
 
     if args.format == "json":
         print(json.dumps(summary, indent=2, sort_keys=True))
