@@ -32,7 +32,12 @@ SCORE_KEYS = (
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
 
 
-def session(index: int, build_id: str = BUILD_ID, note: str = "private note") -> dict:
+def session(
+    index: int,
+    build_id: str = BUILD_ID,
+    note: str = "private note",
+    confusion_tags: list[str] | None = None,
+) -> dict:
     return {
         "pilot_build_id": build_id,
         "session_id": f"anonymous-{index:03d}",
@@ -41,20 +46,26 @@ def session(index: int, build_id: str = BUILD_ID, note: str = "private note") ->
         "completed_steps": list(STEPS),
         "duration_minutes": 25 + index,
         "scores": {key: 2 for key in SCORE_KEYS},
-        "confusion_tags": [],
+        "confusion_tags": list(confusion_tags or []),
         "voluntary_continue": True,
         "facilitator_notes": note,
     }
 
 
-def write_sessions(path: Path, count: int = 5, build_id: str = BUILD_ID) -> bytes:
+def write_records(path: Path, records: list[dict]) -> bytes:
     raw = "".join(
-        json.dumps(session(index, build_id), sort_keys=True, separators=(",", ":"))
-        + "\n"
-        for index in range(1, count + 1)
+        json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
+        for record in records
     ).encode("utf-8")
     path.write_bytes(raw)
     return raw
+
+
+def write_sessions(path: Path, count: int = 5, build_id: str = BUILD_ID) -> bytes:
+    return write_records(
+        path,
+        [session(index, build_id) for index in range(1, count + 1)],
+    )
 
 
 class ProductAlphaReviewPacketTests(unittest.TestCase):
@@ -62,6 +73,7 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             input_path = Path(directory) / "sessions.jsonl"
             raw = write_sessions(input_path)
+            verified = review_packet.verify_cohort.verify_cohort(input_path, BUILD_ID)
             first = review_packet.build_review_packet(input_path, BUILD_ID)
             second = review_packet.build_review_packet(input_path, BUILD_ID)
 
@@ -74,11 +86,19 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             first["evidence_binding"]["input_sha256"],
             hashlib.sha256(raw).hexdigest(),
         )
-        expected_summary_hash = hashlib.sha256(
+        expected_verified_hash = hashlib.sha256(
+            review_packet.canonical_json(verified)
+        ).hexdigest()
+        expected_packet_hash = hashlib.sha256(
             review_packet.canonical_json(first["aggregate_summary"])
         ).hexdigest()
         self.assertEqual(
-            first["evidence_binding"]["summary_sha256"], expected_summary_hash
+            first["evidence_binding"]["verified_summary_sha256"],
+            expected_verified_hash,
+        )
+        self.assertEqual(
+            first["evidence_binding"]["packet_summary_sha256"],
+            expected_packet_hash,
         )
         self.assertTrue(first["review"]["planning_review_eligible"])
         self.assertEqual(first["review"]["status"], "human-review-required")
@@ -87,6 +107,38 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertNotIn("facilitator_notes", serialized)
         self.assertFalse(first["boundaries"]["second_route_authorized"])
         self.assertFalse(first["boundaries"]["learning_effectiveness_claimed"])
+
+    def test_custom_confusion_tag_text_is_redacted_and_signals_are_rebuilt(self) -> None:
+        custom_text = "learner-jane-doe"
+        with tempfile.TemporaryDirectory() as directory:
+            input_path = Path(directory) / "sessions.jsonl"
+            records = [session(index) for index in range(1, 6)]
+            records[0]["confusion_tags"] = ["navigation", custom_text]
+            records[1]["confusion_tags"] = ["navigation", custom_text]
+            write_records(input_path, records)
+            packet = review_packet.build_review_packet(input_path, BUILD_ID)
+            markdown = review_packet.render_markdown(packet)
+
+        serialized = json.dumps(packet, sort_keys=True)
+        self.assertNotIn(custom_text, serialized)
+        self.assertNotIn(custom_text, markdown)
+        self.assertEqual(
+            packet["aggregate_summary"]["confusion_counts"],
+            {"navigation": 2, "other-custom-tag": 2},
+        )
+        codes = {
+            signal["code"]
+            for signal in packet["aggregate_summary"]["revision_signals"]
+        }
+        self.assertIn("recurring-confusion:navigation", codes)
+        self.assertIn("recurring-confusion:other-custom-tag", codes)
+        self.assertEqual(
+            packet["boundaries"]["custom_confusion_tag_occurrences_redacted"],
+            2,
+        )
+        self.assertFalse(
+            packet["boundaries"]["custom_confusion_tag_text_included"]
+        )
 
     def test_incomplete_cohort_stays_pending_and_not_planning_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -177,11 +229,12 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             json_path = prefix.with_suffix(".json")
             markdown_path = prefix.with_suffix(".md")
             packet = json.loads(json_path.read_text(encoding="utf-8"))
+            markdown_exists = markdown_path.is_file()
 
         self.assertIn("Product Alpha human-review packet created.", result.stdout)
         self.assertIn("Decision: human-review-required", result.stdout)
         self.assertEqual(packet["pilot_build_id"], BUILD_ID)
-        self.assertTrue(markdown_path.name.endswith(".md"))
+        self.assertTrue(markdown_exists)
 
 
 if __name__ == "__main__":
