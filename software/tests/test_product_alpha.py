@@ -121,9 +121,9 @@ class ProductAlphaTests(unittest.TestCase):
         )
 
     def test_duplicate_counter_guard_rejects_ambiguous_assets(self) -> None:
-        with self.assertRaisesRegex(ValueError, "exactly one canonical increment"):
+        with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
             build_module.prepare_static_asset("pilot-lab.html", b"no counter")
-        with self.assertRaisesRegex(ValueError, "exactly one canonical increment"):
+        with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
             build_module.prepare_static_asset(
                 "pilot-lab.html",
                 build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG * 2,
