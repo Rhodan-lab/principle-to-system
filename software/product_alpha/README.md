@@ -22,7 +22,7 @@ From the repository root, use the loopback-only launcher:
 python3 software/product_alpha/run_pilot.py --open
 ```
 
-The launcher builds Product Alpha, binds only to `127.0.0.1`, prints the learner, recorder, and Pilot Lab URLs, and stores no session data. Use `Ctrl+C` to stop it.
+The launcher builds Product Alpha, binds only to `127.0.0.1`, derives and prints the exact 64-character Pilot build ID, and opens build-bound learner, recorder, and Pilot Lab URLs. Every recorder export carries that ID. The Pilot Lab rejects records from another build. The launcher stores no session data. Use `Ctrl+C` to stop it.
 
 Useful options:
 
@@ -30,22 +30,13 @@ Useful options:
 # Select any available local port
 python3 software/product_alpha/run_pilot.py --port 0 --open
 
-# Verify the deterministic build without starting a server
+# Verify the deterministic build and print its build ID without starting a server
 python3 software/product_alpha/run_pilot.py check
 ```
 
-### Manual build
+### Static inspection only
 
-```bash
-python3 software/product_alpha/build.py build
-python3 -m http.server 8000 --bind 127.0.0.1 --directory software/product_alpha/dist
-```
-
-Open:
-
-- learner route: `http://127.0.0.1:8000/`
-- facilitator recorder: `http://127.0.0.1:8000/facilitator.html`
-- Pilot Lab: `http://127.0.0.1:8000/pilot-lab.html`
+A bare `python3 -m http.server` launch does not create the supported build-bound recorder and Pilot Lab URLs. It may be used to inspect static output, but it must not be used to collect pilot evidence. Use `run_pilot.py` for every real learner session.
 
 ## Pilot Lab
 
@@ -53,27 +44,34 @@ Open:
 
 - read one or many local JSONL files;
 - validate every record against the Product Alpha session contract;
-- reject malformed records, personal-data fields, and duplicate session labels;
+- require a valid `pilot_build_id` on every session;
+- reject records that do not match the launcher build;
+- reject mixed-build cohorts, malformed records, personal-data fields, and duplicate session labels;
 - show accepted and rejected records without uploading them;
 - calculate completion, duration, rubric averages, confusion counts, and voluntary continuation;
 - mark cohorts below five valid sessions as incomplete;
 - surface the documented revision triggers;
-- export aggregate Markdown and JSON;
+- export build-bound aggregate Markdown and JSON;
 - export a combined validated JSONL file for private local use.
 
 Refreshing the tab clears the Pilot Lab workspace. Aggregate exports omit facilitator notes. The validated JSONL export still contains raw anonymous records and must remain private.
 
-## Command-line summary
+## Verified command-line summary
 
-The deterministic command-line summarizer remains the independent validation path:
+Use the full Pilot build ID printed by `run_pilot.py` to independently verify the combined cohort before producing a command-line report:
 
 ```bash
-python3 software/product_alpha/evaluation/summarize.py \
+python3 software/product_alpha/evaluation/verify_cohort.py \
   --input path/to/anonymous-sessions.jsonl \
+  --expect-build-id <64-character-pilot-build-id> \
   --format markdown
 ```
 
-The summary now reports an explicit evidence status, the minimum cohort requirement, duplicate-session rejection, and machine-readable revision signals. A tool-generated status never authorizes a second route, public release, SaaS expansion, or a learning-effectiveness claim.
+The command rejects malformed expected IDs, mixed-build records, and a uniform cohort whose embedded ID does not match the recorded launcher build. On success it emits the existing deterministic `principia-product-alpha-pilot-summary/0.3` report.
+
+`evaluation/summarize.py` remains the lower-level uniform-cohort summarizer. It validates embedded session IDs and rejects mixed builds, but it does not compare them with an independently recorded launcher ID. Use `verify_cohort.py` for the supported pilot verification path.
+
+A tool-generated status never authorizes a second route, public release, SaaS expansion, or a learning-effectiveness claim.
 
 ## Validation
 
@@ -83,7 +81,7 @@ python3 software/product_alpha/run_pilot.py check
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, evidence-status logic, revision signals, Pilot Lab packaging, and loopback-only serving.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, Pilot Lab packaging, and loopback-only serving.
 
 ## Learner pilot
 
