@@ -14,7 +14,7 @@ SCRIPT_PATTERN = re.compile(r"<script>(.*?)</script>", re.DOTALL)
 
 
 class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
-    def test_packaged_model_step_renders_finite_prediction(self) -> None:
+    def test_packaged_model_requires_prediction_and_invalidates_old_result(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "dist"
             subprocess.run(
@@ -40,10 +40,12 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
                 (output / "data" / "refrigerator.json").read_text(encoding="utf-8")
             )
 
-        self.assertNotIn("points.at(-1).temperature", learner_script)
-        self.assertNotIn("points[0].temperature", learner_script)
+        self.assertIn('name="model-prediction"', html)
+        self.assertIn('id="runModel"', html)
+        self.assertIn('id="modelOutput" hidden', html)
         self.assertIn("points.at(-1).t", learner_script)
         self.assertIn("points[0].t", learner_script)
+        self.assertNotIn("function update()", learner_script)
 
         harness = f"""
 const assert = require("node:assert/strict");
@@ -56,16 +58,18 @@ function element(selector) {{
       textContent: "",
       innerHTML: "",
       checked: false,
+      hidden: false,
       min: "",
       max: "",
       type: "",
       dataset: {{}},
       onclick: null,
+      listeners: {{}},
       classList: {{ toggle() {{}} }},
       content: {{ cloneNode() {{ return {{}}; }} }},
-      replaceChildren() {{}},
+      replaceChildren() {{ this.innerHTML = ""; }},
       append() {{}},
-      addEventListener() {{}},
+      addEventListener(type, handler) {{ this.listeners[type] = handler; }},
       showModal() {{}},
     }});
   }}
@@ -93,10 +97,23 @@ const inputs = [
     type: "checkbox",
   }}),
 ];
+const predictions = ["falls", "rises", "stays nearly level"].map((value, index) =>
+  Object.assign(element(`prediction-${{index}}`), {{
+    type: "radio",
+    value,
+    checked: false,
+  }})
+);
 global.document = {{
-  querySelector(selector) {{ return element(selector); }},
+  querySelector(selector) {{
+    if (selector === 'input[name="model-prediction"]:checked') {{
+      return predictions.find(item => item.checked) || null;
+    }}
+    return element(selector);
+  }},
   querySelectorAll(selector) {{
     if (selector === "[data-model]") return inputs;
+    if (selector === '[name="model-prediction"]') return predictions;
     if (selector === "[data-step]") return [];
     return [];
   }},
@@ -110,13 +127,36 @@ global.fetch = async () => ({{
 }});
 {learner_script}
 setTimeout(() => {{
-  const result = element("#result").textContent;
+  const output = element("#modelOutput");
+  const run = element("#runModel");
+  assert.equal(output.hidden, true);
+  assert.equal(element("#result").textContent, "");
+  assert.match(element("#modelFeedback").textContent, /Choose a direction/);
+
+  run.onclick();
+  assert.equal(output.hidden, true);
+  assert.match(element("#modelFeedback").textContent, /before running the model/);
+
+  predictions[0].checked = true;
+  run.onclick();
+  const rendered = element("#result").textContent;
   assert.match(
-    result,
-    /^Prediction: cabinet temperature (falls|rises|stays nearly level) to -?\\d+\\.\\d °C after 180 minutes\\.$/
+    rendered,
+    /^Model result: cabinet temperature (falls|rises|stays nearly level) to -?\\d+\\.\\d °C after 180 minutes\\.$/
   );
+  assert.equal(output.hidden, false);
+  assert.match(
+    element("#modelFeedback").textContent,
+    /prediction (matched|differed)/i
+  );
+
+  inputs[0].value = String(Number(inputs[0].value) + 1);
+  inputs[0].listeners.input();
+  assert.equal(output.hidden, true);
+  assert.equal(element("#result").textContent, "");
+  assert.equal(predictions.some(item => item.checked), false);
   assert.notEqual(element("#title").textContent, "Product Alpha could not load");
-  process.stdout.write(result);
+  process.stdout.write(rendered);
 }}, 0);
 """
         completed = subprocess.run(
@@ -126,7 +166,7 @@ setTimeout(() => {{
             capture_output=True,
             text=True,
         )
-        self.assertIn("Prediction: cabinet temperature", completed.stdout)
+        self.assertIn("Model result: cabinet temperature", completed.stdout)
 
 
 if __name__ == "__main__":
