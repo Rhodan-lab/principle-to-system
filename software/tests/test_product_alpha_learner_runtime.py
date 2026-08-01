@@ -43,6 +43,8 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
         self.assertIn('name="model-prediction"', html)
         self.assertIn('id="runModel"', html)
         self.assertIn('id="modelOutput" hidden', html)
+        self.assertIn("function hideModelResult", learner_script)
+        self.assertIn('addEventListener("change"', learner_script)
         self.assertIn("function displayedTrend", learner_script)
         self.assertIn("points.at(-1).t", learner_script)
         self.assertIn("points[0].t", learner_script)
@@ -113,6 +115,11 @@ const predictions = ["falls", "rises", "stays nearly level"].map((value, index) 
 function choosePrediction(value) {{
   predictions.forEach(item => {{ item.checked = item.value === value; }});
 }}
+function changePrediction(value) {{
+  choosePrediction(value);
+  const selected = predictions.find(item => item.checked);
+  selected.listeners.change();
+}}
 function invalidateFrom(input) {{
   input.listeners.input();
   assert.equal(element("#modelOutput").hidden, true);
@@ -157,6 +164,16 @@ setTimeout(() => {{
   assert.match(element("#result").textContent, /^Model result: cabinet temperature falls to -?\d+\.\d °C after 180 minutes\.$/);
   assert.equal(output.hidden, false);
   assert.match(element("#modelFeedback").textContent, /prediction matched/i);
+
+  changePrediction("rises");
+  assert.equal(output.hidden, true);
+  assert.equal(element("#result").textContent, "");
+  assert.equal(predictions.find(item => item.checked).value, "rises");
+  assert.match(element("#modelFeedback").textContent, /Run the model/);
+  run.onclick();
+  assert.equal(output.hidden, false);
+  assert.match(element("#result").textContent, /^Model result: cabinet temperature falls to -?\d+\.\d °C after 180 minutes\.$/);
+  assert.match(element("#modelFeedback").textContent, /prediction differed/i);
 
   inputs[4].checked = false;
   invalidateFrom(inputs[4]);
