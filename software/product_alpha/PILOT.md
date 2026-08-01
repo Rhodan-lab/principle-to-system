@@ -4,7 +4,7 @@ slug: product-alpha-0-1-learner-pilot
 domain: experience
 experience_type: pilot-protocol
 status: draft
-artifact_revision: 5
+artifact_revision: 6
 release_status: draft
 prerequisites: [system-dossier-refrigerator]
 connections: [investigation-room-cooling, design-challenge-passive-cooler]
@@ -179,9 +179,31 @@ The verifier independently validates route order, score ranges, anonymous labels
 
 `evaluation/summarize.py` remains the lower-level uniform-cohort summarizer. It does not compare a cohort with an independently recorded launcher ID and is not the supported final verification command.
 
+## Review packet and human decision
+
+After verification succeeds, create the review packet in the private facilitator-controlled cohort folder:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_review.py \
+  --input path/to/anonymous-sessions.jsonl \
+  --expect-build-id <64-character-pilot-build-id> \
+  --output-prefix /private/cohort-folder/refrigerator-review
+```
+
+The command writes a deterministic JSON packet and Markdown decision worksheet. It binds the packet to the exact private input bytes and de-identified canonical summary with SHA-256 hashes. It excludes raw session records and facilitator notes, refuses to write inside the repository, and refuses to overwrite existing outputs.
+
+Review the generated aggregate together with the private facilitator notes. Complete exactly one primary action in the Markdown worksheet:
+
+- `revise-current-route`;
+- `repeat-current-route-pilot`;
+- `hold-current-route`;
+- `advance-to-next-product-planning-review`.
+
+The fourth action starts a separate planning review only. It does not authorize a second route. Keep the completed worksheet and packet in the private cohort folder until a separate repository change is intentionally prepared and reviewed.
+
 ## Decision rule
 
-Do not add a second route merely because the interface runs without errors, because the smoke gate passes, or because the five-session minimum is reached. Review the evidence first.
+Do not add a second route merely because the interface runs without errors, because the smoke gate passes, or because the five-session minimum is reached. Review the evidence first and record one primary action.
 
 Prioritize revision when:
 
@@ -192,4 +214,4 @@ Prioritize revision when:
 - learners repeatedly treat Atlas status as proof that a physical conclusion is true;
 - learners finish but do not voluntarily continue.
 
-A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab surfaces these triggers; a human reviewer still chooses the product action.
+A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab surfaces these triggers; a human reviewer still chooses the product action. Neither the generated packet nor the completed worksheet automatically modifies the repository, authorizes public release, establishes product-market fit, or permits a learning-effectiveness claim.
