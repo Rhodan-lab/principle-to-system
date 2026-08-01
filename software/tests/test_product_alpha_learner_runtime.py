@@ -14,7 +14,7 @@ SCRIPT_PATTERN = re.compile(r"<script>(.*?)</script>", re.DOTALL)
 
 
 class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
-    def test_packaged_model_requires_prediction_and_invalidates_old_result(self) -> None:
+    def test_packaged_model_requires_prediction_and_uses_visible_precision(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "dist"
             subprocess.run(
@@ -43,9 +43,10 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
         self.assertIn('name="model-prediction"', html)
         self.assertIn('id="runModel"', html)
         self.assertIn('id="modelOutput" hidden', html)
+        self.assertIn("function displayedTrend", learner_script)
         self.assertIn("points.at(-1).t", learner_script)
         self.assertIn("points[0].t", learner_script)
-        self.assertNotIn("function update()", learner_script)
+        self.assertNotIn('trend=end<start?"falls"', learner_script)
 
         harness = f"""
 const assert = require("node:assert/strict");
@@ -104,6 +105,15 @@ const predictions = ["falls", "rises", "stays nearly level"].map((value, index) 
     checked: false,
   }})
 );
+function choosePrediction(value) {{
+  predictions.forEach(item => {{ item.checked = item.value === value; }});
+}}
+function invalidateFrom(input) {{
+  input.listeners.input();
+  assert.equal(element("#modelOutput").hidden, true);
+  assert.equal(element("#result").textContent, "");
+  assert.equal(predictions.some(item => item.checked), false);
+}}
 global.document = {{
   querySelector(selector) {{
     if (selector === 'input[name="model-prediction"]:checked') {{
@@ -137,26 +147,35 @@ setTimeout(() => {{
   assert.equal(output.hidden, true);
   assert.match(element("#modelFeedback").textContent, /before running the model/);
 
-  predictions[0].checked = true;
+  choosePrediction("falls");
   run.onclick();
-  const rendered = element("#result").textContent;
-  assert.match(
-    rendered,
-    /^Model result: cabinet temperature (falls|rises|stays nearly level) to -?\\d+\\.\\d °C after 180 minutes\\.$/
-  );
+  assert.match(element("#result").textContent, /^Model result: cabinet temperature falls to -?\d+\.\d °C after 180 minutes\.$/);
   assert.equal(output.hidden, false);
-  assert.match(
-    element("#modelFeedback").textContent,
-    /prediction (matched|differed)/i
-  );
+  assert.match(element("#modelFeedback").textContent, /prediction matched/i);
 
-  inputs[0].value = String(Number(inputs[0].value) + 1);
-  inputs[0].listeners.input();
-  assert.equal(output.hidden, true);
-  assert.equal(element("#result").textContent, "");
-  assert.equal(predictions.some(item => item.checked), false);
+  inputs[4].checked = false;
+  invalidateFrom(inputs[4]);
+  choosePrediction("rises");
+  run.onclick();
+  assert.match(element("#result").textContent, /^Model result: cabinet temperature rises to -?\d+\.\d °C after 180 minutes\.$/);
+  assert.match(element("#modelFeedback").textContent, /prediction matched/i);
+
+  inputs[0].value = "18";
+  inputs[1].value = "6.3";
+  inputs[2].value = "0";
+  inputs[3].value = "62";
+  inputs[4].checked = true;
+  invalidateFrom(inputs[0]);
+  choosePrediction("stays nearly level");
+  run.onclick();
+  const levelResult = element("#result").textContent;
+  assert.equal(levelResult, "Model result: cabinet temperature stays nearly level to 8.0 °C after 180 minutes.");
+  assert.match(element("#modelFeedback").textContent, /prediction matched/i);
+  assert.equal(displayedTrend(8, 8.049985), "stays nearly level");
+  assert.equal(displayedTrend(8, 8.050001), "rises");
+  assert.equal(displayedTrend(8, 7.949999), "falls");
   assert.notEqual(element("#title").textContent, "Product Alpha could not load");
-  process.stdout.write(rendered);
+  process.stdout.write(levelResult);
 }}, 0);
 """
         completed = subprocess.run(
@@ -166,7 +185,7 @@ setTimeout(() => {{
             capture_output=True,
             text=True,
         )
-        self.assertIn("Model result: cabinet temperature", completed.stdout)
+        self.assertIn("stays nearly level to 8.0 °C", completed.stdout)
 
 
 if __name__ == "__main__":
