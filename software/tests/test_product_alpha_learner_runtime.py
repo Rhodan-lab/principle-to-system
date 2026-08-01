@@ -60,18 +60,23 @@ function element(selector) {{
       innerHTML: "",
       checked: false,
       hidden: false,
+      disabled: false,
       min: "",
       max: "",
       type: "",
       dataset: {{}},
       onclick: null,
       listeners: {{}},
+      attributes: new Map(),
       classList: {{ toggle() {{}} }},
       content: {{ cloneNode() {{ return {{}}; }} }},
       replaceChildren() {{ this.innerHTML = ""; }},
       append() {{}},
       addEventListener(type, handler) {{ this.listeners[type] = handler; }},
       showModal() {{}},
+      setAttribute(name, value) {{ this.attributes.set(name, String(value)); }},
+      removeAttribute(name) {{ this.attributes.delete(name); }},
+      getAttribute(name) {{ return this.attributes.get(name) ?? null; }},
     }});
   }}
   return elements.get(selector);
