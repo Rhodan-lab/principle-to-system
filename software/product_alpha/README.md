@@ -82,7 +82,27 @@ The command rejects malformed expected IDs, mixed-build records, and a uniform c
 
 `evaluation/summarize.py` remains the lower-level uniform-cohort summarizer. It validates embedded session IDs and rejects mixed builds, but it does not compare them with an independently recorded launcher ID. Use `verify_cohort.py` for the supported pilot verification path.
 
-A tool-generated status never authorizes a second route, public release, SaaS expansion, or a learning-effectiveness claim.
+## Human-review packet
+
+After command-line verification, create the de-identified decision packet in the private facilitator-controlled cohort folder:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_review.py \
+  --input path/to/anonymous-sessions.jsonl \
+  --expect-build-id <64-character-pilot-build-id> \
+  --output-prefix /private/cohort-folder/refrigerator-review
+```
+
+The command writes matching `.json` and `.md` files. The packet embeds the verified aggregate summary, hashes the exact private JSONL input and canonical summary, excludes raw session records and facilitator notes, and leaves the product decision pending for a human reviewer. It refuses output paths inside the repository and refuses to overwrite an existing packet.
+
+The Markdown worksheet permits one bounded primary action:
+
+- revise the current route;
+- repeat the current-route pilot;
+- hold the current route;
+- advance to a separate next-product planning review.
+
+Advancing to planning review does not itself authorize a second route. A tool-generated status or completed worksheet never authorizes public release, SaaS expansion, a learning-effectiveness claim, or product-market-fit claim.
 
 ## Validation
 
@@ -93,23 +113,24 @@ python3 software/product_alpha/run_pilot.py smoke
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, review-packet hashing and de-identification, repository-output refusal, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
 
 ## Learner pilot
 
-Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review the route. The protocol defines the session procedure, 0–2 rubric, anonymous records, recommended confusion tags, and evidence-based revision thresholds.
+Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review the route. The protocol defines the session procedure, 0–2 rubric, anonymous records, recommended confusion tags, evidence-based revision thresholds, and the final human-review step.
 
 ## Boundaries
 
 - no account or cloud dependency;
 - no analytics;
 - no external network request;
-- no repository mutation;
+- no automatic repository mutation;
 - no live Atlas call;
 - no inherited Atlas or Principia status;
 - learner notes remain only in the current browser tab;
 - recorder and Pilot Lab state remain only in the current browser tab;
 - raw pilot records remain local, anonymous, private, and facilitator-controlled;
+- review packets must remain outside the repository until a separate human-reviewed product change is prepared;
 - the launcher and smoke gate bind only to `127.0.0.1` and store no session data;
 - the thermal model supports reasoning and is not repair or safety guidance;
 - aggregate evidence remains descriptive and requires human review.
