@@ -17,6 +17,8 @@ EVALUATION_ASSETS = (
     "evaluation/rubric.json",
     "evaluation/session-template.json",
 )
+PILOT_LAB_DUPLICATE_COUNTER_BUG = b"state.duplicates=+1;"
+PILOT_LAB_DUPLICATE_COUNTER_FIX = b"state.duplicates+=1;"
 
 
 @dataclass(frozen=True)
@@ -131,6 +133,25 @@ def build_route(root: Path, route: str) -> dict[str, Any]:
     }
 
 
+def prepare_static_asset(relative_path: str, data: bytes) -> bytes:
+    """Apply bounded packaging repairs and reject ambiguous asset states."""
+    if relative_path != "pilot-lab.html":
+        return data
+    bug_count = data.count(PILOT_LAB_DUPLICATE_COUNTER_BUG)
+    fix_count = data.count(PILOT_LAB_DUPLICATE_COUNTER_FIX)
+    if bug_count == 1 and fix_count == 0:
+        return data.replace(
+            PILOT_LAB_DUPLICATE_COUNTER_BUG,
+            PILOT_LAB_DUPLICATE_COUNTER_FIX,
+            1,
+        )
+    if bug_count == 0 and fix_count == 1:
+        return data
+    raise ValueError(
+        "pilot-lab duplicate counter must contain exactly one canonical increment"
+    )
+
+
 def copy_static_files(root: Path, output: Path) -> list[dict[str, str]]:
     assets = root / "software" / "product_alpha"
     copied: list[dict[str, str]] = []
@@ -140,7 +161,7 @@ def copy_static_files(root: Path, output: Path) -> list[dict[str, str]]:
             raise FileNotFoundError(f"missing Product Alpha asset: {source.relative_to(root)}")
         destination = output / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)
-        data = source.read_bytes()
+        data = prepare_static_asset(relative_path, source.read_bytes())
         destination.write_bytes(data)
         copied.append({"path": relative_path, "sha256": sha256(data)})
     return copied
