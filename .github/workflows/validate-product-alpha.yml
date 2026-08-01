@@ -41,21 +41,49 @@ jobs:
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
-      - name: Verify Pilot Lab JavaScript syntax
+      - name: Verify source JavaScript syntax
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
 
-          html = Path("software/product_alpha/pilot-lab.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
-          if len(scripts) != 1:
-              raise SystemExit("pilot-lab.html must contain exactly one inline script")
-          Path("/tmp/principia-pilot-lab.js").write_text(scripts[0], encoding="utf-8")
+          for name in ("facilitator.html", "pilot-lab.html"):
+              html = Path("software/product_alpha", name).read_text(encoding="utf-8")
+              scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+              if len(scripts) != 1:
+                  raise SystemExit(f"{name} must contain exactly one inline script")
+              Path(f"/tmp/source-{name}.js").write_text(scripts[0], encoding="utf-8")
           PY
-          node --check /tmp/principia-pilot-lab.js
+          node --check /tmp/source-facilitator.html.js
+          node --check /tmp/source-pilot-lab.html.js
       - name: Verify deterministic build
         run: python3 software/product_alpha/build.py check
+      - name: Build packaged pilot assets
+        run: |
+          python3 software/product_alpha/build.py build \
+            --output /tmp/principia-product-alpha
+      - name: Verify packaged JavaScript syntax and cohort binding
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path("/tmp/principia-product-alpha")
+          for name in ("facilitator.html", "pilot-lab.html"):
+              html = (root / name).read_text(encoding="utf-8")
+              scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+              if len(scripts) != 1:
+                  raise SystemExit(f"packaged {name} must contain exactly one inline script")
+              Path(f"/tmp/packaged-{name}.js").write_text(scripts[0], encoding="utf-8")
+          facilitator = (root / "facilitator.html").read_text(encoding="utf-8")
+          pilot_lab = (root / "pilot-lab.html").read_text(encoding="utf-8")
+          assert "pilot_build_id:pilotBuildId" in facilitator
+          assert "pilot_build_id does not match the cohort build" in pilot_lab
+          assert ",q=s=>document.querySelector(s);" in pilot_lab
+          assert ",c=s=>document.querySelector(s);" not in pilot_lab
+          PY
+          node --check /tmp/packaged-facilitator.html.js
+          node --check /tmp/packaged-pilot-lab.html.js
       - name: Run Product Alpha tests
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
