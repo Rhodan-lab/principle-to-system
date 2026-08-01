@@ -101,6 +101,38 @@ class ProductAlphaTests(unittest.TestCase):
         for relative in expected:
             self.assertTrue((output / relative).is_file(), relative)
 
+    def test_build_normalizes_duplicate_counter_to_additive_increment(self) -> None:
+        output = self.root / "dist"
+        source = self.root / "software" / "product_alpha" / "pilot-lab.html"
+        build_module.build(self.root, output)
+        source_bytes = source.read_bytes()
+        built_bytes = (output / "pilot-lab.html").read_bytes()
+        self.assertEqual(
+            source_bytes.count(build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG),
+            1,
+        )
+        self.assertNotIn(
+            build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG,
+            built_bytes,
+        )
+        self.assertEqual(
+            built_bytes.count(build_module.PILOT_LAB_DUPLICATE_COUNTER_FIX),
+            1,
+        )
+
+    def test_duplicate_counter_guard_rejects_ambiguous_assets(self) -> None:
+        with self.assertRaisesRegex(ValueError, "exactly one canonical increment"):
+            build_module.prepare_static_asset("pilot-lab.html", b"no counter")
+        with self.assertRaisesRegex(ValueError, "exactly one canonical increment"):
+            build_module.prepare_static_asset(
+                "pilot-lab.html",
+                build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG * 2,
+            )
+        self.assertEqual(
+            build_module.prepare_static_asset("index.html", b"unchanged"),
+            b"unchanged",
+        )
+
     def test_route_contract_and_boundaries(self) -> None:
         output = self.root / "dist"
         build_module.build(self.root, output)
