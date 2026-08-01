@@ -4,8 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import subprocess
 import sys
+import tempfile
 import webbrowser
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -17,12 +20,14 @@ DEFAULT_PORT = 8000
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = REPO_ROOT / "software" / "product_alpha" / "build.py"
 DEFAULT_OUTPUT = REPO_ROOT / "software" / "product_alpha" / "dist"
+BUILD_MANIFEST = "build-manifest.json"
 REQUIRED_OUTPUTS = (
     "index.html",
     "facilitator.html",
     "pilot-lab.html",
     "evaluation/rubric.json",
     "evaluation/session-template.json",
+    BUILD_MANIFEST,
 )
 
 
@@ -72,6 +77,30 @@ def verify_output(output: Path) -> None:
         raise FileNotFoundError("Product Alpha build is missing required pilot assets: " + ", ".join(missing))
 
 
+def pilot_build_identity(output: Path) -> str:
+    """Return the SHA-256 identity of a valid deterministic build manifest."""
+    manifest_path = output / BUILD_MANIFEST
+    if not manifest_path.is_file():
+        raise FileNotFoundError(f"Product Alpha build is missing {BUILD_MANIFEST}")
+    raw = manifest_path.read_bytes()
+    try:
+        manifest = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("Product Alpha build manifest is not valid UTF-8 JSON") from exc
+    if not isinstance(manifest, dict):
+        raise ValueError("Product Alpha build manifest must be a JSON object")
+    if manifest.get("contract") != "principia-product-alpha-build/0.1":
+        raise ValueError("Product Alpha build manifest contract is invalid")
+    if manifest.get("deterministic") is not True:
+        raise ValueError("Product Alpha build manifest must declare deterministic=true")
+    files = manifest.get("files")
+    if not isinstance(files, list) or manifest.get("file_count") != len(files):
+        raise ValueError("Product Alpha build manifest file_count is inconsistent")
+    if not isinstance(manifest.get("route_id"), str) or not manifest["route_id"]:
+        raise ValueError("Product Alpha build manifest route_id is invalid")
+    return hashlib.sha256(raw).hexdigest()
+
+
 def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTPServer:
     validate_port(port)
 
@@ -84,6 +113,7 @@ def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTP
 def serve(output: Path, port: int, open_browser: bool, quiet: bool) -> None:
     run_builder("build", output)
     verify_output(output)
+    build_id = pilot_build_identity(output)
     try:
         server = create_server(output, port, quiet=quiet)
     except OSError as exc:
@@ -91,9 +121,11 @@ def serve(output: Path, port: int, open_browser: bool, quiet: bool) -> None:
     actual_port = int(server.server_address[1])
     urls = pilot_urls(actual_port)
     print("Principia Product Alpha pilot is ready.")
+    print(f"Pilot build ID:       {build_id}")
     print(f"Learner route:        {urls['learner']}")
     print(f"Facilitator recorder: {urls['facilitator']}")
     print(f"Pilot Lab:            {urls['pilot_lab']}")
+    print("Cohort rule: keep one pilot build ID for every session in the cohort.")
     print("Boundary: loopback-only server; no session data is stored by this process.")
     print("Press Ctrl+C to stop.")
     if open_browser:
@@ -110,7 +142,7 @@ def serve(output: Path, port: int, open_browser: bool, quiet: bool) -> None:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", nargs="?", choices=("serve", "check"), default="serve", help="serve the local pilot or verify its deterministic build")
+    parser.add_argument("command", nargs="?", choices=("serve", "check"), default="serve", help="serve the local pilot or verify its deterministic build and build identity")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="loopback port; use 0 to select an available local port")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="static build directory")
     parser.add_argument("--open", action="store_true", dest="open_browser", help="open the learner, recorder, and Pilot Lab in local browser tabs")
@@ -127,7 +159,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     output = args.output.resolve()
     if args.command == "check":
         run_builder("check", output)
-        print(f"Product Alpha pilot launcher check passed: host={LOOPBACK_HOST}, required_assets={len(REQUIRED_OUTPUTS)}")
+        with tempfile.TemporaryDirectory() as directory:
+            check_output = Path(directory)
+            run_builder("build", check_output)
+            verify_output(check_output)
+            build_id = pilot_build_identity(check_output)
+        print(
+            "Product Alpha pilot launcher check passed: "
+            f"host={LOOPBACK_HOST}, required_assets={len(REQUIRED_OUTPUTS)}, "
+            f"build_id={build_id}"
+        )
         return 0
     serve(output, args.port, args.open_browser, args.quiet)
     return 0

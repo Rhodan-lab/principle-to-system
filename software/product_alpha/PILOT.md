@@ -4,7 +4,7 @@ slug: product-alpha-0-1-learner-pilot
 domain: experience
 experience_type: pilot-protocol
 status: draft
-artifact_revision: 3
+artifact_revision: 4
 release_status: draft
 prerequisites: [system-dossier-refrigerator]
 connections: [investigation-room-cooling, design-challenge-passive-cooler]
@@ -30,13 +30,28 @@ The pilot is an evidence-gathering activity, not a release gate and not a test o
 ## Materials
 
 1. Start Product Alpha with `python3 software/product_alpha/run_pilot.py --open`.
-2. Keep the learner route, `facilitator.html`, and `pilot-lab.html` available in separate tabs.
-3. Keep this protocol visible separately from the product interfaces.
-4. Export one anonymous JSONL record from the recorder after each session.
-5. Store exported records in a private local folder controlled by the facilitator.
-6. Do not modify appliances or ask learners to perform physical repair work.
+2. Copy the printed 64-character Pilot build ID into the private cohort folder before the first session.
+3. Keep the learner route, `facilitator.html`, and `pilot-lab.html` available in separate tabs.
+4. Keep this protocol visible separately from the product interfaces.
+5. Export one anonymous JSONL record from the recorder after each session.
+6. Store exported records in a private local folder controlled by the facilitator.
+7. Do not modify appliances or ask learners to perform physical repair work.
 
 The recorder performs browser-side contract checks and downloads one compact JSON object. The Pilot Lab reads selected files locally, rejects malformed or duplicate records, and produces aggregate previews. Neither interface uploads records, uses browser storage, creates accounts, or calls Atlas.
+
+## Pilot build identity
+
+The launcher derives the Pilot build ID from the exact bytes of the deterministic `build-manifest.json`. The ID binds the packaged learner route, recorder, Pilot Lab, evaluation assets, route payload, and their hashes.
+
+Use one Pilot build ID for every session in a cohort. Before the first session, run:
+
+```bash
+python3 software/product_alpha/run_pilot.py check
+```
+
+Keep the printed full build ID with the private local cohort records. Confirm that the launcher prints the same ID before every session. If the ID changes, do not combine the new sessions with the earlier cohort; start a separate cohort or explicitly repeat the earlier sessions on the new build.
+
+The build ID contains no learner data. Matching IDs establish build consistency only; they do not establish learning effectiveness, publication readiness, or permission to add another route.
 
 ## Facilitator protocol
 
@@ -131,11 +146,12 @@ Add a new tag only when the existing set cannot describe the observation.
 1. Open `pilot-lab.html` from the loopback launcher.
 2. Select or drop the exported JSONL files.
 3. Review rejected records and duplicate session labels.
-4. Confirm that at least five valid unique sessions are present before treating the cohort as complete.
-5. Review the aggregate metrics and every revision signal.
-6. Export the aggregate Markdown or JSON for de-identified review.
-7. Keep the validated combined JSONL export private; it still contains raw anonymous session records and facilitator notes.
-8. Refresh the page after the review to clear the in-memory workspace.
+4. Confirm that every session belongs to the same recorded Pilot build ID.
+5. Confirm that at least five valid unique sessions are present before treating the cohort as complete.
+6. Review the aggregate metrics and every revision signal.
+7. Export the aggregate Markdown or JSON for de-identified review.
+8. Keep the validated combined JSONL export private; it still contains raw anonymous session records and facilitator notes.
+9. Refresh the page after the review to clear the in-memory workspace.
 
 The Pilot Lab aggregate intentionally omits facilitator notes. It does not edit the repository or update the official report automatically.
 
