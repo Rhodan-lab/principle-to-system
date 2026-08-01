@@ -12,10 +12,12 @@ SPEC = importlib.util.spec_from_file_location("product_alpha_evaluation", MODULE
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
+BUILD_ID = "a" * 64
 
 
 def session(session_id: str, steps: list[str], **overrides):
     value = {
+        "pilot_build_id": BUILD_ID,
         "session_id": session_id,
         "route_id": "refrigerator-v1",
         "started": True,
@@ -52,8 +54,11 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
         first = MODULE.render_markdown(summary)
         second = MODULE.render_markdown(MODULE.summarize(sessions))
         self.assertEqual(first, second)
+        self.assertEqual(summary["contract"], "principia-product-alpha-pilot-summary/0.3")
+        self.assertEqual(summary["pilot_build_id"], BUILD_ID)
         self.assertEqual(summary["evidence_status"], "incomplete")
         self.assertFalse(summary["cohort_complete"])
+        self.assertIn(f"Pilot build ID: `{BUILD_ID}`", first)
         self.assertIn("Completion rate: 50.0%", first)
         self.assertIn("`model-controls`: 2", first)
         self.assertIn("`cohort-incomplete`", first)
@@ -87,6 +92,25 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "duplicate session_id"):
                 MODULE.load_sessions(path)
+
+    def test_load_rejects_mixed_build_ids(self):
+        first = session("anonymous-001", MODULE.STEPS)
+        second = session("anonymous-002", MODULE.STEPS, pilot_build_id="b" * 64)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "sessions.jsonl"
+            path.write_text(
+                json.dumps(first) + "\n" + json.dumps(second) + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "does not match the cohort build"):
+                MODULE.load_sessions(path)
+        with self.assertRaisesRegex(ValueError, "does not match across the cohort"):
+            MODULE.summarize([first, second])
+
+    def test_pilot_build_id_must_be_exact_lowercase_sha256(self):
+        value = session("anonymous-001", MODULE.STEPS, pilot_build_id="not-a-build-id")
+        with self.assertRaisesRegex(ValueError, "64-character lowercase SHA-256"):
+            MODULE.validate_session(value, 1)
 
     def test_session_id_must_be_anonymous(self):
         value = session("learner-001", MODULE.STEPS)
