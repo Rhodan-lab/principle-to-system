@@ -37,7 +37,7 @@ def session(session_id: str, steps: list[str], **overrides):
 
 
 class ProductAlphaEvaluationTests(unittest.TestCase):
-    def test_summary_is_deterministic(self):
+    def test_summary_is_deterministic_and_marks_incomplete_cohort(self):
         sessions = [
             session("anonymous-001", MODULE.STEPS, confusion_tags=["model-controls"]),
             session(
@@ -48,11 +48,25 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
                 confusion_tags=["model-controls", "evidence-status"],
             ),
         ]
-        first = MODULE.render_markdown(MODULE.summarize(sessions))
+        summary = MODULE.summarize(sessions)
+        first = MODULE.render_markdown(summary)
         second = MODULE.render_markdown(MODULE.summarize(sessions))
         self.assertEqual(first, second)
+        self.assertEqual(summary["evidence_status"], "incomplete")
+        self.assertFalse(summary["cohort_complete"])
         self.assertIn("Completion rate: 50.0%", first)
         self.assertIn("`model-controls`: 2", first)
+        self.assertIn("`cohort-incomplete`", first)
+        self.assertIn("`recurring-confusion:model-controls`", first)
+
+    def test_complete_cohort_is_ready_for_human_review(self):
+        sessions = [session(f"anonymous-{index:03d}", MODULE.STEPS) for index in range(1, 6)]
+        summary = MODULE.summarize(sessions)
+        self.assertTrue(summary["cohort_complete"])
+        self.assertEqual(summary["evidence_status"], "ready-for-human-review")
+        self.assertFalse(
+            any(signal["code"] == "cohort-incomplete" for signal in summary["revision_signals"])
+        )
 
     def test_load_rejects_personal_data_fields(self):
         value = session("anonymous-001", MODULE.STEPS)
@@ -62,6 +76,22 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
             path.write_text(json.dumps(value) + "\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "personal-data fields"):
                 MODULE.load_sessions(path)
+
+    def test_load_rejects_duplicate_session_ids(self):
+        value = session("anonymous-001", MODULE.STEPS)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "sessions.jsonl"
+            path.write_text(
+                json.dumps(value) + "\n" + json.dumps(value) + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "duplicate session_id"):
+                MODULE.load_sessions(path)
+
+    def test_session_id_must_be_anonymous(self):
+        value = session("learner-001", MODULE.STEPS)
+        with self.assertRaisesRegex(ValueError, "must begin with 'anonymous-'"):
+            MODULE.validate_session(value, 1)
 
     def test_completed_steps_must_be_ordered_prefix(self):
         value = session("anonymous-001", ["observe", "model"])

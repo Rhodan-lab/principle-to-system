@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Summarize anonymous Principia Product Alpha pilot sessions."""
+"""Validate and summarize anonymous Principia Product Alpha pilot sessions."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 ROUTE_ID = "refrigerator-v1"
+MIN_COHORT_SIZE = 5
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
 SCORE_KEYS = [
     "mechanism_explanation",
@@ -18,6 +19,11 @@ SCORE_KEYS = [
     "evidence_boundary",
     "redesign_tradeoff",
 ]
+REVISION_SCORE_KEYS = (
+    "mechanism_explanation",
+    "failure_diagnosis",
+    "evidence_boundary",
+)
 PII_KEYS = {
     "name",
     "full_name",
@@ -52,8 +58,10 @@ def validate_session(session: dict[str, Any], line_number: int) -> dict[str, Any
         raise ValueError(f"line {line_number}: route_id must be {ROUTE_ID!r}")
 
     session_id = session.get("session_id")
-    if not isinstance(session_id, str) or not session_id.strip():
-        raise ValueError(f"line {line_number}: session_id must be a non-empty anonymous label")
+    if not isinstance(session_id, str) or not session_id.startswith("anonymous-"):
+        raise ValueError(
+            f"line {line_number}: session_id must begin with 'anonymous-'"
+        )
 
     started = session.get("started")
     if not isinstance(started, bool):
@@ -106,6 +114,7 @@ def validate_session(session: dict[str, Any], line_number: int) -> dict[str, Any
 
 def load_sessions(path: Path) -> list[dict[str, Any]]:
     sessions: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
     for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not raw_line.strip():
             continue
@@ -115,19 +124,69 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
             raise ValueError(f"line {line_number}: invalid JSON: {exc.msg}") from exc
         if not isinstance(value, dict):
             raise ValueError(f"line {line_number}: each session must be a JSON object")
-        sessions.append(validate_session(value, line_number))
+        session = validate_session(value, line_number)
+        session_id = session["session_id"]
+        if session_id in seen_ids:
+            raise ValueError(f"line {line_number}: duplicate session_id {session_id!r}")
+        seen_ids.add(session_id)
+        sessions.append(session)
     if not sessions:
         raise ValueError("input contains no pilot sessions")
     return sessions
+
+
+def revision_signals(summary: dict[str, Any]) -> list[dict[str, str]]:
+    signals: list[dict[str, str]] = []
+    if summary["sessions"] < MIN_COHORT_SIZE:
+        signals.append(
+            {
+                "code": "cohort-incomplete",
+                "message": (
+                    f"Only {summary['sessions']} valid sessions are present; "
+                    f"the documented minimum is {MIN_COHORT_SIZE}."
+                ),
+            }
+        )
+    if summary["started"] and summary["completion_rate"] < 0.5:
+        signals.append(
+            {
+                "code": "low-completion",
+                "message": "Fewer than half of started sessions reached redesign.",
+            }
+        )
+    for key in REVISION_SCORE_KEYS:
+        average = summary["score_averages"][key]
+        if average < 1.25:
+            signals.append(
+                {
+                    "code": f"low-{key.replace('_', '-')}",
+                    "message": f"{key.replace('_', ' ').title()} averaged {average:.2f}, below 1.25.",
+                }
+            )
+    for tag, count in summary["confusion_counts"].items():
+        if count >= 2:
+            signals.append(
+                {
+                    "code": f"recurring-confusion:{tag}",
+                    "message": f"Confusion tag {tag!r} appeared in {count} sessions.",
+                }
+            )
+    continuation = summary["voluntary_continue"]
+    if summary["finished"] and continuation["answered"] and continuation["yes"] == 0:
+        signals.append(
+            {
+                "code": "no-voluntary-continuation",
+                "message": "At least one session finished, but no answered session chose to continue.",
+            }
+        )
+    return signals
 
 
 def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
     started = sum(session["started"] for session in sessions)
     finished = sum(session["completed_steps"] == STEPS for session in sessions)
     durations = [float(session["duration_minutes"]) for session in sessions if session["started"]]
-    confusion = Counter(
-        tag for session in sessions for tag in session["confusion_tags"]
-    )
+    confusion = Counter(tag for session in sessions for tag in session["confusion_tags"])
     continue_answers = [
         session["voluntary_continue"]
         for session in sessions
@@ -138,10 +197,24 @@ def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
         key: round(sum(session["scores"][key] for session in sessions) / len(sessions), 2)
         for key in SCORE_KEYS
     }
+    continuation = {
+        "yes": sum(answer is True for answer in continue_answers),
+        "no": sum(answer is False for answer in continue_answers),
+        "unknown": len(sessions) - len(continue_answers),
+        "answered": len(continue_answers),
+        "yes_rate_among_answered": round(
+            sum(answer is True for answer in continue_answers) / len(continue_answers), 3
+        )
+        if continue_answers
+        else 0.0,
+    }
 
-    return {
+    summary: dict[str, Any] = {
+        "contract": "principia-product-alpha-pilot-summary/0.2",
         "route_id": ROUTE_ID,
         "sessions": len(sessions),
+        "minimum_cohort_size": MIN_COHORT_SIZE,
+        "cohort_complete": len(sessions) >= MIN_COHORT_SIZE,
         "started": started,
         "finished": finished,
         "completion_rate": round(finished / started, 3) if started else 0.0,
@@ -150,29 +223,28 @@ def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
         else 0.0,
         "score_averages": score_averages,
         "confusion_counts": dict(sorted(confusion.items(), key=lambda item: (-item[1], item[0]))),
-        "voluntary_continue": {
-            "yes": sum(answer is True for answer in continue_answers),
-            "no": sum(answer is False for answer in continue_answers),
-            "unknown": len(sessions) - len(continue_answers),
-            "yes_rate_among_answered": round(
-                sum(answer is True for answer in continue_answers) / len(continue_answers), 3
-            )
-            if continue_answers
-            else 0.0,
-        },
+        "voluntary_continue": continuation,
     }
+    summary["revision_signals"] = revision_signals(summary)
+    summary["evidence_status"] = (
+        "incomplete" if not summary["cohort_complete"] else "ready-for-human-review"
+    )
+    return summary
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
     lines = [
         "# Product Alpha Pilot Summary",
         "",
+        f"- Evidence status: **{summary['evidence_status']}**",
         f"- Route: `{summary['route_id']}`",
-        f"- Sessions: {summary['sessions']}",
+        f"- Valid sessions: {summary['sessions']} / minimum {summary['minimum_cohort_size']}",
         f"- Started: {summary['started']}",
         f"- Finished: {summary['finished']}",
         f"- Completion rate: {summary['completion_rate']:.1%}",
         f"- Average duration: {summary['average_duration_minutes']:.2f} minutes",
+        "",
+        "> This aggregate is descriptive formative evidence. It does not establish general learning effectiveness, public-release readiness, or product-market fit.",
         "",
         "## Learning scores",
         "",
@@ -200,6 +272,23 @@ def render_markdown(summary: dict[str, Any]) -> str:
             f"- No: {continuation['no']}",
             f"- Unknown: {continuation['unknown']}",
             f"- Yes rate among answered: {continuation['yes_rate_among_answered']:.1%}",
+            "",
+            "## Revision signals",
+            "",
+        ]
+    )
+    if summary["revision_signals"]:
+        for signal in summary["revision_signals"]:
+            lines.append(f"- `{signal['code']}` — {signal['message']}")
+    else:
+        lines.append("- No automatic revision trigger was detected. Human review is still required.")
+
+    lines.extend(
+        [
+            "",
+            "## Decision boundary",
+            "",
+            "Use these aggregates to choose one primary product action. Do not commit raw session records or identifiable notes. A tool-generated status never authorizes a second route, public release, SaaS expansion, or a learning-effectiveness claim.",
             "",
         ]
     )
