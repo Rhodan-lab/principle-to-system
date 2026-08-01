@@ -5,11 +5,14 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import re
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import webbrowser
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -30,6 +33,36 @@ REQUIRED_OUTPUTS = (
     "evaluation/rubric.json",
     "evaluation/session-template.json",
     BUILD_MANIFEST,
+)
+SMOKE_REQUIRED_HEADERS = {
+    "cache-control": "no-store",
+    "pragma": "no-cache",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "cross-origin-opener-policy": "same-origin",
+}
+SMOKE_TARGETS = (
+    ("learner", "/", b"<title>Principia Product Alpha</title>"),
+    (
+        "facilitator",
+        "/facilitator.html?build_id={build_id}",
+        b"pilot_build_id:pilotBuildId",
+    ),
+    (
+        "pilot_lab",
+        "/pilot-lab.html?build_id={build_id}",
+        b"EXPECTED_BUILD_ID=new URLSearchParams",
+    ),
+    (
+        "route",
+        "/data/refrigerator.json",
+        b'"contract":"principia-product-alpha-route/0.1"',
+    ),
+    (
+        "manifest",
+        f"/{BUILD_MANIFEST}",
+        b'"contract":"principia-product-alpha-build/0.1"',
+    ),
 )
 
 
@@ -125,6 +158,86 @@ def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTP
     )
 
 
+def _fetch_smoke_target(port: int, path: str) -> tuple[int, dict[str, str], bytes]:
+    """Fetch one loopback target with a short startup retry window."""
+    last_error: OSError | None = None
+    for _ in range(20):
+        connection = http.client.HTTPConnection(LOOPBACK_HOST, port, timeout=5)
+        try:
+            connection.request("GET", path)
+            response = connection.getresponse()
+            body = response.read()
+            headers = {key.lower(): value for key, value in response.getheaders()}
+            return response.status, headers, body
+        except OSError as exc:
+            last_error = exc
+            time.sleep(0.02)
+        finally:
+            connection.close()
+    raise ConnectionError(f"could not reach loopback pilot target {path}: {last_error}")
+
+
+def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
+    """Serve and verify the exact packaged pilot without retaining any state."""
+    verify_output(output)
+    expected_build_id = validate_build_id(build_id)
+    server = create_server(output, 0, quiet=True)
+    actual_host = str(server.server_address[0])
+    actual_port = int(server.server_address[1])
+    if actual_host != LOOPBACK_HOST:
+        server.server_close()
+        raise ValueError(f"pilot smoke server escaped loopback: {actual_host}")
+
+    thread = threading.Thread(
+        target=server.serve_forever,
+        kwargs={"poll_interval": 0.01},
+        daemon=True,
+    )
+    thread.start()
+    verified_targets: list[str] = []
+    try:
+        for target_id, path_template, marker in SMOKE_TARGETS:
+            path = path_template.format(build_id=expected_build_id)
+            status, headers, body = _fetch_smoke_target(actual_port, path)
+            if status != 200:
+                raise ValueError(
+                    f"pilot smoke target {target_id} returned HTTP {status}"
+                )
+            for header, expected_value in SMOKE_REQUIRED_HEADERS.items():
+                actual_value = headers.get(header)
+                if actual_value != expected_value:
+                    raise ValueError(
+                        f"pilot smoke target {target_id} header {header!r} "
+                        f"must be {expected_value!r}, found {actual_value!r}"
+                    )
+            if marker not in body:
+                raise ValueError(
+                    f"pilot smoke target {target_id} is missing its packaged marker"
+                )
+            if target_id == "manifest":
+                served_build_id = hashlib.sha256(body).hexdigest()
+                if served_build_id != expected_build_id:
+                    raise ValueError(
+                        "served build manifest does not match the expected Pilot build ID"
+                    )
+            verified_targets.append(target_id)
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        server.server_close()
+
+    return {
+        "contract": "principia-product-alpha-pilot-smoke/0.1",
+        "decision": "pilot-smoke-passed",
+        "host": LOOPBACK_HOST,
+        "build_id": expected_build_id,
+        "target_count": len(verified_targets),
+        "targets": verified_targets,
+        "headers_verified": sorted(SMOKE_REQUIRED_HEADERS),
+        "session_data_stored": False,
+    }
+
+
 def serve(output: Path, port: int, open_browser: bool, quiet: bool) -> None:
     run_builder("build", output)
     verify_output(output)
@@ -162,9 +275,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "command",
         nargs="?",
-        choices=("serve", "check"),
+        choices=("serve", "check", "smoke"),
         default="serve",
-        help="serve the local pilot or verify its deterministic build and build identity",
+        help=(
+            "serve the local pilot, verify its deterministic build, or smoke-test "
+            "the real loopback HTTP path"
+        ),
     )
     parser.add_argument(
         "--port",
@@ -192,7 +308,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     output = args.output.resolve()
-    if args.command == "check":
+    if args.command in {"check", "smoke"}:
         run_builder("check", output)
         with tempfile.TemporaryDirectory() as directory:
             check_output = Path(directory)
@@ -200,12 +316,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             verify_output(check_output)
             build_id = pilot_build_identity(check_output)
             urls = pilot_urls(0, build_id)
-        print(
-            "Product Alpha pilot launcher check passed: "
-            f"host={LOOPBACK_HOST}, required_assets={len(REQUIRED_OUTPUTS)}, "
-            f"build_id={build_id}, recorder_bound={urls['facilitator'].endswith(build_id)}, "
-            f"pilot_lab_bound={urls['pilot_lab'].endswith(build_id)}"
-        )
+            if args.command == "smoke":
+                report = smoke_served_output(check_output, build_id)
+        if args.command == "check":
+            print(
+                "Product Alpha pilot launcher check passed: "
+                f"host={LOOPBACK_HOST}, required_assets={len(REQUIRED_OUTPUTS)}, "
+                f"build_id={build_id}, "
+                f"recorder_bound={urls['facilitator'].endswith(build_id)}, "
+                f"pilot_lab_bound={urls['pilot_lab'].endswith(build_id)}"
+            )
+        else:
+            print(
+                "Product Alpha pilot smoke passed: "
+                f"host={report['host']}, targets={report['target_count']}, "
+                f"build_id={report['build_id']}, "
+                f"session_data_stored={str(report['session_data_stored']).lower()}"
+            )
         return 0
     serve(output, args.port, args.open_browser, args.quiet)
     return 0
