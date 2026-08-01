@@ -104,7 +104,8 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertEqual(first["review"]["status"], "human-review-required")
         serialized = json.dumps(first, sort_keys=True)
         self.assertNotIn("private note", serialized)
-        self.assertNotIn("facilitator_notes", serialized)
+        self.assertNotIn("facilitator_notes", first["aggregate_summary"])
+        self.assertFalse(first["boundaries"]["facilitator_notes_included"])
         self.assertFalse(first["boundaries"]["second_route_authorized"])
         self.assertFalse(first["boundaries"]["learning_effectiveness_claimed"])
 
