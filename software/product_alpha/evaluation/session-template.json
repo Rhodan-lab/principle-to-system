@@ -1,4 +1,5 @@
 {
+  "pilot_build_id": "replace-with-the-64-character-build-id-printed-by-run-pilot",
   "session_id": "anonymous-001",
   "route_id": "refrigerator-v1",
   "started": true,

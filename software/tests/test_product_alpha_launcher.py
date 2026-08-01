@@ -29,6 +29,23 @@ class ProductAlphaLauncherTests(unittest.TestCase):
             },
         )
 
+    def test_urls_bind_local_cohort_tools_to_build_identity(self) -> None:
+        build_id = "a" * 64
+        self.assertEqual(
+            launcher.pilot_urls(8123, build_id),
+            {
+                "learner": "http://127.0.0.1:8123/",
+                "facilitator": (
+                    "http://127.0.0.1:8123/facilitator.html?build_id=" + build_id
+                ),
+                "pilot_lab": (
+                    "http://127.0.0.1:8123/pilot-lab.html?build_id=" + build_id
+                ),
+            },
+        )
+        with self.assertRaisesRegex(ValueError, "64-character lowercase SHA-256"):
+            launcher.pilot_urls(8123, "not-a-build-id")
+
     def test_port_validation(self) -> None:
         self.assertEqual(launcher.validate_port(0), 0)
         self.assertEqual(launcher.validate_port(65535), 65535)
@@ -78,7 +95,9 @@ class ProductAlphaLauncherTests(unittest.TestCase):
             "files": [{"path": "index.html", "sha256": "0" * 64}],
             "deterministic": True,
         }
-        raw = (json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+        raw = (
+            json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("utf-8")
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             (output / launcher.BUILD_MANIFEST).write_bytes(raw)
@@ -131,7 +150,7 @@ class ProductAlphaLauncherTests(unittest.TestCase):
         self.assertNotIn("urllib.request", source)
         self.assertNotIn("requests.", source)
         self.assertIn("no session data is stored", source)
-        self.assertIn("keep one pilot build ID", source)
+        self.assertIn("every exported session carries this pilot build ID", source)
 
 
 if __name__ == "__main__":
