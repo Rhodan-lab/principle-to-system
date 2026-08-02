@@ -7,15 +7,35 @@
   "policy": {
     "legacy_behavior": "Preserve all existing validators and non-Product-Alpha triggers.",
     "mixed_change_behavior": "Any non-Product-Alpha file in a change set keeps legacy workflows eligible.",
-    "product_alpha_behavior": "Ignore Product Alpha-only file sets in legacy pull_request and push events.",
-    "workflow_self_trigger": "A workflow file change is never ignored by its own legacy event."
+    "product_alpha_behavior": "Ignore Product Alpha-only runtime, Python-test, Node-test, and Product-Alpha-CI file sets in legacy pull_request and push events.",
+    "product_ci_behavior": "A validate-product-alpha.yml change runs Product Alpha and Workflow Scope, while unrelated historical workflows remain ineligible unless the change set is mixed."
   },
-  "product_alpha_only_expected_checks": [
-    "validate-product-alpha.yml"
-  ],
+  "product_alpha_only_fixtures": {
+    "ci": {
+      "expected_checks": [
+        "validate-product-alpha.yml",
+        "validate-workflow-scope.yml"
+      ],
+      "paths": [
+        ".github/workflows/validate-product-alpha.yml"
+      ]
+    },
+    "runtime": {
+      "expected_checks": [
+        "validate-product-alpha.yml"
+      ],
+      "paths": [
+        "software/product_alpha/index.html",
+        "software/tests/test_product_alpha_evaluation.py",
+        "software/tests/test_product_alpha_learner_state.mjs"
+      ]
+    }
+  },
   "product_alpha_only_paths": [
     "software/product_alpha/**",
-    "software/tests/test_product_alpha*.py"
+    "software/tests/test_product_alpha*.py",
+    "software/tests/test_product_alpha*.mjs",
+    ".github/workflows/validate-product-alpha.yml"
   ],
-  "schema": "principia-ci-workflow-scope/0.1"
+  "schema": "principia-ci-workflow-scope/0.2"
 }

@@ -5,11 +5,15 @@ on:
     paths-ignore:
       - 'software/product_alpha/**'
       - 'software/tests/test_product_alpha*.py'
+      - 'software/tests/test_product_alpha*.mjs'
+      - '.github/workflows/validate-product-alpha.yml'
   push:
     branches: [main]
     paths-ignore:
       - 'software/product_alpha/**'
       - 'software/tests/test_product_alpha*.py'
+      - 'software/tests/test_product_alpha*.mjs'
+      - '.github/workflows/validate-product-alpha.yml'
 permissions:
   contents: read
 jobs:

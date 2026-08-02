@@ -27,12 +27,16 @@ on:
       - 'design-challenges/**'
       - '!software/product_alpha/**'
       - '!software/tests/test_product_alpha*.py'
+      - '!software/tests/test_product_alpha*.mjs'
+      - '!.github/workflows/validate-product-alpha.yml'
   pull_request:
     branches:
       - main
     paths-ignore:
       - 'software/product_alpha/**'
       - 'software/tests/test_product_alpha*.py'
+      - 'software/tests/test_product_alpha*.mjs'
+      - '.github/workflows/validate-product-alpha.yml'
   workflow_dispatch:
 
 permissions:
