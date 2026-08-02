@@ -87,9 +87,30 @@ SMOKE_TARGETS = (
 
 
 class PilotRequestHandler(SimpleHTTPRequestHandler):
-    """Serve static pilot assets with bounded, no-store response headers."""
+    """Serve static pilot assets only for the exact loopback host."""
 
     quiet_logs = False
+
+    def _trusted_host(self) -> bool:
+        actual_port = int(self.server.server_address[1])
+        return self.headers.get("Host", "") in {
+            LOOPBACK_HOST,
+            f"{LOOPBACK_HOST}:{actual_port}",
+        }
+
+    def _reject_untrusted_host(self) -> bool:
+        if self._trusted_host():
+            return False
+        self.send_error(421, "Loopback Host header required")
+        return True
+
+    def do_GET(self) -> None:
+        if not self._reject_untrusted_host():
+            super().do_GET()
+
+    def do_HEAD(self) -> None:
+        if not self._reject_untrusted_host():
+            super().do_HEAD()
 
     def end_headers(self) -> None:
         for header, value in PILOT_RESPONSE_HEADERS.items():
@@ -175,17 +196,24 @@ def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTP
     )
 
 
-def _fetch_smoke_target(port: int, path: str) -> tuple[int, dict[str, str], bytes]:
+def _fetch_smoke_target(
+    port: int,
+    path: str,
+    host_header: str | None = None,
+) -> tuple[int, dict[str, str], bytes]:
     """Fetch one loopback target with a short startup retry window."""
     last_error: OSError | None = None
     for _ in range(20):
         connection = http.client.HTTPConnection(LOOPBACK_HOST, port, timeout=5)
         try:
-            connection.request("GET", path)
+            headers = {} if host_header is None else {"Host": host_header}
+            connection.request("GET", path, headers=headers)
             response = connection.getresponse()
             body = response.read()
-            headers = {key.lower(): value for key, value in response.getheaders()}
-            return response.status, headers, body
+            response_headers = {
+                key.lower(): value for key, value in response.getheaders()
+            }
+            return response.status, response_headers, body
         except OSError as exc:
             last_error = exc
             time.sleep(0.02)
@@ -212,6 +240,7 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
     )
     thread.start()
     verified_targets: list[str] = []
+    foreign_host_rejected = False
     try:
         for target_id, path_template, marker in SMOKE_TARGETS:
             path = path_template.format(build_id=expected_build_id)
@@ -238,6 +267,27 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
                         "served build manifest does not match the expected Pilot build ID"
                     )
             verified_targets.append(target_id)
+
+        foreign_status, foreign_headers, foreign_body = _fetch_smoke_target(
+            actual_port,
+            "/",
+            host_header="attacker.example",
+        )
+        if foreign_status != 421:
+            raise ValueError(
+                "pilot smoke foreign Host request must return HTTP 421, "
+                f"found {foreign_status}"
+            )
+        for header, expected_value in SMOKE_REQUIRED_HEADERS.items():
+            actual_value = foreign_headers.get(header)
+            if actual_value != expected_value:
+                raise ValueError(
+                    f"pilot smoke foreign Host header {header!r} "
+                    f"must be {expected_value!r}, found {actual_value!r}"
+                )
+        if b"<title>Principia Product Alpha</title>" in foreign_body:
+            raise ValueError("pilot smoke foreign Host request exposed the learner page")
+        foreign_host_rejected = True
     finally:
         server.shutdown()
         thread.join(timeout=5)
@@ -251,6 +301,7 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
         "target_count": len(verified_targets),
         "targets": verified_targets,
         "headers_verified": sorted(SMOKE_REQUIRED_HEADERS),
+        "foreign_host_rejected": foreign_host_rejected,
         "session_data_stored": False,
     }
 
@@ -348,6 +399,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "Product Alpha pilot smoke passed: "
                 f"host={report['host']}, targets={report['target_count']}, "
                 f"build_id={report['build_id']}, "
+                f"foreign_host_rejected={str(report['foreign_host_rejected']).lower()}, "
                 f"session_data_stored={str(report['session_data_stored']).lower()}"
             )
         return 0
