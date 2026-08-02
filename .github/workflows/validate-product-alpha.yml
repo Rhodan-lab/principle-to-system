@@ -26,56 +26,6 @@ permissions:
   contents: read
 
 jobs:
-  apply-pilot-lab-accessibility:
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'agent/product-alpha-pilot-lab-accessibility' }}
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out pull request branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - name: Apply bounded patch
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          source_path = Path("software/product_alpha/_apply_pilot_lab_accessibility.py")
-          source = source_path.read_text(encoding="utf-8")
-          replacements = {
-              "assert.deepEqual(state.files, []);": "assert.deepEqual(Array.from(state.files), []);",
-              "assert.deepEqual(state.sessions, []);": "assert.deepEqual(Array.from(state.sessions), []);",
-              "assert.deepEqual(state.errors, []);": "assert.deepEqual(Array.from(state.errors), []);",
-          }
-          for old, new in replacements.items():
-              if source.count(old) != 1:
-                  raise SystemExit(f"temporary test normalization anchor missing: {old}")
-              source = source.replace(old, new, 1)
-          Path("/tmp/apply-pilot-lab-accessibility.py").write_text(source, encoding="utf-8")
-          PY
-          python3 /tmp/apply-pilot-lab-accessibility.py
-      - name: Validate bounded patch
-        run: |
-          if git diff --quiet; then
-            exit 0
-          fi
-          node --test software/tests/test_product_alpha_pilot_lab_batches.mjs
-          python3 software/product_alpha/build.py check
-          git diff --check
-          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs "
-      - name: Commit bounded patch
-        run: |
-          if git diff --quiet; then
-            exit 0
-          fi
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs
-          git commit -m "Make Pilot Lab controls keyboard safe"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
-
   validate:
     runs-on: ubuntu-latest
     steps:
