@@ -16,7 +16,14 @@ vm.runInNewContext(scripts[0][1], {
   Set,
   String,
 });
-const { fileKey, mergeFiles, clearWorkspaceState } = module.exports;
+const {
+  fileKey,
+  mergeFiles,
+  clearWorkspaceState,
+  stageReplacement,
+  cancelReplacement,
+  takeReplacement,
+} = module.exports;
 
 function file(
   name,
@@ -80,6 +87,43 @@ test("replace mode discards the previous file set", () => {
   );
 });
 
+test("replacement staging leaves the current workspace untouched", () => {
+  const current = file("anonymous-a.jsonl", 120, 1);
+  const replacement = file("anonymous-b.jsonl", 130, 2);
+  const state = {
+    files: [current],
+    pendingReplacement: [],
+    clearArmed: true,
+  };
+
+  assert.equal(
+    stageReplacement(state, [replacement, replacement]),
+    "staged",
+  );
+  assert.deepEqual(Array.from(state.files, fileKey), [fileKey(current)]);
+  assert.deepEqual(Array.from(state.pendingReplacement, fileKey), [
+    fileKey(replacement),
+  ]);
+  assert.equal(state.clearArmed, false);
+});
+
+test("replacement can be cancelled or consumed exactly once", () => {
+  const replacement = file("anonymous-b.jsonl", 130, 2);
+  const state = { pendingReplacement: [] };
+
+  stageReplacement(state, [replacement]);
+  assert.equal(cancelReplacement(state), true);
+  assert.deepEqual(Array.from(state.pendingReplacement), []);
+  assert.equal(cancelReplacement(state), false);
+
+  stageReplacement(state, [replacement]);
+  assert.deepEqual(Array.from(takeReplacement(state), fileKey), [
+    fileKey(replacement),
+  ]);
+  assert.deepEqual(Array.from(state.pendingReplacement), []);
+  assert.deepEqual(Array.from(takeReplacement(state)), []);
+});
+
 test("clear requires a deliberate second action", () => {
   const state = {
     files: [file("anonymous-a.jsonl", 120, 1)],
@@ -111,12 +155,16 @@ test("empty workspaces do not arm destructive clear", () => {
 test("interface exposes keyboard file pickers and live status", () => {
   assert.match(html, /id="chooseFiles" type="button">Add session files/);
   assert.match(html, /id="files"[^>]+multiple hidden/);
-  assert.match(html, /id="chooseReplaceFiles" type="button">Replace workspace files/);
+  assert.match(html, /id="chooseReplaceFiles" type="button" aria-pressed="false">Replace workspace files/);
+  assert.match(html, /id="cancelReplace" type="button" hidden>Cancel replacement/);
   assert.match(html, /id="replaceFiles"[^>]+multiple hidden/);
   assert.match(html, /q\("#chooseFiles"\)\.addEventListener\("click",\(\)=>q\("#files"\)\.click\(\)\)/);
-  assert.match(html, /q\("#chooseReplaceFiles"\)\.addEventListener\("click",\(\)=>q\("#replaceFiles"\)\.click\(\)\)/);
+  assert.match(html, /q\("#chooseReplaceFiles"\)\.addEventListener\("click",chooseOrConfirmReplacement\)/);
+  assert.match(html, /q\("#cancelReplace"\)\.addEventListener\("click",cancelReplacementSelection\)/);
   assert.match(html, /readFiles\(event\.target\.files,"add"\)/);
-  assert.match(html, /readFiles\(event\.target\.files,"replace"\)/);
+  assert.match(html, /stageReplacementFiles\(event\.target\.files\)/);
+  assert.match(html, /takeReplacement\(state\)/);
+  assert.match(html, /Replacement cancelled\. The current workspace is unchanged\./);
   assert.match(html, /readFiles\(event\.dataTransfer\.files,"add"\)/);
   assert.match(html, /id="workspaceStatus" role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(html, /id="status" role="status" aria-live="polite" aria-atomic="true"/);
@@ -130,4 +178,14 @@ test("clear control is announced and visually changes when armed", () => {
   assert.match(html, /Confirm clear workspace/);
   assert.match(html, /clear\.classList\.toggle\("danger",state\.clearArmed\)/);
   assert.match(html, /q\("#chooseFiles"\)\.focus\(\)/);
+});
+
+
+test("replacement confirmation is explicit and cancellable", () => {
+  assert.match(html, /Confirm replace with \${pending} file/);
+  assert.match(html, /current workspace remains loaded until confirmation/);
+  assert.match(html, /replace\.classList\.toggle\("danger",Boolean\(pending\)\)/);
+  assert.match(html, /replace\.setAttribute\("aria-pressed",String\(Boolean\(pending\)\)\)/);
+  assert.match(html, /cancel\.hidden=!pending/);
+  assert.match(html, /Pending replacement cancelled\. Press Clear workspace again/);
 });
