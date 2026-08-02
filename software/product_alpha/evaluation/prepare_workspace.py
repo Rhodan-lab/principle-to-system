@@ -79,23 +79,41 @@ The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to
 ## Folder use
 
 1. Place individual anonymous recorder exports (`.jsonl` or `.json`) in `incoming-sessions/`.
-2. Validate and assemble the immutable cohort intake:
+
+2. During collection, validate the current files without sealing the cohort:
+
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py check \\
+  --workspace {workspace_arg}
+```
+
+The check command fully validates every current export, rejects malformed, mixed-build, duplicate, personal-data-bearing, symlinked, or unsupported records, predicts the exact combined JSONL and source-record hashes, reports the valid session count and cohort status, and writes nothing. It is safe to repeat after each new session.
+
+3. After collection is intentionally closed and the documented minimum has been reached, assemble the immutable cohort intake:
 
 ```bash
 python3 software/product_alpha/evaluation/assemble_workspace.py \\
   --workspace {workspace_arg}
 ```
 
-This command validates every file, rejects malformed, mixed-build, duplicate, or personal-data-bearing records, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export and the combined JSONL. Source files are not changed. Existing verified outputs are never overwritten.
+Normal assembly refuses fewer than five valid sessions so a facilitator cannot accidentally lock an incomplete cohort while collection is still active. If the pilot must close early because recruitment or execution stopped, make that decision explicit:
 
-3. Check the complete workspace evidence chain without writing review outputs:
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py \\
+  --workspace {workspace_arg} \\
+  --allow-incomplete
+```
+
+Assembly validates every file again, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export, the source-record set, and the combined JSONL. Source files are not changed. Existing verified outputs are never overwritten. `--allow-incomplete` records an intentional early closure; it does not make the evidence complete or eligible for planning advance.
+
+4. Check the complete workspace evidence chain without writing review outputs:
 
 ```bash
 python3 software/product_alpha/evaluation/review_workspace.py check \\
   --workspace {workspace_arg}
 ```
 
-4. Create the private, de-identified human-review packet:
+5. Create the private, de-identified human-review packet:
 
 ```bash
 python3 software/product_alpha/evaluation/review_workspace.py \\
@@ -104,14 +122,14 @@ python3 software/product_alpha/evaluation/review_workspace.py \\
 
 The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/refrigerator-review.json` and `review/refrigerator-review.md`. It refuses changed evidence and never overwrites an existing review packet.
 
-5. Check that the unchanged review packet is ready for a separate human decision record:
+6. Check that the unchanged review packet is ready for a separate human decision record:
 
 ```bash
 python3 software/product_alpha/evaluation/record_decision.py check \\
   --workspace {workspace_arg}
 ```
 
-6. After reviewing the aggregate and private facilitator notes, record exactly one human action:
+7. After reviewing the aggregate and private facilitator notes, record exactly one human action:
 
 ```bash
 python3 software/product_alpha/evaluation/record_decision.py \\
