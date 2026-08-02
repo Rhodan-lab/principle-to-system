@@ -139,6 +139,9 @@ def verify_workspace_intake(
     repository = repo_root.resolve(strict=False)
     if assemble_workspace._is_within(root, repository):
         raise ValueError("workspace must be outside the repository")
+    workspace_manifest_path = root / "workspace.json"
+    if workspace_manifest_path.is_symlink() or not workspace_manifest_path.is_file():
+        raise ValueError("workspace.json must be a regular file")
 
     manifest, incoming, combined, intake_path = assemble_workspace._load_workspace(root)
     paths = manifest.get("paths")
@@ -166,6 +169,10 @@ def verify_workspace_intake(
         raise ValueError("intake manifest route_id does not match workspace")
     if intake.get("combined_jsonl") != str(combined):
         raise ValueError("intake manifest combined_jsonl path does not match workspace")
+    if intake.get("raw_source_files_modified") is not False:
+        raise ValueError("intake manifest must declare raw_source_files_modified=false")
+    if intake.get("human_review_required") is not True:
+        raise ValueError("intake manifest must declare human_review_required=true")
 
     if combined.is_symlink() or not combined.is_file():
         raise ValueError("combined cohort must be a regular file")
