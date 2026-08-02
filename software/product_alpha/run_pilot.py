@@ -200,6 +200,7 @@ def _fetch_smoke_target(
     port: int,
     path: str,
     host_header: str | None = None,
+    method: str = "GET",
 ) -> tuple[int, dict[str, str], bytes]:
     """Fetch one loopback target with a short startup retry window."""
     last_error: OSError | None = None
@@ -207,7 +208,7 @@ def _fetch_smoke_target(
         connection = http.client.HTTPConnection(LOOPBACK_HOST, port, timeout=5)
         try:
             headers = {} if host_header is None else {"Host": host_header}
-            connection.request("GET", path, headers=headers)
+            connection.request(method, path, headers=headers)
             response = connection.getresponse()
             body = response.read()
             response_headers = {
@@ -220,6 +221,16 @@ def _fetch_smoke_target(
         finally:
             connection.close()
     raise ConnectionError(f"could not reach loopback pilot target {path}: {last_error}")
+
+
+def _verify_smoke_headers(target_id: str, headers: dict[str, str]) -> None:
+    for header, expected_value in SMOKE_REQUIRED_HEADERS.items():
+        actual_value = headers.get(header)
+        if actual_value != expected_value:
+            raise ValueError(
+                f"pilot smoke target {target_id} header {header!r} "
+                f"must be {expected_value!r}, found {actual_value!r}"
+            )
 
 
 def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
@@ -240,7 +251,8 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
     )
     thread.start()
     verified_targets: list[str] = []
-    foreign_host_rejected = False
+    head_verified = False
+    foreign_host_methods_rejected: list[str] = []
     try:
         for target_id, path_template, marker in SMOKE_TARGETS:
             path = path_template.format(build_id=expected_build_id)
@@ -249,13 +261,7 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
                 raise ValueError(
                     f"pilot smoke target {target_id} returned HTTP {status}"
                 )
-            for header, expected_value in SMOKE_REQUIRED_HEADERS.items():
-                actual_value = headers.get(header)
-                if actual_value != expected_value:
-                    raise ValueError(
-                        f"pilot smoke target {target_id} header {header!r} "
-                        f"must be {expected_value!r}, found {actual_value!r}"
-                    )
+            _verify_smoke_headers(target_id, headers)
             if marker not in body:
                 raise ValueError(
                     f"pilot smoke target {target_id} is missing its packaged marker"
@@ -268,26 +274,38 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
                     )
             verified_targets.append(target_id)
 
-        foreign_status, foreign_headers, foreign_body = _fetch_smoke_target(
+        head_status, head_headers, head_body = _fetch_smoke_target(
             actual_port,
             "/",
-            host_header="attacker.example",
+            method="HEAD",
         )
-        if foreign_status != 421:
+        if head_status != 200:
             raise ValueError(
-                "pilot smoke foreign Host request must return HTTP 421, "
-                f"found {foreign_status}"
+                f"pilot smoke trusted HEAD request returned HTTP {head_status}"
             )
-        for header, expected_value in SMOKE_REQUIRED_HEADERS.items():
-            actual_value = foreign_headers.get(header)
-            if actual_value != expected_value:
+        _verify_smoke_headers("trusted-head", head_headers)
+        if head_body:
+            raise ValueError("pilot smoke trusted HEAD request returned a response body")
+        head_verified = True
+
+        for method in ("GET", "HEAD"):
+            foreign_status, foreign_headers, foreign_body = _fetch_smoke_target(
+                actual_port,
+                "/",
+                host_header="attacker.example",
+                method=method,
+            )
+            if foreign_status != 421:
                 raise ValueError(
-                    f"pilot smoke foreign Host header {header!r} "
-                    f"must be {expected_value!r}, found {actual_value!r}"
+                    f"pilot smoke foreign Host {method} request must return HTTP 421, "
+                    f"found {foreign_status}"
                 )
-        if b"<title>Principia Product Alpha</title>" in foreign_body:
-            raise ValueError("pilot smoke foreign Host request exposed the learner page")
-        foreign_host_rejected = True
+            _verify_smoke_headers(f"foreign-host-{method.lower()}", foreign_headers)
+            if b"<title>Principia Product Alpha</title>" in foreign_body:
+                raise ValueError(
+                    f"pilot smoke foreign Host {method} request exposed the learner page"
+                )
+            foreign_host_methods_rejected.append(method)
     finally:
         server.shutdown()
         thread.join(timeout=5)
@@ -301,7 +319,9 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
         "target_count": len(verified_targets),
         "targets": verified_targets,
         "headers_verified": sorted(SMOKE_REQUIRED_HEADERS),
-        "foreign_host_rejected": foreign_host_rejected,
+        "head_verified": head_verified,
+        "foreign_host_rejected": foreign_host_methods_rejected == ["GET", "HEAD"],
+        "foreign_host_methods_rejected": foreign_host_methods_rejected,
         "session_data_stored": False,
     }
 
@@ -395,11 +415,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"pilot_lab_bound={urls['pilot_lab'].endswith(build_id)}"
             )
         else:
+            rejected_methods = "+".join(report["foreign_host_methods_rejected"])
             print(
                 "Product Alpha pilot smoke passed: "
                 f"host={report['host']}, targets={report['target_count']}, "
                 f"build_id={report['build_id']}, "
-                f"foreign_host_rejected={str(report['foreign_host_rejected']).lower()}, "
+                f"head_verified={str(report['head_verified']).lower()}, "
+                f"foreign_host_methods_rejected={rejected_methods}, "
                 f"session_data_stored={str(report['session_data_stored']).lower()}"
             )
         return 0
