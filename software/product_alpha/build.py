@@ -75,8 +75,8 @@ PILOT_LAB_TRANSFORMS = (
         "Pilot Lab summary build identity",
     ),
     (
-        b'box.innerHTML=`<table><tbody><tr><th>Started</th>',
-        b'box.innerHTML=`<table><tbody><tr><th>Build ID</th><td><code>${s.pilot_build_id.slice(0,12)}...</code></td></tr><tr><th>Started</th>',
+        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Started</th>',
+        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Build ID</th><td><code>${s.pilot_build_id.slice(0,12)}...</code></td></tr><tr><th scope="row">Started</th>',
         "Pilot Lab build-id display",
     ),
     (
