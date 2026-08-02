@@ -17,10 +17,23 @@ POLICY_PATH = REPO_ROOT / "ci" / "workflow-scope-policy.json"
 PRODUCT_PATHS = (
     "software/product_alpha/**",
     "software/tests/test_product_alpha*.py",
+    "software/tests/test_product_alpha*.mjs",
+    ".github/workflows/validate-product-alpha.yml",
 )
-PRODUCT_FIXTURE_PATHS = (
-    "software/product_alpha/index.html",
-    "software/tests/test_product_alpha_evaluation.py",
+PRODUCT_FIXTURES = {
+    "runtime": (
+        "software/product_alpha/index.html",
+        "software/tests/test_product_alpha_evaluation.py",
+        "software/tests/test_product_alpha_learner_state.mjs",
+    ),
+    "ci": (".github/workflows/validate-product-alpha.yml",),
+}
+EXPECTED_FIXTURE_CHECKS = {
+    "runtime": ("validate-product-alpha.yml",),
+    "ci": ("validate-product-alpha.yml", "validate-workflow-scope.yml"),
+}
+PRODUCT_FIXTURE_PATHS = tuple(
+    path for paths in PRODUCT_FIXTURES.values() for path in paths
 )
 EXEMPT_WORKFLOWS = {
     "validate-product-alpha.yml",
@@ -174,9 +187,23 @@ def transform_workflow(text: str, filename: str) -> str:
 
         if filter_info is not None:
             kind, patterns, insertion = filter_info
-            if kind == "paths-ignore" or not _positive_filter_matches_fixture(patterns):
+            if kind == "paths-ignore":
+                missing = [pattern for pattern in PRODUCT_PATHS if pattern not in patterns]
+                if not missing:
+                    continue
+                replacement = section[:insertion]
+                replacement.extend(f"      - '{pattern}'\n" for pattern in missing)
+                replacement.extend(section[insertion:])
+                replacements.append((section_start, section_end, replacement))
                 continue
-            missing = [f"!{pattern}" for pattern in PRODUCT_PATHS if f"!{pattern}" not in patterns]
+
+            if not _positive_filter_matches_fixture(patterns):
+                continue
+            missing = [
+                f"!{pattern}"
+                for pattern in PRODUCT_PATHS
+                if f"!{pattern}" not in patterns
+            ]
             if not missing:
                 continue
             replacement = section[:insertion]
@@ -274,6 +301,18 @@ def event_runs_for_paths(text: str, event: str, changed_paths: tuple[str, ...]) 
     return True
 
 
+def _fixture_checks(
+    workflow_root: Path,
+    fixture_paths: tuple[str, ...],
+) -> set[str]:
+    checks: set[str] = set()
+    for path in workflow_paths(workflow_root):
+        text = path.read_text(encoding="utf-8")
+        if event_runs_for_paths(text, "pull_request", fixture_paths):
+            checks.add(path.name)
+    return checks
+
+
 def validate_policy(root: Path = REPO_ROOT) -> dict[str, Any]:
     policy_path = root / POLICY_PATH.relative_to(REPO_ROOT)
     policy = json.loads(policy_path.read_text(encoding="utf-8"))
@@ -285,6 +324,20 @@ def validate_policy(root: Path = REPO_ROOT) -> dict[str, Any]:
         )
     if set(policy["exempt_workflows"]) != EXEMPT_WORKFLOWS:
         raise ScopeError("policy exempt workflow set does not match implementation")
+
+    policy_fixtures = policy.get("product_alpha_only_fixtures")
+    if not isinstance(policy_fixtures, dict):
+        raise ScopeError("policy fixtures must be an object")
+    for name, paths in PRODUCT_FIXTURES.items():
+        fixture = policy_fixtures.get(name)
+        if not isinstance(fixture, dict):
+            raise ScopeError(f"missing Product Alpha fixture: {name}")
+        if tuple(fixture.get("paths", ())) != paths:
+            raise ScopeError(f"policy fixture path drift: {name}")
+        if tuple(fixture.get("expected_checks", ())) != EXPECTED_FIXTURE_CHECKS[name]:
+            raise ScopeError(f"policy fixture check drift: {name}")
+    if set(policy_fixtures) != set(PRODUCT_FIXTURES):
+        raise ScopeError("unexpected Product Alpha fixture names")
 
     workflow_root = root / ".github" / "workflows"
     drift: list[str] = []
@@ -302,11 +355,13 @@ def validate_policy(root: Path = REPO_ROOT) -> dict[str, Any]:
             if event_path_filters(text, event) is None:
                 continue
             checked_events += 1
-            if (
-                path.name not in EXEMPT_WORKFLOWS
-                and event_runs_for_paths(text, event, PRODUCT_FIXTURE_PATHS)
-            ):
-                unexpected_fixture_checks.append(f"{path.name}:{event}")
+            if path.name in EXEMPT_WORKFLOWS:
+                continue
+            for fixture_name, fixture_paths in PRODUCT_FIXTURES.items():
+                if event_runs_for_paths(text, event, fixture_paths):
+                    unexpected_fixture_checks.append(
+                        f"{path.name}:{event}:{fixture_name}"
+                    )
 
     if drift:
         raise ScopeError("workflow scope drift: " + ", ".join(drift))
@@ -316,23 +371,23 @@ def validate_policy(root: Path = REPO_ROOT) -> dict[str, Any]:
             + ", ".join(unexpected_fixture_checks)
         )
 
-    expected_checks = set(policy["product_alpha_only_expected_checks"])
-    actual_checks: set[str] = set()
-    for path in workflow_paths(workflow_root):
-        text = path.read_text(encoding="utf-8")
-        if event_runs_for_paths(text, "pull_request", PRODUCT_FIXTURE_PATHS):
-            actual_checks.add(path.name)
-    if actual_checks != expected_checks:
-        raise ScopeError(
-            "Product Alpha-only expected-check drift: "
-            f"expected {sorted(expected_checks)}, found {sorted(actual_checks)}"
-        )
+    actual_by_fixture: dict[str, list[str]] = {}
+    for name, fixture_paths in PRODUCT_FIXTURES.items():
+        expected_checks = set(EXPECTED_FIXTURE_CHECKS[name])
+        actual_checks = _fixture_checks(workflow_root, fixture_paths)
+        if actual_checks != expected_checks:
+            raise ScopeError(
+                "Product Alpha-only expected-check drift for "
+                f"{name}: expected {sorted(expected_checks)}, "
+                f"found {sorted(actual_checks)}"
+            )
+        actual_by_fixture[name] = sorted(actual_checks)
 
     return {
         "schema": policy["schema"],
         "workflow_files": len(workflow_paths(workflow_root)),
         "checked_events": checked_events,
-        "product_alpha_only_expected_checks": sorted(actual_checks),
+        "product_alpha_only_expected_checks": actual_by_fixture,
     }
 
 
