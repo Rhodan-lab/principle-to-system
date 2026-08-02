@@ -50,7 +50,7 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
         self.assertIn("points[0].t", learner_script)
         self.assertNotIn('trend=end<start?"falls"', learner_script)
 
-        harness = f"""
+        harness = rf"""
 const assert = require("node:assert/strict");
 const routeData = {json.dumps(route, ensure_ascii=False, separators=(',', ':'))};
 const elements = new Map();
