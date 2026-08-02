@@ -26,39 +26,6 @@ permissions:
   contents: read
 
 jobs:
-  apply-pilot-lab-table-semantics:
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'agent/product-alpha-pilot-lab-table-semantics' }}
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out pull request branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - name: Apply bounded patch
-        run: python3 software/product_alpha/_apply_pilot_lab_table_semantics.py
-      - name: Validate bounded patch
-        run: |
-          if git diff --quiet; then
-            exit 0
-          fi
-          node --test software/tests/test_product_alpha_pilot_lab_batches.mjs
-          python3 software/product_alpha/build.py check
-          git diff --check
-          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs "
-      - name: Commit bounded patch
-        run: |
-          if git diff --quiet; then
-            exit 0
-          fi
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs
-          git commit -m "Add Pilot Lab table semantics"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
-
   validate:
     runs-on: ubuntu-latest
     steps:
