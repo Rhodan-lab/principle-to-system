@@ -49,7 +49,7 @@ PERMISSIONS_POLICY = (
     "camera=(), display-capture=(), geolocation=(), microphone=(), "
     "payment=(), serial=(), usb=()"
 )
-SMOKE_REQUIRED_HEADERS = {
+PILOT_RESPONSE_HEADERS = {
     "cache-control": "no-store",
     "pragma": "no-cache",
     "x-content-type-options": "nosniff",
@@ -60,6 +60,7 @@ SMOKE_REQUIRED_HEADERS = {
     "content-security-policy": CONTENT_SECURITY_POLICY,
     "permissions-policy": PERMISSIONS_POLICY,
 }
+SMOKE_REQUIRED_HEADERS = dict(PILOT_RESPONSE_HEADERS)
 SMOKE_TARGETS = (
     ("learner", "/", b"<title>Principia Product Alpha</title>"),
     (
@@ -91,7 +92,7 @@ class PilotRequestHandler(SimpleHTTPRequestHandler):
     quiet_logs = False
 
     def end_headers(self) -> None:
-        for header, value in SMOKE_REQUIRED_HEADERS.items():
+        for header, value in PILOT_RESPONSE_HEADERS.items():
             self.send_header(header, value)
         super().end_headers()
 
