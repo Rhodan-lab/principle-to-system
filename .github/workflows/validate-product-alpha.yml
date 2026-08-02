@@ -68,7 +68,7 @@ jobs:
           node --check /tmp/principia-index.js
           node --check /tmp/principia-pilot-lab.js
       - name: Run Product Alpha JavaScript tests
-        run: node --test software/tests/test_product_alpha_learner_state.mjs
+        run: node --test software/tests/test_product_alpha*.mjs
       - name: Verify deterministic build
         run: python3 software/product_alpha/build.py check
       - name: Run Product Alpha tests
