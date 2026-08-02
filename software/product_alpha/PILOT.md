@@ -4,11 +4,11 @@ slug: product-alpha-0-1-learner-pilot
 domain: experience
 experience_type: pilot-protocol
 status: draft
-artifact_revision: 6
+artifact_revision: 7
 release_status: draft
 prerequisites: [system-dossier-refrigerator]
 connections: [investigation-room-cooling, design-challenge-passive-cooler]
-last_reviewed: 2026-08-01
+last_reviewed: 2026-08-02
 content_license: CC-BY-4.0
 ---
 
@@ -29,38 +29,51 @@ The pilot is an evidence-gathering activity, not a release gate and not a test o
 
 ## Materials
 
-1. Run the pilot-day gate with `python3 software/product_alpha/run_pilot.py smoke`.
-2. Do not begin any participant session unless the smoke command reports `pilot smoke passed`.
-3. Record the full 64-character Pilot build ID printed by the smoke command in the private cohort folder.
-4. Start Product Alpha with `python3 software/product_alpha/run_pilot.py --open`.
-5. Confirm that the long-running launcher prints the same Pilot build ID recorded from the smoke command.
-6. Keep the learner route, build-bound recorder, and build-bound Pilot Lab available in separate tabs.
-7. Keep this protocol visible separately from the product interfaces.
-8. Export one anonymous JSONL record from the recorder after each session.
-9. Store exported records in a private local folder controlled by the facilitator.
+1. Prepare a new private cohort workspace outside the repository:
+
+```bash
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/refrigerator-cohort
+```
+
+2. Do not begin any participant session unless preparation reports `pilot-preparation-passed`.
+3. Start Product Alpha through the prepared workspace:
+
+```bash
+python3 software/product_alpha/launch_workspace.py \
+  --workspace /private/path/refrigerator-cohort \
+  --open
+```
+
+4. Do not proceed unless the launcher reports that the current deterministic build exactly matches `workspace.json`.
+5. Keep the learner route, build-bound recorder, and build-bound Pilot Lab available in separate tabs.
+6. Keep this protocol visible separately from the product interfaces.
+7. Export one anonymous JSONL record from the recorder after each session.
+8. Review the free-text notes for anonymity before placing each export in `incoming-sessions/`.
+9. Keep the entire workspace private and facilitator-controlled.
 10. Do not modify appliances or ask learners to perform physical repair work.
 
-The smoke command starts an ephemeral loopback server, verifies the packaged learner page, recorder, Pilot Lab, route payload, exact manifest, and required no-store/security headers, then shuts down. The long-running recorder performs browser-side contract checks and downloads one compact JSON object. The Pilot Lab reads selected files locally, rejects malformed or duplicate records, and produces aggregate previews. None of these tools uploads records, uses browser storage, creates accounts, or calls Atlas.
+Preparation performs the deterministic build check, packages a fresh temporary build, starts the exact product on an OS-selected `127.0.0.1` port, verifies the learner page, recorder, Pilot Lab, route payload, exact build manifest, and required no-store/security headers, then creates an empty workspace bound to the verified Pilot build ID. The long-running workspace launcher rebuilds Product Alpha and refuses to open a server if its build ID differs from that workspace. None of these tools uploads records, uses browser storage, creates accounts, or calls Atlas.
 
 ## Pilot build identity
 
 The launcher derives the Pilot build ID from the exact bytes of the deterministic `build-manifest.json`. The ID binds the packaged learner route, recorder, Pilot Lab, evaluation assets, route payload, and their hashes.
 
-Use one Pilot build ID for every session in a cohort. Before the first session, run:
+Use one prepared workspace and one Pilot build ID for every session in a cohort. A lower-level ephemeral loopback smoke check remains available as:
 
 ```bash
 python3 software/product_alpha/run_pilot.py smoke
 ```
 
-The smoke gate performs the deterministic build check and verifies the actual loopback HTTP path. A lower-level file-only check remains available as:
+A file-only deterministic check remains available as:
 
 ```bash
 python3 software/product_alpha/run_pilot.py check
 ```
 
-Keep the full smoke build ID with the private local cohort records. Confirm that the long-running launcher prints the same ID before every session. If the ID changes, do not combine the new sessions with the earlier cohort; start a separate cohort or explicitly repeat the earlier sessions on the new build.
+The supported real-cohort path is `prepare_pilot.py` followed by `launch_workspace.py`. If the current build changes, the workspace launcher fails closed. Start a separate workspace and cohort rather than combining records from different builds.
 
-A smoke pass establishes only that the packaged local product path is internally consistent and reachable. Matching build IDs establish build consistency only. Neither establishes learning effectiveness, publication readiness, or permission to add another route.
+A preparation or smoke pass establishes only that the packaged local product path is internally consistent and reachable. Exact workspace/build agreement establishes build consistency only. Neither establishes learning effectiveness, publication readiness, or permission to add another route.
 
 ## Facilitator protocol
 
@@ -130,7 +143,7 @@ Score the learner's final explanation for each measure. Use confusion tags to ca
 
 ## Session record
 
-Use the build-bound `facilitator.html` URL printed by the launcher to record the ordered route prefix, duration, five rubric scores, confusion tags, voluntary continuation, and anonymous product observations. The recorder prevents export until its local validation passes and applies basic checks for common identity or contact-information patterns.
+Use the build-bound `facilitator.html` URL printed by the workspace launcher to record the ordered route prefix, duration, five rubric scores, confusion tags, voluntary continuation, and anonymous product observations. The recorder prevents export until its local validation passes and applies basic checks for common identity or contact-information patterns.
 
 The recorder is a convenience boundary, not a guarantee that free-text notes are anonymous. The facilitator remains responsible for reviewing notes before export. Every session label must begin with `anonymous-` and must be unique within the cohort.
 
@@ -150,60 +163,95 @@ Suggested confusion tags:
 
 Add a new tag only when the existing set cannot describe the observation.
 
-## Cohort review with Pilot Lab
+## Cohort preview with Pilot Lab
 
-1. Open the build-bound Pilot Lab URL printed by the loopback launcher.
+1. Open the build-bound Pilot Lab URL printed by the workspace launcher.
 2. Select or drop the exported JSONL files.
 3. Review rejected records and duplicate session labels.
-4. Confirm that every session belongs to the same recorded Pilot build ID.
+4. Confirm that every session belongs to the same workspace-bound Pilot build ID.
 5. Confirm that at least five valid unique sessions are present before treating the cohort as complete.
 6. Review the aggregate metrics and every revision signal.
-7. Export the aggregate Markdown or JSON for de-identified review.
-8. Keep the validated combined JSONL export private; it still contains raw anonymous session records and facilitator notes.
-9. Refresh the page after the review to clear the in-memory workspace.
+7. Export aggregate Markdown or JSON only when useful for private comparison.
+8. Keep any combined JSONL export private; it still contains raw anonymous session records and facilitator notes.
+9. Refresh the page after the preview to clear the in-memory workspace.
 
-The Pilot Lab aggregate intentionally omits facilitator notes. It does not edit the repository or update the official report automatically.
+The Pilot Lab aggregate intentionally omits facilitator notes. It is a browser-local preview and does not edit the repository or create the authoritative command-line evidence chain.
 
-## Independent command-line verification
+## Deterministic workspace intake
 
-Combine the exported JSONL lines into one local file, one compact JSON object per line, then verify the cohort against the independently recorded smoke/launcher build ID:
-
-```bash
-python3 software/product_alpha/evaluation/verify_cohort.py \
-  --input path/to/anonymous-sessions.jsonl \
-  --expect-build-id <64-character-pilot-build-id> \
-  --format markdown
-```
-
-The verifier independently validates route order, score ranges, anonymous labels, personal-data fields, duplicate session IDs, mixed-build rejection, and exact agreement with the expected launcher build. It then produces completion, duration, score, confusion, continuation, evidence-status, and revision-signal summaries.
-
-`evaluation/summarize.py` remains the lower-level uniform-cohort summarizer. It does not compare a cohort with an independently recorded launcher ID and is not the supported final verification command.
-
-## Review packet and human decision
-
-After verification succeeds, create the review packet in the private facilitator-controlled cohort folder:
+After all facilitator-reviewed exports are present in `incoming-sessions/`, assemble the immutable cohort intake:
 
 ```bash
-python3 software/product_alpha/evaluation/prepare_review.py \
-  --input path/to/anonymous-sessions.jsonl \
-  --expect-build-id <64-character-pilot-build-id> \
-  --output-prefix /private/cohort-folder/refrigerator-review
+python3 software/product_alpha/evaluation/assemble_workspace.py \
+  --workspace /private/path/refrigerator-cohort
 ```
 
-The command writes a deterministic JSON packet and Markdown decision worksheet. It binds the packet to the exact private input bytes and de-identified canonical summary with SHA-256 hashes. It excludes raw session records and facilitator notes, refuses to write inside the repository, and refuses to overwrite existing outputs.
+The command independently validates every raw export, exact route and build identity, anonymous labels, score ranges, route order, personal-data fields, duplicate session IDs, and workspace privacy boundaries. It sorts accepted records by anonymous session ID and writes:
 
-Review the generated aggregate together with the private facilitator notes. Complete exactly one primary action in the Markdown worksheet:
+```text
+verified/anonymous-sessions.jsonl
+verified/intake-manifest.json
+```
+
+The intake manifest hashes every raw source and the exact combined JSONL. Raw exports are not modified, and verified outputs are never overwritten.
+
+## Workspace-bound review packet
+
+Check the entire evidence chain without writing review files:
+
+```bash
+python3 software/product_alpha/evaluation/review_workspace.py check \
+  --workspace /private/path/refrigerator-cohort
+```
+
+The command rescans every raw export and verifies the intake-manifest hash, source-record hash set, combined JSONL hash, session count, summary contract, evidence status, route, build, and privacy boundaries. It rejects post-intake changes.
+
+Create the immutable private review packet:
+
+```bash
+python3 software/product_alpha/evaluation/review_workspace.py \
+  --workspace /private/path/refrigerator-cohort
+```
+
+The command writes `review/refrigerator-review.json` and `review/refrigerator-review.md`. The packet contains the de-identified aggregate, revision signals, allowed actions, and evidence hashes. It excludes raw session records, facilitator notes, and custom confusion-tag text. It refuses repository output and overwrite.
+
+Do not edit either review file. Review the generated aggregate together with the separate private facilitator notes.
+
+## Human decision record
+
+Verify that the review JSON/Markdown pair remains untouched and still matches the complete workspace evidence chain:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py check \
+  --workspace /private/path/refrigerator-cohort
+```
+
+Record exactly one human-supplied primary action:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py \
+  --workspace /private/path/refrigerator-cohort \
+  --action <allowed-primary-action> \
+  --reviewer "<role-or-initials>" \
+  --review-date YYYY-MM-DD \
+  --rationale "<de-identified rationale>" \
+  --next-checkpoint "<next checkpoint>"
+```
+
+Allowed actions are:
 
 - `revise-current-route`;
 - `repeat-current-route-pilot`;
 - `hold-current-route`;
 - `advance-to-next-product-planning-review`.
 
-The fourth action starts a separate planning review only. It does not authorize a second route. Keep the completed worksheet and packet in the private cohort folder until a separate repository change is intentionally prepared and reviewed.
+The fourth action is rejected unless the cohort status is `ready-for-human-review`. The command writes `review/refrigerator-review-decision.json` and `review/refrigerator-review-decision.md`, binds them to the untouched review packet and workspace evidence hashes, refuses overwrite, and does not modify the repository.
+
+Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient. Selecting the fourth action records only the human choice to proceed toward a separate planning review. It does not create that review or authorize a second route.
 
 ## Decision rule
 
-Do not add a second route merely because the interface runs without errors, because the smoke gate passes, or because the five-session minimum is reached. Review the evidence first and record one primary action.
+Do not add a second route merely because the interface runs without errors, because preparation succeeds, or because the five-session minimum is reached. Review the evidence first and record one primary action.
 
 Prioritize revision when:
 
@@ -214,4 +262,4 @@ Prioritize revision when:
 - learners repeatedly treat Atlas status as proof that a physical conclusion is true;
 - learners finish but do not voluntarily continue.
 
-A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab surfaces these triggers; a human reviewer still chooses the product action. Neither the generated packet nor the completed worksheet automatically modifies the repository, authorizes public release, establishes product-market fit, or permits a learning-effectiveness claim.
+A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab and command-line summary surface descriptive signals; a human reviewer still chooses the product action. Neither the review packet nor the decision record automatically modifies the repository, creates a planning review, authorizes public release, establishes product-market fit, permits a learning-effectiveness claim, or authorizes a second route.
