@@ -98,6 +98,7 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             )
             self.assertEqual(report["decision"], "workspace-intake-assembled")
             self.assertEqual(report["pilot_build_id"], BUILD_ID)
+            self.assertEqual(report["workspace"], str(workspace.resolve()))
             self.assertEqual(report["sessions"], 2)
             self.assertEqual(report["evidence_status"], "incomplete")
             self.assertTrue(report["human_review_required"])
@@ -192,6 +193,17 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                 assemble_workspace.assemble_workspace(workspace)
             self.assertEqual(combined.read_text(encoding="utf-8"), "keep\n")
 
+    def test_rejects_workspace_inside_repository_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            workspace = create_workspace(repository)
+            with self.assertRaisesRegex(ValueError, "outside the repository"):
+                assemble_workspace.assemble_workspace(
+                    workspace,
+                    repo_root=repository,
+                )
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
     def test_cli_reports_private_intake(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
@@ -214,6 +226,7 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             report = json.loads(completed.stdout)
             self.assertEqual(report["decision"], "workspace-intake-assembled")
             self.assertEqual(report["sessions"], 1)
+            self.assertEqual(report["workspace"], str(workspace.resolve()))
             self.assertEqual(
                 report["combined_jsonl"],
                 str((workspace / "verified" / "anonymous-sessions.jsonl").resolve()),
