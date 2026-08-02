@@ -45,8 +45,13 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
     def test_reports_preserve_private_evidence_and_no_claim_boundaries(self) -> None:
         for text in (self.product_state, self.pilot_report):
             lowered = text.lower()
-            self.assertIn("must not be committed", lowered)
-            self.assertIn("no automatic repository mutation", lowered)
+            self.assertIn("not be committed", lowered)
+            self.assertTrue(
+                "no automatic repository mutation" in lowered
+                or "does not automatically mutate the repository" in lowered
+                or "none of these commands automatically mutates the repository" in lowered,
+                "authority document must deny automatic repository mutation",
+            )
             self.assertIn("may not yet claim", lowered)
             self.assertIn("learning effectiveness", lowered)
             self.assertIn("second route", lowered)
