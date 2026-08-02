@@ -3,17 +3,17 @@ title: "Product Alpha 0.1 pilot evidence integrity report"
 slug: product-alpha-0-1-pilot-evidence-integrity
 domain: product
 status: draft
-artifact_revision: 2
+artifact_revision: 3
 release_status: alpha
 prerequisites: [product-alpha-refrigerator]
 connections: [product-alpha-learner-pilot]
-last_reviewed: 2026-08-01
+last_reviewed: 2026-08-02
 content_license: CC-BY-4.0
 ---
 
 # Product Alpha 0.1 pilot evidence integrity report
 
-**Review date:** 2026-08-01  
+**Review date:** 2026-08-02  
 **Product:** Principia Product Alpha 0.1  
 **Route:** Refrigerator — Observe → Map → Model → Diagnose → Redesign  
 **Evidence status:** incomplete and not independently verifiable from the repository  
@@ -21,13 +21,13 @@ content_license: CC-BY-4.0
 
 ## Executive decision
 
-The repository does not currently contain a de-identified aggregate cohort report derived from 5–8 real learner sessions. It therefore cannot support a learning-effectiveness, progression, or second-route decision.
+The repository does not currently contain a reviewed product change derived from 5–8 real learner sessions. It therefore cannot support a learning-effectiveness, progression, second-route, public-release, SaaS, or production decision.
 
 No learner result is invented here. Missing values remain **not reportable**, not estimated, simulated, or reconstructed.
 
 The product decision is:
 
-> Keep the current refrigerator route bounded, run the build-bound learner pilot, create the verified private review packet, and make one explicit human decision from real evidence.
+> Keep the current refrigerator route bounded, run the prepared build-bound pilot, complete the verified private evidence chain, and record one explicit human decision from real evidence.
 
 GitHub issue state is not part of this evidence workflow.
 
@@ -36,15 +36,21 @@ GitHub issue state is not part of this evidence workflow.
 The following infrastructure is present and machine-testable:
 
 - the five-step refrigerator learner route;
-- deterministic static packaging;
-- a loopback-only launcher and HTTP smoke gate;
-- a deterministic 64-character Pilot build ID;
-- a build-bound anonymous facilitator recorder;
-- a Pilot Lab that rejects duplicates and mixed builds;
-- expected-build cohort verification;
-- deterministic JSON and Markdown summaries;
-- a private hash-bound human-review packet;
-- Product Alpha CI and executable learner-runtime tests.
+- deterministic static packaging and build identity;
+- a loopback-only smoke gate and build-bound workspace launcher;
+- in-tab learner reasoning state without browser persistence;
+- a build-bound anonymous facilitator recorder that locks after capture;
+- a browser-local Pilot Lab with explicit additive file loading;
+- a private repository-external cohort workspace;
+- repeatable no-write intake preflight;
+- immutable cohort assembly with raw-source and combined-evidence hashes;
+- fail-closed review verification against unchanged incoming exports;
+- an immutable de-identified review packet;
+- a separate immutable human-decision JSON and Markdown pair;
+- a decision receipt that seals both decision files and earlier evidence bindings;
+- no-write final decision verification;
+- a read-only workspace stage and next-action reporter;
+- Product Alpha Python, browser-runtime, and Node.js CI.
 
 The following evidence required for a completed product decision is not present in the repository:
 
@@ -53,9 +59,10 @@ The following evidence required for a completed product decision is not present 
 - aggregate rubric scores;
 - aggregate confusion-tag counts;
 - voluntary-continuation results;
-- a human decision tied to those measured results.
+- a human decision tied to those measured results;
+- a separately reviewed and de-identified repository change based on that decision.
 
-Private raw records should not be committed. Their absence is expected. The missing item is a separately reviewed, de-identified product decision derived from a verified private cohort.
+Private raw records, intake files, review packets, decision records, and receipts should not be committed. Their absence is expected. The missing repository evidence is a separately reviewed product change derived from a verified private cohort.
 
 ## Cohort metrics
 
@@ -80,10 +87,13 @@ The project may claim that Product Alpha 0.1 is technically pilot-ready:
 
 - the route builds deterministically;
 - the learner, recorder, and Pilot Lab interfaces are available locally;
+- the preparation command proves the exact loopback build before workspace creation;
+- the workspace launcher fails closed on build drift;
 - session records are bound to one exact build;
-- duplicate and mixed-build records are rejected;
-- the complete loopback product path passes a smoke check;
-- verified private cohort and review-packet tools are available;
+- duplicate, mixed-build, malformed, and personal-data-bearing records are rejected;
+- current exports can be validated repeatedly without sealing the cohort;
+- intake, review, decision, and receipt artifacts are hash-bound and non-overwriting;
+- final decision verification rechecks the complete private evidence chain;
 - no accounts, analytics, cloud storage, or public network binding are required.
 
 ## What may not be claimed
@@ -106,43 +116,89 @@ This is an evidence gap, not a software completion signal and not evidence of pr
 
 ## Required repeatable pilot
 
-Before participant sessions:
+Prepare one new repository-external workspace:
 
 ```bash
-python3 software/product_alpha/run_pilot.py smoke
-python3 software/product_alpha/run_pilot.py --open
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/refrigerator-cohort
 ```
 
-Record the printed Pilot build ID and use that exact build for every included session.
+Do not begin participant sessions unless preparation reports `pilot-preparation-passed`.
+
+Run every session through the exact prepared build:
+
+```bash
+python3 software/product_alpha/launch_workspace.py \
+  --workspace /private/path/refrigerator-cohort \
+  --open
+```
 
 For each session:
 
-1. use an anonymous label such as `anonymous-001`;
-2. follow `software/product_alpha/PILOT.md` without teaching answers in advance;
-3. export one validated build-bound JSONL record;
+1. follow `software/product_alpha/PILOT.md` without teaching answers in advance;
+2. use the build-bound recorder;
+3. export exactly one locked anonymous JSONL record;
 4. review free text for accidental identifying information;
-5. keep raw records private and local;
-6. do not commit names, school details, contact information, or raw session records.
+5. place the reviewed export in `incoming-sessions/`;
+6. keep the workspace private and local;
+7. do not commit names, school details, contact information, or raw session records.
 
-After the cohort, verify the private file:
-
-```bash
-python3 software/product_alpha/evaluation/verify_cohort.py \
-  --input path/to/anonymous-sessions.jsonl \
-  --expect-build-id <64-character-pilot-build-id> \
-  --format markdown
-```
-
-Then create the private review packet outside the repository:
+At any point, inspect the verified stage and next action without writing:
 
 ```bash
-python3 software/product_alpha/evaluation/prepare_review.py \
-  --input path/to/anonymous-sessions.jsonl \
-  --expect-build-id <64-character-pilot-build-id> \
-  --output-prefix /private/cohort-folder/refrigerator-review
+python3 software/product_alpha/evaluation/workspace_status.py \
+  --workspace /private/path/refrigerator-cohort
 ```
 
-Do not manufacture a complete-looking dataset. Do not commit the raw JSONL file or private packet.
+During collection, validate current exports without sealing the cohort:
+
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py check \
+  --workspace /private/path/refrigerator-cohort
+```
+
+After collection is deliberately closed and at least five valid sessions are present, assemble the immutable intake:
+
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py \
+  --workspace /private/path/refrigerator-cohort
+```
+
+An intentionally stopped incomplete cohort requires `--allow-incomplete`. That records early closure but keeps the evidence incomplete and planning-review ineligible.
+
+Verify the unchanged evidence chain and create the private review packet:
+
+```bash
+python3 software/product_alpha/evaluation/review_workspace.py check \
+  --workspace /private/path/refrigerator-cohort
+
+python3 software/product_alpha/evaluation/review_workspace.py \
+  --workspace /private/path/refrigerator-cohort
+```
+
+Verify readiness, review the aggregate together with private facilitator notes, and record one human action:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py check \
+  --workspace /private/path/refrigerator-cohort
+
+python3 software/product_alpha/evaluation/record_decision.py \
+  --workspace /private/path/refrigerator-cohort \
+  --action <allowed-primary-action> \
+  --reviewer "<role-or-initials>" \
+  --review-date YYYY-MM-DD \
+  --rationale "<de-identified rationale>" \
+  --next-checkpoint "<next checkpoint>"
+```
+
+Verify the completed decision artifact trio and every earlier binding without writing:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py verify \
+  --workspace /private/path/refrigerator-cohort
+```
+
+Do not manufacture a complete-looking dataset. Do not commit the private workspace or its evidence files.
 
 ## Decision rule after real evidence
 
@@ -165,10 +221,12 @@ Planning review is not route authorization.
 
 This evidence gate is complete only when:
 
-- 5–8 real learner sessions have been conducted on one exact Pilot build;
+- 5–8 real learner sessions have been conducted on one exact prepared Pilot build;
 - raw records remain private, local, anonymous, and facilitator-controlled;
-- expected-build cohort verification succeeds;
+- intake preflight and immutable assembly succeed;
+- the workspace-bound review chain verifies unchanged raw and combined evidence;
 - a private de-identified review packet is generated;
 - recurring confusion and threshold results are reviewed;
-- `PRODUCT_STATE.md` records exactly one human evidence-based product decision;
-- any repository change based on that decision is separately reviewed and merged.
+- exactly one human decision is recorded and receipt-verified;
+- `PRODUCT_STATE.md` records the resulting evidence-based product decision;
+- any repository change based on that decision is separately de-identified, reviewed, and merged.
