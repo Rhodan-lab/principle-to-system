@@ -18,19 +18,36 @@ vm.runInNewContext(scripts[0][1], {
 });
 const { fileKey, mergeFiles } = module.exports;
 
-function file(name, size, lastModified, type = "application/x-ndjson") {
-  return { name, size, lastModified, type, webkitRelativePath: "" };
+function file(
+  name,
+  size,
+  lastModified,
+  type = "application/x-ndjson",
+  webkitRelativePath = "",
+) {
+  return { name, size, lastModified, type, webkitRelativePath };
 }
 
 test("file identity includes stable browser metadata", () => {
-  assert.equal(
-    fileKey(file("anonymous-a.jsonl", 120, 1)),
-    fileKey(file("anonymous-a.jsonl", 120, 1)),
-  );
-  assert.notEqual(
-    fileKey(file("anonymous-a.jsonl", 120, 1)),
-    fileKey(file("anonymous-b.jsonl", 120, 1)),
-  );
+  const original = file("anonymous-a.jsonl", 120, 1);
+  assert.equal(fileKey(original), fileKey(file("anonymous-a.jsonl", 120, 1)));
+
+  const variants = [
+    file("anonymous-b.jsonl", 120, 1),
+    file("anonymous-a.jsonl", 121, 1),
+    file("anonymous-a.jsonl", 120, 2),
+    file("anonymous-a.jsonl", 120, 1, "application/json"),
+    file(
+      "anonymous-a.jsonl",
+      120,
+      1,
+      "application/x-ndjson",
+      "corrected/anonymous-a.jsonl",
+    ),
+  ];
+  for (const variant of variants) {
+    assert.notEqual(fileKey(original), fileKey(variant));
+  }
 });
 
 test("add mode preserves existing batches and skips repeated files", () => {
@@ -39,6 +56,18 @@ test("add mode preserves existing batches and skips repeated files", () => {
   assert.deepEqual(
     Array.from(mergeFiles([first], [second, first], false), fileKey),
     [fileKey(first), fileKey(second)],
+  );
+});
+
+test("a corrected export with the same filename is not discarded", () => {
+  const original = file("anonymous-a.jsonl", 120, 1);
+  const corrected = file("anonymous-a.jsonl", 132, 2);
+  assert.deepEqual(
+    Array.from(
+      mergeFiles([original], [corrected, original, corrected], false),
+      fileKey,
+    ),
+    [fileKey(original), fileKey(corrected)],
   );
 });
 
