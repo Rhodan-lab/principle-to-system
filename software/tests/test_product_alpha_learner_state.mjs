@@ -104,3 +104,35 @@ test("evidence dialog has an explicit accessible name and description",()=>{
   assert.match(html,/<h2 id="evidenceTitle">Evidence boundary<\/h2>/);
   assert.match(html,/<p id="evidenceBoundaryIntro">References are pinned and advisory\./);
 });
+
+test("model and diagnosis groups expose validation relationships",()=>{
+  assert.match(html,/<fieldset class="prediction" id="modelPrediction" aria-describedby="modelFeedback">/);
+  assert.match(html,/id="modelFeedback" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html,/<fieldset class="challenge" id="diagnosisChoice" aria-describedby="feedback">/);
+  assert.match(html,/id="feedback" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html,/\.prediction\[aria-invalid="true"\],\.challenge\[aria-invalid="true"\]/);
+});
+
+test("choice validation marks the group and focuses its first radio",()=>{
+  assert.match(html,/function reportChoiceError\(groupSelector,feedbackSelector,message\)/);
+  assert.match(html,/group\.setAttribute\("aria-invalid","true"\)/);
+  assert.match(html,/feedback\.setAttribute\("aria-live","assertive"\)/);
+  assert.match(html,/group\.querySelector\('input\[type="radio"\]'\)/);
+  assert.match(html,/first&&typeof first\.focus==="function"\)first\.focus\(\)/);
+  assert.match(html,/function clearChoiceError\(groupSelector,feedbackSelector\)/);
+  assert.match(html,/group\.removeAttribute\("aria-invalid"\)/);
+  assert.match(html,/feedback\.setAttribute\("aria-live","polite"\)/);
+});
+
+test("model and diagnosis reject empty choices before recording completion",()=>{
+  const runModelSource=html.match(/function runModel\(\)\{([\s\S]*?)\}\nfunction simulate/);
+  assert.ok(runModelSource,"runModel source must be testable");
+  assert.match(runModelSource[1],/if\(!picked\)\{reportChoiceError\("#modelPrediction","#modelFeedback"/);
+  assert.ok(runModelSource[1].indexOf("reportChoiceError(")<runModelSource[1].indexOf("markModelRun(session)"));
+
+  const challengeSource=html.match(/function challenge\(box\)\{([\s\S]*?)\}\nfunction evidence/);
+  assert.ok(challengeSource,"challenge source must be testable");
+  assert.match(challengeSource[1],/if\(!picked\)\{reportChoiceError\("#diagnosisChoice","#feedback","Choose a diagnosis first\."\);return\}/);
+  assert.ok(challengeSource[1].indexOf("reportChoiceError(")<challengeSource[1].indexOf("markDiagnosisChecked(session)"));
+  assert.match(challengeSource[1],/clearChoiceError\("#diagnosisChoice","#feedback"\)/);
+});
