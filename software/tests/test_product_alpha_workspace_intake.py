@@ -71,98 +71,186 @@ def create_workspace(root: Path) -> Path:
     return workspace
 
 
+def write_sessions(
+    workspace: Path,
+    count: int,
+    *,
+    start: int = 1,
+    build_id: str = BUILD_ID,
+) -> None:
+    incoming = workspace / "incoming-sessions"
+    for number in range(start, start + count):
+        path = incoming / f"session-{number:03d}.jsonl"
+        path.write_text(
+            json.dumps(
+                session(f"anonymous-{number:03d}", build_id=build_id),
+                indent=2 if number % 2 else None,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+
 class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
-    def test_assembles_deterministic_build_bound_cohort(self) -> None:
+    def test_preflight_predicts_complete_intake_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
-            second_path = workspace / "incoming-sessions" / "second.jsonl"
-            first_path = workspace / "incoming-sessions" / "first.json"
-            second_path.write_text(
-                json.dumps(session("anonymous-002")) + "\n",
-                encoding="utf-8",
+            write_sessions(workspace, 5)
+
+            report = assemble_workspace.preflight_workspace(workspace)
+
+            self.assertEqual(
+                report["contract"],
+                "principia-product-alpha-workspace-intake-preflight/0.1",
             )
-            first_path.write_text(
-                json.dumps(session("anonymous-001"), indent=2) + "\n",
-                encoding="utf-8",
+            self.assertEqual(
+                report["decision"],
+                "workspace-intake-preflight-passed",
             )
+            self.assertEqual(report["sessions"], 5)
+            self.assertEqual(report["minimum_cohort_size"], 5)
+            self.assertTrue(report["cohort_complete"])
+            self.assertEqual(report["evidence_status"], "ready-for-human-review")
+            self.assertTrue(report["ready_for_default_assembly"])
+            self.assertFalse(report["incomplete_assembly_requires_override"])
+            self.assertFalse(report["writes_performed"])
+            self.assertEqual(
+                report["verified_outputs_exist"],
+                {"combined_jsonl": False, "intake_manifest": False},
+            )
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
+    def test_repeated_preflight_allows_more_sessions_before_assembly(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 2)
+
+            first = assemble_workspace.preflight_workspace(workspace)
+            write_sessions(workspace, 3, start=3)
+            second = assemble_workspace.preflight_workspace(workspace)
+
+            self.assertEqual(first["sessions"], 2)
+            self.assertFalse(first["cohort_complete"])
+            self.assertTrue(first["incomplete_assembly_requires_override"])
+            self.assertEqual(second["sessions"], 5)
+            self.assertTrue(second["cohort_complete"])
+            self.assertNotEqual(
+                first["predicted_combined_sha256"],
+                second["predicted_combined_sha256"],
+            )
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
+    def test_complete_assembly_matches_preflight_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 5)
+            preflight = assemble_workspace.preflight_workspace(workspace)
 
             report = assemble_workspace.assemble_workspace(workspace)
             combined = workspace / "verified" / "anonymous-sessions.jsonl"
             intake = workspace / "verified" / "intake-manifest.json"
-            lines = combined.read_text(encoding="utf-8").splitlines()
             saved = json.loads(intake.read_text(encoding="utf-8"))
 
-            self.assertEqual(
-                report["contract"],
-                "principia-product-alpha-workspace-intake/0.1",
-            )
             self.assertEqual(report["decision"], "workspace-intake-assembled")
-            self.assertEqual(report["pilot_build_id"], BUILD_ID)
-            self.assertEqual(report["workspace"], str(workspace.resolve()))
-            self.assertEqual(report["sessions"], 2)
-            self.assertEqual(report["evidence_status"], "incomplete")
-            self.assertTrue(report["human_review_required"])
-            self.assertFalse(report["raw_source_files_modified"])
+            self.assertEqual(report["sessions"], 5)
+            self.assertTrue(report["cohort_complete"])
+            self.assertFalse(report["incomplete_assembly_authorized"])
             self.assertEqual(saved, report)
+            self.assertEqual(
+                report["combined_sha256"],
+                preflight["predicted_combined_sha256"],
+            )
+            self.assertEqual(
+                report["source_records_sha256"],
+                preflight["source_records_sha256"],
+            )
             self.assertEqual(
                 report["combined_sha256"],
                 hashlib.sha256(combined.read_bytes()).hexdigest(),
             )
             self.assertEqual(
-                [json.loads(line)["session_id"] for line in lines],
-                ["anonymous-001", "anonymous-002"],
+                [
+                    json.loads(line)["session_id"]
+                    for line in combined.read_text(encoding="utf-8").splitlines()
+                ],
+                [f"anonymous-{number:03d}" for number in range(1, 6)],
             )
+
+    def test_default_assembly_blocks_incomplete_cohort_without_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 2)
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "Run the check command while collecting",
+            ):
+                assemble_workspace.assemble_workspace(workspace)
+
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
+    def test_allow_incomplete_explicitly_seals_early_stop(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 2)
+
+            report = assemble_workspace.assemble_workspace(
+                workspace,
+                allow_incomplete=True,
+            )
+
+            self.assertEqual(report["sessions"], 2)
+            self.assertFalse(report["cohort_complete"])
+            self.assertEqual(report["evidence_status"], "incomplete")
+            self.assertTrue(report["incomplete_assembly_authorized"])
+            self.assertTrue(
+                (workspace / "verified" / "anonymous-sessions.jsonl").exists()
+            )
+            self.assertTrue(
+                (workspace / "verified" / "intake-manifest.json").exists()
+            )
+
+    def test_preflight_reports_existing_verified_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 5)
+            assemble_workspace.assemble_workspace(workspace)
+
+            report = assemble_workspace.preflight_workspace(workspace)
+
             self.assertEqual(
-                [entry["session_id"] for entry in report["source_records"]],
-                ["anonymous-001", "anonymous-002"],
+                report["verified_outputs_exist"],
+                {"combined_jsonl": True, "intake_manifest": True},
             )
-            self.assertEqual(
-                json.loads(first_path.read_text(encoding="utf-8"))["session_id"],
-                "anonymous-001",
-            )
-            self.assertEqual(
-                json.loads(second_path.read_text(encoding="utf-8"))["session_id"],
-                "anonymous-002",
-            )
+            self.assertFalse(report["ready_for_default_assembly"])
+            with self.assertRaisesRegex(FileExistsError, "already exists"):
+                assemble_workspace.assemble_workspace(workspace)
 
     def test_rejects_mixed_build_before_writing_output(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
-            (workspace / "incoming-sessions" / "one.jsonl").write_text(
-                json.dumps(session("anonymous-001")) + "\n",
-                encoding="utf-8",
-            )
-            (workspace / "incoming-sessions" / "two.jsonl").write_text(
-                json.dumps(
-                    session("anonymous-002", build_id=OTHER_BUILD_ID)
-                )
-                + "\n",
-                encoding="utf-8",
-            )
+            write_sessions(workspace, 1)
+            write_sessions(workspace, 1, start=2, build_id=OTHER_BUILD_ID)
 
             with self.assertRaisesRegex(
                 ValueError,
                 "pilot_build_id does not match workspace build",
             ):
-                assemble_workspace.assemble_workspace(workspace)
-            self.assertFalse(
-                (workspace / "verified" / "anonymous-sessions.jsonl").exists()
-            )
-            self.assertFalse(
-                (workspace / "verified" / "intake-manifest.json").exists()
-            )
+                assemble_workspace.preflight_workspace(workspace)
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
 
     def test_rejects_duplicate_session_ids_before_writing_output(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
+            incoming = workspace / "incoming-sessions"
             for name in ("one.jsonl", "two.json"):
-                (workspace / "incoming-sessions" / name).write_text(
+                (incoming / name).write_text(
                     json.dumps(session("anonymous-001")) + "\n",
                     encoding="utf-8",
                 )
 
             with self.assertRaisesRegex(ValueError, "duplicate session_id"):
-                assemble_workspace.assemble_workspace(workspace)
+                assemble_workspace.preflight_workspace(workspace)
             self.assertEqual(list((workspace / "verified").iterdir()), [])
 
     def test_rejects_personal_data_before_writing_output(self) -> None:
@@ -176,45 +264,29 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             )
 
             with self.assertRaisesRegex(ValueError, "personal-data fields"):
-                assemble_workspace.assemble_workspace(workspace)
+                assemble_workspace.preflight_workspace(workspace)
             self.assertEqual(list((workspace / "verified").iterdir()), [])
-
-    def test_refuses_to_overwrite_existing_combined_cohort(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            workspace = create_workspace(Path(directory))
-            (workspace / "incoming-sessions" / "one.jsonl").write_text(
-                json.dumps(session("anonymous-001")) + "\n",
-                encoding="utf-8",
-            )
-            combined = workspace / "verified" / "anonymous-sessions.jsonl"
-            combined.write_text("keep\n", encoding="utf-8")
-
-            with self.assertRaisesRegex(FileExistsError, "already exists"):
-                assemble_workspace.assemble_workspace(workspace)
-            self.assertEqual(combined.read_text(encoding="utf-8"), "keep\n")
 
     def test_rejects_workspace_inside_repository_boundary(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             repository = Path(directory) / "repository"
             workspace = create_workspace(repository)
             with self.assertRaisesRegex(ValueError, "outside the repository"):
-                assemble_workspace.assemble_workspace(
+                assemble_workspace.preflight_workspace(
                     workspace,
                     repo_root=repository,
                 )
             self.assertEqual(list((workspace / "verified").iterdir()), [])
 
-    def test_cli_reports_private_intake(self) -> None:
+    def test_cli_check_writes_nothing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
-            (workspace / "incoming-sessions" / "one.jsonl").write_text(
-                json.dumps(session("anonymous-001")) + "\n",
-                encoding="utf-8",
-            )
+            write_sessions(workspace, 2)
             completed = subprocess.run(
                 [
                     sys.executable,
                     str(SCRIPT),
+                    "check",
                     "--workspace",
                     str(workspace),
                 ],
@@ -224,13 +296,50 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                 text=True,
             )
             report = json.loads(completed.stdout)
-            self.assertEqual(report["decision"], "workspace-intake-assembled")
-            self.assertEqual(report["sessions"], 1)
-            self.assertEqual(report["workspace"], str(workspace.resolve()))
+
             self.assertEqual(
-                report["combined_jsonl"],
-                str((workspace / "verified" / "anonymous-sessions.jsonl").resolve()),
+                report["decision"],
+                "workspace-intake-preflight-passed",
             )
+            self.assertEqual(report["sessions"], 2)
+            self.assertFalse(report["writes_performed"])
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
+    def test_cli_requires_explicit_incomplete_override(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            write_sessions(workspace, 1)
+
+            blocked = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--workspace",
+                    str(workspace),
+                ],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(blocked.returncode, 0)
+            self.assertIn("allow-incomplete", blocked.stderr)
+            self.assertEqual(list((workspace / "verified").iterdir()), [])
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--workspace",
+                    str(workspace),
+                    "--allow-incomplete",
+                ],
+                cwd=REPO_ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = json.loads(completed.stdout)
+            self.assertTrue(report["incomplete_assembly_authorized"])
 
 
 if __name__ == "__main__":
