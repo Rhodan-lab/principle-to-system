@@ -8,24 +8,13 @@ import datetime as dt
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Sequence
 
 import prepare_review
 import review_workspace
 
 CONTRACT = "principia-product-alpha-human-decision/0.1"
 REPO_ROOT = Path(__file__).resolve().parents[3]
-REQUIRED_PACKET_BOUNDARIES = {
-    "raw_session_records_included": False,
-    "facilitator_notes_included": False,
-    "custom_confusion_tag_text_included": False,
-    "automatic_product_decision": False,
-    "automatic_repository_mutation": False,
-    "second_route_authorized": False,
-    "public_release_authorized": False,
-    "learning_effectiveness_claimed": False,
-    "product_market_fit_claimed": False,
-}
 
 
 def _sha256(data: bytes) -> str:
@@ -89,6 +78,30 @@ def _decision_paths(review_prefix: Path) -> tuple[Path, Path]:
     return json_path, markdown_path
 
 
+def _expected_review_packet(
+    verification: dict[str, object],
+) -> dict[str, object]:
+    combined = Path(str(verification["combined_jsonl"]))
+    packet = prepare_review.build_review_packet(
+        combined,
+        str(verification["pilot_build_id"]),
+    )
+    evidence = packet.get("evidence_binding")
+    if not isinstance(evidence, dict):
+        raise ValueError("rebuilt review packet evidence_binding must be an object")
+    evidence.update(
+        {
+            "workspace_contract": verification["workspace_contract"],
+            "workspace_intake_contract": review_workspace.INTAKE_CONTRACT,
+            "intake_manifest_sha256": verification["intake_manifest_sha256"],
+            "source_records_sha256": verification["source_records_sha256"],
+            "source_record_count": verification["source_record_count"],
+            "raw_sources_verified": True,
+        }
+    )
+    return packet
+
+
 def validate_review_ready(workspace: Path) -> dict[str, object]:
     """Verify the unchanged workspace evidence and untouched generated review pair."""
     verification = review_workspace.verify_workspace_intake(workspace)
@@ -108,77 +121,26 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
         raise ValueError("review packet JSON must contain one object")
     if packet_raw != prepare_review.canonical_json(packet):
         raise ValueError("review packet JSON is not the untouched canonical packet")
-    expected_markdown = prepare_review.render_markdown(packet).encode("utf-8")
+
+    expected_packet = _expected_review_packet(verification)
+    if packet != expected_packet:
+        raise ValueError("review packet JSON does not match verified workspace evidence")
+    expected_markdown = prepare_review.render_markdown(expected_packet).encode("utf-8")
     if markdown_raw != expected_markdown:
         raise ValueError("review packet Markdown does not match the untouched packet")
 
-    if packet.get("contract") != prepare_review.CONTRACT:
-        raise ValueError(f"review packet contract must be {prepare_review.CONTRACT!r}")
-    if packet.get("pilot_build_id") != verification["pilot_build_id"]:
-        raise ValueError("review packet pilot_build_id does not match workspace")
-    if packet.get("route_id") != verification["route_id"]:
-        raise ValueError("review packet route_id does not match workspace")
-
-    evidence = packet.get("evidence_binding")
-    if not isinstance(evidence, dict):
-        raise ValueError("review packet evidence_binding must be an object")
-    expected_evidence = {
-        "input_sha256": verification["combined_sha256"],
-        "workspace_contract": verification["workspace_contract"],
-        "workspace_intake_contract": review_workspace.INTAKE_CONTRACT,
-        "intake_manifest_sha256": verification["intake_manifest_sha256"],
-        "source_records_sha256": verification["source_records_sha256"],
-        "source_record_count": verification["source_record_count"],
-        "raw_sources_verified": True,
-    }
-    for key, expected in expected_evidence.items():
-        if evidence.get(key) != expected:
-            raise ValueError(f"review packet evidence binding {key!r} is inconsistent")
-
-    summary = packet.get("aggregate_summary")
-    if not isinstance(summary, dict):
-        raise ValueError("review packet aggregate_summary must be an object")
-    if summary.get("pilot_build_id") != verification["pilot_build_id"]:
-        raise ValueError("review packet summary build does not match workspace")
-    if summary.get("route_id") != verification["route_id"]:
-        raise ValueError("review packet summary route does not match workspace")
-    if summary.get("sessions") != verification["sessions"]:
-        raise ValueError("review packet summary session count does not match workspace")
-    if summary.get("evidence_status") != verification["evidence_status"]:
-        raise ValueError("review packet summary evidence status does not match workspace")
-
-    review = packet.get("review")
+    review = expected_packet.get("review")
     if not isinstance(review, dict):
         raise ValueError("review packet review section must be an object")
-    if review.get("status") != "human-review-required":
-        raise ValueError("review packet status must remain human-review-required")
-    if review.get("allowed_primary_actions") != list(prepare_review.ALLOWED_PRIMARY_ACTIONS):
-        raise ValueError("review packet allowed_primary_actions are inconsistent")
-    for field in (
-        "primary_action",
-        "rationale",
-        "reviewer",
-        "review_date",
-        "next_checkpoint",
-    ):
-        if review.get(field) is not None:
-            raise ValueError(f"review packet field {field!r} must remain unmodified")
-    planning_eligible = verification["evidence_status"] == "ready-for-human-review"
-    if review.get("planning_review_eligible") is not planning_eligible:
-        raise ValueError("review packet planning_review_eligible is inconsistent")
-
-    boundaries = packet.get("boundaries")
-    if not isinstance(boundaries, dict):
-        raise ValueError("review packet boundaries must be an object")
-    for key, expected in REQUIRED_PACKET_BOUNDARIES.items():
-        if boundaries.get(key) is not expected:
-            raise ValueError(f"review packet boundary {key!r} is inconsistent")
+    planning_eligible = review.get("planning_review_eligible")
+    if not isinstance(planning_eligible, bool):
+        raise ValueError("review packet planning_review_eligible must be boolean")
 
     decision_json, decision_markdown = _decision_paths(review_prefix)
     return {
         **verification,
         "decision": "human-decision-ready",
-        "review_packet_contract": packet["contract"],
+        "review_packet_contract": expected_packet["contract"],
         "review_json": str(review_json),
         "review_markdown": str(review_markdown),
         "review_json_sha256": _sha256(packet_raw),
@@ -200,10 +162,8 @@ def _build_decision_record(
 ) -> dict[str, object]:
     if action not in prepare_review.ALLOWED_PRIMARY_ACTIONS:
         raise ValueError(f"unsupported primary action: {action!r}")
-    if (
-        action == "advance-to-next-product-planning-review"
-        and readiness["planning_review_eligible"] is not True
-    ):
+    planning_action_selected = action == "advance-to-next-product-planning-review"
+    if planning_action_selected and readiness["planning_review_eligible"] is not True:
         raise ValueError(
             "advance-to-next-product-planning-review requires ready-for-human-review evidence"
         )
@@ -238,8 +198,7 @@ def _build_decision_record(
                 3,
                 500,
             ),
-            "planning_review_opened": action
-            == "advance-to-next-product-planning-review",
+            "planning_review_action_selected": planning_action_selected,
         },
         "boundaries": {
             "human_supplied_decision": True,
@@ -303,7 +262,10 @@ def render_markdown(record: dict[str, object]) -> str:
             f"- Primary action: `{decision['primary_action']}`",
             f"- Reviewer: {decision['reviewer']}",
             f"- Review date: {decision['review_date']}",
-            f"- Planning review opened: **{str(decision['planning_review_opened']).lower()}**",
+            (
+                "- Planning review action selected: **"
+                f"{str(decision['planning_review_action_selected']).lower()}**"
+            ),
             "",
             "### Rationale",
             "",
@@ -316,8 +278,8 @@ def render_markdown(record: dict[str, object]) -> str:
             "## Decision boundary",
             "",
             "This record captures a human product action only. It does not automatically "
-            "modify the repository, authorize a second route or public release, prove "
-            "learning effectiveness, or establish product-market fit.",
+            "modify the repository, create a planning review, authorize a second route or "
+            "public release, prove learning effectiveness, or establish product-market fit.",
             "",
         ]
     )
