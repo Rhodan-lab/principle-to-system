@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EVALUATION_DIR = REPO_ROOT / "software" / "product_alpha" / "evaluation"
@@ -151,6 +152,33 @@ class ProductAlphaHandoffTests(unittest.TestCase):
                 verified["candidate_sha256"],
                 created["candidate_sha256"],
             )
+
+    def test_publish_failure_rolls_back_both_final_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = decided_workspace(Path(directory))
+            prefix = workspace / "handoff" / "repository-candidate"
+            json_path, markdown_path = prepare_handoff._output_paths(prefix)
+            real_replace = prepare_handoff.os.replace
+            calls = 0
+
+            def fail_second_replace(source: Path, destination: Path) -> None:
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("forced second publication failure")
+                real_replace(source, destination)
+
+            with mock.patch.object(
+                prepare_handoff.os,
+                "replace",
+                side_effect=fail_second_replace,
+            ):
+                with self.assertRaisesRegex(OSError, "forced second publication"):
+                    prepare_handoff.write_handoff(workspace, prefix)
+
+            self.assertFalse(json_path.exists())
+            self.assertFalse(markdown_path.exists())
+            self.assertEqual(list(json_path.parent.glob(".*.tmp-*")), [])
 
     def test_cli_check_and_verify_write_nothing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
