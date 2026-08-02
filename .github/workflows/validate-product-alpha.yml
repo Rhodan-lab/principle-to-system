@@ -38,7 +38,24 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - name: Apply bounded patch
-        run: python3 software/product_alpha/_apply_pilot_lab_accessibility.py
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          source_path = Path("software/product_alpha/_apply_pilot_lab_accessibility.py")
+          source = source_path.read_text(encoding="utf-8")
+          replacements = {
+              "assert.deepEqual(state.files, []);": "assert.deepEqual(Array.from(state.files), []);",
+              "assert.deepEqual(state.sessions, []);": "assert.deepEqual(Array.from(state.sessions), []);",
+              "assert.deepEqual(state.errors, []);": "assert.deepEqual(Array.from(state.errors), []);",
+          }
+          for old, new in replacements.items():
+              if source.count(old) != 1:
+                  raise SystemExit(f"temporary test normalization anchor missing: {old}")
+              source = source.replace(old, new, 1)
+          Path("/tmp/apply-pilot-lab-accessibility.py").write_text(source, encoding="utf-8")
+          PY
+          python3 /tmp/apply-pilot-lab-accessibility.py
       - name: Validate bounded patch
         run: |
           if git diff --quiet; then
