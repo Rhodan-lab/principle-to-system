@@ -3,7 +3,7 @@ title: "Principia current product state"
 slug: principia-current-product-state
 domain: product
 status: draft
-artifact_revision: 4
+artifact_revision: 5
 release_status: alpha
 prerequisites: []
 connections: [product-alpha-refrigerator, product-alpha-learner-pilot]
@@ -50,7 +50,9 @@ Product Alpha 0.1 now includes:
 - a separate immutable human-decision record and decision receipt;
 - no-write final decision verification;
 - a read-only workspace stage and next-action reporter;
-- focused Product Alpha Python, browser-runtime, and Node.js CI.
+- a repository-external, allowlisted, de-identified handoff candidate;
+- handoff verification against the unchanged private decision and evidence chain;
+- focused Product Alpha Python, browser-runtime, Node.js, and workflow-scope CI.
 
 The current operational chain was completed through these merged changes:
 
@@ -67,6 +69,8 @@ The current operational chain was completed through these merged changes:
 | PR #126 | Add non-writing intake preflight and safe cohort closure |
 | PR #127 | Seal and verify decision artifacts with a receipt |
 | PR #128 | Report the verified workspace stage and next valid action |
+| PR #129 | Synchronize canonical product-state and pilot evidence authority |
+| PR #130 | Prepare and verify a de-identified repository handoff candidate |
 
 ## Evidence integrity finding
 
@@ -76,7 +80,7 @@ That absence is recorded honestly in:
 
 - `reports/product-alpha-0-1-pilot-summary.md`
 
-Private raw records, review packets, decision records, and receipts must not be committed. Missing cohort values remain **not reportable** rather than invented, estimated, simulated, or reconstructed.
+Private raw records, intake files, review packets, decision records, receipts, and handoff candidates must not be committed. Missing cohort values remain **not reportable** rather than invented, estimated, simulated, or reconstructed.
 
 ## What the project may claim
 
@@ -86,10 +90,11 @@ The project may claim:
 - a working local learner route, recorder, and Pilot Lab;
 - exact workspace/build binding before real sessions;
 - build-bound anonymous session records;
-- duplicate, mixed-build, personal-data, and malformed-record rejection;
+- duplicate, mixed-build, personal-data, malformed-record, and repeated-file rejection;
 - repeatable no-write intake validation;
 - immutable, hash-bound intake, review, and human-decision artifacts;
 - final no-write decision verification;
+- a de-identified repository-external handoff candidate bound to the verified decision;
 - technical readiness for a small formative pilot.
 
 ## What the project may not claim
@@ -143,7 +148,7 @@ python3 software/product_alpha/evaluation/assemble_workspace.py \
   --workspace /private/path/refrigerator-cohort
 ```
 
-An intentionally stopped incomplete cohort requires the explicit `--allow-incomplete` flag. That flag records early closure but does not make the evidence complete or planning-review eligible.
+An intentionally stopped incomplete cohort requires the explicit `--allow-incomplete` flag. It records early closure but does not make the evidence complete or planning-review eligible.
 
 Verify and create the private review packet:
 
@@ -170,14 +175,32 @@ python3 software/product_alpha/evaluation/record_decision.py \
   --next-checkpoint "<next checkpoint>"
 ```
 
-Finally, verify the completed decision JSON, Markdown, receipt, review packet, intake, combined cohort, and raw-source bindings without writing:
+Verify the completed decision JSON, Markdown, receipt, review packet, intake, combined cohort, and raw-source bindings without writing:
 
 ```bash
 python3 software/product_alpha/evaluation/record_decision.py verify \
   --workspace /private/path/refrigerator-cohort
 ```
 
-Keep the entire workspace private and outside the repository. A later repository change must be separately de-identified, reviewed, and merged. None of these commands automatically mutates the repository.
+Prepare a private, de-identified input for a later human-reviewed repository change:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_handoff.py check \
+  --workspace /private/path/refrigerator-cohort \
+  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
+
+python3 software/product_alpha/evaluation/prepare_handoff.py \
+  --workspace /private/path/refrigerator-cohort \
+  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
+
+python3 software/product_alpha/evaluation/prepare_handoff.py verify \
+  --workspace /private/path/refrigerator-cohort \
+  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
+```
+
+The handoff contains only an allowlisted de-identified aggregate, revision signals, verified human action, and evidence hashes. It excludes raw sessions, session identifiers, facilitator notes, custom confusion text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths.
+
+Keep the entire workspace and handoff private and outside the repository. A repository change remains a separate human-reviewed pull request. None of these commands automatically mutates the repository.
 
 ## Revision triggers
 
@@ -204,7 +227,7 @@ The current alpha has:
 - no automated publication;
 - no production deployment contract.
 
-Pilot records remain local, anonymous, private, and facilitator-controlled.
+Pilot records and all derived private artifacts remain local, anonymous where applicable, private, and facilitator-controlled.
 
 ## Atlas operating state
 
@@ -227,6 +250,6 @@ After reviewing the real packet, choose exactly one primary action:
 3. hold the current route;
 4. advance to a separate next-product planning review.
 
-The fourth action starts planning only. It does not authorize a second route, public release, or an effectiveness claim.
+The fourth action starts planning only. It does not authorize a second route, public release, or an effectiveness claim. A verified handoff candidate does not change that authority boundary.
 
 Until real cohort evidence exists, the selected action remains **run and complete the learner pilot**.
