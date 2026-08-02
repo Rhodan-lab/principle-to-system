@@ -26,7 +26,12 @@ class ProductAlphaPilotPreparationTests(unittest.TestCase):
                 capture_output=True,
                 text=True,
             )
-            report = json.loads(completed.stdout)
+            report_line = next(
+                line
+                for line in reversed(completed.stdout.splitlines())
+                if line.strip()
+            )
+            report = json.loads(report_line)
             manifest = json.loads(
                 (workspace / "workspace.json").read_text(encoding="utf-8")
             )
