@@ -46,15 +46,21 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
         for text in (self.product_state, self.pilot_report):
             lowered = text.lower()
             self.assertIn("not be committed", lowered)
-            self.assertTrue(
-                "no automatic repository mutation" in lowered
-                or "does not automatically mutate the repository" in lowered
-                or "none of these commands automatically mutates the repository" in lowered,
-                "authority document must deny automatic repository mutation",
-            )
             self.assertIn("may not yet claim", lowered)
             self.assertIn("learning effectiveness", lowered)
             self.assertIn("second route", lowered)
+
+        product_state = self.product_state.lower()
+        self.assertTrue(
+            "no automatic repository mutation" in product_state
+            or "does not automatically mutate the repository" in product_state
+            or "none of these commands automatically mutates the repository"
+            in product_state,
+            "product state must deny automatic repository mutation",
+        )
+        pilot_report = self.pilot_report.lower()
+        self.assertIn("separately reviewed", pilot_report)
+        self.assertIn("separately de-identified", pilot_report)
 
     def test_obsolete_manual_flow_is_not_the_active_workflow(self) -> None:
         for text in (self.product_state, self.pilot_report):
