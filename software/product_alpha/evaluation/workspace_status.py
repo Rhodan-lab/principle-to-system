@@ -1,0 +1,326 @@
+#!/usr/bin/env python3
+"""Report the current Product Alpha workspace stage and next valid action."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import shlex
+from pathlib import Path
+from typing import Any, Sequence
+
+import assemble_workspace
+import record_decision
+import review_workspace
+
+CONTRACT = "principia-product-alpha-workspace-status/0.1"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _shell_command(parts: Sequence[str]) -> str:
+    return " ".join(shlex.quote(part) for part in parts)
+
+
+def _workspace_command(script: str, workspace: Path, *arguments: str) -> str:
+    return _shell_command(
+        (
+            "python3",
+            f"software/product_alpha/evaluation/{script}",
+            *arguments,
+            "--workspace",
+            str(workspace),
+        )
+    )
+
+
+def _launch_command(workspace: Path) -> str:
+    return _shell_command(
+        (
+            "python3",
+            "software/product_alpha/launch_workspace.py",
+            "--workspace",
+            str(workspace),
+            "--open",
+        )
+    )
+
+
+def _paired_state(paths: Sequence[Path], label: str) -> bool:
+    states = [path.exists() for path in paths]
+    if any(states) and not all(states):
+        raise ValueError(f"{label} is incomplete")
+    return all(states)
+
+
+def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
+    prefix = review_prefix.expanduser().resolve(strict=False)
+    return (
+        Path(f"{prefix}-decision.json"),
+        Path(f"{prefix}-decision.md"),
+        Path(f"{prefix}-decision-receipt.json"),
+    )
+
+
+def _artifact_state(
+    combined: Path,
+    intake: Path,
+    review_json: Path,
+    review_markdown: Path,
+    decision_paths: Sequence[Path],
+) -> dict[str, bool]:
+    return {
+        "combined_jsonl": combined.exists(),
+        "intake_manifest": intake.exists(),
+        "review_json": review_json.exists(),
+        "review_markdown": review_markdown.exists(),
+        "decision_json": decision_paths[0].exists(),
+        "decision_markdown": decision_paths[1].exists(),
+        "decision_receipt": decision_paths[2].exists(),
+    }
+
+
+def _base_report(
+    root: Path,
+    manifest: dict[str, Any],
+    artifacts: dict[str, bool],
+) -> dict[str, object]:
+    return {
+        "contract": CONTRACT,
+        "decision": "workspace-status-reported",
+        "workspace": str(root),
+        "workspace_contract": manifest["contract"],
+        "pilot_build_id": manifest["pilot_build_id"],
+        "route_id": manifest["route_id"],
+        "artifacts": artifacts,
+        "writes_performed": False,
+        "automatic_repository_mutation": False,
+        "human_review_required": True,
+    }
+
+
+def inspect_workspace(
+    workspace: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
+    """Verify the current stage and return one read-only next-action report."""
+    root = workspace.expanduser().resolve(strict=True)
+    if not root.is_dir():
+        raise ValueError("workspace must be a directory")
+    repository = repo_root.resolve(strict=False)
+    if assemble_workspace._is_within(root, repository):
+        raise ValueError("workspace must be outside the repository")
+
+    manifest, incoming, combined, intake = assemble_workspace._load_workspace(root)
+    if not incoming.is_dir():
+        raise ValueError("incoming session directory is missing")
+    paths = manifest.get("paths")
+    if not isinstance(paths, dict):
+        raise ValueError("workspace.json paths must be an object")
+    review_prefix = assemble_workspace._member(
+        root,
+        paths.get("review_output_prefix"),
+        "review_output_prefix",
+    )
+    review_json = review_prefix.with_suffix(".json")
+    review_markdown = review_prefix.with_suffix(".md")
+    decision_paths = _decision_paths(review_prefix)
+    artifacts = _artifact_state(
+        combined,
+        intake,
+        review_json,
+        review_markdown,
+        decision_paths,
+    )
+    report = _base_report(root, manifest, artifacts)
+
+    intake_complete = _paired_state((combined, intake), "verified intake pair")
+    review_complete = _paired_state(
+        (review_json, review_markdown),
+        "review packet pair",
+    )
+    decision_complete = _paired_state(decision_paths, "decision artifact trio")
+
+    if not intake_complete:
+        if review_complete or decision_complete:
+            raise ValueError("downstream artifacts exist before immutable intake")
+        entries = sorted(incoming.iterdir(), key=lambda path: path.name)
+        if not entries:
+            return {
+                **report,
+                "stage": "prepared",
+                "sessions": 0,
+                "minimum_cohort_size": assemble_workspace.pilot_summary.MIN_COHORT_SIZE,
+                "cohort_complete": False,
+                "evidence_status": "not-collected",
+                "next_action": "collect-session-records",
+                "next_command": _launch_command(root),
+                "validation_command": _workspace_command(
+                    "assemble_workspace.py",
+                    root,
+                    "check",
+                ),
+            }
+
+        preflight = assemble_workspace.preflight_workspace(
+            root,
+            repo_root=repo_root,
+        )
+        complete = preflight["cohort_complete"] is True
+        if complete:
+            return {
+                **report,
+                "stage": "ready-to-assemble",
+                "sessions": preflight["sessions"],
+                "minimum_cohort_size": preflight["minimum_cohort_size"],
+                "cohort_complete": True,
+                "evidence_status": preflight["evidence_status"],
+                "predicted_combined_sha256": preflight[
+                    "predicted_combined_sha256"
+                ],
+                "source_records_sha256": preflight["source_records_sha256"],
+                "next_action": "assemble-immutable-intake",
+                "next_command": _workspace_command(
+                    "assemble_workspace.py",
+                    root,
+                ),
+                "validation_command": _workspace_command(
+                    "assemble_workspace.py",
+                    root,
+                    "check",
+                ),
+            }
+        return {
+            **report,
+            "stage": "collecting",
+            "sessions": preflight["sessions"],
+            "minimum_cohort_size": preflight["minimum_cohort_size"],
+            "cohort_complete": False,
+            "evidence_status": preflight["evidence_status"],
+            "predicted_combined_sha256": preflight["predicted_combined_sha256"],
+            "source_records_sha256": preflight["source_records_sha256"],
+            "next_action": "collect-more-session-records",
+            "next_command": _launch_command(root),
+            "validation_command": _workspace_command(
+                "assemble_workspace.py",
+                root,
+                "check",
+            ),
+        }
+
+    verification = review_workspace.verify_workspace_intake(
+        root,
+        repo_root=repo_root,
+    )
+    if not review_complete:
+        if decision_complete:
+            raise ValueError("decision artifacts exist before the review packet")
+        return {
+            **report,
+            "stage": "intake-verified",
+            "sessions": verification["sessions"],
+            "cohort_complete": verification["evidence_status"]
+            == "ready-for-human-review",
+            "evidence_status": verification["evidence_status"],
+            "combined_sha256": verification["combined_sha256"],
+            "intake_manifest_sha256": verification["intake_manifest_sha256"],
+            "source_records_sha256": verification["source_records_sha256"],
+            "next_action": "create-review-packet",
+            "next_command": _workspace_command("review_workspace.py", root),
+            "validation_command": _workspace_command(
+                "review_workspace.py",
+                root,
+                "check",
+            ),
+        }
+
+    readiness = record_decision.validate_review_ready(root)
+    if not decision_complete:
+        return {
+            **report,
+            "stage": "review-ready-for-decision",
+            "sessions": readiness["sessions"],
+            "cohort_complete": readiness["evidence_status"]
+            == "ready-for-human-review",
+            "evidence_status": readiness["evidence_status"],
+            "planning_review_eligible": readiness["planning_review_eligible"],
+            "review_json_sha256": readiness["review_json_sha256"],
+            "review_markdown_sha256": readiness["review_markdown_sha256"],
+            "next_action": "record-human-decision",
+            "next_command": None,
+            "next_command_template": _workspace_command(
+                "record_decision.py",
+                root,
+                "--action",
+                "<allowed-primary-action>",
+                "--reviewer",
+                "<role-or-initials>",
+                "--review-date",
+                "YYYY-MM-DD",
+                "--rationale",
+                "<de-identified-rationale>",
+                "--next-checkpoint",
+                "<next-checkpoint>",
+            ),
+            "validation_command": _workspace_command(
+                "record_decision.py",
+                root,
+                "check",
+            ),
+        }
+
+    decision = record_decision.verify_workspace_decision(root)
+    action = str(decision["primary_action"])
+    follow_up = {
+        "revise-current-route": "prepare-bounded-route-revision",
+        "repeat-current-route-pilot": "prepare-new-private-cohort",
+        "hold-current-route": "hold-until-recorded-checkpoint",
+        "advance-to-next-product-planning-review": "prepare-separate-planning-review",
+    }.get(action, "review-recorded-human-action")
+    return {
+        **report,
+        "stage": "decision-verified",
+        "sessions": decision["sessions"],
+        "cohort_complete": decision["evidence_status"]
+        == "ready-for-human-review",
+        "evidence_status": decision["evidence_status"],
+        "primary_action": action,
+        "planning_review_action_selected": decision[
+            "planning_review_action_selected"
+        ],
+        "decision_record_sha256": decision["decision_record_sha256"],
+        "decision_markdown_sha256": decision["decision_markdown_sha256"],
+        "decision_receipt_sha256": decision["decision_receipt_sha256"],
+        "next_action": follow_up,
+        "next_command": None,
+        "validation_command": _workspace_command(
+            "record_decision.py",
+            root,
+            "verify",
+        ),
+    }
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--workspace",
+        type=Path,
+        required=True,
+        help="private Product Alpha workspace outside the repository",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
+    try:
+        report = inspect_workspace(args.workspace)
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"workspace status failed: {exc}") from exc
+    print(json.dumps(report, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
