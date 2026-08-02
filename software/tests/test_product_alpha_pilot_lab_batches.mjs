@@ -189,3 +189,22 @@ test("replacement confirmation is explicit and cancellable", () => {
   assert.match(html, /cancel\.hidden=!pending/);
   assert.match(html, /Pending replacement cancelled\. Press Clear workspace again/);
 });
+
+
+test("dynamic tables expose captions and header relationships", () => {
+  assert.match(html, /<caption>Loaded anonymous sessions<\/caption>/);
+  assert.match(html, /<th scope="col">Session<\/th>/);
+  assert.match(html, /<th scope="col">Progress<\/th>/);
+  assert.match(html, /<th scope="col">Duration<\/th>/);
+  assert.match(html, /<th scope="col">Continue<\/th>/);
+  assert.match(html, /<caption>Cohort aggregate metrics<\/caption>/);
+  assert.match(html, /<th scope="row">Started<\/th>/);
+  assert.match(html, /<th scope="row">\${title\(key\)}<\/th>/);
+  assert.match(html, /<th scope="row">Continue yes<\/th>/);
+});
+
+test("wide validation ledger is a keyboard-scrollable named region", () => {
+  assert.match(html, /class="table-scroll" role="region" aria-label="Loaded session validation ledger" tabindex="0"/);
+  assert.match(html, /\.table-scroll\{max-width:100%;overflow-x:auto\}/);
+  assert.match(html, /\.table-scroll:focus-visible\{outline:3px solid var\(--accent\)/);
+});
