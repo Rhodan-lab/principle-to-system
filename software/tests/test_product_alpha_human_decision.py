@@ -14,6 +14,7 @@ SCRIPT = EVALUATION_DIR / "record_decision.py"
 sys.path.insert(0, str(EVALUATION_DIR))
 
 import assemble_workspace  # noqa: E402
+import prepare_review  # noqa: E402
 import prepare_workspace  # noqa: E402
 import record_decision  # noqa: E402
 import review_workspace  # noqa: E402
@@ -82,7 +83,7 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
 
             self.assertEqual(report["decision"], "human-decision-record-created")
             self.assertEqual(human["primary_action"], "revise-current-route")
-            self.assertFalse(human["planning_review_opened"])
+            self.assertFalse(human["planning_review_action_selected"])
             self.assertEqual(binding["json_sha256"], original_json_sha)
             self.assertEqual(binding["markdown_sha256"], original_markdown_sha)
             self.assertTrue(binding["raw_sources_verified"])
@@ -129,6 +130,25 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             )
 
             with self.assertRaisesRegex(ValueError, "does not match the untouched packet"):
+                record_decision.validate_review_ready(workspace)
+
+    def test_rejects_rebuilt_but_altered_review_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            review_json = workspace / "review" / "refrigerator-review.json"
+            review_markdown = workspace / "review" / "refrigerator-review.md"
+            packet = json.loads(review_json.read_text(encoding="utf-8"))
+            packet["aggregate_summary"]["sessions"] = 99
+            review_json.write_bytes(prepare_review.canonical_json(packet))
+            review_markdown.write_text(
+                prepare_review.render_markdown(packet),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "does not match verified workspace evidence",
+            ):
                 record_decision.validate_review_ready(workspace)
 
     def test_refuses_to_overwrite_existing_decision(self) -> None:
