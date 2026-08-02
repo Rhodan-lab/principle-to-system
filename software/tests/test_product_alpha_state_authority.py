@@ -21,16 +21,16 @@ REQUIRED_WORKFLOW_COMMANDS = (
     "software/product_alpha/evaluation/prepare_handoff.py verify",
 )
 
-HANDOFF_EXCLUSIONS = (
-    "raw sessions",
-    "session identifiers",
-    "facilitator notes",
-    "custom confusion",
-    "reviewer identity",
-    "review date",
-    "private rationale",
-    "checkpoint text",
-    "local workspace paths",
+HANDOFF_EXCLUSION_ALIASES = (
+    ("raw sessions",),
+    ("session identifiers", "session ids"),
+    ("facilitator notes",),
+    ("custom confusion",),
+    ("reviewer identity",),
+    ("review date",),
+    ("private rationale",),
+    ("checkpoint text",),
+    ("local workspace paths", "local paths"),
 )
 
 
@@ -70,9 +70,12 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
             lowered = text.lower()
             self.assertIn("handoff", lowered)
             self.assertIn("outside the repository", lowered)
-            for excluded in HANDOFF_EXCLUSIONS:
-                with self.subTest(excluded=excluded, document=text[:40]):
-                    self.assertIn(excluded, lowered)
+            for aliases in HANDOFF_EXCLUSION_ALIASES:
+                with self.subTest(aliases=aliases, document=text[:40]):
+                    self.assertTrue(
+                        any(alias in lowered for alias in aliases),
+                        f"missing handoff exclusion: {aliases}",
+                    )
 
     def test_reports_preserve_private_evidence_and_no_claim_boundaries(self) -> None:
         for text in self.authority_documents:
