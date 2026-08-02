@@ -57,6 +57,7 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
             "camera=()",
             launcher.SMOKE_REQUIRED_HEADERS["permissions-policy"],
         )
+        self.assertTrue(report["foreign_host_rejected"])
         self.assertFalse(report["session_data_stored"])
 
     def test_smoke_fails_closed_when_a_required_header_differs(self) -> None:
@@ -118,6 +119,7 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
         self.assertEqual(first_line, second_line)
         self.assertIn("host=127.0.0.1", first_line)
         self.assertIn("targets=5", first_line)
+        self.assertIn("foreign_host_rejected=true", first_line)
         self.assertIn("session_data_stored=false", first_line)
         self.assertRegex(first_line, r"build_id=[0-9a-f]{64}")
 
