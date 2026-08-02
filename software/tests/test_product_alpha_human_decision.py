@@ -60,8 +60,22 @@ def reviewed_workspace(root: Path, count: int = 5) -> Path:
     return workspace
 
 
+def record_workspace(
+    workspace: Path,
+    action: str = "revise-current-route",
+) -> dict[str, object]:
+    return record_decision.record_workspace_decision(
+        workspace,
+        action,
+        "facilitator-reviewer",
+        "2026-08-02",
+        "Repeated model-control confusion requires a bounded route revision.",
+        "Review the revised refrigerator route before scheduling a repeat cohort.",
+    )
+
+
 class ProductAlphaHumanDecisionTests(unittest.TestCase):
-    def test_records_immutable_decision_bound_to_untouched_review(self) -> None:
+    def test_records_sealed_decision_bound_to_untouched_review(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = reviewed_workspace(Path(directory))
             review_json = workspace / "review" / "refrigerator-review.json"
@@ -69,18 +83,12 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             original_json_sha = hashlib.sha256(review_json.read_bytes()).hexdigest()
             original_markdown_sha = hashlib.sha256(review_markdown.read_bytes()).hexdigest()
 
-            report = record_decision.record_workspace_decision(
-                workspace,
-                "revise-current-route",
-                "facilitator-reviewer",
-                "2026-08-02",
-                "Repeated model-control confusion requires a bounded route revision.",
-                "Review the revised refrigerator route before scheduling a repeat cohort.",
-            )
-
+            report = record_workspace(workspace)
             decision_json = Path(str(report["decision_json"]))
             decision_markdown = Path(str(report["decision_markdown"]))
+            decision_receipt = Path(str(report["decision_receipt"]))
             record = json.loads(decision_json.read_text(encoding="utf-8"))
+            receipt = json.loads(decision_receipt.read_text(encoding="utf-8"))
             binding = record["review_packet_binding"]
             human = record["human_decision"]
 
@@ -101,9 +109,113 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
                 hashlib.sha256(decision_json.read_bytes()).hexdigest(),
             )
             self.assertEqual(
+                report["decision_receipt_sha256"],
+                hashlib.sha256(decision_receipt.read_bytes()).hexdigest(),
+            )
+            self.assertEqual(
+                receipt["decision_json_sha256"],
+                report["decision_record_sha256"],
+            )
+            self.assertEqual(
+                receipt["decision_markdown_sha256"],
+                hashlib.sha256(decision_markdown.read_bytes()).hexdigest(),
+            )
+            self.assertEqual(
                 hashlib.sha256(review_json.read_bytes()).hexdigest(),
                 original_json_sha,
             )
+
+    def test_verifies_existing_decision_artifact_trio(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            record_workspace(workspace)
+
+            report = record_decision.verify_workspace_decision(workspace)
+
+            self.assertEqual(
+                report["contract"],
+                "principia-product-alpha-human-decision-verification/0.1",
+            )
+            self.assertEqual(report["decision"], "human-decision-record-verified")
+            self.assertEqual(report["primary_action"], "revise-current-route")
+            self.assertTrue(report["raw_sources_verified"])
+            self.assertFalse(report["writes_performed"])
+            self.assertRegex(
+                str(report["decision_receipt_sha256"]),
+                r"^[0-9a-f]{64}$",
+            )
+
+    def test_cli_verify_reports_existing_decision_without_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            record_workspace(workspace)
+            before = {
+                path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in (workspace / "review").iterdir()
+            }
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "verify",
+                    "--workspace",
+                    str(workspace),
+                ],
+                cwd=REPO_ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = json.loads(completed.stdout)
+            after = {
+                path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in (workspace / "review").iterdir()
+            }
+
+            self.assertEqual(report["decision"], "human-decision-record-verified")
+            self.assertEqual(before, after)
+
+    def test_rejects_coordinated_decision_pair_edit_against_receipt(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            report = record_workspace(workspace)
+            decision_json = Path(str(report["decision_json"]))
+            decision_markdown = Path(str(report["decision_markdown"]))
+            record = json.loads(decision_json.read_text(encoding="utf-8"))
+            record["human_decision"]["rationale"] = (
+                "A coordinated local rewrite changed the recorded human rationale."
+            )
+            decision_json.write_bytes(prepare_review.canonical_json(record))
+            decision_markdown.write_text(
+                record_decision.render_markdown(record),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "receipt does not match"):
+                record_decision.verify_workspace_decision(workspace)
+
+    def test_rejects_modified_decision_markdown(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            report = record_workspace(workspace)
+            markdown = Path(str(report["decision_markdown"]))
+            markdown.write_text(
+                markdown.read_text(encoding="utf-8") + "manual edit\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "Markdown does not match"):
+                record_decision.verify_workspace_decision(workspace)
+
+    def test_rejects_incomplete_decision_artifact_trio(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory))
+            report = record_workspace(workspace)
+            Path(str(report["decision_receipt"])).unlink()
+
+            with self.assertRaisesRegex(ValueError, "artifact trio is incomplete"):
+                record_decision.verify_workspace_decision(workspace)
 
     def test_blocks_planning_advance_for_incomplete_cohort(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -154,7 +266,7 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             ):
                 record_decision.validate_review_ready(workspace)
 
-    def test_refuses_to_overwrite_existing_decision(self) -> None:
+    def test_refuses_to_overwrite_existing_decision_or_receipt(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = reviewed_workspace(Path(directory))
             arguments = (
