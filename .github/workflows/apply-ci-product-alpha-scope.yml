@@ -1,9 +1,9 @@
 name: Apply CI Product Alpha scope
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/product-alpha-ci-scope-v2
+      - main
     paths:
       - 'scripts/apply_ci_product_alpha_scope.py'
       - 'ci/workflow-scope-policy.json'
@@ -14,16 +14,19 @@ permissions:
   contents: write
 
 concurrency:
-  group: apply-product-alpha-scope-${{ github.ref }}
+  group: apply-product-alpha-scope-${{ github.head_ref }}
   cancel-in-progress: false
 
 jobs:
   apply:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'agent/product-alpha-ci-scope-v2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: agent/product-alpha-ci-scope-v2
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -45,4 +48,4 @@ jobs:
           git add -A
           git diff --cached --exit-code && exit 0
           git commit -m 'Regenerate Product Alpha workflow scope'
-          git push origin HEAD:agent/product-alpha-ci-scope-v2
+          git push origin HEAD:${{ github.head_ref }}
