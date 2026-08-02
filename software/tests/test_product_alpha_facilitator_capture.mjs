@@ -32,6 +32,17 @@ test("first successful capture locks the original session", () => {
   assert.match(captureView(state).boundary, /anonymous-a1/);
 });
 
+test("a later session cannot replace the captured state", () => {
+  const state = createCaptureState();
+  assert.equal(markCaptured(state, "anonymous-a1", "download"), true);
+  const original = JSON.parse(JSON.stringify(state));
+
+  assert.equal(markCaptured(state, "anonymous-b2", "clipboard"), false);
+  assert.deepEqual(JSON.parse(JSON.stringify(state)), original);
+  assert.match(captureView(state).boundary, /anonymous-a1/);
+  assert.doesNotMatch(captureView(state).boundary, /anonymous-b2/);
+});
+
 test("starting the next session clears the capture lock", () => {
   const state = createCaptureState();
   markCaptured(state, "anonymous-a1", "clipboard");
