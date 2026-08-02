@@ -16,6 +16,7 @@ const {
   markCaptured,
   startNextSession,
   captureView,
+  validationFocusSelector,
 } = sandbox.module.exports;
 
 function plain(value) {
@@ -148,4 +149,56 @@ test("recorder exposes the immutable capture boundary without persistence", () =
   assert.match(html, /Start next session/);
   assert.match(html, /if\(typeof document!=="undefined"\)init\(\)/);
   assert.doesNotMatch(html, /localStorage|sessionStorage|sendBeacon|XMLHttpRequest/);
+});
+
+test("validation directs facilitators to the field that needs correction", () => {
+  const valid = {
+    session_id: "anonymous-a1",
+    completed_steps: [],
+    started: true,
+    duration_minutes: 10,
+    facilitator_notes: "",
+  };
+  assert.equal(
+    validationFocusSelector({ ...valid, session_id: "learner-a1" }, ["label"]),
+    "#sessionId",
+  );
+  assert.equal(
+    validationFocusSelector(
+      { ...valid, completed_steps: ["observe"], started: false },
+      ["started"],
+    ),
+    "#started",
+  );
+  assert.equal(
+    validationFocusSelector({ ...valid, duration_minutes: 181 }, ["duration"]),
+    "#duration",
+  );
+  assert.equal(
+    validationFocusSelector(
+      { ...valid, facilitator_notes: "email: learner@example.com" },
+      ["identity"],
+    ),
+    "#notes",
+  );
+  assert.equal(validationFocusSelector(valid, ["Pilot build ID is invalid"]), "#status");
+  assert.equal(validationFocusSelector(valid, []), null);
+});
+
+test("score controls are named fieldsets with described rubric evidence", () => {
+  assert.match(html, /document\.createElement\("fieldset"\)/);
+  assert.match(html, /document\.createElement\("legend"\)/);
+  assert.match(html, /card\.setAttribute\("aria-describedby",`\$\{promptId\} \$\{evidenceId\}`\)/);
+  assert.match(html, /\.measure legend\{/);
+  assert.doesNotMatch(html, /document\.createElement\("section"\),title=document\.createElement\("h3"\)/);
+});
+
+test("validation errors are announced, marked, and focused", () => {
+  assert.match(html, /id="status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"/);
+  assert.equal((html.match(/reportValidation\(errors,lastRecord\)/g) || []).length, 2);
+  assert.match(html, /target\.setAttribute\("aria-invalid","true"\)/);
+  assert.match(html, /target\.setAttribute\("aria-describedby","status"\)/);
+  assert.match(html, /target\.focus\(\)/);
+  assert.match(html, /kind==="error"\?"assertive":"polite"/);
+  assert.match(html, /a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible/);
 });
