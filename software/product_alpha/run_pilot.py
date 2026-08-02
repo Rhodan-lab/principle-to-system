@@ -34,12 +34,31 @@ REQUIRED_OUTPUTS = (
     "evaluation/session-template.json",
     BUILD_MANIFEST,
 )
+CONTENT_SECURITY_POLICY = (
+    "default-src 'self'; "
+    "base-uri 'none'; "
+    "connect-src 'self'; "
+    "form-action 'none'; "
+    "frame-ancestors 'none'; "
+    "img-src 'self' data:; "
+    "object-src 'none'; "
+    "script-src 'self' 'unsafe-inline'; "
+    "style-src 'self' 'unsafe-inline'"
+)
+PERMISSIONS_POLICY = (
+    "camera=(), display-capture=(), geolocation=(), microphone=(), "
+    "payment=(), serial=(), usb=()"
+)
 SMOKE_REQUIRED_HEADERS = {
     "cache-control": "no-store",
     "pragma": "no-cache",
     "x-content-type-options": "nosniff",
     "referrer-policy": "no-referrer",
     "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "x-frame-options": "DENY",
+    "content-security-policy": CONTENT_SECURITY_POLICY,
+    "permissions-policy": PERMISSIONS_POLICY,
 }
 SMOKE_TARGETS = (
     ("learner", "/", b"<title>Principia Product Alpha</title>"),
@@ -67,16 +86,13 @@ SMOKE_TARGETS = (
 
 
 class PilotRequestHandler(SimpleHTTPRequestHandler):
-    """Serve static pilot assets with no-store response headers."""
+    """Serve static pilot assets with bounded, no-store response headers."""
 
     quiet_logs = False
 
     def end_headers(self) -> None:
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("Pragma", "no-cache")
-        self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        for header, value in SMOKE_REQUIRED_HEADERS.items():
+            self.send_header(header, value)
         super().end_headers()
 
     def log_message(self, format: str, *args: object) -> None:
