@@ -47,6 +47,7 @@ def _manifest(build_id: str, route_id: str) -> dict[str, object]:
         "paths": {
             "incoming_sessions": "incoming-sessions",
             "combined_jsonl": "verified/anonymous-sessions.jsonl",
+            "intake_manifest": "verified/intake-manifest.json",
             "review_output_prefix": "review/refrigerator-review",
         },
     }
@@ -66,8 +67,16 @@ This folder is outside the repository. Keep raw anonymous session records here a
 
 ## Folder use
 
-1. Place individual anonymous JSON session files in `incoming-sessions/`.
-2. After facilitator review, combine the accepted records as `verified/anonymous-sessions.jsonl`.
+1. Place individual anonymous recorder exports (`.jsonl` or `.json`) in `incoming-sessions/`.
+2. Validate and assemble the immutable cohort intake:
+
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py \\
+  --workspace {quote(str(workspace))}
+```
+
+This command validates every file, rejects malformed, mixed-build, duplicate, or personal-data-bearing records, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export and the combined JSONL. Source files are not changed. Existing verified outputs are never overwritten.
+
 3. Verify the cohort against the launcher build:
 
 ```bash
@@ -86,7 +95,7 @@ python3 software/product_alpha/evaluation/prepare_review.py \\
   --output-prefix {quote(str(review_prefix))}
 ```
 
-Do not treat an empty directory, an incomplete cohort, or this workspace manifest as learner evidence.
+Do not treat an empty directory, an incomplete cohort, an intake manifest, or this workspace manifest as learner evidence. Human review remains required.
 """
 
 
