@@ -42,7 +42,7 @@ class ProductAlphaDiagnosisRuntimeTests(unittest.TestCase):
 
         self.assertIn('options.addEventListener("change"', learner_script)
 
-        harness = f"""
+        harness = rf"""
 const assert = require("node:assert/strict");
 const routeData = {json.dumps(route, ensure_ascii=False, separators=(',', ':'))};
 const elements = new Map();
