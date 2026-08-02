@@ -41,6 +41,7 @@ jobs:
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
+            software/product_alpha/evaluation/review_workspace.py \
             software/product_alpha/evaluation/verify_cohort.py \
             software/product_alpha/evaluation/prepare_review.py
       - name: Verify evaluation JSON
