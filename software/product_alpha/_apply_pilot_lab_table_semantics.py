@@ -4,6 +4,7 @@ from pathlib import Path
 
 HTML_PATH = Path("software/product_alpha/pilot-lab.html")
 TEST_PATH = Path("software/tests/test_product_alpha_pilot_lab_batches.mjs")
+BUILD_PATH = Path("software/product_alpha/build.py")
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
@@ -16,30 +17,29 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
 def main() -> int:
     html = HTML_PATH.read_text(encoding="utf-8")
     tests = TEST_PATH.read_text(encoding="utf-8")
-    if 'class="table-scroll" role="region"' in html:
-        print("Pilot Lab table semantics are already applied.")
-        return 0
+    build = BUILD_PATH.read_text(encoding="utf-8")
+    already_applied = 'class="table-scroll" role="region"' in html
 
-    html = replace_once(
-        html,
-        'table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{',
-        '.table-scroll{max-width:100%;overflow-x:auto}.table-scroll:focus-visible{outline:3px solid var(--accent);outline-offset:3px}table{width:100%;border-collapse:collapse;font-size:.9rem}caption{caption-side:top;text-align:left;padding:0 0 .5rem;color:var(--muted);font-weight:760}th,td{',
-        "Pilot Lab table overflow and caption styles",
-    )
-    html = replace_once(
-        html,
-        'box.innerHTML=`<table><thead><tr><th>Session</th><th>Progress</th><th>Duration</th><th>Continue</th></tr></thead><tbody>${state.sessions.map(item=>`<tr><td><code>${escapeHtml(item.session_id)}</code></td><td>${item.completed_steps.length}/5</td><td>${Number(item.duration_minutes).toFixed(1)} min</td><td>${item.voluntary_continue===null?"unknown":item.voluntary_continue?"yes":"no"}</td></tr>`).join("")}</tbody></table>`}',
-        'box.innerHTML=`<div class="table-scroll" role="region" aria-label="Loaded session validation ledger" tabindex="0"><table><caption>Loaded anonymous sessions</caption><thead><tr><th scope="col">Session</th><th scope="col">Progress</th><th scope="col">Duration</th><th scope="col">Continue</th></tr></thead><tbody>${state.sessions.map(item=>`<tr><td><code>${escapeHtml(item.session_id)}</code></td><td>${item.completed_steps.length}/5</td><td>${Number(item.duration_minutes).toFixed(1)} min</td><td>${item.voluntary_continue===null?"unknown":item.voluntary_continue?"yes":"no"}</td></tr>`).join("")}</tbody></table></div>`}',
-        "Pilot Lab validation ledger semantics",
-    )
-    html = replace_once(
-        html,
-        'box.innerHTML=`<table><tbody><tr><th>Started</th><td>${s.started}</td></tr><tr><th>Finished</th><td>${s.finished}</td></tr><tr><th>Completion</th><td>${percent(s.completion_rate)}</td></tr><tr><th>Average duration</th><td>${s.average_duration_minutes.toFixed(2)} min</td></tr>${SCORE_KEYS.map(key=>`<tr><th>${title(key)}</th><td>${s.score_averages[key].toFixed(2)} / 2</td></tr>`).join("")}<tr><th>Continue yes</th><td>${s.voluntary_continue.yes} / ${s.voluntary_continue.answered} answered</td></tr></tbody></table>`;',
-        'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Started</th><td>${s.started}</td></tr><tr><th scope="row">Finished</th><td>${s.finished}</td></tr><tr><th scope="row">Completion</th><td>${percent(s.completion_rate)}</td></tr><tr><th scope="row">Average duration</th><td>${s.average_duration_minutes.toFixed(2)} min</td></tr>${SCORE_KEYS.map(key=>`<tr><th scope="row">${title(key)}</th><td>${s.score_averages[key].toFixed(2)} / 2</td></tr>`).join("")}<tr><th scope="row">Continue yes</th><td>${s.voluntary_continue.yes} / ${s.voluntary_continue.answered} answered</td></tr></tbody></table>`;',
-        "Pilot Lab aggregate table semantics",
-    )
-
-    tests += '''\n
+    if not already_applied:
+        html = replace_once(
+            html,
+            'table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{',
+            '.table-scroll{max-width:100%;overflow-x:auto}.table-scroll:focus-visible{outline:3px solid var(--accent);outline-offset:3px}table{width:100%;border-collapse:collapse;font-size:.9rem}caption{caption-side:top;text-align:left;padding:0 0 .5rem;color:var(--muted);font-weight:760}th,td{',
+            "Pilot Lab table overflow and caption styles",
+        )
+        html = replace_once(
+            html,
+            'box.innerHTML=`<table><thead><tr><th>Session</th><th>Progress</th><th>Duration</th><th>Continue</th></tr></thead><tbody>${state.sessions.map(item=>`<tr><td><code>${escapeHtml(item.session_id)}</code></td><td>${item.completed_steps.length}/5</td><td>${Number(item.duration_minutes).toFixed(1)} min</td><td>${item.voluntary_continue===null?"unknown":item.voluntary_continue?"yes":"no"}</td></tr>`).join("")}</tbody></table>`}',
+            'box.innerHTML=`<div class="table-scroll" role="region" aria-label="Loaded session validation ledger" tabindex="0"><table><caption>Loaded anonymous sessions</caption><thead><tr><th scope="col">Session</th><th scope="col">Progress</th><th scope="col">Duration</th><th scope="col">Continue</th></tr></thead><tbody>${state.sessions.map(item=>`<tr><td><code>${escapeHtml(item.session_id)}</code></td><td>${item.completed_steps.length}/5</td><td>${Number(item.duration_minutes).toFixed(1)} min</td><td>${item.voluntary_continue===null?"unknown":item.voluntary_continue?"yes":"no"}</td></tr>`).join("")}</tbody></table></div>`}',
+            "Pilot Lab validation ledger semantics",
+        )
+        html = replace_once(
+            html,
+            'box.innerHTML=`<table><tbody><tr><th>Started</th><td>${s.started}</td></tr><tr><th>Finished</th><td>${s.finished}</td></tr><tr><th>Completion</th><td>${percent(s.completion_rate)}</td></tr><tr><th>Average duration</th><td>${s.average_duration_minutes.toFixed(2)} min</td></tr>${SCORE_KEYS.map(key=>`<tr><th>${title(key)}</th><td>${s.score_averages[key].toFixed(2)} / 2</td></tr>`).join("")}<tr><th>Continue yes</th><td>${s.voluntary_continue.yes} / ${s.voluntary_continue.answered} answered</td></tr></tbody></table>`;',
+            'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Started</th><td>${s.started}</td></tr><tr><th scope="row">Finished</th><td>${s.finished}</td></tr><tr><th scope="row">Completion</th><td>${percent(s.completion_rate)}</td></tr><tr><th scope="row">Average duration</th><td>${s.average_duration_minutes.toFixed(2)} min</td></tr>${SCORE_KEYS.map(key=>`<tr><th scope="row">${title(key)}</th><td>${s.score_averages[key].toFixed(2)} / 2</td></tr>`).join("")}<tr><th scope="row">Continue yes</th><td>${s.voluntary_continue.yes} / ${s.voluntary_continue.answered} answered</td></tr></tbody></table>`;',
+            "Pilot Lab aggregate table semantics",
+        )
+        tests += '''\n
 test("dynamic tables expose captions and header relationships", () => {
   assert.match(html, /<caption>Loaded anonymous sessions<\\/caption>/);
   assert.match(html, /<th scope="col">Session<\\/th>/);
@@ -59,8 +59,25 @@ test("wide validation ledger is a keyboard-scrollable named region", () => {
 });
 '''
 
+    old_build = '''        b'box.innerHTML=`<table><tbody><tr><th>Started</th>',
+        b'box.innerHTML=`<table><tbody><tr><th>Build ID</th><td><code>${s.pilot_build_id.slice(0,12)}...</code></td></tr><tr><th>Started</th>',
+'''
+    new_build = '''        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Started</th>',
+        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Build ID</th><td><code>${s.pilot_build_id.slice(0,12)}...</code></td></tr><tr><th scope="row">Started</th>',
+'''
+    if old_build in build:
+        build = replace_once(
+            build,
+            old_build,
+            new_build,
+            "Pilot Lab accessible build-id display transform",
+        )
+    elif new_build not in build:
+        raise SystemExit("Pilot Lab build-id display transform is in an unknown state")
+
     HTML_PATH.write_text(html, encoding="utf-8")
     TEST_PATH.write_text(tests, encoding="utf-8")
+    BUILD_PATH.write_text(build, encoding="utf-8")
     return 0
 
 
