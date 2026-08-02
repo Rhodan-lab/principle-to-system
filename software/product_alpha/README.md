@@ -76,9 +76,27 @@ refrigerator-cohort/
 └── review/
 ```
 
-The three evidence directories begin empty. The workspace manifest uses contract `principia-product-alpha-pilot-workspace/0.1` and records the exact Pilot build ID, route ID, intended combined JSONL path, review-packet prefix, and privacy boundaries. The generated README contains build-bound verification and review commands with shell-safe paths.
+The three evidence directories begin empty. The workspace manifest uses contract `principia-product-alpha-pilot-workspace/0.1` and records the exact Pilot build ID, route ID, intended combined JSONL path, intake-manifest path, review-packet prefix, and privacy boundaries. The generated README contains build-bound intake, verification, and review commands with shell-safe paths.
 
-Do not treat the workspace, empty directories, or manifest as learner evidence. Do not place participant names, contact details, school details, account identifiers, or other identifying information in the workspace.
+Do not treat the workspace, empty directories, intake manifest, or workspace manifest as learner evidence. Do not place participant names, contact details, school details, account identifiers, or other identifying information in the workspace.
+
+## Deterministic workspace intake
+
+After each facilitator-reviewed recorder export has been placed in `incoming-sessions/`, assemble the private cohort without manually editing JSONL:
+
+```bash
+python3 software/product_alpha/evaluation/assemble_workspace.py \
+  --workspace /private/path/refrigerator-cohort
+```
+
+The command accepts individual `.jsonl` or `.json` exports containing one session object each. It validates the existing Product Alpha session contract, workspace route, and exact build ID; rejects personal-data fields, malformed records, duplicate anonymous session IDs, symlinks, unsupported files, and mixed-build evidence; then sorts accepted sessions by anonymous session ID and writes:
+
+```text
+verified/anonymous-sessions.jsonl
+verified/intake-manifest.json
+```
+
+The intake manifest records SHA-256 hashes for every raw export and the exact combined JSONL. The command does not rename, move, or modify raw source files, and it refuses to overwrite either verified output. Validation completes before any output is written, so invalid intake leaves the verified directory unchanged. The reported cohort status is descriptive only; human review remains required.
 
 ## Pilot Lab
 
@@ -100,11 +118,11 @@ Refreshing the tab clears the Pilot Lab workspace. Aggregate exports omit facili
 
 ## Verified command-line summary
 
-Use the full Pilot build ID recorded in `workspace.json` and printed by `run_pilot.py` to independently verify the combined cohort before producing a command-line report:
+Use the full Pilot build ID recorded in `workspace.json` and printed by `run_pilot.py` to independently verify the assembled cohort before producing a command-line report:
 
 ```bash
 python3 software/product_alpha/evaluation/verify_cohort.py \
-  --input path/to/anonymous-sessions.jsonl \
+  --input /private/path/refrigerator-cohort/verified/anonymous-sessions.jsonl \
   --expect-build-id <64-character-pilot-build-id> \
   --format markdown
 ```
@@ -119,9 +137,9 @@ After command-line verification, create the de-identified decision packet in the
 
 ```bash
 python3 software/product_alpha/evaluation/prepare_review.py \
-  --input path/to/anonymous-sessions.jsonl \
+  --input /private/path/refrigerator-cohort/verified/anonymous-sessions.jsonl \
   --expect-build-id <64-character-pilot-build-id> \
-  --output-prefix /private/cohort-folder/refrigerator-review
+  --output-prefix /private/path/refrigerator-cohort/review/refrigerator-review
 ```
 
 The command writes matching `.json` and `.md` files. The packet embeds the verified aggregate summary, hashes the exact private JSONL input and canonical summary, excludes raw session records and facilitator notes, and leaves the product decision pending for a human reviewer. It refuses output paths inside the repository and refuses to overwrite an existing packet.
@@ -144,7 +162,7 @@ python3 software/product_alpha/run_pilot.py smoke
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, review-packet hashing and de-identification, repository-output refusal, private-workspace creation, smoke-before-workspace ordering, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, build-ID binding, expected-build verification, evidence-status logic, revision signals, review-packet hashing and de-identification, repository-output refusal, private-workspace creation, deterministic workspace intake and source hashing, smoke-before-workspace ordering, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
 
 ## Learner pilot
 
@@ -164,5 +182,6 @@ Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review
 - private workspaces and review packets must remain outside the repository until a separate human-reviewed product change is prepared;
 - the launcher and smoke gate bind only to `127.0.0.1` and store no session data;
 - the preparation command creates no placeholder evidence;
+- workspace intake preserves raw exports and refuses verified-output overwrite;
 - the thermal model supports reasoning and is not repair or safety guidance;
 - aggregate evidence remains descriptive and requires human review.
