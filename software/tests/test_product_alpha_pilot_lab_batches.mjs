@@ -16,7 +16,7 @@ vm.runInNewContext(scripts[0][1], {
   Set,
   String,
 });
-const { fileKey, mergeFiles } = module.exports;
+const { fileKey, mergeFiles, clearWorkspaceState } = module.exports;
 
 function file(
   name,
@@ -80,11 +80,54 @@ test("replace mode discards the previous file set", () => {
   );
 });
 
-test("interface exposes explicit add and replace controls", () => {
-  assert.match(html, /for="files">Add session files/);
-  assert.match(html, /for="replaceFiles">Replace workspace files/);
+test("clear requires a deliberate second action", () => {
+  const state = {
+    files: [file("anonymous-a.jsonl", 120, 1)],
+    sessions: [{ session_id: "anonymous-a" }],
+    errors: ["example"],
+    duplicates: 1,
+    summary: { sessions: 1 },
+    clearArmed: false,
+  };
+
+  assert.equal(clearWorkspaceState(state), "armed");
+  assert.equal(state.clearArmed, true);
+  assert.equal(state.files.length, 1);
+  assert.equal(clearWorkspaceState(state), "cleared");
+  assert.deepEqual(Array.from(state.files), []);
+  assert.deepEqual(Array.from(state.sessions), []);
+  assert.deepEqual(Array.from(state.errors), []);
+  assert.equal(state.duplicates, 0);
+  assert.equal(state.summary, null);
+  assert.equal(state.clearArmed, false);
+});
+
+test("empty workspaces do not arm destructive clear", () => {
+  const state = { files: [], clearArmed: true };
+  assert.equal(clearWorkspaceState(state), "empty");
+  assert.equal(state.clearArmed, false);
+});
+
+test("interface exposes keyboard file pickers and live status", () => {
+  assert.match(html, /id="chooseFiles" type="button">Add session files/);
+  assert.match(html, /id="files"[^>]+multiple hidden/);
+  assert.match(html, /id="chooseReplaceFiles" type="button">Replace workspace files/);
+  assert.match(html, /id="replaceFiles"[^>]+multiple hidden/);
+  assert.match(html, /q\("#chooseFiles"\)\.addEventListener\("click",\(\)=>q\("#files"\)\.click\(\)\)/);
+  assert.match(html, /q\("#chooseReplaceFiles"\)\.addEventListener\("click",\(\)=>q\("#replaceFiles"\)\.click\(\)\)/);
   assert.match(html, /readFiles\(event\.target\.files,"add"\)/);
   assert.match(html, /readFiles\(event\.target\.files,"replace"\)/);
   assert.match(html, /readFiles\(event\.dataTransfer\.files,"add"\)/);
-  assert.match(html, /id="workspaceStatus" aria-live="polite"/);
+  assert.match(html, /id="workspaceStatus" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html, /id="status" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html, /id="errors" role="region"[^>]+aria-live="polite"/);
+  assert.match(html, /\.button:focus-visible,a:focus-visible/);
+  assert.doesNotMatch(html, /<label class="button [^"]+" for="(?:files|replaceFiles)"/);
+});
+
+test("clear control is announced and visually changes when armed", () => {
+  assert.match(html, /id="clear" type="button" aria-pressed="false" aria-describedby="workspaceStatus"/);
+  assert.match(html, /Confirm clear workspace/);
+  assert.match(html, /clear\.classList\.toggle\("danger",state\.clearArmed\)/);
+  assert.match(html, /q\("#chooseFiles"\)\.focus\(\)/);
 });
