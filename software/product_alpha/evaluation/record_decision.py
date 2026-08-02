@@ -154,7 +154,13 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
         raise ValueError("review packet status must remain human-review-required")
     if review.get("allowed_primary_actions") != list(prepare_review.ALLOWED_PRIMARY_ACTIONS):
         raise ValueError("review packet allowed_primary_actions are inconsistent")
-    for field in ("primary_action", "rationale", "reviewer", "review_date", "next_checkpoint"):
+    for field in (
+        "primary_action",
+        "rationale",
+        "reviewer",
+        "review_date",
+        "next_checkpoint",
+    ):
         if review.get(field) is not None:
             raise ValueError(f"review packet field {field!r} must remain unmodified")
     planning_eligible = verification["evidence_status"] == "ready-for-human-review"
@@ -184,16 +190,14 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
     }
 
 
-def build_decision_record(
-    workspace: Path,
+def _build_decision_record(
+    readiness: dict[str, object],
     action: str,
     reviewer: str,
     review_date: str,
     rationale: str,
     next_checkpoint: str,
 ) -> dict[str, object]:
-    """Build one deterministic decision record from explicit human-supplied fields."""
-    readiness = validate_review_ready(workspace)
     if action not in prepare_review.ALLOWED_PRIMARY_ACTIONS:
         raise ValueError(f"unsupported primary action: {action!r}")
     if (
@@ -251,11 +255,34 @@ def build_decision_record(
     }
 
 
+def build_decision_record(
+    workspace: Path,
+    action: str,
+    reviewer: str,
+    review_date: str,
+    rationale: str,
+    next_checkpoint: str,
+) -> dict[str, object]:
+    """Build one deterministic decision record from explicit human-supplied fields."""
+    return _build_decision_record(
+        validate_review_ready(workspace),
+        action,
+        reviewer,
+        review_date,
+        rationale,
+        next_checkpoint,
+    )
+
+
 def render_markdown(record: dict[str, object]) -> str:
     decision = record["human_decision"]
     binding = record["review_packet_binding"]
     boundaries = record["boundaries"]
-    if not isinstance(decision, dict) or not isinstance(binding, dict) or not isinstance(boundaries, dict):
+    if (
+        not isinstance(decision, dict)
+        or not isinstance(binding, dict)
+        or not isinstance(boundaries, dict)
+    ):
         raise ValueError("decision record sections are invalid")
     return "\n".join(
         [
@@ -327,27 +354,30 @@ def record_workspace_decision(
     next_checkpoint: str,
 ) -> dict[str, object]:
     """Verify, build, and write one immutable private human decision record."""
-    record = build_decision_record(
-        workspace,
+    readiness = validate_review_ready(workspace)
+    record = _build_decision_record(
+        readiness,
         action,
         reviewer,
         review_date,
         rationale,
         next_checkpoint,
     )
-    readiness = validate_review_ready(workspace)
     review_prefix = Path(str(readiness["review_output_prefix"]))
     json_path, markdown_path, record_sha256 = write_decision_outputs(
         review_prefix,
         record,
     )
+    human_decision = record.get("human_decision")
+    if not isinstance(human_decision, dict):
+        raise ValueError("decision record human_decision must be an object")
     return {
         "contract": CONTRACT,
         "decision": "human-decision-record-created",
         "workspace": readiness["workspace"],
         "pilot_build_id": readiness["pilot_build_id"],
         "route_id": readiness["route_id"],
-        "primary_action": record["human_decision"]["primary_action"],
+        "primary_action": human_decision["primary_action"],
         "decision_json": str(json_path),
         "decision_markdown": str(markdown_path),
         "decision_record_sha256": record_sha256,
@@ -392,9 +422,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if getattr(args, name) is None
             ]
             if missing:
-                raise ValueError(
-                    "record command requires: " + ", ".join(f"--{name.replace('_', '-')}" for name in missing)
+                flags = ", ".join(
+                    f"--{name.replace('_', '-')}" for name in missing
                 )
+                raise ValueError(f"record command requires: {flags}")
             report = record_workspace_decision(
                 args.workspace,
                 args.action,
