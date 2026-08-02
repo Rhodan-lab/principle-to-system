@@ -5,6 +5,7 @@ on:
     paths:
       - "software/product_alpha/**"
       - "software/tests/test_product_alpha*.py"
+      - "software/tests/test_product_alpha*.mjs"
       - "system-dossiers/refrigerator.md"
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
@@ -14,6 +15,7 @@ on:
     paths:
       - "software/product_alpha/**"
       - "software/tests/test_product_alpha*.py"
+      - "software/tests/test_product_alpha*.mjs"
       - "system-dossiers/refrigerator.md"
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
@@ -49,19 +51,24 @@ jobs:
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
-      - name: Verify Pilot Lab JavaScript syntax
+      - name: Verify Product Alpha JavaScript syntax
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
 
-          html = Path("software/product_alpha/pilot-lab.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
-          if len(scripts) != 1:
-              raise SystemExit("pilot-lab.html must contain exactly one inline script")
-          Path("/tmp/principia-pilot-lab.js").write_text(scripts[0], encoding="utf-8")
+          for filename in ("index.html", "pilot-lab.html"):
+              html = Path("software/product_alpha", filename).read_text(encoding="utf-8")
+              scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+              if len(scripts) != 1:
+                  raise SystemExit(f"{filename} must contain exactly one inline script")
+              output = Path("/tmp") / f"principia-{filename.removesuffix('.html')}.js"
+              output.write_text(scripts[0], encoding="utf-8")
           PY
+          node --check /tmp/principia-index.js
           node --check /tmp/principia-pilot-lab.js
+      - name: Run Product Alpha JavaScript tests
+        run: node --test software/tests/test_product_alpha_learner_state.mjs
       - name: Verify deterministic build
         run: python3 software/product_alpha/build.py check
       - name: Run Product Alpha tests
