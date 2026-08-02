@@ -79,9 +79,9 @@ refrigerator-cohort/
 └── review/
 ```
 
-The three evidence directories begin empty. The workspace manifest uses contract `principia-product-alpha-pilot-workspace/0.1` and records the exact Pilot build ID, route ID, intended combined JSONL path, intake-manifest path, review-packet prefix, and privacy boundaries. The generated README contains build-bound launch, intake, verification, and review commands with shell-safe paths.
+The three evidence directories begin empty. The workspace manifest uses contract `principia-product-alpha-pilot-workspace/0.1` and records the exact Pilot build ID, route ID, intended combined JSONL path, intake-manifest path, review-packet prefix, and privacy boundaries. The generated README contains build-bound launch, intake, verification, review, and human-decision commands with shell-safe paths.
 
-Do not treat the workspace, empty directories, intake manifest, review packet, or workspace manifest as learner evidence. Do not place participant names, contact details, school details, account identifiers, or other identifying information in the workspace.
+Do not treat the workspace, empty directories, intake manifest, review packet, decision record, or workspace manifest as learner evidence. Do not place participant names, contact details, school details, account identifiers, or other identifying information in the workspace.
 
 ## Deterministic workspace intake
 
@@ -130,16 +130,39 @@ python3 software/product_alpha/evaluation/review_workspace.py \
 
 The command writes `review/refrigerator-review.json` and `review/refrigerator-review.md`. The packet embeds the verified aggregate summary and binds it to the exact private combined input, intake manifest, and source-record hash set. It excludes raw session records, facilitator notes, and custom confusion-tag text; leaves the product decision pending for a human reviewer; refuses repository output; and refuses to overwrite an existing packet.
 
-`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound command is the supported end-to-end review path because it proves the packet still matches the earlier intake and unchanged raw exports.
+`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound command is the supported review path because it proves the packet still matches the earlier intake and unchanged raw exports.
 
-The Markdown worksheet permits one bounded primary action:
+## Immutable human decision record
 
-- revise the current route;
-- repeat the current-route pilot;
-- hold the current route;
-- advance to a separate next-product planning review.
+Do not complete or edit the generated review packet. First verify that its JSON and Markdown files remain the untouched generated pair and still match the workspace evidence:
 
-Advancing to planning review does not itself authorize a second route. A tool-generated status or completed worksheet never authorizes public release, SaaS expansion, a learning-effectiveness claim, or product-market-fit claim.
+```bash
+python3 software/product_alpha/evaluation/record_decision.py check \
+  --workspace /private/path/refrigerator-cohort
+```
+
+After reviewing the aggregate together with the private facilitator notes, record exactly one primary action:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py \
+  --workspace /private/path/refrigerator-cohort \
+  --action revise-current-route \
+  --reviewer "facilitator-reviewer" \
+  --review-date YYYY-MM-DD \
+  --rationale "De-identified rationale for the selected action." \
+  --next-checkpoint "The next bounded product checkpoint."
+```
+
+Allowed primary actions are:
+
+- `revise-current-route`;
+- `repeat-current-route-pilot`;
+- `hold-current-route`;
+- `advance-to-next-product-planning-review`.
+
+The recorder rejects the fourth action unless the cohort reached `ready-for-human-review`. It writes `review/refrigerator-review-decision.json` and `review/refrigerator-review-decision.md`, binding the human-supplied action, reviewer label, date, rationale, and checkpoint to the untouched review JSON/Markdown hashes and the verified intake, combined cohort, and source-record hashes. It refuses to overwrite an existing decision record and does not edit the review packet or repository.
+
+Keep participant identities out of reviewer, rationale, and checkpoint text. A role label or initials are sufficient. Advancing to a planning review opens only a separate planning review; it does not authorize a second route. No recorded action authorizes public release, SaaS expansion, a learning-effectiveness claim, or a product-market-fit claim.
 
 ## Pilot Lab
 
@@ -157,7 +180,7 @@ Advancing to planning review does not itself authorize a second route. A tool-ge
 - export build-bound aggregate Markdown and JSON;
 - export a combined validated JSONL file for private local use.
 
-Refreshing the tab clears the Pilot Lab workspace. Aggregate exports omit facilitator notes. The validated JSONL export still contains raw anonymous records and must remain private. The command-line workspace intake and review path remains the authoritative private evidence chain.
+Refreshing the tab clears the Pilot Lab workspace. Aggregate exports omit facilitator notes. The validated JSONL export still contains raw anonymous records and must remain private. The command-line workspace intake, review, and decision path remains the authoritative private evidence chain.
 
 ## Validation
 
@@ -168,11 +191,11 @@ python3 software/product_alpha/run_pilot.py smoke
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, workspace/build binding, expected-build verification, evidence-status logic, revision signals, review-packet hashing and de-identification, repository-output refusal, private-workspace creation, deterministic workspace intake and source hashing, post-intake tamper rejection, smoke-before-workspace ordering, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
+The validation checks deterministic output, canonical-source extraction, five-step route completeness, exact-revision Atlas references, absence of external runtime dependencies, anonymous record boundaries, duplicate rejection, route-order integrity, workspace/build binding, expected-build verification, evidence-status logic, revision signals, review-packet hashing and de-identification, repository-output refusal, private-workspace creation, deterministic workspace intake and source hashing, post-intake tamper rejection, untouched review-pair verification, immutable decision recording, incomplete-cohort planning-advance rejection, decision-output overwrite refusal, smoke-before-workspace ordering, Pilot Lab packaging, loopback-only serving, served resource markers, manifest identity, and no-store/security headers.
 
 ## Learner pilot
 
-Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review the route. The protocol defines the session procedure, 0–2 rubric, anonymous records, recommended confusion tags, evidence-based revision thresholds, and the final human-review step.
+Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review the route. The protocol defines the session procedure, 0–2 rubric, anonymous records, recommended confusion tags, evidence-based revision thresholds, and final human-decision step.
 
 ## Boundaries
 
@@ -185,10 +208,11 @@ Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review
 - learner notes remain only in the current browser tab;
 - recorder and Pilot Lab state remain only in the current browser tab;
 - raw pilot records remain local, anonymous, private, and facilitator-controlled;
-- private workspaces and review packets must remain outside the repository until a separate human-reviewed product change is prepared;
+- private workspaces, review packets, and decision records must remain outside the repository until a separate human-reviewed product change is prepared;
 - the launchers and smoke gate bind only to `127.0.0.1` and store no session data;
 - the preparation command creates no placeholder evidence;
 - workspace intake preserves raw exports and refuses verified-output overwrite;
 - workspace review rejects changed raw exports, changed combined evidence, and relaxed human-review boundaries;
+- human-decision recording rejects edited review packets, incomplete-cohort planning advance, and output overwrite;
 - the thermal model supports reasoning and is not repair or safety guidance;
-- aggregate evidence remains descriptive and requires human review.
+- aggregate evidence remains descriptive and every product action remains human-supplied.
