@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "product_alpha" / "run_pilot.py"
 SPEC = importlib.util.spec_from_file_location("product_alpha_pilot_smoke", MODULE_PATH)
@@ -36,7 +37,40 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
             report["headers_verified"],
             sorted(launcher.SMOKE_REQUIRED_HEADERS),
         )
+        self.assertEqual(
+            launcher.SMOKE_REQUIRED_HEADERS["x-frame-options"],
+            "DENY",
+        )
+        self.assertEqual(
+            launcher.SMOKE_REQUIRED_HEADERS["cross-origin-resource-policy"],
+            "same-origin",
+        )
+        self.assertIn(
+            "frame-ancestors 'none'",
+            launcher.SMOKE_REQUIRED_HEADERS["content-security-policy"],
+        )
+        self.assertIn(
+            "form-action 'none'",
+            launcher.SMOKE_REQUIRED_HEADERS["content-security-policy"],
+        )
+        self.assertIn(
+            "camera=()",
+            launcher.SMOKE_REQUIRED_HEADERS["permissions-policy"],
+        )
         self.assertFalse(report["session_data_stored"])
+
+    def test_smoke_fails_closed_when_a_required_header_differs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            launcher.run_builder("build", output)
+            build_id = launcher.pilot_build_identity(output)
+            with mock.patch.dict(
+                launcher.SMOKE_REQUIRED_HEADERS,
+                {"content-security-policy": "default-src 'none'"},
+                clear=False,
+            ):
+                with self.assertRaisesRegex(ValueError, "content-security-policy"):
+                    launcher.smoke_served_output(output, build_id)
 
     def test_smoke_rejects_missing_packaged_marker(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -72,10 +106,14 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
             text=True,
         )
         first_line = next(
-            line for line in first.stdout.splitlines() if line.startswith("Product Alpha pilot smoke passed:")
+            line
+            for line in first.stdout.splitlines()
+            if line.startswith("Product Alpha pilot smoke passed:")
         )
         second_line = next(
-            line for line in second.stdout.splitlines() if line.startswith("Product Alpha pilot smoke passed:")
+            line
+            for line in second.stdout.splitlines()
+            if line.startswith("Product Alpha pilot smoke passed:")
         )
         self.assertEqual(first_line, second_line)
         self.assertIn("host=127.0.0.1", first_line)
