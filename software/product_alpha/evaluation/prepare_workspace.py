@@ -76,6 +76,17 @@ python3 software/product_alpha/launch_workspace.py \\
 
 The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to open a server unless the current deterministic build exactly matches `{build_id}`. This removes manual build-ID comparison from the supported cohort path. It stores no session data and does not modify the workspace manifest.
 
+## Check the current stage
+
+At any point, verify the workspace and print the next valid action without writing:
+
+```bash
+python3 software/product_alpha/evaluation/workspace_status.py \\
+  --workspace {workspace_arg}
+```
+
+The status command recognizes prepared, collecting, ready-to-assemble, intake-verified, review-ready-for-decision, and decision-verified stages. It validates every artifact required by the current stage, rejects partial or out-of-order evidence, and returns a machine-readable next action and command. It never creates, edits, or removes workspace files.
+
 ## Folder use
 
 1. Place individual anonymous recorder exports (`.jsonl` or `.json`) in `incoming-sessions/`.
