@@ -34,6 +34,14 @@ HANDOFF_EXCLUSION_ALIASES = (
 )
 
 
+def _mentions_learning_effectiveness(text: str) -> bool:
+    lowered = text.lower()
+    return (
+        "learning effectiveness" in lowered
+        or "learning-effectiveness" in lowered
+    )
+
+
 class ProductAlphaStateAuthorityTests(unittest.TestCase):
     def setUp(self) -> None:
         self.product_state = PRODUCT_STATE.read_text(encoding="utf-8")
@@ -82,7 +90,7 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
             lowered = text.lower()
             self.assertIn("not be committed", lowered)
             self.assertIn("may not yet claim", lowered)
-            self.assertIn("learning effectiveness", lowered)
+            self.assertTrue(_mentions_learning_effectiveness(text))
             self.assertTrue(
                 "second route" in lowered
                 or "second-route" in lowered
@@ -119,7 +127,7 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
             self.assertIn("separate", lowered)
             self.assertIn("human", lowered)
             self.assertIn("pull request", lowered)
-            self.assertIn("learning effectiveness", lowered)
+            self.assertTrue(_mentions_learning_effectiveness(text))
 
     def test_obsolete_manual_flow_is_not_the_active_workflow(self) -> None:
         for text in self.all_documents:
