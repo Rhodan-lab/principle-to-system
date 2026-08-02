@@ -47,7 +47,7 @@ jobs:
           node --test software/tests/test_product_alpha_pilot_lab_batches.mjs
           python3 software/product_alpha/build.py check
           git diff --check
-          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs "
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs "
       - name: Commit bounded patch
         run: |
           if git diff --quiet; then
@@ -55,7 +55,7 @@ jobs:
           fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs
+          git add software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_batches.mjs
           git commit -m "Add Pilot Lab table semantics"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
