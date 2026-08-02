@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import assemble_workspace
+import prepare_handoff
 import record_decision
 import review_workspace
 
@@ -29,6 +30,24 @@ def _workspace_command(script: str, workspace: Path, *arguments: str) -> str:
             *arguments,
             "--workspace",
             str(workspace),
+        )
+    )
+
+
+def _handoff_command(
+    workspace: Path,
+    output_prefix: Path,
+    command: str,
+) -> str:
+    return _shell_command(
+        (
+            "python3",
+            "software/product_alpha/evaluation/prepare_handoff.py",
+            command,
+            "--workspace",
+            str(workspace),
+            "--output-prefix",
+            str(output_prefix),
         )
     )
 
@@ -67,6 +86,7 @@ def _artifact_state(
     review_json: Path,
     review_markdown: Path,
     decision_paths: Sequence[Path],
+    handoff_paths: Sequence[Path],
 ) -> dict[str, bool]:
     return {
         "combined_jsonl": combined.exists(),
@@ -76,6 +96,8 @@ def _artifact_state(
         "decision_json": decision_paths[0].exists(),
         "decision_markdown": decision_paths[1].exists(),
         "decision_receipt": decision_paths[2].exists(),
+        "handoff_json": handoff_paths[0].exists(),
+        "handoff_markdown": handoff_paths[1].exists(),
     }
 
 
@@ -125,12 +147,18 @@ def inspect_workspace(
     review_json = review_prefix.with_suffix(".json")
     review_markdown = review_prefix.with_suffix(".md")
     decision_paths = _decision_paths(review_prefix)
+    handoff_prefix = root / "handoff" / "refrigerator-product-change"
+    handoff_paths = prepare_handoff._output_paths(
+        handoff_prefix,
+        repo_root=repo_root,
+    )
     artifacts = _artifact_state(
         combined,
         intake,
         review_json,
         review_markdown,
         decision_paths,
+        handoff_paths,
     )
     report = _base_report(root, manifest, artifacts)
 
@@ -140,9 +168,10 @@ def inspect_workspace(
         "review packet pair",
     )
     decision_complete = _paired_state(decision_paths, "decision artifact trio")
+    handoff_complete = _paired_state(handoff_paths, "repository handoff pair")
 
     if not intake_complete:
-        if review_complete or decision_complete:
+        if review_complete or decision_complete or handoff_complete:
             raise ValueError("downstream artifacts exist before immutable intake")
         entries = sorted(incoming.iterdir(), key=lambda path: path.name)
         if not entries:
@@ -213,8 +242,8 @@ def inspect_workspace(
         repo_root=repo_root,
     )
     if not review_complete:
-        if decision_complete:
-            raise ValueError("decision artifacts exist before the review packet")
+        if decision_complete or handoff_complete:
+            raise ValueError("downstream artifacts exist before the review packet")
         return {
             **report,
             "stage": "intake-verified",
@@ -236,6 +265,8 @@ def inspect_workspace(
 
     readiness = record_decision.validate_review_ready(root)
     if not decision_complete:
+        if handoff_complete:
+            raise ValueError("repository handoff exists before the human decision")
         return {
             **report,
             "stage": "review-ready-for-decision",
@@ -277,27 +308,51 @@ def inspect_workspace(
         "hold-current-route": "hold-until-recorded-checkpoint",
         "advance-to-next-product-planning-review": "prepare-separate-planning-review",
     }.get(action, "review-recorded-human-action")
+
+    if not handoff_complete:
+        return {
+            **report,
+            "stage": "decision-verified",
+            "sessions": decision["sessions"],
+            "cohort_complete": decision["evidence_status"]
+            == "ready-for-human-review",
+            "evidence_status": decision["evidence_status"],
+            "primary_action": action,
+            "planning_review_action_selected": decision[
+                "planning_review_action_selected"
+            ],
+            "decision_record_sha256": decision["decision_record_sha256"],
+            "decision_markdown_sha256": decision["decision_markdown_sha256"],
+            "decision_receipt_sha256": decision["decision_receipt_sha256"],
+            "post_handoff_action": follow_up,
+            "handoff_output_prefix": str(handoff_prefix),
+            "next_action": "prepare-deidentified-repository-handoff",
+            "next_command": _handoff_command(root, handoff_prefix, "prepare"),
+            "validation_command": _handoff_command(root, handoff_prefix, "check"),
+        }
+
+    handoff = prepare_handoff.verify_handoff(
+        root,
+        handoff_prefix,
+        repo_root=repo_root,
+    )
     return {
         **report,
-        "stage": "decision-verified",
-        "sessions": decision["sessions"],
-        "cohort_complete": decision["evidence_status"]
+        "stage": "handoff-verified",
+        "sessions": handoff["sessions"],
+        "cohort_complete": handoff["evidence_status"]
         == "ready-for-human-review",
-        "evidence_status": decision["evidence_status"],
+        "evidence_status": handoff["evidence_status"],
         "primary_action": action,
         "planning_review_action_selected": decision[
             "planning_review_action_selected"
         ],
-        "decision_record_sha256": decision["decision_record_sha256"],
-        "decision_markdown_sha256": decision["decision_markdown_sha256"],
         "decision_receipt_sha256": decision["decision_receipt_sha256"],
+        "handoff_candidate_sha256": handoff["candidate_sha256"],
+        "handoff_markdown_sha256": handoff["markdown_sha256"],
         "next_action": follow_up,
         "next_command": None,
-        "validation_command": _workspace_command(
-            "record_decision.py",
-            root,
-            "verify",
-        ),
+        "validation_command": _handoff_command(root, handoff_prefix, "verify"),
     }
 
 
