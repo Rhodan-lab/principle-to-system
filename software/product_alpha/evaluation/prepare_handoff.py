@@ -334,6 +334,10 @@ def write_handoff(
         temporary_paths[1].write_bytes(markdown_bytes)
         os.replace(temporary_paths[0], json_path)
         os.replace(temporary_paths[1], markdown_path)
+    except Exception:
+        json_path.unlink(missing_ok=True)
+        markdown_path.unlink(missing_ok=True)
+        raise
     finally:
         for path in temporary_paths:
             path.unlink(missing_ok=True)
