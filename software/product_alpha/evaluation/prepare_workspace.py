@@ -56,6 +56,9 @@ def _manifest(build_id: str, route_id: str) -> dict[str, object]:
 def _readme(workspace: Path, build_id: str) -> str:
     quote = shlex.quote
     workspace_arg = quote(str(workspace))
+    handoff_arg = quote(
+        str(workspace / "handoff" / "refrigerator-product-change")
+    )
     return f"""# Principia Product Alpha private cohort workspace
 
 This folder is outside the repository. Keep raw anonymous session records here and do not commit them.
@@ -85,7 +88,7 @@ python3 software/product_alpha/evaluation/workspace_status.py \\
   --workspace {workspace_arg}
 ```
 
-The status command recognizes prepared, collecting, ready-to-assemble, intake-verified, review-ready-for-decision, and decision-verified stages. It validates every artifact required by the current stage, rejects partial or out-of-order evidence, and returns a machine-readable next action and command. It never creates, edits, or removes workspace files.
+The status command recognizes prepared, collecting, ready-to-assemble, intake-verified, review-ready-for-decision, decision-verified, and handoff-verified stages. It validates every artifact required by the current stage, rejects partial or out-of-order evidence, and returns a machine-readable next action and command. It never creates, edits, or removes workspace files.
 
 ## Folder use
 
@@ -163,11 +166,37 @@ python3 software/product_alpha/evaluation/record_decision.py verify \\
 
 Verification rechecks every earlier evidence binding, canonical decision JSON, rendered decision Markdown, and receipt hash without writing. The receipt provides local tamper evidence for accidental or partial edits; it is not a digital signature, timestamp authority, or proof of authorship.
 
+9. Prepare a de-identified candidate for a separate repository change. Check first without writing:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_handoff.py check \\
+  --workspace {workspace_arg} \\
+  --output-prefix {handoff_arg}
+```
+
+Create the private candidate pair:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_handoff.py \\
+  --workspace {workspace_arg} \\
+  --output-prefix {handoff_arg}
+```
+
+Then verify it against the unchanged decision and evidence chain:
+
+```bash
+python3 software/product_alpha/evaluation/prepare_handoff.py verify \\
+  --workspace {workspace_arg} \\
+  --output-prefix {handoff_arg}
+```
+
+The handoff JSON and Markdown contain the verified human action, de-identified aggregate metrics, revision signals, and evidence hashes. They exclude raw sessions, session identifiers, facilitator notes, custom confusion-tag text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths. The pair remains outside the repository. It does not authorize or perform a repository change; a human must inspect it and create a separate normal pull request.
+
 Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient.
 
-`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review and decision records still match the earlier intake and unchanged raw exports.
+`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review, decision, and handoff artifacts still match the earlier intake and unchanged raw exports.
 
-Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, a decision record, a decision receipt, or this workspace manifest as proof of learning effectiveness. Human judgment remains required, and no decision record by itself authorizes a second route or public release.
+Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, a decision record, a decision receipt, a repository handoff candidate, or this workspace manifest as proof of learning effectiveness. Human judgment remains required, and no generated artifact by itself authorizes a second route or public release.
 """
 
 
