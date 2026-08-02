@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Record one immutable human decision for a verified Product Alpha workspace review."""
+"""Record and verify one immutable human decision for a Product Alpha review."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ import prepare_review
 import review_workspace
 
 CONTRACT = "principia-product-alpha-human-decision/0.1"
+RECEIPT_CONTRACT = "principia-product-alpha-human-decision-receipt/0.1"
+VERIFICATION_CONTRACT = "principia-product-alpha-human-decision-verification/0.1"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -68,14 +70,29 @@ def _regular_bytes(path: Path, label: str) -> bytes:
     return path.read_bytes()
 
 
-def _decision_paths(review_prefix: Path) -> tuple[Path, Path]:
+def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
     prefix = review_prefix.expanduser().resolve(strict=False)
     json_path = Path(f"{prefix}-decision.json")
     markdown_path = Path(f"{prefix}-decision.md")
-    for path in (json_path, markdown_path):
+    receipt_path = Path(f"{prefix}-decision-receipt.json")
+    for path in (json_path, markdown_path, receipt_path):
         if _is_within(path, REPO_ROOT):
             raise ValueError("decision records must be written outside the repository")
-    return json_path, markdown_path
+    return json_path, markdown_path, receipt_path
+
+
+def _read_canonical_object(raw: bytes, label: str) -> dict[str, object]:
+    try:
+        value = json.loads(raw.decode("utf-8"))
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label} must be UTF-8") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{label} is invalid JSON: {exc.msg}") from exc
+    if not isinstance(value, dict):
+        raise ValueError(f"{label} must contain one object")
+    if raw != prepare_review.canonical_json(value):
+        raise ValueError(f"{label} is not canonical JSON")
+    return value
 
 
 def _expected_review_packet(
@@ -111,16 +128,7 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
 
     packet_raw = _regular_bytes(review_json, "review packet JSON")
     markdown_raw = _regular_bytes(review_markdown, "review packet Markdown")
-    try:
-        packet = json.loads(packet_raw.decode("utf-8"))
-    except UnicodeDecodeError as exc:
-        raise ValueError("review packet JSON must be UTF-8") from exc
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"review packet JSON is invalid: {exc.msg}") from exc
-    if not isinstance(packet, dict):
-        raise ValueError("review packet JSON must contain one object")
-    if packet_raw != prepare_review.canonical_json(packet):
-        raise ValueError("review packet JSON is not the untouched canonical packet")
+    packet = _read_canonical_object(packet_raw, "review packet JSON")
 
     expected_packet = _expected_review_packet(verification)
     if packet != expected_packet:
@@ -136,7 +144,7 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
     if not isinstance(planning_eligible, bool):
         raise ValueError("review packet planning_review_eligible must be boolean")
 
-    decision_json, decision_markdown = _decision_paths(review_prefix)
+    decision_json, decision_markdown, decision_receipt = _decision_paths(review_prefix)
     return {
         **verification,
         "decision": "human-decision-ready",
@@ -148,7 +156,11 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
         "planning_review_eligible": planning_eligible,
         "decision_json": str(decision_json),
         "decision_markdown": str(decision_markdown),
-        "decision_outputs_exist": decision_json.exists() or decision_markdown.exists(),
+        "decision_receipt": str(decision_receipt),
+        "decision_outputs_exist": any(
+            path.exists()
+            for path in (decision_json, decision_markdown, decision_receipt)
+        ),
     }
 
 
@@ -285,26 +297,82 @@ def render_markdown(record: dict[str, object]) -> str:
     )
 
 
+def _build_receipt(
+    readiness: dict[str, object],
+    record: dict[str, object],
+    json_path: Path,
+    markdown_path: Path,
+    receipt_path: Path,
+    json_bytes: bytes,
+    markdown_bytes: bytes,
+) -> dict[str, object]:
+    decision = record.get("human_decision")
+    if not isinstance(decision, dict):
+        raise ValueError("decision record human_decision must be an object")
+    return {
+        "contract": RECEIPT_CONTRACT,
+        "decision": "human-decision-artifacts-sealed",
+        "workspace": readiness["workspace"],
+        "pilot_build_id": readiness["pilot_build_id"],
+        "route_id": readiness["route_id"],
+        "primary_action": decision["primary_action"],
+        "decision_json": str(json_path),
+        "decision_markdown": str(markdown_path),
+        "decision_receipt": str(receipt_path),
+        "decision_json_sha256": _sha256(json_bytes),
+        "decision_markdown_sha256": _sha256(markdown_bytes),
+        "review_json_sha256": readiness["review_json_sha256"],
+        "review_markdown_sha256": readiness["review_markdown_sha256"],
+        "combined_sha256": readiness["combined_sha256"],
+        "intake_manifest_sha256": readiness["intake_manifest_sha256"],
+        "source_records_sha256": readiness["source_records_sha256"],
+        "source_record_count": readiness["source_record_count"],
+        "raw_sources_verified": True,
+        "automatic_repository_mutation": False,
+    }
+
+
 def write_decision_outputs(
     review_prefix: Path,
+    readiness: dict[str, object],
     record: dict[str, object],
-) -> tuple[Path, Path, str]:
-    json_path, markdown_path = _decision_paths(review_prefix)
-    for path in (json_path, markdown_path):
+) -> tuple[Path, Path, Path, str, str]:
+    json_path, markdown_path, receipt_path = _decision_paths(review_prefix)
+    for path in (json_path, markdown_path, receipt_path):
         if path.exists():
             raise FileExistsError(f"refusing to overwrite existing decision output: {path}")
     json_bytes = prepare_review.canonical_json(record)
     markdown_bytes = render_markdown(record).encode("utf-8")
+    receipt = _build_receipt(
+        readiness,
+        record,
+        json_path,
+        markdown_path,
+        receipt_path,
+        json_bytes,
+        markdown_bytes,
+    )
+    receipt_bytes = prepare_review.canonical_json(receipt)
     json_path.parent.mkdir(parents=True, exist_ok=True)
     with json_path.open("xb") as stream:
         stream.write(json_bytes)
     try:
         with markdown_path.open("xb") as stream:
             stream.write(markdown_bytes)
+        with receipt_path.open("xb") as stream:
+            stream.write(receipt_bytes)
     except Exception:
         json_path.unlink(missing_ok=True)
+        markdown_path.unlink(missing_ok=True)
+        receipt_path.unlink(missing_ok=True)
         raise
-    return json_path, markdown_path, _sha256(json_bytes)
+    return (
+        json_path,
+        markdown_path,
+        receipt_path,
+        _sha256(json_bytes),
+        _sha256(receipt_bytes),
+    )
 
 
 def record_workspace_decision(
@@ -326,10 +394,13 @@ def record_workspace_decision(
         next_checkpoint,
     )
     review_prefix = Path(str(readiness["review_output_prefix"]))
-    json_path, markdown_path, record_sha256 = write_decision_outputs(
-        review_prefix,
-        record,
-    )
+    (
+        json_path,
+        markdown_path,
+        receipt_path,
+        record_sha256,
+        receipt_sha256,
+    ) = write_decision_outputs(review_prefix, readiness, record)
     human_decision = record.get("human_decision")
     if not isinstance(human_decision, dict):
         raise ValueError("decision record human_decision must be an object")
@@ -342,9 +413,125 @@ def record_workspace_decision(
         "primary_action": human_decision["primary_action"],
         "decision_json": str(json_path),
         "decision_markdown": str(markdown_path),
+        "decision_receipt": str(receipt_path),
         "decision_record_sha256": record_sha256,
+        "decision_receipt_sha256": receipt_sha256,
         "automatic_repository_mutation": False,
         "human_review_recorded": True,
+    }
+
+
+def _decision_fields(record: dict[str, object]) -> tuple[str, str, str, str, str]:
+    human = record.get("human_decision")
+    expected_keys = {
+        "status",
+        "primary_action",
+        "reviewer",
+        "review_date",
+        "rationale",
+        "next_checkpoint",
+        "planning_review_action_selected",
+    }
+    if not isinstance(human, dict) or set(human) != expected_keys:
+        raise ValueError("decision record human_decision fields are invalid")
+    if human.get("status") != "recorded":
+        raise ValueError("decision record human_decision status must be 'recorded'")
+    planning = human.get("planning_review_action_selected")
+    if not isinstance(planning, bool):
+        raise ValueError(
+            "decision record planning_review_action_selected must be boolean"
+        )
+    fields = (
+        human.get("primary_action"),
+        human.get("reviewer"),
+        human.get("review_date"),
+        human.get("rationale"),
+        human.get("next_checkpoint"),
+    )
+    if not all(isinstance(value, str) for value in fields):
+        raise ValueError("decision record human-supplied fields must be text")
+    return fields  # type: ignore[return-value]
+
+
+def verify_workspace_decision(workspace: Path) -> dict[str, object]:
+    """Verify the complete decision artifact trio and current evidence bindings."""
+    readiness = validate_review_ready(workspace)
+    json_path = Path(str(readiness["decision_json"]))
+    markdown_path = Path(str(readiness["decision_markdown"]))
+    receipt_path = Path(str(readiness["decision_receipt"]))
+
+    exists = [path.exists() for path in (json_path, markdown_path, receipt_path)]
+    if any(exists) and not all(exists):
+        raise ValueError("decision artifact trio is incomplete")
+    if not all(exists):
+        raise ValueError("decision artifacts do not exist")
+
+    json_bytes = _regular_bytes(json_path, "decision record JSON")
+    markdown_bytes = _regular_bytes(markdown_path, "decision record Markdown")
+    receipt_bytes = _regular_bytes(receipt_path, "decision receipt JSON")
+    record = _read_canonical_object(json_bytes, "decision record JSON")
+    receipt = _read_canonical_object(receipt_bytes, "decision receipt JSON")
+
+    action, reviewer, review_date, rationale, next_checkpoint = _decision_fields(record)
+    expected_record = _build_decision_record(
+        readiness,
+        action,
+        reviewer,
+        review_date,
+        rationale,
+        next_checkpoint,
+    )
+    if record != expected_record:
+        raise ValueError(
+            "decision record JSON does not match the current review and evidence chain"
+        )
+    expected_markdown = render_markdown(expected_record).encode("utf-8")
+    if markdown_bytes != expected_markdown:
+        raise ValueError("decision record Markdown does not match the canonical record")
+
+    expected_receipt = _build_receipt(
+        readiness,
+        expected_record,
+        json_path,
+        markdown_path,
+        receipt_path,
+        json_bytes,
+        markdown_bytes,
+    )
+    if receipt != expected_receipt:
+        raise ValueError(
+            "decision receipt does not match the decision artifacts and evidence chain"
+        )
+
+    human = expected_record["human_decision"]
+    if not isinstance(human, dict):
+        raise ValueError("decision record human_decision must be an object")
+    return {
+        "contract": VERIFICATION_CONTRACT,
+        "decision": "human-decision-record-verified",
+        "workspace": readiness["workspace"],
+        "pilot_build_id": readiness["pilot_build_id"],
+        "route_id": readiness["route_id"],
+        "evidence_status": readiness["evidence_status"],
+        "sessions": readiness["sessions"],
+        "primary_action": human["primary_action"],
+        "planning_review_action_selected": human[
+            "planning_review_action_selected"
+        ],
+        "decision_json": str(json_path),
+        "decision_markdown": str(markdown_path),
+        "decision_receipt": str(receipt_path),
+        "decision_record_sha256": _sha256(json_bytes),
+        "decision_markdown_sha256": _sha256(markdown_bytes),
+        "decision_receipt_sha256": _sha256(receipt_bytes),
+        "review_json_sha256": readiness["review_json_sha256"],
+        "review_markdown_sha256": readiness["review_markdown_sha256"],
+        "combined_sha256": readiness["combined_sha256"],
+        "intake_manifest_sha256": readiness["intake_manifest_sha256"],
+        "source_records_sha256": readiness["source_records_sha256"],
+        "raw_sources_verified": True,
+        "writes_performed": False,
+        "automatic_repository_mutation": False,
     }
 
 
@@ -353,9 +540,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "command",
         nargs="?",
-        choices=("record", "check"),
+        choices=("record", "check", "verify"),
         default="record",
-        help="record a human decision or only verify decision readiness",
+        help=(
+            "record a decision, check pre-record readiness, or verify existing "
+            "decision artifacts"
+        ),
     )
     parser.add_argument("--workspace", type=Path, required=True)
     parser.add_argument("--action", choices=prepare_review.ALLOWED_PRIMARY_ACTIONS)
@@ -371,6 +561,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.command == "check":
             report = validate_review_ready(args.workspace)
+        elif args.command == "verify":
+            report = verify_workspace_decision(args.workspace)
         else:
             missing = [
                 name
