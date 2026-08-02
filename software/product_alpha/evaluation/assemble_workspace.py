@@ -14,6 +14,7 @@ import summarize as pilot_summary
 CONTRACT = "principia-product-alpha-workspace-intake/0.1"
 WORKSPACE_CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
 ALLOWED_SOURCE_SUFFIXES = {".json", ".jsonl"}
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
@@ -24,6 +25,14 @@ def _read_json_object(path: Path, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{label}: session export must contain one JSON object")
     return value
+
+
+def _is_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
 
 
 def _member(workspace: Path, relative: object, label: str) -> Path:
@@ -60,6 +69,20 @@ def _load_workspace(
             f"workspace.json route_id must be {pilot_summary.ROUTE_ID!r}"
         )
 
+    privacy = manifest.get("privacy_boundaries")
+    if not isinstance(privacy, dict):
+        raise ValueError("workspace.json privacy_boundaries must be an object")
+    required_privacy = {
+        "participant_names_allowed": False,
+        "raw_sessions_committed_to_repository": False,
+        "repository_output_allowed": False,
+    }
+    for key, expected in required_privacy.items():
+        if privacy.get(key) is not expected:
+            raise ValueError(
+                f"workspace.json privacy boundary {key!r} must be false"
+            )
+
     paths = manifest.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("workspace.json paths must be an object")
@@ -81,11 +104,18 @@ def _load_workspace(
     return manifest, incoming, combined, intake
 
 
-def assemble_workspace(workspace: Path) -> dict[str, object]:
+def assemble_workspace(
+    workspace: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
     """Validate private incoming exports and write one immutable cohort intake."""
     root = workspace.expanduser().resolve(strict=True)
     if not root.is_dir():
         raise ValueError("workspace must be a directory")
+    repository = repo_root.resolve(strict=False)
+    if _is_within(root, repository):
+        raise ValueError("workspace must be outside the repository")
 
     manifest, incoming, combined, intake = _load_workspace(root)
     if not incoming.is_dir():
@@ -159,6 +189,7 @@ def assemble_workspace(workspace: Path) -> dict[str, object]:
         "decision": "workspace-intake-assembled",
         "pilot_build_id": manifest["pilot_build_id"],
         "route_id": manifest["route_id"],
+        "workspace": str(root),
         "sessions": len(sessions),
         "evidence_status": summary["evidence_status"],
         "summary_contract": summary["contract"],
