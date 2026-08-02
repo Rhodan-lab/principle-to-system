@@ -104,9 +104,32 @@ python3 software/product_alpha/evaluation/review_workspace.py \\
 
 The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/refrigerator-review.json` and `review/refrigerator-review.md`. It refuses changed evidence and never overwrites an existing review packet.
 
-`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound command is the supported end-to-end review path because it proves the packet still matches the earlier intake and unchanged raw exports.
+5. Check that the unchanged review packet is ready for a separate human decision record:
 
-Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, or this workspace manifest as proof of learning effectiveness. Human review remains required.
+```bash
+python3 software/product_alpha/evaluation/record_decision.py check \\
+  --workspace {workspace_arg}
+```
+
+6. After reviewing the aggregate and private facilitator notes, record exactly one human action:
+
+```bash
+python3 software/product_alpha/evaluation/record_decision.py \\
+  --workspace {workspace_arg} \\
+  --action <allowed-primary-action> \\
+  --reviewer "<role-or-initials>" \\
+  --review-date YYYY-MM-DD \\
+  --rationale "<de-identified rationale>" \\
+  --next-checkpoint "<next checkpoint>"
+```
+
+Allowed primary actions are `revise-current-route`, `repeat-current-route-pilot`, `hold-current-route`, and `advance-to-next-product-planning-review`. The last action is rejected unless the cohort reached `ready-for-human-review` status. The command verifies the untouched review JSON/Markdown pair and the complete workspace evidence chain before writing `review/refrigerator-review-decision.json` and `review/refrigerator-review-decision.md`. It never edits the review packet, never overwrites a decision record, and never modifies the repository.
+
+Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient.
+
+`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review and decision records still match the earlier intake and unchanged raw exports.
+
+Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, a decision record, or this workspace manifest as proof of learning effectiveness. Human judgment remains required, and no decision record by itself authorizes a second route or public release.
 """
 
 
