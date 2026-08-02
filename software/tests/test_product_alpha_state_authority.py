@@ -63,9 +63,13 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
             in product_state,
             "product state must deny automatic repository mutation",
         )
+
         pilot_report = self.pilot_report.lower()
-        self.assertIn("separately reviewed and de-identified", pilot_report)
-        self.assertIn("separately reviewed and merged", pilot_report)
+        self.assertIn("## completion criteria", pilot_report)
+        completion = pilot_report.split("## completion criteria", 1)[1]
+        for required in ("separately", "de-identified", "reviewed", "merged"):
+            with self.subTest(required=required):
+                self.assertIn(required, completion)
 
     def test_obsolete_manual_flow_is_not_the_active_workflow(self) -> None:
         for text in (self.product_state, self.pilot_report):
