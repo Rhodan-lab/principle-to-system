@@ -77,3 +77,30 @@ test("learner route exposes visible keyboard focus",()=>{
   assert.match(html,/\.content \.table-scroll:focus-visible/);
   assert.match(html,/\.content table\{width:100%;min-width:32rem/);
 });
+
+test("thermal chart summary describes the simulated result",()=>{
+  const summary=JSON.parse(JSON.stringify(api.modelResultSummary(
+    [{m:0,t:8.04},{m:60,t:4.96}],
+    24,
+    60,
+  )));
+  assert.deepEqual(summary,{
+    trend:"falls",
+    result:"Model result: cabinet temperature falls to 5.0 °C after 60 minutes.",
+    description:"Cabinet temperature falls from 8.0 °C to 5.0 °C over 60 minutes. Room temperature reference: 24.0 °C.",
+  });
+});
+
+test("thermal chart exposes a dynamic title and description",()=>{
+  assert.match(html,/id="chart"[^>]+aria-labelledby="chartTitle chartDescription"/);
+  assert.match(html,/<title id="chartTitle">Predicted cabinet temperature<\/title>/);
+  assert.match(html,/<desc id="chartDescription">\$\{esc\(description\)\}<\/desc>/);
+  assert.match(html,/draw\(points,values\.room_temperature_c,summary\.description\)/);
+  assert.doesNotMatch(html,/id="chart"[^>]+aria-label="Predicted cabinet temperature"/);
+});
+
+test("evidence dialog has an explicit accessible name and description",()=>{
+  assert.match(html,/<dialog id="dialog" aria-labelledby="evidenceTitle" aria-describedby="evidenceBoundaryIntro">/);
+  assert.match(html,/<h2 id="evidenceTitle">Evidence boundary<\/h2>/);
+  assert.match(html,/<p id="evidenceBoundaryIntro">References are pinned and advisory\./);
+});
