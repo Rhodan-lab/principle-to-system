@@ -162,7 +162,7 @@ Allowed primary actions are:
 
 The recorder rejects the fourth action unless the cohort reached `ready-for-human-review`. It writes `review/refrigerator-review-decision.json` and `review/refrigerator-review-decision.md`, binding the human-supplied action, reviewer label, date, rationale, and checkpoint to the untouched review JSON/Markdown hashes and the verified intake, combined cohort, and source-record hashes. It refuses to overwrite an existing decision record and does not edit the review packet or repository.
 
-Keep participant identities out of reviewer, rationale, and checkpoint text. A role label or initials are sufficient. Advancing to a planning review opens only a separate planning review; it does not authorize a second route. No recorded action authorizes public release, SaaS expansion, a learning-effectiveness claim, or a product-market-fit claim.
+Keep participant identities out of reviewer, rationale, and checkpoint text. A role label or initials are sufficient. Selecting `advance-to-next-product-planning-review` records that human choice only; a separate planning review must still be created and reviewed. No recorded action authorizes a second route, public release, SaaS expansion, a learning-effectiveness claim, or a product-market-fit claim.
 
 ## Pilot Lab
 
