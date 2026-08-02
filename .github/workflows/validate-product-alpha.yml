@@ -37,6 +37,7 @@ jobs:
             software/product_alpha/build.py \
             software/product_alpha/run_pilot.py \
             software/product_alpha/prepare_pilot.py \
+            software/product_alpha/launch_workspace.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \

@@ -65,6 +65,18 @@ This folder is outside the repository. Keep raw anonymous session records here a
 - Expected pilot build ID: `{build_id}`
 - Participant names, email addresses, account identifiers, and contact details are not allowed.
 
+## Launch the bound pilot
+
+Start the long-running loopback product through the workspace binding:
+
+```bash
+python3 software/product_alpha/launch_workspace.py \\
+  --workspace {quote(str(workspace))} \\
+  --open
+```
+
+The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to open a server unless the current deterministic build exactly matches `{build_id}`. This removes manual build-ID comparison from the supported cohort path. It stores no session data and does not modify the workspace manifest.
+
 ## Folder use
 
 1. Place individual anonymous recorder exports (`.jsonl` or `.json`) in `incoming-sessions/`.
