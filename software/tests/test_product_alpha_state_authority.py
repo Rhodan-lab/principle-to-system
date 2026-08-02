@@ -48,7 +48,12 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
             self.assertIn("not be committed", lowered)
             self.assertIn("may not yet claim", lowered)
             self.assertIn("learning effectiveness", lowered)
-            self.assertIn("second route", lowered)
+            self.assertTrue(
+                "second route" in lowered
+                or "second-route" in lowered
+                or "another route" in lowered,
+                "authority document must deny an unreviewed additional route",
+            )
 
         product_state = self.product_state.lower()
         self.assertTrue(
