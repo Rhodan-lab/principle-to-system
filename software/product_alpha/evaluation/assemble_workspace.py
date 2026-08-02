@@ -1,20 +1,50 @@
 #!/usr/bin/env python3
-"""Validate individual Product Alpha session exports and assemble one cohort JSONL."""
+"""Validate Product Alpha session exports before sealing one immutable cohort."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
 import summarize as pilot_summary
 
 CONTRACT = "principia-product-alpha-workspace-intake/0.1"
+PREFLIGHT_CONTRACT = "principia-product-alpha-workspace-intake-preflight/0.1"
 WORKSPACE_CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
 ALLOWED_SOURCE_SUFFIXES = {".json", ".jsonl"}
 REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+@dataclass(frozen=True)
+class WorkspaceIntakePlan:
+    root: Path
+    manifest: dict[str, Any]
+    incoming: Path
+    combined: Path
+    intake: Path
+    sessions: tuple[dict[str, Any], ...]
+    source_records: tuple[dict[str, str], ...]
+    combined_bytes: bytes
+    summary: dict[str, Any]
+
+    @property
+    def combined_sha256(self) -> str:
+        return hashlib.sha256(self.combined_bytes).hexdigest()
+
+    @property
+    def source_records_sha256(self) -> str:
+        return hashlib.sha256(_canonical_json(list(self.source_records))).hexdigest()
+
+
+def _canonical_json(value: Any) -> bytes:
+    return (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode("utf-8")
 
 
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
@@ -104,12 +134,11 @@ def _load_workspace(
     return manifest, incoming, combined, intake
 
 
-def assemble_workspace(
+def _build_plan(
     workspace: Path,
     *,
     repo_root: Path = REPO_ROOT,
-) -> dict[str, object]:
-    """Validate private incoming exports and write one immutable cohort intake."""
+) -> WorkspaceIntakePlan:
     root = workspace.expanduser().resolve(strict=True)
     if not root.is_dir():
         raise ValueError("workspace must be a directory")
@@ -120,10 +149,6 @@ def assemble_workspace(
     manifest, incoming, combined, intake = _load_workspace(root)
     if not incoming.is_dir():
         raise ValueError("incoming session directory is missing")
-    if combined.exists():
-        raise FileExistsError(f"combined cohort already exists: {combined}")
-    if intake.exists():
-        raise FileExistsError(f"intake manifest already exists: {intake}")
 
     entries = sorted(incoming.iterdir(), key=lambda path: path.name)
     if not entries:
@@ -184,32 +209,114 @@ def assemble_workspace(
     ).encode("utf-8")
     summary = pilot_summary.summarize(sessions)
 
+    return WorkspaceIntakePlan(
+        root=root,
+        manifest=manifest,
+        incoming=incoming,
+        combined=combined,
+        intake=intake,
+        sessions=tuple(sessions),
+        source_records=tuple(source_records),
+        combined_bytes=combined_bytes,
+        summary=summary,
+    )
+
+
+def _output_state(plan: WorkspaceIntakePlan) -> dict[str, bool]:
+    return {
+        "combined_jsonl": plan.combined.exists(),
+        "intake_manifest": plan.intake.exists(),
+    }
+
+
+def preflight_workspace(
+    workspace: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
+    """Validate all incoming exports and predict immutable intake bytes without writing."""
+    plan = _build_plan(workspace, repo_root=repo_root)
+    complete = bool(plan.summary["cohort_complete"])
+    return {
+        "contract": PREFLIGHT_CONTRACT,
+        "decision": "workspace-intake-preflight-passed",
+        "pilot_build_id": plan.manifest["pilot_build_id"],
+        "route_id": plan.manifest["route_id"],
+        "workspace": str(plan.root),
+        "sessions": len(plan.sessions),
+        "minimum_cohort_size": pilot_summary.MIN_COHORT_SIZE,
+        "cohort_complete": complete,
+        "evidence_status": plan.summary["evidence_status"],
+        "summary_contract": plan.summary["contract"],
+        "combined_jsonl": str(plan.combined),
+        "intake_manifest": str(plan.intake),
+        "predicted_combined_sha256": plan.combined_sha256,
+        "source_records_sha256": plan.source_records_sha256,
+        "source_records": list(plan.source_records),
+        "verified_outputs_exist": _output_state(plan),
+        "ready_for_default_assembly": complete
+        and not plan.combined.exists()
+        and not plan.intake.exists(),
+        "incomplete_assembly_requires_override": not complete,
+        "writes_performed": False,
+        "raw_source_files_modified": False,
+        "human_review_required": True,
+    }
+
+
+def assemble_workspace(
+    workspace: Path,
+    *,
+    allow_incomplete: bool = False,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
+    """Validate private exports and write one immutable cohort intake."""
+    plan = _build_plan(workspace, repo_root=repo_root)
+
+    if plan.combined.exists():
+        raise FileExistsError(f"combined cohort already exists: {plan.combined}")
+    if plan.intake.exists():
+        raise FileExistsError(f"intake manifest already exists: {plan.intake}")
+
+    complete = bool(plan.summary["cohort_complete"])
+    if not complete and not allow_incomplete:
+        raise ValueError(
+            f"cohort has {len(plan.sessions)} valid sessions; "
+            f"the documented minimum is {pilot_summary.MIN_COHORT_SIZE}. "
+            "Run the check command while collecting, or pass --allow-incomplete "
+            "only when intentionally closing the cohort early."
+        )
+
     report: dict[str, object] = {
         "contract": CONTRACT,
         "decision": "workspace-intake-assembled",
-        "pilot_build_id": manifest["pilot_build_id"],
-        "route_id": manifest["route_id"],
-        "workspace": str(root),
-        "sessions": len(sessions),
-        "evidence_status": summary["evidence_status"],
-        "summary_contract": summary["contract"],
-        "combined_jsonl": str(combined),
-        "combined_sha256": hashlib.sha256(combined_bytes).hexdigest(),
-        "source_records": source_records,
+        "pilot_build_id": plan.manifest["pilot_build_id"],
+        "route_id": plan.manifest["route_id"],
+        "workspace": str(plan.root),
+        "sessions": len(plan.sessions),
+        "minimum_cohort_size": pilot_summary.MIN_COHORT_SIZE,
+        "cohort_complete": complete,
+        "evidence_status": plan.summary["evidence_status"],
+        "summary_contract": plan.summary["contract"],
+        "combined_jsonl": str(plan.combined),
+        "combined_sha256": plan.combined_sha256,
+        "source_records_sha256": plan.source_records_sha256,
+        "source_records": list(plan.source_records),
+        "incomplete_assembly_authorized": not complete and allow_incomplete,
         "raw_source_files_modified": False,
         "human_review_required": True,
     }
     intake_text = json.dumps(report, indent=2, sort_keys=True) + "\n"
 
-    combined.parent.mkdir(parents=True, exist_ok=True)
-    intake.parent.mkdir(parents=True, exist_ok=True)
-    with combined.open("xb") as stream:
-        stream.write(combined_bytes)
+    plan.combined.parent.mkdir(parents=True, exist_ok=True)
+    plan.intake.parent.mkdir(parents=True, exist_ok=True)
+    with plan.combined.open("xb") as stream:
+        stream.write(plan.combined_bytes)
     try:
-        with intake.open("x", encoding="utf-8") as stream:
+        with plan.intake.open("x", encoding="utf-8") as stream:
             stream.write(intake_text)
     except Exception:
-        combined.unlink(missing_ok=True)
+        plan.combined.unlink(missing_ok=True)
         raise
     return report
 
@@ -217,18 +324,39 @@ def assemble_workspace(
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "command",
+        nargs="?",
+        choices=("assemble", "check"),
+        default="assemble",
+        help="assemble immutable intake or validate and predict it without writing",
+    )
+    parser.add_argument(
         "--workspace",
         type=Path,
         required=True,
         help="existing private cohort workspace created by prepare_pilot.py",
     )
-    return parser.parse_args(argv)
+    parser.add_argument(
+        "--allow-incomplete",
+        action="store_true",
+        help="intentionally seal fewer than the documented minimum sessions",
+    )
+    args = parser.parse_args(argv)
+    if args.command == "check" and args.allow_incomplete:
+        parser.error("--allow-incomplete is only valid for assemble")
+    return args
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        report = assemble_workspace(args.workspace)
+        if args.command == "check":
+            report = preflight_workspace(args.workspace)
+        else:
+            report = assemble_workspace(
+                args.workspace,
+                allow_incomplete=args.allow_incomplete,
+            )
     except (OSError, ValueError) as exc:
         raise SystemExit(f"workspace intake failed: {exc}") from exc
     print(json.dumps(report, sort_keys=True))
