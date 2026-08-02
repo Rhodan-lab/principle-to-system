@@ -52,7 +52,10 @@ def reviewed_workspace(root: Path, count: int = 5) -> Path:
             json.dumps(value, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-    assemble_workspace.assemble_workspace(workspace)
+    assemble_workspace.assemble_workspace(
+        workspace,
+        allow_incomplete=count < 5,
+    )
     review_workspace.prepare_workspace_review(workspace)
     return workspace
 
