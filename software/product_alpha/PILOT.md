@@ -247,7 +247,7 @@ Allowed actions are:
 
 The fourth action is rejected unless the cohort status is `ready-for-human-review`. The command writes `review/refrigerator-review-decision.json` and `review/refrigerator-review-decision.md`, binds them to the untouched review packet and workspace evidence hashes, refuses overwrite, and does not modify the repository.
 
-Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient. The fourth action opens a separate planning review only; it does not authorize a second route.
+Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient. Selecting the fourth action records only the human choice to proceed toward a separate planning review. It does not create that review or authorize a second route.
 
 ## Decision rule
 
@@ -262,4 +262,4 @@ Prioritize revision when:
 - learners repeatedly treat Atlas status as proof that a physical conclusion is true;
 - learners finish but do not voluntarily continue.
 
-A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab and command-line summary surface descriptive signals; a human reviewer still chooses the product action. Neither the review packet nor the decision record automatically modifies the repository, authorizes public release, establishes product-market fit, permits a learning-effectiveness claim, or authorizes a second route.
+A small pilot cannot establish general learning effectiveness. It can reveal obvious interaction failures, recurring misconceptions, and whether the product deserves a larger evaluation. The Pilot Lab and command-line summary surface descriptive signals; a human reviewer still chooses the product action. Neither the review packet nor the decision record automatically modifies the repository, creates a planning review, authorizes public release, establishes product-market fit, permits a learning-effectiveness claim, or authorizes a second route.
