@@ -57,3 +57,23 @@ test("diagnosis choice survives navigation and resets checked result on change",
   assert.equal(state.diagnosis.choice,1);
   assert.equal(state.diagnosis.checked,false);
 });
+
+test("renders canonical tables with accessible relationships",()=>{
+  const rendered=api.renderMarkdown([
+    "| Type | Examples |",
+    "| --- | --- |",
+    "| Inputs | Electrical work |",
+    "| Outputs | Rejected heat |",
+  ].join("\n"));
+  assert.match(rendered,/<div class="table-scroll" role="region" aria-label="Type reference table" tabindex="0">/);
+  assert.match(rendered,/<caption class="sr-only">Type reference table<\/caption>/);
+  assert.match(rendered,/<th scope="col">Type<\/th><th scope="col">Examples<\/th>/);
+  assert.match(rendered,/<th scope="row">Inputs<\/th><td>Electrical work<\/td>/);
+  assert.match(rendered,/<th scope="row">Outputs<\/th><td>Rejected heat<\/td>/);
+});
+
+test("learner route exposes visible keyboard focus",()=>{
+  assert.match(html,/a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible/);
+  assert.match(html,/\.content \.table-scroll:focus-visible/);
+  assert.match(html,/\.content table\{width:100%;min-width:32rem/);
+});
