@@ -13,6 +13,7 @@ SCRIPT = EVALUATION_DIR / "workspace_status.py"
 sys.path.insert(0, str(EVALUATION_DIR))
 
 import assemble_workspace  # noqa: E402
+import prepare_handoff  # noqa: E402
 import prepare_workspace  # noqa: E402
 import record_decision  # noqa: E402
 import review_workspace  # noqa: E402
@@ -80,6 +81,12 @@ def decide(workspace: Path, count: int = 5) -> None:
         "Repeated model-control confusion requires a bounded route revision.",
         "Review the revised refrigerator route before scheduling a repeat cohort.",
     )
+
+
+def handoff(workspace: Path) -> Path:
+    prefix = workspace / "handoff" / "refrigerator-product-change"
+    prepare_handoff.write_handoff(workspace, prefix)
+    return prefix
 
 
 def snapshot(workspace: Path) -> dict[str, bytes]:
@@ -154,7 +161,7 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             self.assertIsNone(report["next_command"])
             self.assertIn("<allowed-primary-action>", str(report["next_command_template"]))
 
-    def test_reports_verified_decision_and_human_follow_up(self) -> None:
+    def test_reports_verified_decision_ready_for_handoff(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
             decide(workspace)
@@ -162,9 +169,32 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
 
             self.assertEqual(report["stage"], "decision-verified")
             self.assertEqual(report["primary_action"], "revise-current-route")
-            self.assertEqual(report["next_action"], "prepare-bounded-route-revision")
+            self.assertEqual(
+                report["next_action"],
+                "prepare-deidentified-repository-handoff",
+            )
+            self.assertEqual(
+                report["post_handoff_action"],
+                "prepare-bounded-route-revision",
+            )
             self.assertRegex(str(report["decision_receipt_sha256"]), r"^[0-9a-f]{64}$")
-            self.assertIn("record_decision.py verify", str(report["validation_command"]))
+            self.assertIn("prepare_handoff.py prepare", str(report["next_command"]))
+            self.assertIn("prepare_handoff.py check", str(report["validation_command"]))
+
+    def test_reports_verified_handoff_and_human_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            decide(workspace)
+            handoff(workspace)
+            report = workspace_status.inspect_workspace(workspace)
+
+            self.assertEqual(report["stage"], "handoff-verified")
+            self.assertEqual(report["primary_action"], "revise-current-route")
+            self.assertEqual(report["next_action"], "prepare-bounded-route-revision")
+            self.assertRegex(str(report["handoff_candidate_sha256"]), r"^[0-9a-f]{64}$")
+            self.assertIn("prepare_handoff.py verify", str(report["validation_command"]))
+            self.assertTrue(report["artifacts"]["handoff_json"])
+            self.assertTrue(report["artifacts"]["handoff_markdown"])
 
     def test_rejects_partial_or_out_of_order_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -191,10 +221,29 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "decision artifact trio is incomplete"):
                 workspace_status.inspect_workspace(workspace)
 
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            decide(workspace)
+            handoff_path = workspace / "handoff" / "refrigerator-product-change.json"
+            handoff_path.parent.mkdir()
+            handoff_path.write_text("{}\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "repository handoff pair is incomplete"):
+                workspace_status.inspect_workspace(workspace)
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(Path(directory))
+            prefix = workspace / "handoff" / "refrigerator-product-change"
+            prefix.parent.mkdir()
+            prefix.with_suffix(".json").write_text("{}\n", encoding="utf-8")
+            prefix.with_suffix(".md").write_text("unsafe\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "before immutable intake"):
+                workspace_status.inspect_workspace(workspace)
+
     def test_cli_is_read_only_for_completed_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
             decide(workspace)
+            handoff(workspace)
             before = snapshot(workspace)
 
             completed = subprocess.run(
@@ -211,7 +260,7 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             )
             report = json.loads(completed.stdout)
 
-            self.assertEqual(report["stage"], "decision-verified")
+            self.assertEqual(report["stage"], "handoff-verified")
             self.assertFalse(report["writes_performed"])
             self.assertEqual(snapshot(workspace), before)
 
