@@ -54,9 +54,8 @@ def _manifest(build_id: str, route_id: str) -> dict[str, object]:
 
 
 def _readme(workspace: Path, build_id: str) -> str:
-    combined = workspace / "verified" / "anonymous-sessions.jsonl"
-    review_prefix = workspace / "review" / "refrigerator-review"
     quote = shlex.quote
+    workspace_arg = quote(str(workspace))
     return f"""# Principia Product Alpha private cohort workspace
 
 This folder is outside the repository. Keep raw anonymous session records here and do not commit them.
@@ -71,7 +70,7 @@ Start the long-running loopback product through the workspace binding:
 
 ```bash
 python3 software/product_alpha/launch_workspace.py \\
-  --workspace {quote(str(workspace))} \\
+  --workspace {workspace_arg} \\
   --open
 ```
 
@@ -84,30 +83,30 @@ The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to
 
 ```bash
 python3 software/product_alpha/evaluation/assemble_workspace.py \\
-  --workspace {quote(str(workspace))}
+  --workspace {workspace_arg}
 ```
 
 This command validates every file, rejects malformed, mixed-build, duplicate, or personal-data-bearing records, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export and the combined JSONL. Source files are not changed. Existing verified outputs are never overwritten.
 
-3. Verify the cohort against the launcher build:
+3. Check the complete workspace evidence chain without writing review outputs:
 
 ```bash
-python3 software/product_alpha/evaluation/verify_cohort.py \\
-  --input {quote(str(combined))} \\
-  --expect-build-id {build_id} \\
-  --format markdown
+python3 software/product_alpha/evaluation/review_workspace.py check \\
+  --workspace {workspace_arg}
 ```
 
 4. Create the private, de-identified human-review packet:
 
 ```bash
-python3 software/product_alpha/evaluation/prepare_review.py \\
-  --input {quote(str(combined))} \\
-  --expect-build-id {build_id} \\
-  --output-prefix {quote(str(review_prefix))}
+python3 software/product_alpha/evaluation/review_workspace.py \\
+  --workspace {workspace_arg}
 ```
 
-Do not treat an empty directory, an incomplete cohort, an intake manifest, or this workspace manifest as learner evidence. Human review remains required.
+The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/refrigerator-review.json` and `review/refrigerator-review.md`. It refuses changed evidence and never overwrites an existing review packet.
+
+`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound command is the supported end-to-end review path because it proves the packet still matches the earlier intake and unchanged raw exports.
+
+Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, or this workspace manifest as proof of learning effectiveness. Human review remains required.
 """
 
 
