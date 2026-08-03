@@ -25,7 +25,7 @@ python3 software/product_alpha/evaluation/validate_route_selection.py check
 
 ## When to use this protocol
 
-Use it only when the project deliberately wants external observation of interaction problems, misconceptions, or workflow friction. There is no participant-count requirement and no requirement to run it before repository development continues.
+Use it only when the project deliberately wants external observation of interaction problems, misconceptions, or workflow friction. There is no minimum participant count and no requirement to run it before repository development continues.
 
 Observations may inform a later decision, but they do not automatically authorize, block, or mutate repository work.
 
