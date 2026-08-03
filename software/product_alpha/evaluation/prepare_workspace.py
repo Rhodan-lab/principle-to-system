@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a private, build-bound Product Alpha cohort workspace outside the repo."""
+"""Create a private, build-bound Product Alpha observation workspace outside the repo."""
 
 from __future__ import annotations
 
@@ -68,9 +68,9 @@ def _readme(workspace: Path, build_id: str, route_id: str) -> str:
     handoff_arg = quote(
         str(workspace / "handoff" / f"{route_slug}-product-change")
     )
-    return f"""# Principia Product Alpha private cohort workspace
+    return f"""# Principia Product Alpha private observation workspace
 
-This folder is outside the repository. Keep raw anonymous session records here and do not commit them.
+This folder is outside the repository. Keep raw anonymous observation records here and do not commit them.
 
 - Route: `{route_id}`
 - Expected pilot build ID: `{build_id}`
@@ -86,7 +86,7 @@ python3 software/product_alpha/launch_workspace.py \\
   --open
 ```
 
-The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to open a server unless the current deterministic build exactly matches `{build_id}`. This removes manual build-ID comparison from the supported cohort path. It stores no session data and does not modify the workspace manifest.
+The launcher rebuilds Product Alpha, reads this `workspace.json`, and refuses to open a server unless the current deterministic build exactly matches `{build_id}`. This removes manual build-ID comparison from the supported observation path. It stores no session data and does not modify the workspace manifest.
 
 ## Check the current stage
 
@@ -97,7 +97,7 @@ python3 software/product_alpha/evaluation/workspace_status.py \\
   --workspace {workspace_arg}
 ```
 
-The status command recognizes prepared, collecting, ready-to-assemble, intake-verified, review-ready-for-decision, decision-verified, and handoff-verified stages. It validates every artifact required by the current stage, rejects partial or out-of-order evidence, and returns a machine-readable next action and command. It never creates, edits, or removes workspace files.
+The status command recognizes `prepared`, `ready-to-assemble`, `intake-verified`, `review-ready-for-advisory`, `advisory-verified`, and `advisory-handoff-verified` stages. It validates every artifact required by the current stage, rejects partial or out-of-order evidence, and returns a machine-readable next action and command. It never creates, edits, or removes workspace files.
 
 ## Folder use
 
@@ -128,14 +128,14 @@ python3 software/product_alpha/evaluation/review_workspace.py check \\
   --workspace {workspace_arg}
 ```
 
-5. Create the private, de-identified human-review packet:
+5. Create the private, de-identified optional observation review packet:
 
 ```bash
 python3 software/product_alpha/evaluation/review_workspace.py \\
   --workspace {workspace_arg}
 ```
 
-The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/{route_slug}-review.json` and `review/{route_slug}-review.md`. It refuses changed evidence and never overwrites an existing review packet.
+The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, observation count, summary contract, and evidence status before writing `review/{route_slug}-review.json` and `review/{route_slug}-review.md`. It refuses changed evidence and never overwrites an existing review packet.
 
 6. Check that the unchanged optional review packet is ready for a separate advisory record:
 
@@ -153,21 +153,21 @@ python3 software/product_alpha/evaluation/record_decision.py \\
   --reviewer "<role-or-initials>" \\
   --review-date YYYY-MM-DD \\
   --rationale "<de-identified rationale>" \\
-  --next-checkpoint "<next checkpoint>"
+  --next-checkpoint "<next-checkpoint>"
 ```
 
-Allowed advisory actions are `record-observation-context`, `revise-current-route`, `repeat-current-route-pilot`, and `hold-current-route`. None authorizes or blocks roadmap work; the internal multi-perspective review remains the only product authority. The command verifies the untouched review JSON/Markdown pair and the complete workspace evidence chain before writing `review/{route_slug}-review-decision.json`, `review/{route_slug}-review-decision.md`, and `review/{route_slug}-review-decision-receipt.json`. The receipt seals both decision-file hashes together with the review, intake, combined-cohort, and source-record bindings. It never edits the review packet, never overwrites a decision artifact, and never modifies the repository.
+Allowed advisory actions are `record-observation-context`, `revise-current-route`, `repeat-current-route-pilot`, and `hold-current-route`. None authorizes or blocks roadmap work; the internal multi-perspective review remains the only product authority. The command verifies the untouched review JSON/Markdown pair and the complete workspace evidence chain before writing `review/{route_slug}-review-decision.json`, `review/{route_slug}-review-decision.md`, and `review/{route_slug}-review-decision-receipt.json`. The historical filenames retain `decision` for compatibility, but the artifacts are advisory-only. The receipt seals both record-file hashes together with the review, intake, combined observation set, and source-record bindings. It never edits the review packet, never overwrites an advisory artifact, and never modifies the repository.
 
-8. Verify the finished decision artifact trio against the unchanged workspace evidence:
+8. Verify the finished advisory artifact trio against the unchanged workspace evidence:
 
 ```bash
 python3 software/product_alpha/evaluation/record_decision.py verify \\
   --workspace {workspace_arg}
 ```
 
-Verification rechecks every earlier evidence binding, canonical decision JSON, rendered decision Markdown, and receipt hash without writing. The receipt provides local tamper evidence for accidental or partial edits; it is not a digital signature, timestamp authority, or proof of authorship.
+Verification rechecks every earlier evidence binding, canonical advisory JSON, rendered advisory Markdown, and receipt hash without writing. The receipt provides local tamper evidence for accidental or partial edits; it is not a digital signature, timestamp authority, or proof of authorship.
 
-9. Prepare a de-identified candidate for a separate repository change. Check first without writing:
+9. Prepare de-identified advisory context for the internal multi-perspective review. Check first without writing:
 
 ```bash
 python3 software/product_alpha/evaluation/prepare_handoff.py check \\
@@ -175,7 +175,7 @@ python3 software/product_alpha/evaluation/prepare_handoff.py check \\
   --output-prefix {handoff_arg}
 ```
 
-Create the private candidate pair:
+Create the private advisory pair:
 
 ```bash
 python3 software/product_alpha/evaluation/prepare_handoff.py \\
@@ -183,7 +183,7 @@ python3 software/product_alpha/evaluation/prepare_handoff.py \\
   --output-prefix {handoff_arg}
 ```
 
-Then verify it against the unchanged decision and evidence chain:
+Then verify it against the unchanged advisory record and evidence chain:
 
 ```bash
 python3 software/product_alpha/evaluation/prepare_handoff.py verify \\
@@ -191,13 +191,13 @@ python3 software/product_alpha/evaluation/prepare_handoff.py verify \\
   --output-prefix {handoff_arg}
 ```
 
-The handoff JSON and Markdown contain the verified advisory action, de-identified aggregate metrics, revision signals, and evidence hashes. They exclude raw sessions, session identifiers, facilitator notes, custom confusion-tag text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths. The pair remains outside the repository. It does not authorize or perform a repository change; a human must inspect it and create a separate normal pull request.
+The handoff JSON and Markdown contain the verified advisory action, de-identified aggregate metrics, revision signals, and evidence hashes. They exclude raw sessions, session identifiers, facilitator notes, custom confusion-tag text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths. The pair remains outside the repository. It does not authorize or perform a repository change; the internal multi-perspective review must evaluate the context separately.
 
 Keep participant identities out of reviewer, rationale, and checkpoint text. A reviewer role or initials are sufficient.
 
-`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review, decision, and handoff artifacts still match the earlier intake and unchanged raw exports.
+`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review, advisory, and handoff artifacts still match the earlier intake and unchanged raw exports.
 
-Do not treat an empty directory, an optional observation set, an intake manifest, a review packet, a decision record, a decision receipt, a repository handoff candidate, or this workspace manifest as proof of learning effectiveness. No generated artifact authorizes or blocks roadmap progress, a second route, or public release.
+Do not treat an empty directory, an optional observation set, an intake manifest, a review packet, an advisory record, an advisory receipt, a handoff candidate, or this workspace manifest as proof of learning effectiveness. No generated artifact authorizes or blocks roadmap progress, a second route, or public release.
 """
 
 
