@@ -11,7 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import route_identity
+try:
+    from software.product_alpha import route_identity
+except ModuleNotFoundError:
+    import route_identity
 
 DEFAULT_ROUTE = "refrigerator"
 STATIC_ASSETS = ("index.html", "model-adapters.js", "facilitator.html", "pilot-lab.html")
