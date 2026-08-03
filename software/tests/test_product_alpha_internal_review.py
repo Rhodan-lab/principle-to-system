@@ -31,7 +31,9 @@ class ProductAlphaInternalReviewTests(unittest.TestCase):
     def test_review_covers_all_required_perspectives(self) -> None:
         perspectives = self.review["perspectives"]
         self.assertEqual({item["id"] for item in perspectives}, EXPECTED_PERSPECTIVES)
-        self.assertTrue(all(item["status"] in {"pass", "conditional-pass"} for item in perspectives))
+        self.assertTrue(
+            all(item["status"] in {"pass", "conditional-pass"} for item in perspectives)
+        )
         self.assertTrue(all(len(item["evidence"]) >= 2 for item in perspectives))
         self.assertTrue(all(item["residual_risk"] for item in perspectives))
         self.assertTrue(all(item["next_action"] for item in perspectives))
@@ -41,7 +43,11 @@ class ProductAlphaInternalReviewTests(unittest.TestCase):
             self.review["decision"]["action"],
             "advance-to-next-product-planning-review",
         )
-        non_claims = {item.lower() for item in self.review["claim_boundary"]["does_not_establish"]}
+        non_claims = {
+            item.lower()
+            for item in self.review["claim_boundary"]["does_not_establish"]
+        }
+        lowered_markdown = self.markdown.lower()
         for required in (
             "empirical learning effectiveness",
             "retention",
@@ -50,11 +56,12 @@ class ProductAlphaInternalReviewTests(unittest.TestCase):
             "public production readiness",
         ):
             self.assertIn(required, non_claims)
-            self.assertIn(required, self.markdown.lower())
+            self.assertIn(required, lowered_markdown)
         self.assertIn(
-            "does not need external participant sessions as a prerequisite",
-            self.markdown.lower(),
+            "external participant sessions as a prerequisite",
+            lowered_markdown,
         )
+        self.assertIn("not decision authority", lowered_markdown)
 
     def test_validator_is_read_only_and_passes(self) -> None:
         before = {
