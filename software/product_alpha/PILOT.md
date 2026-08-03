@@ -104,14 +104,14 @@ python3 software/product_alpha/evaluation/workspace_status.py \
   --workspace /private/path/<route>-observation
 ```
 
-Validate current exports without sealing the cohort:
+Validate current exports without closing the optional observation set:
 
 ```bash
 python3 software/product_alpha/evaluation/assemble_workspace.py check \
   --workspace /private/path/<route>-observation
 ```
 
-If the project deliberately closes an observation set, it may use the existing assembly, review, decision, receipt, and handoff commands documented in the generated workspace README. Those tools retain privacy, non-overwrite, hash-binding, route-binding, and repository-external guarantees.
+If the project deliberately closes any non-empty observation set, it may use the existing assembly, review, decision, receipt, and handoff commands documented in the generated workspace README. There is no minimum count and no incomplete-set override. The compatibility fields `minimum_cohort_size: 0` and `cohort_complete: true` mean only that the optional set can be reviewed; they are never roadmap authority. Those tools retain privacy, non-overwrite, hash-binding, route-binding, and repository-external guarantees.
 
 They do not authorize another route, public release, SaaS infrastructure, empirical learning claims, or repository mutation.
 

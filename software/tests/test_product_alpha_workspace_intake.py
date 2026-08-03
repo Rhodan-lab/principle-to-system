@@ -108,7 +108,7 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                 "workspace-intake-preflight-passed",
             )
             self.assertEqual(report["sessions"], 5)
-            self.assertEqual(report["minimum_cohort_size"], 5)
+            self.assertEqual(report["minimum_cohort_size"], 0)
             self.assertTrue(report["cohort_complete"])
             self.assertEqual(report["evidence_status"], "ready-for-human-review")
             self.assertTrue(report["ready_for_default_assembly"])
@@ -130,8 +130,9 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             second = assemble_workspace.preflight_workspace(workspace)
 
             self.assertEqual(first["sessions"], 2)
-            self.assertFalse(first["cohort_complete"])
-            self.assertTrue(first["incomplete_assembly_requires_override"])
+            self.assertTrue(first["cohort_complete"])
+            self.assertFalse(first["incomplete_assembly_requires_override"])
+            self.assertTrue(first["ready_for_default_assembly"])
             self.assertEqual(second["sessions"], 5)
             self.assertTrue(second["cohort_complete"])
             self.assertNotEqual(
@@ -176,20 +177,24 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                 [f"anonymous-{number:03d}" for number in range(1, 6)],
             )
 
-    def test_default_assembly_blocks_incomplete_cohort_without_writing(self) -> None:
+    def test_default_assembly_accepts_any_nonempty_valid_observation_set(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
-            write_sessions(workspace, 2)
+            write_sessions(workspace, 1)
 
-            with self.assertRaisesRegex(
-                ValueError,
-                "Run the check command while collecting",
-            ):
-                assemble_workspace.assemble_workspace(workspace)
+            report = assemble_workspace.assemble_workspace(workspace)
 
-            self.assertEqual(list((workspace / "verified").iterdir()), [])
+            self.assertEqual(report["sessions"], 1)
+            self.assertEqual(report["minimum_cohort_size"], 0)
+            self.assertTrue(report["cohort_complete"])
+            self.assertFalse(report["incomplete_assembly_authorized"])
+            self.assertEqual(report["observation_mode"], "optional-descriptive")
+            self.assertFalse(report["roadmap_gate"])
+            self.assertTrue(
+                (workspace / "verified" / "anonymous-sessions.jsonl").exists()
+            )
 
-    def test_allow_incomplete_explicitly_seals_early_stop(self) -> None:
+    def test_allow_incomplete_flag_is_a_compatibility_noop(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
             write_sessions(workspace, 2)
@@ -200,15 +205,9 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             )
 
             self.assertEqual(report["sessions"], 2)
-            self.assertFalse(report["cohort_complete"])
-            self.assertEqual(report["evidence_status"], "incomplete")
-            self.assertTrue(report["incomplete_assembly_authorized"])
-            self.assertTrue(
-                (workspace / "verified" / "anonymous-sessions.jsonl").exists()
-            )
-            self.assertTrue(
-                (workspace / "verified" / "intake-manifest.json").exists()
-            )
+            self.assertTrue(report["cohort_complete"])
+            self.assertEqual(report["evidence_status"], "ready-for-human-review")
+            self.assertFalse(report["incomplete_assembly_authorized"])
 
     def test_preflight_reports_existing_verified_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -305,25 +304,10 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
             self.assertFalse(report["writes_performed"])
             self.assertEqual(list((workspace / "verified").iterdir()), [])
 
-    def test_cli_requires_explicit_incomplete_override(self) -> None:
+    def test_cli_assembles_single_observation_without_override(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
             write_sessions(workspace, 1)
-
-            blocked = subprocess.run(
-                [
-                    sys.executable,
-                    str(SCRIPT),
-                    "--workspace",
-                    str(workspace),
-                ],
-                cwd=REPO_ROOT,
-                capture_output=True,
-                text=True,
-            )
-            self.assertNotEqual(blocked.returncode, 0)
-            self.assertIn("allow-incomplete", blocked.stderr)
-            self.assertEqual(list((workspace / "verified").iterdir()), [])
 
             completed = subprocess.run(
                 [
@@ -331,7 +315,6 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                     str(SCRIPT),
                     "--workspace",
                     str(workspace),
-                    "--allow-incomplete",
                 ],
                 cwd=REPO_ROOT,
                 check=True,
@@ -339,7 +322,9 @@ class ProductAlphaWorkspaceIntakeTests(unittest.TestCase):
                 text=True,
             )
             report = json.loads(completed.stdout)
-            self.assertTrue(report["incomplete_assembly_authorized"])
+            self.assertEqual(report["sessions"], 1)
+            self.assertTrue(report["cohort_complete"])
+            self.assertFalse(report["incomplete_assembly_authorized"])
 
 
 if __name__ == "__main__":

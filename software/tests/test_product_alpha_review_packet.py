@@ -141,16 +141,19 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             packet["boundaries"]["custom_confusion_tag_text_included"]
         )
 
-    def test_incomplete_cohort_stays_pending_and_not_planning_eligible(self) -> None:
+    def test_small_optional_set_remains_reviewable_without_a_gate(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             input_path = Path(directory) / "sessions.jsonl"
             write_sessions(input_path, count=2)
             packet = review_packet.build_review_packet(input_path, BUILD_ID)
 
-        self.assertEqual(packet["aggregate_summary"]["evidence_status"], "incomplete")
-        self.assertFalse(packet["review"]["planning_review_eligible"])
+        summary = packet["aggregate_summary"]
+        self.assertEqual(summary["evidence_status"], "ready-for-human-review")
+        self.assertEqual(summary["minimum_cohort_size"], 0)
+        self.assertTrue(summary["cohort_complete"])
+        self.assertFalse(any(signal["code"] == "cohort-incomplete" for signal in summary["revision_signals"]))
+        self.assertTrue(packet["review"]["planning_review_eligible"])
         self.assertEqual(packet["review"]["status"], "human-review-required")
-        self.assertGreater(packet["review"]["revision_signal_count"], 0)
 
     def test_expected_build_mismatch_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
