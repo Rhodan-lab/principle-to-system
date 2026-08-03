@@ -3,7 +3,7 @@ title: "Principia current product state"
 slug: principia-current-product-state
 domain: product
 status: reviewed
-artifact_revision: 8
+artifact_revision: 9
 release_status: alpha
 prerequisites: []
 connections: [product-alpha-refrigerator, product-alpha-internal-multi-perspective-review, product-alpha-0-2-route-selection, product-alpha-distributed-information]
@@ -14,10 +14,10 @@ content_license: CC-BY-4.0
 # Principia current product state
 
 **Last updated:** 2026-08-03
-**Active milestone:** Product Alpha 0.2 — two-route local alpha and route-aware evidence records
+**Active milestone:** Product Alpha 0.2 — two-route local alpha with route-bound evidence and rubrics
 **Active repository:** `Rhodan-lab/principle-to-system`
 **Supporting repository:** `Rhodan-lab/Atlas`
-**Decision authority:** internal multi-perspective review, validated route selection, implemented route contract, and focused Product Alpha CI
+**Decision authority:** internal multi-perspective review, validated route selection, implemented route contract, route-aware evidence tests, and focused Product Alpha CI
 
 ## Current decision
 
@@ -35,13 +35,14 @@ The selected implementation action was:
 implement-distributed-information-model-adapter-and-route
 ```
 
-That implementation is now complete as a local alpha. The current product state is:
+That implementation is complete as a local alpha. The current product state is:
 
 ```text
 status: implemented-local-alpha
 baseline route: refrigerator
 second route: distributed-information
 learner architecture: two-route local alpha
+evidence architecture: route-bound local records
 ```
 
 External participant observation remains optional research. It is not a roadmap gate, release prerequisite, or authority requirement. GitHub issues are not part of the current execution workflow.
@@ -60,7 +61,7 @@ The refrigerator route remains the default and uses:
 thermal-cabinet-v1
 ```
 
-Its deterministic thermal direction, visible precision, prediction gate, diagnosis behavior, accessibility semantics, and local privacy boundaries remain protected by regression tests.
+Its deterministic thermal direction, visible precision, prediction gate, diagnosis behavior, accessibility semantics, route-specific rubric, and local privacy boundaries remain protected by regression tests.
 
 ### Distributed information
 
@@ -110,7 +111,7 @@ The shared shell continues to own navigation, learner notes, validation recovery
 
 ## Deterministic package identity
 
-Each packaged learner build contains a route-bound marker and exactly one matching route payload.
+Each packaged learner build contains one route-bound marker and exactly one matching route payload.
 
 The browser loads:
 
@@ -119,6 +120,22 @@ data/${routeId}.json
 ```
 
 and fails closed when the packaged route identity does not match the payload. The package includes the local `model-adapters.js` asset and makes no external runtime request.
+
+Each package also binds the same evidence route through:
+
+- `evaluation/session-template.json`;
+- `evaluation/rubric.json`;
+- the facilitator recorder;
+- Pilot Lab validation and aggregation.
+
+The canonical mapping is:
+
+| Software route | Evidence route |
+|---|---|
+| `refrigerator` | `refrigerator-v1` |
+| `distributed-information` | `distributed-information-v1` |
+
+The builder rejects a rubric whose `route_id` does not match the packaged route. Session validation accepts only supported route IDs, rejects an expected-route mismatch, and rejects mixed-route cohorts. Repository-external workspaces store the evidence route and rebuild the matching software route before launch.
 
 Both routes are validated independently:
 
@@ -160,6 +177,9 @@ The project may claim:
 - a buildable and loopback-runnable distributed-information route;
 - a reusable learner shell demonstrated across physical thermal and distributed queue domains;
 - deterministic route-bound packaging for both routes;
+- route-specific model controls, diagnosis, and evaluation rubrics;
+- route-bound facilitator records, Pilot Lab summaries, and repository-external workspaces;
+- rejection of unknown, mismatched, or mixed route identities in the evidence intake path;
 - prediction-before-model and diagnosis-before-feedback contracts for both routes;
 - local-first operation without accounts, analytics, browser persistence, cloud storage, or live Atlas calls;
 - preservation of accessibility, privacy, security, and provenance boundaries during route generalization.
@@ -178,40 +198,61 @@ The current evidence does not establish:
 
 These are claim boundaries, not roadmap blockers.
 
-## Concrete remaining defect
+## Completed route-integrity work
 
-The learner and launcher layers are route-aware, but the facilitator and evidence-record layer is not yet fully route-aware.
-
-The current session template still contains:
+The former milestone is complete:
 
 ```text
-route_id: refrigerator-v1
+make-facilitator-and-evidence-records-route-aware
 ```
 
-This creates a real integrity risk: a distributed-information session could be exported or aggregated under refrigerator identity.
+The implementation now:
+
+1. maps both software routes to explicit evidence route IDs;
+2. injects the correct route into the packaged session template;
+3. packages a route-specific evaluation rubric;
+4. exports facilitator records with the packaged route identity;
+5. validates the same route in Pilot Lab, aggregation, and workspace intake;
+6. rejects unknown, mismatched, and mixed-route evidence;
+7. creates route-specific review and handoff paths in private workspaces;
+8. rebuilds the exact software route represented by the workspace before launch;
+9. preserves existing `refrigerator-v1` compatibility.
 
 ## Current next action
 
-The next repository change must:
+The remaining verification gap is not another abstraction or a third route. Existing lower-level tests prove route binding at package, session, summary, intake, and workspace-launch boundaries, while the historical review, decision, receipt, and handoff suites still use refrigerator fixtures.
 
-1. bind the packaged route identity into the facilitator recorder;
-2. generate the correct route ID in exported session records;
-3. update the session template from one hard-coded route to an explicit supported-route contract;
-4. reject unknown or mismatched route identities in validation, Pilot Lab, aggregation, review, and handoff paths;
-5. preserve existing refrigerator evidence compatibility;
-6. add dual-route evidence tests before any third route is considered.
+The next concrete repository change should add one distributed-information integration fixture that exercises the unchanged private evidence chain through:
+
+```text
+prepare → collect synthetic fixture records → assemble → review → decision → receipt → handoff → verify
+```
+
+It must prove that every generated artifact preserves `distributed-information-v1`, uses route-specific paths, remains de-identified, and refuses route drift. It must use deterministic synthetic test fixtures only and must not fabricate real learner evidence.
 
 The next milestone is therefore:
 
 ```text
-make-facilitator-and-evidence-records-route-aware
+prove-distributed-information-evidence-chain-end-to-end
 ```
 
 ## Optional field-evaluation capability
 
 Recorder, Pilot Lab, repository-external workspace, aggregation, review, decision, receipt, and handoff tools remain optional research capability. They are not required for roadmap progress.
 
-Their route-identity integrity must still be corrected because optional evidence must not be mislabeled when used.
+Both routes may now use this local evidence tooling without route mislabeling. A refrigerator workspace and a distributed-information workspace remain separate cohorts and cannot be combined.
+
+Prepare either route explicitly:
+
+```bash
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/refrigerator-observation \
+  --route refrigerator
+
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/distributed-information-observation \
+  --route distributed-information
+```
 
 ## Atlas operating state
 
@@ -221,9 +262,9 @@ The route uses reviewed canonical Principia material and direct source boundarie
 
 ## Work that remains premature
 
-Do not begin these merely because two routes are runnable:
+Do not begin these merely because two routes and route-aware records are runnable:
 
-- a third route before evidence records become route-aware;
+- a third route before the distributed-information evidence chain has one full integration test;
 - public production deployment;
 - account systems;
 - behavioral analytics;
