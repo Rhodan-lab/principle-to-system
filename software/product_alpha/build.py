@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import route_identity
+
 DEFAULT_ROUTE = "refrigerator"
 STATIC_ASSETS = ("index.html", "model-adapters.js", "facilitator.html", "pilot-lab.html")
 EVALUATION_ASSETS = (
@@ -278,12 +280,20 @@ def _replace_once(data: bytes, old: bytes, new: bytes, label: str) -> bytes:
 
 def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_ROUTE) -> bytes:
     """Apply bounded packaging repairs and reject ambiguous asset states."""
+    evidence_route = route_identity.evidence_route_id(route)
     if relative_path == "index.html":
         marker = b'<meta name="principia-route" content="refrigerator">'
         replacement = f'<meta name="principia-route" content="{route}">'.encode("utf-8")
         if data.count(marker) != 1:
             raise ValueError("learner route marker must occur exactly once")
         return data.replace(marker, replacement, 1)
+    if relative_path == "evaluation/session-template.json":
+        template = json.loads(data.decode("utf-8"))
+        supported = template.get("supported_route_ids")
+        if supported != list(route_identity.SUPPORTED_EVIDENCE_ROUTES):
+            raise ValueError("session template supported_route_ids do not match route identity authority")
+        template["route_id"] = evidence_route
+        return json.dumps(template, indent=2, ensure_ascii=False).encode("utf-8") + b"\n"
     if relative_path == "facilitator.html":
         for old, new, label in FACILITATOR_TRANSFORMS:
             data = _replace_once(data, old, new, label)
@@ -291,6 +301,15 @@ def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_R
     if relative_path != "pilot-lab.html":
         return data
 
+    default_route_marker = b'const ROUTE_ID="refrigerator-v1"'
+    if data.count(default_route_marker) != 1:
+        raise ValueError("Pilot Lab route identity must occur exactly once")
+    if evidence_route != route_identity.DEFAULT_EVIDENCE_ROUTE:
+        data = data.replace(
+            default_route_marker,
+            f'const ROUTE_ID="{evidence_route}"'.encode("utf-8"),
+            1,
+        )
     data = _replace_once(
         data,
         PILOT_LAB_DUPLICATE_COUNTER_BUG,

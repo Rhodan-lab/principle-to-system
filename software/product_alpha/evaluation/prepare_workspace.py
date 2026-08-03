@@ -8,11 +8,17 @@ import json
 import re
 import shlex
 import shutil
+import sys
 from pathlib import Path
 from typing import Sequence
 
+PRODUCT_ALPHA_ROOT = Path(__file__).resolve().parents[1]
+if str(PRODUCT_ALPHA_ROOT) not in sys.path:
+    sys.path.insert(0, str(PRODUCT_ALPHA_ROOT))
+import route_identity
+
 CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
-ROUTE_ID = "refrigerator-v1"
+ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
@@ -35,10 +41,12 @@ def _is_within(path: Path, root: Path) -> bool:
 
 
 def _manifest(build_id: str, route_id: str) -> dict[str, object]:
+    validated_route = route_identity.validate_evidence_route_id(route_id)
+    route_slug = route_identity.software_route_id(validated_route)
     return {
         "contract": CONTRACT,
         "pilot_build_id": build_id,
-        "route_id": route_id,
+        "route_id": validated_route,
         "privacy_boundaries": {
             "participant_names_allowed": False,
             "raw_sessions_committed_to_repository": False,
@@ -48,22 +56,23 @@ def _manifest(build_id: str, route_id: str) -> dict[str, object]:
             "incoming_sessions": "incoming-sessions",
             "combined_jsonl": "verified/anonymous-sessions.jsonl",
             "intake_manifest": "verified/intake-manifest.json",
-            "review_output_prefix": "review/refrigerator-review",
+            "review_output_prefix": f"review/{route_slug}-review",
         },
     }
 
 
-def _readme(workspace: Path, build_id: str) -> str:
+def _readme(workspace: Path, build_id: str, route_id: str) -> str:
     quote = shlex.quote
+    route_slug = route_identity.software_route_id(route_id)
     workspace_arg = quote(str(workspace))
     handoff_arg = quote(
-        str(workspace / "handoff" / "refrigerator-product-change")
+        str(workspace / "handoff" / f"{route_slug}-product-change")
     )
     return f"""# Principia Product Alpha private cohort workspace
 
 This folder is outside the repository. Keep raw anonymous session records here and do not commit them.
 
-- Route: `{ROUTE_ID}`
+- Route: `{route_id}`
 - Expected pilot build ID: `{build_id}`
 - Participant names, email addresses, account identifiers, and contact details are not allowed.
 
@@ -227,7 +236,7 @@ def prepare_workspace(
             encoding="utf-8",
         )
         (destination / "README.md").write_text(
-            _readme(destination, expected_build_id),
+            _readme(destination, expected_build_id, route_id),
             encoding="utf-8",
         )
     except Exception:
@@ -250,13 +259,23 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         required=True,
         help="full 64-character Pilot build ID printed by run_pilot.py",
     )
+    parser.add_argument(
+        "--route",
+        default=route_identity.DEFAULT_SOFTWARE_ROUTE,
+        choices=route_identity.SUPPORTED_SOFTWARE_ROUTES,
+        help="packaged learner route bound to this workspace",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        manifest = prepare_workspace(args.workspace, args.expect_build_id)
+        manifest = prepare_workspace(
+            args.workspace,
+            args.expect_build_id,
+            route_id=route_identity.evidence_route_id(args.route),
+        )
     except (OSError, ValueError) as exc:
         raise SystemExit(f"workspace creation failed: {exc}") from exc
 
