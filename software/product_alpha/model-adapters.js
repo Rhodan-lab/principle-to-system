@@ -1,0 +1,38 @@
+"use strict";
+(function(root,factory){
+  const api=factory();
+  if(typeof module==="object"&&module.exports)module.exports=api;
+  root.PrincipiaModelAdapters=api;
+})(typeof globalThis!=="undefined"?globalThis:this,function(){
+  const finite=(value,label)=>{const number=Number(value);if(!Number.isFinite(number))throw new Error(`${label} must be finite.`);return number};
+  const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
+  const esc=value=>String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+  function displayedTrend(start,end){const shownStart=Number(start.toFixed(1)),shownEnd=Number(end.toFixed(1));return shownEnd<shownStart?"falls":shownEnd>shownStart?"rises":"stays nearly level"}
+  function thermalResultSummary(points,room,duration){const end=points.at(-1).t,start=points[0].t,trend=displayedTrend(start,end);return{outcome:trend,result:`Model result: cabinet temperature ${trend} to ${end.toFixed(1)} °C after ${duration} minutes.`,description:`Cabinet temperature ${trend} from ${start.toFixed(1)} °C to ${end.toFixed(1)} °C over ${duration} minutes. Room temperature reference: ${Number(room).toFixed(1)} °C.`}}
+  function parameterDefinition(model,id){const parameter=model.parameters.find(item=>item.id===id);if(!parameter)throw new Error(`Missing parameter definition: ${id}`);return parameter}
+  function validateByParameters(model,values){const clean={};for(const parameter of model.parameters){if(parameter.type==="checkbox"){clean[parameter.id]=Boolean(values[parameter.id]);continue}const value=finite(values[parameter.id],parameter.label);if(value<parameter.minimum||value>parameter.maximum)throw new Error(`${parameter.label} is outside its declared range.`);clean[parameter.id]=value}return clean}
+  function formatParameter(parameter,value){if(parameter.type==="checkbox")return value?"On":"Off";const decimals=Number.isInteger(parameter.step)?0:String(parameter.step).split(".")[1]?.length||0;return `${Number(value).toFixed(decimals)}${parameter.unit?` ${parameter.unit}`:""}`}
+  const thermal={
+    id:"thermal-cabinet-v1",
+    validate:model=>values=>validateByParameters(model,values),
+    run(model,rawValues){const values=validateByParameters(model,rawValues),dt=model.time_step_seconds,n=Math.round(model.duration_minutes*60/dt);let temperature=model.initial_temperature_c;const points=[{m:0,t:temperature}];for(let i=1;i<=n;i++){temperature+=((values.ua_w_per_k*(values.room_temperature_c-temperature)+values.load_w-(values.cooling_on?values.cooling_w:0))/values.thermal_capacitance_j_per_k)*dt;if(i%20===0||i===n)points.push({m:i*dt/60,t:temperature})}return{values,points,outcome:displayedTrend(points[0].t,points.at(-1).t)}} ,
+    summarize(model,result){return thermalResultSummary(result.points,result.values.room_temperature_c,model.duration_minutes)},
+    describeChart(model,result){return thermalResultSummary(result.points,result.values.room_temperature_c,model.duration_minutes).description},
+    matchesPrediction(result,prediction){return result.outcome===prediction},
+    formatValue(model,id,value){return formatParameter(parameterDefinition(model,id),value)},
+    draw(model,result,svg,description){const points=result.points,room=result.values.room_temperature_c,w=640,h=250,pad=38,temps=points.map(point=>point.t).concat(room),min=Math.floor(Math.min(...temps)-2),max=Math.ceil(Math.max(...temps)+2),x=minutes=>pad+minutes/model.duration_minutes*(w-pad*2),y=temperature=>h-pad-(temperature-min)/(max-min||1)*(h-pad*2),path=points.map((point,index)=>`${index?"L":"M"}${x(point.m).toFixed(1)},${y(point.t).toFixed(1)}`).join(" ");svg.innerHTML=`<title id="chartTitle">${esc(model.chart.title)}</title><desc id="chartDescription">${esc(description)}</desc><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${y(room)}" x2="${w-pad}" y2="${y(room)}" stroke="#8a4a14" stroke-dasharray="7 7"/><path d="${path}" fill="none" stroke="#1d5b45" stroke-width="5"/><text x="${pad}" y="${h-10}">0 min</text><text x="${w-pad-55}" y="${h-10}">${model.duration_minutes} min</text><text x="8" y="${pad}">${max} °C</text><text x="8" y="${h-pad}">${min} °C</text>`}
+  };
+  const queue={
+    id:"queue-delay-fluid-v1",
+    validate:model=>values=>validateByParameters(model,values),
+    run(model,rawValues){const values=validateByParameters(model,rawValues),external=values.external_arrival_rate_rps,capacity=values.service_rate_rps,retry=values.retry_fraction,queueCapacity=values.queue_capacity_requests,duration=values.observation_seconds,offered=external*(1+retry),utilization=offered/capacity,growth=Math.max(0,offered-capacity),unboundedBacklog=growth*duration,backlog=Math.min(queueCapacity,unboundedBacklog),rejected=Math.max(0,unboundedBacklog-queueCapacity),stable=offered<capacity,meanTime=stable?1/(capacity-offered):null,outcome=utilization>=.8?"sharp-growth":"stable",steps=12,points=[];for(let index=0;index<=steps;index++){const seconds=duration*index/steps;points.push({s:seconds,b:Math.min(queueCapacity,growth*seconds)})}return{values,offered,utilization,growth,backlog,rejected,stable,meanTime,outcome,points}},
+    summarize(model,result){const utilization=(result.utilization*100).toFixed(0),offered=result.offered.toFixed(2),growth=result.growth.toFixed(2),backlog=result.backlog.toFixed(1),rejected=result.rejected.toFixed(1),delay=result.meanTime===null?"unbounded in the analytical stable-queue model":`${result.meanTime.toFixed(2)} s`;return{outcome:result.outcome,result:`Model result: offered load ${offered} requests/s (${utilization}% utilization); mean time is ${delay}; backlog reaches ${backlog} requests and estimated rejected work is ${rejected}.`,description:`Queue response over ${result.values.observation_seconds} seconds. Offered load is ${offered} requests per second, capacity is ${result.values.service_rate_rps.toFixed(2)}, backlog growth is ${growth} requests per second, and final modeled backlog is ${backlog}.`}},
+    describeChart(model,result){return this.summarize(model,result).description},
+    matchesPrediction(result,prediction){return result.outcome===prediction},
+    formatValue(model,id,value){return formatParameter(parameterDefinition(model,id),value)},
+    draw(model,result,svg,description){const w=640,h=250,pad=38,duration=result.values.observation_seconds,capacity=result.values.queue_capacity_requests,max=Math.max(1,capacity),x=seconds=>pad+seconds/duration*(w-pad*2),y=backlog=>h-pad-backlog/max*(h-pad*2),path=result.points.map((point,index)=>`${index?"L":"M"}${x(point.s).toFixed(1)},${y(point.b).toFixed(1)}`).join(" ");svg.innerHTML=`<title id="chartTitle">${esc(model.chart.title)}</title><desc id="chartDescription">${esc(description)}</desc><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${y(capacity)}" x2="${w-pad}" y2="${y(capacity)}" stroke="#8a4a14" stroke-dasharray="7 7"/><path d="${path}" fill="none" stroke="#1d5b45" stroke-width="5"/><text x="${pad}" y="${h-10}">0 s</text><text x="${w-pad-50}" y="${h-10}">${duration} s</text><text x="8" y="${pad}">${capacity} req</text><text x="8" y="${h-pad}">0 req</text>`}
+  };
+  const adapters={thermal-cabinet-v1:thermal,"queue-delay-fluid-v1":queue};
+  function getAdapter(id){const adapter=adapters[id];if(!adapter)throw new Error(`Unsupported model adapter: ${id}`);return adapter}
+  return{getAdapter,displayedTrend,thermalResultSummary,validateByParameters,formatParameter};
+});
