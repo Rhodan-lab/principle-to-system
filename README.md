@@ -2,7 +2,7 @@
 
 **Principia** is an open, evidence-aware learning system for understanding how scientific principles become mechanisms, models, technologies, failures, investigations, and redesigns.
 
-> **Current program:** **Product Alpha 0.2 — two-route local alpha and route-aware evidence records.** Refrigerator remains the default stable route; distributed-information is independently buildable and loopback-runnable through the reusable model-adapter shell. External participant observation remains optional research rather than a roadmap gate. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md), [`reports/product-alpha-0-1-multi-perspective-review.md`](reports/product-alpha-0-1-multi-perspective-review.md), and [`reports/product-alpha-0-2-route-selection.md`](reports/product-alpha-0-2-route-selection.md). The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
+> **Current program:** **Product Alpha 0.2 — two-route local alpha with route-bound evidence and rubrics.** Refrigerator remains the default stable route; distributed-information is independently buildable and loopback-runnable through the reusable model-adapter shell. The facilitator, Pilot Lab, session template, rubric, summaries, and private workspaces now preserve the packaged route identity. External participant observation remains optional research rather than a roadmap gate. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md), [`reports/product-alpha-0-1-multi-perspective-review.md`](reports/product-alpha-0-1-multi-perspective-review.md), and [`reports/product-alpha-0-2-route-selection.md`](reports/product-alpha-0-2-route-selection.md). The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
 
 ## What Principia does
 
@@ -22,7 +22,7 @@ The canonical learning corpus remains Markdown and JSON in this repository. The 
 
 ## Product Alpha 0.2
 
-Product Alpha now packages two learner-facing routes through one shared shell.
+Product Alpha packages two learner-facing routes through one shared shell.
 
 ### Refrigerator
 
@@ -57,6 +57,8 @@ Both commands build a route-bound package, bind only to `127.0.0.1`, and expose:
 
 The learner shell renders controls, prediction choices, summaries, charts, and limitations from route configuration or model adapters. It creates no account, writes no browser storage, submits no external runtime request, makes no live Atlas call, and performs no repository mutation.
 
+The same package binds route identity into the session template, route-specific evaluation rubric, facilitator exports, and Pilot Lab. The mapping is `refrigerator` → `refrigerator-v1` and `distributed-information` → `distributed-information-v1`. Unknown, mismatched, and mixed-route evidence is rejected.
+
 ### Validate
 
 ```bash
@@ -77,7 +79,7 @@ Validate that authority without writing:
 python3 software/product_alpha/evaluation/validate_internal_review.py check
 ```
 
-Product Alpha 0.2 selected distributed-information through a deterministic three-candidate scorecard and now records the route contract as `implemented-local-alpha`.
+Product Alpha 0.2 selected distributed-information through a deterministic three-candidate scorecard and records the route contract as `implemented-local-alpha`.
 
 Validate selection and implementation without writing:
 
@@ -85,9 +87,9 @@ Validate selection and implementation without writing:
 python3 software/product_alpha/evaluation/validate_route_selection.py check
 ```
 
-The two-route local alpha supports claims about deterministic packaging, route generalization, local operation, model boundaries, accessibility contracts, privacy, security, and provenance separation. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, performance of a real distributed service, or public production readiness.
+The two-route local alpha supports claims about deterministic packaging, route generalization, route-specific rubrics, local evidence identity, local operation, model boundaries, accessibility contracts, privacy, security, and provenance separation. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, performance of a real distributed service, or public production readiness.
 
-The next concrete defect is route identity in optional evidence records: the learner package is route-aware, while the existing session template still defaults to `refrigerator-v1`. The next milestone is `make-facilitator-and-evidence-records-route-aware`.
+The milestones `make-facilitator-and-evidence-records-route-aware` and `prove-distributed-information-evidence-chain-end-to-end` are complete. A deterministic synthetic fixture now verifies distributed-information preparation, intake, review, decision, receipt, handoff, route-specific filenames, privacy redaction, and route-drift rejection. The fixture is test data, not real learner evidence. Further work is defect-driven; no third route, Atlas expansion, or public deployment is authorized without a concrete requirement.
 
 ## Principia and Atlas
 

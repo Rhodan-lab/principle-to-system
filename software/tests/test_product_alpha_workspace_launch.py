@@ -108,7 +108,7 @@ class ProductAlphaWorkspaceLaunchTests(unittest.TestCase):
             ):
                 report = launch_workspace.prepare_workspace_launch(workspace, output)
 
-            build.assert_called_once_with("build", output.resolve())
+            build.assert_called_once_with("build", output.resolve(), "refrigerator")
             verify.assert_called_once_with(output.resolve())
             identity.assert_called_once_with(output.resolve())
             self.assertEqual(

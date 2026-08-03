@@ -123,9 +123,9 @@ class ProductAlphaTests(unittest.TestCase):
         )
 
     def test_static_asset_guards_reject_ambiguous_state(self) -> None:
-        with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
+        with self.assertRaisesRegex(ValueError, "route identity must occur exactly once"):
             build_module.prepare_static_asset("pilot-lab.html", b"no counter")
-        with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
+        with self.assertRaisesRegex(ValueError, "route identity must occur exactly once"):
             build_module.prepare_static_asset(
                 "pilot-lab.html",
                 build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG * 2,

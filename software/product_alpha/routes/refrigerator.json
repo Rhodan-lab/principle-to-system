@@ -114,10 +114,22 @@
       "cooling_on": true
     },
     "limits": {
-      "room_temperature_c": [18, 40],
-      "ua_w_per_k": [1, 8],
-      "load_w": [0, 80],
-      "cooling_w": [40, 180]
+      "room_temperature_c": [
+        18,
+        40
+      ],
+      "ua_w_per_k": [
+        1,
+        8
+      ],
+      "load_w": [
+        0,
+        80
+      ],
+      "cooling_w": [
+        40,
+        180
+      ]
     },
     "chart": {
       "title": "Predicted cabinet temperature"
@@ -154,5 +166,8 @@
       "human_verified": false,
       "purpose": "Preserves the boundary between a simplified model and evidence about a real refrigerator."
     }
-  ]
+  ],
+  "evaluation": {
+    "rubric": "software/product_alpha/evaluation/rubric.json"
+  }
 }

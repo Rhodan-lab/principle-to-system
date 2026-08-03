@@ -96,7 +96,7 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             self.assertIn(marker, requirements)
         self.assertIn("refrigerator", requirements.lower())
 
-    def test_product_state_records_two_route_alpha_and_next_defect(self) -> None:
+    def test_product_state_records_completed_route_evidence_verification(self) -> None:
         state = PRODUCT_STATE.read_text(encoding="utf-8")
         for marker in (
             "distributed-information",
@@ -104,7 +104,12 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             "two-route local alpha",
             "thermal-cabinet-v1",
             "queue-delay-fluid-v1",
+            "distributed-information-v1",
+            "route-bound local records",
             "make-facilitator-and-evidence-records-route-aware",
+            "prove-distributed-information-evidence-chain-end-to-end",
+            "deterministic synthetic integration fixtures",
+            "No known route-identity",
         ):
             self.assertIn(marker, state)
         self.assertIn(
@@ -112,6 +117,10 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             state,
         )
         self.assertIn("performance of a real distributed service", state.lower())
+        self.assertIn(
+            "must not be represented as real learner evidence",
+            state.lower(),
+        )
 
     def test_validator_is_read_only_and_passes(self) -> None:
         tracked = {

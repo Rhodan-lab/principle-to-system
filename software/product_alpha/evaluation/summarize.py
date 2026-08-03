@@ -6,11 +6,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
-ROUTE_ID = "refrigerator-v1"
+PRODUCT_ALPHA_ROOT = Path(__file__).resolve().parents[1]
+if str(PRODUCT_ALPHA_ROOT) not in sys.path:
+    sys.path.insert(0, str(PRODUCT_ALPHA_ROOT))
+import route_identity
+
+ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
 MIN_COHORT_SIZE = 5
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
@@ -49,7 +55,11 @@ def _walk_keys(value: Any) -> Iterable[str]:
             yield from _walk_keys(child)
 
 
-def validate_session(session: dict[str, Any], line_number: int) -> dict[str, Any]:
+def validate_session(
+    session: dict[str, Any],
+    line_number: int,
+    expected_route_id: str | None = None,
+) -> dict[str, Any]:
     found_pii = sorted(PII_KEYS.intersection(_walk_keys(session)))
     if found_pii:
         raise ValueError(
@@ -62,8 +72,14 @@ def validate_session(session: dict[str, Any], line_number: int) -> dict[str, Any
             f"line {line_number}: pilot_build_id must be a 64-character lowercase SHA-256"
         )
 
-    if session.get("route_id") != ROUTE_ID:
-        raise ValueError(f"line {line_number}: route_id must be {ROUTE_ID!r}")
+    try:
+        route_id = route_identity.validate_evidence_route_id(session.get("route_id"))
+    except ValueError as exc:
+        raise ValueError(f"line {line_number}: {exc}") from exc
+    if expected_route_id is not None and route_id != expected_route_id:
+        raise ValueError(
+            f"line {line_number}: route_id {route_id!r} does not match expected route {expected_route_id!r}"
+        )
 
     session_id = session.get("session_id")
     if not isinstance(session_id, str) or not session_id.startswith("anonymous-"):
@@ -134,6 +150,7 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
     sessions: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
     cohort_build_id: str | None = None
+    cohort_route_id: str | None = None
     for line_number, raw_line in enumerate(
         path.read_text(encoding="utf-8").splitlines(), 1
     ):
@@ -147,7 +164,9 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
             ) from exc
         if not isinstance(value, dict):
             raise ValueError(f"line {line_number}: each session must be a JSON object")
-        session = validate_session(value, line_number)
+        session = validate_session(value, line_number, cohort_route_id)
+        if cohort_route_id is None:
+            cohort_route_id = session["route_id"]
         session_id = session["session_id"]
         if session_id in seen_ids:
             raise ValueError(
@@ -226,6 +245,10 @@ def revision_signals(summary: dict[str, Any]) -> list[dict[str, str]]:
 def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
     if not sessions:
         raise ValueError("cannot summarize an empty cohort")
+    route_ids = {session.get("route_id") for session in sessions}
+    if len(route_ids) != 1:
+        raise ValueError("route_id does not match across the cohort")
+    route_id = route_identity.validate_evidence_route_id(next(iter(route_ids)))
     build_ids = {session.get("pilot_build_id") for session in sessions}
     if len(build_ids) != 1:
         raise ValueError("pilot_build_id does not match across the cohort")
@@ -272,7 +295,7 @@ def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
     summary: dict[str, Any] = {
         "contract": "principia-product-alpha-pilot-summary/0.3",
         "pilot_build_id": pilot_build_id,
-        "route_id": ROUTE_ID,
+        "route_id": route_id,
         "sessions": len(sessions),
         "minimum_cohort_size": MIN_COHORT_SIZE,
         "cohort_complete": len(sessions) >= MIN_COHORT_SIZE,

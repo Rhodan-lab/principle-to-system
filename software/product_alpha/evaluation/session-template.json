@@ -1,7 +1,12 @@
 {
+  "contract": "principia-product-alpha-session/0.2",
   "pilot_build_id": "replace-with-the-64-character-build-id-printed-by-run-pilot",
   "session_id": "anonymous-001",
   "route_id": "refrigerator-v1",
+  "supported_route_ids": [
+    "refrigerator-v1",
+    "distributed-information-v1"
+  ],
   "started": true,
   "completed_steps": [],
   "duration_minutes": 0,

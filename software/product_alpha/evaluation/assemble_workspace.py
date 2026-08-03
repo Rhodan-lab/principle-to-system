@@ -94,10 +94,13 @@ def _load_workspace(
         raise ValueError(
             "workspace.json pilot_build_id must be a 64-character lowercase SHA-256"
         )
-    if manifest.get("route_id") != pilot_summary.ROUTE_ID:
-        raise ValueError(
-            f"workspace.json route_id must be {pilot_summary.ROUTE_ID!r}"
+    try:
+        route_id = pilot_summary.route_identity.validate_evidence_route_id(
+            manifest.get("route_id")
         )
+    except ValueError as exc:
+        raise ValueError(f"workspace.json {exc}") from exc
+    manifest["route_id"] = route_id
 
     privacy = manifest.get("privacy_boundaries")
     if not isinstance(privacy, dict):
@@ -177,7 +180,9 @@ def _build_plan(
             )
 
         try:
-            session = pilot_summary.validate_session(value, 1)
+            session = pilot_summary.validate_session(
+                value, 1, str(manifest["route_id"])
+            )
         except ValueError as exc:
             detail = str(exc).removeprefix("line 1: ")
             raise ValueError(f"{path.name}: {detail}") from exc

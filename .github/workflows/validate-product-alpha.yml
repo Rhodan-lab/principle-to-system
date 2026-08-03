@@ -58,6 +58,7 @@ jobs:
       - name: Compile Product Alpha
         run: |
           python3 -m py_compile \
+            software/product_alpha/route_identity.py \
             software/product_alpha/build.py \
             software/product_alpha/run_pilot.py \
             software/product_alpha/prepare_pilot.py \
@@ -76,6 +77,7 @@ jobs:
       - name: Verify Product Alpha JSON
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
+          python3 -m json.tool software/product_alpha/evaluation/rubrics/distributed-information-v1.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
           python3 -m json.tool reports/product-alpha-0-1-multi-perspective-review.json >/dev/null
           python3 -m json.tool reports/product-alpha-0-2-route-selection.json >/dev/null

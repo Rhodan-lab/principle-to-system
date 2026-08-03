@@ -11,10 +11,11 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import run_pilot
+import route_identity
 
 CONTRACT = "principia-product-alpha-workspace-launch/0.1"
 WORKSPACE_CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
-ROUTE_ID = "refrigerator-v1"
+ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
 REQUIRED_PRIVACY_BOUNDARIES = {
     "participant_names_allowed": False,
     "raw_sessions_committed_to_repository": False,
@@ -61,9 +62,10 @@ def load_workspace_binding(
     if not isinstance(build_id, str):
         raise ValueError("workspace.json pilot_build_id must be text")
     expected_build_id = run_pilot.validate_build_id(build_id)
-    route_id = manifest.get("route_id")
-    if route_id != ROUTE_ID:
-        raise ValueError(f"workspace.json route_id must be {ROUTE_ID!r}")
+    try:
+        route_id = route_identity.validate_evidence_route_id(manifest.get("route_id"))
+    except ValueError as exc:
+        raise ValueError(f"workspace.json {exc}") from exc
 
     privacy = manifest.get("privacy_boundaries")
     if not isinstance(privacy, dict):
@@ -88,7 +90,8 @@ def prepare_workspace_launch(
     """Build Product Alpha and prove that it matches the prepared workspace."""
     binding = load_workspace_binding(workspace)
     destination = output.expanduser().resolve()
-    run_pilot.run_builder("build", destination)
+    software_route = route_identity.software_route_id(binding["route_id"])
+    run_pilot.run_builder("build", destination, software_route)
     run_pilot.verify_output(destination)
     actual_build_id = run_pilot.pilot_build_identity(destination)
     expected_build_id = binding["pilot_build_id"]
