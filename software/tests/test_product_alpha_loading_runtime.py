@@ -44,7 +44,17 @@ class ProductAlphaLoadingRuntimeTests(unittest.TestCase):
             'id="evidence" type="button" disabled aria-busy="true"', html
         )
         self.assertIn("function step(name){if(!route)return;", learner_script)
-        self.assertIn('q("#evidence").disabled=false', learner_script)
+        loading_marker = 'applyLearnerAvailability("loading")'
+        ready_marker = 'applyLearnerAvailability("ready")'
+        fetch_marker = 'await fetch("data/refrigerator.json"'
+        step_marker = "step(order.includes(location.hash.slice(1))"
+        self.assertIn(loading_marker, learner_script)
+        self.assertIn(ready_marker, learner_script)
+        self.assertLess(
+            learner_script.index(loading_marker), learner_script.index(fetch_marker)
+        )
+        ready_index = learner_script.index(ready_marker)
+        self.assertLess(ready_index, learner_script.index(step_marker, ready_index))
 
         harness = f"""
 const assert = require("node:assert/strict");
