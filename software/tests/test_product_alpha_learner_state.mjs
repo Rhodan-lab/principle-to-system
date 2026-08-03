@@ -2,14 +2,17 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 import vm from "node:vm";
+import {createRequire} from "node:module";
 import {fileURLToPath} from "node:url";
 import {dirname, resolve} from "node:path";
 
 const here=dirname(fileURLToPath(import.meta.url));
+const require=createRequire(import.meta.url);
+const modelAdapters=require("../product_alpha/model-adapters.js");
 const html=readFileSync(resolve(here,"../product_alpha/index.html"),"utf8");
 const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 assert.equal(scripts.length,1,"index.html must contain one inline script");
-const context={module:{exports:{}},exports:{}};
+const context={module:{exports:{}},exports:{},PrincipiaModelAdapters:modelAdapters};
 vm.runInNewContext(scripts[0][1],context);
 const api=context.module.exports;
 
@@ -78,24 +81,31 @@ test("learner route exposes visible keyboard focus",()=>{
   assert.match(html,/\.content table\{width:100%;min-width:32rem/);
 });
 
-test("thermal chart summary describes the simulated result",()=>{
+test("thermal chart summary remains available through the adapter boundary",()=>{
   const summary=JSON.parse(JSON.stringify(api.modelResultSummary(
     [{m:0,t:8.04},{m:60,t:4.96}],
     24,
     60,
   )));
   assert.deepEqual(summary,{
-    trend:"falls",
+    outcome:"falls",
     result:"Model result: cabinet temperature falls to 5.0 °C after 60 minutes.",
     description:"Cabinet temperature falls from 8.0 °C to 5.0 °C over 60 minutes. Room temperature reference: 24.0 °C.",
   });
 });
 
-test("thermal chart exposes a dynamic title and description",()=>{
+test("model chart exposes route-driven titles and a dynamic description",()=>{
+  const adapterSource=readFileSync(resolve(here,"../product_alpha/model-adapters.js"),"utf8");
+  const refrigeratorRoute=readFileSync(resolve(here,"../product_alpha/routes/refrigerator.json"),"utf8");
+  const informationRoute=readFileSync(resolve(here,"../product_alpha/routes/distributed-information.json"),"utf8");
   assert.match(html,/id="chart"[^>]+aria-labelledby="chartTitle chartDescription"/);
-  assert.match(html,/<title id="chartTitle">Predicted cabinet temperature<\/title>/);
-  assert.match(html,/<desc id="chartDescription">\$\{esc\(description\)\}<\/desc>/);
-  assert.match(html,/draw\(points,values\.room_temperature_c,summary\.description\)/);
+  assert.match(html,/<title id="chartTitle">Predicted model response<\/title>/);
+  assert.match(html,/<script src="model-adapters\.js"><\/script>/);
+  assert.match(html,/adapter\.describeChart\(route\.model,result\)/);
+  assert.match(html,/adapter\.draw\(route\.model,result,q\("#chart"\),description\)/);
+  assert.match(adapterSource,/esc\(model\.chart\.title\)/);
+  assert.match(refrigeratorRoute,/"title": "Predicted cabinet temperature"/);
+  assert.match(informationRoute,/"title": "Predicted queue response"/);
   assert.doesNotMatch(html,/id="chart"[^>]+aria-label="Predicted cabinet temperature"/);
 });
 
@@ -125,10 +135,11 @@ test("choice validation marks the group and focuses its first radio",()=>{
 });
 
 test("model and diagnosis reject empty choices before recording completion",()=>{
-  const runModelSource=html.match(/function runModel\(\)\{([\s\S]*?)\}\nfunction simulate/);
+  const runModelSource=html.match(/function runModel\(\)\{([\s\S]*?)\}\nfunction diagnosisFeedback/);
   assert.ok(runModelSource,"runModel source must be testable");
   assert.match(runModelSource[1],/if\(!picked\)\{reportChoiceError\("#modelPrediction","#modelFeedback"/);
   assert.ok(runModelSource[1].indexOf("reportChoiceError(")<runModelSource[1].indexOf("markModelRun(session)"));
+  assert.ok(runModelSource[1].indexOf("modelAdapter().validate")<runModelSource[1].indexOf("markModelRun(session)"));
 
   const challengeSource=html.match(/function challenge\(box\)\{([\s\S]*?)\}\nfunction evidence/);
   assert.ok(challengeSource,"challenge source must be testable");
@@ -166,13 +177,15 @@ test("learner route fails closed when route data cannot load",()=>{
   assert.ok(initSource,"init source must be testable");
   const initBody=initSource[1];
   const loadingAt=initBody.indexOf('applyLearnerAvailability("loading")');
-  const fetchAt=initBody.indexOf('await fetch("data/refrigerator.json"');
+  const markerAt=initBody.indexOf('meta[name="principia-route"]');
+  const fetchAt=initBody.indexOf('await fetch(`data/${routeId}.json`');
   const handlerAt=initBody.indexOf('q("#note").addEventListener');
   const readyAt=initBody.indexOf('applyLearnerAvailability("ready")');
   const stepAt=initBody.indexOf("step(",readyAt);
-  assert.ok(loadingAt<fetchAt,"learner controls must lock before route loading begins");
+  assert.ok(loadingAt<markerAt&&markerAt<fetchAt,"learner controls must lock before the bound route loads");
   assert.ok(handlerAt<readyAt,"learner controls become ready only after handlers install");
   assert.ok(readyAt<stepAt,"the initial step renders only after controls become ready");
+  assert.match(initBody,/if\(route\.route_id!==routeId\)throw Error\("Packaged route identity does not match its payload\."\)/);
 
   const failureSource=html.match(/function reportLearnerLoadFailure\(error\)\{([\s\S]*?)\}\nasync function init/);
   assert.ok(failureSource,"load failure source must be testable");

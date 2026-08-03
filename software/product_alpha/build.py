@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_ROUTE = "refrigerator"
-STATIC_ASSETS = ("index.html", "facilitator.html", "pilot-lab.html")
+STATIC_ASSETS = ("index.html", "model-adapters.js", "facilitator.html", "pilot-lab.html")
 EVALUATION_ASSETS = (
     "evaluation/rubric.json",
     "evaluation/session-template.json",
@@ -172,6 +172,11 @@ def load_config(root: Path, route: str) -> dict[str, Any]:
         raise ValueError(f"route config missing fields: {', '.join(missing)}")
     if len(config["steps"]) != 5:
         raise ValueError("Product Alpha routes must contain exactly five learner steps")
+    model = config["model"]
+    if model.get("adapter") not in {"thermal-cabinet-v1", "queue-delay-fluid-v1"}:
+        raise ValueError("Product Alpha route model adapter is unsupported")
+    if not isinstance(model.get("parameters"), list) or not model["parameters"]:
+        raise ValueError("Product Alpha route model parameters are required")
     return config
 
 
@@ -271,8 +276,14 @@ def _replace_once(data: bytes, old: bytes, new: bytes, label: str) -> bytes:
     raise ValueError(f"{label} must contain exactly one canonical state")
 
 
-def prepare_static_asset(relative_path: str, data: bytes) -> bytes:
+def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_ROUTE) -> bytes:
     """Apply bounded packaging repairs and reject ambiguous asset states."""
+    if relative_path == "index.html":
+        marker = b'<meta name="principia-route" content="refrigerator">'
+        replacement = f'<meta name="principia-route" content="{route}">'.encode("utf-8")
+        if data.count(marker) != 1:
+            raise ValueError("learner route marker must occur exactly once")
+        return data.replace(marker, replacement, 1)
     if relative_path == "facilitator.html":
         for old, new, label in FACILITATOR_TRANSFORMS:
             data = _replace_once(data, old, new, label)
@@ -291,7 +302,7 @@ def prepare_static_asset(relative_path: str, data: bytes) -> bytes:
     return data
 
 
-def copy_static_files(root: Path, output: Path) -> list[dict[str, str]]:
+def copy_static_files(root: Path, output: Path, route: str = DEFAULT_ROUTE) -> list[dict[str, str]]:
     assets = root / "software" / "product_alpha"
     copied: list[dict[str, str]] = []
     for relative_path in (*STATIC_ASSETS, *EVALUATION_ASSETS):
@@ -302,7 +313,7 @@ def copy_static_files(root: Path, output: Path) -> list[dict[str, str]]:
             )
         destination = output / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)
-        data = prepare_static_asset(relative_path, source.read_bytes())
+        data = prepare_static_asset(relative_path, source.read_bytes(), route)
         destination.write_bytes(data)
         copied.append({"path": relative_path, "sha256": sha256(data)})
     return copied
@@ -315,7 +326,7 @@ def build(root: Path, output: Path, route: str = DEFAULT_ROUTE) -> dict[str, Any
     route_payload = build_route(root, route)
     route_bytes = canonical_json(route_payload)
     (output / "data" / f"{route}.json").write_bytes(route_bytes)
-    files = copy_static_files(root, output)
+    files = copy_static_files(root, output, route)
     files.append({"path": f"data/{route}.json", "sha256": sha256(route_bytes)})
     files.sort(key=lambda item: item["path"])
     manifest = {

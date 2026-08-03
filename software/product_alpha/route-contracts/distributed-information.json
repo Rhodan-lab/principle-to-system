@@ -2,9 +2,23 @@
   "schema_version": 1,
   "contract": "principia-product-alpha-route-candidate/0.1",
   "id": "distributed-information",
-  "status": "selected-for-implementation",
+  "status": "implemented-local-alpha",
   "selected_by": "reports/product-alpha-0-2-route-selection.json",
   "baseline_route": "refrigerator",
+  "implementation": {
+    "route_path": "software/product_alpha/routes/distributed-information.json",
+    "adapter_asset": "software/product_alpha/model-adapters.js",
+    "learner_shell": "software/product_alpha/index.html",
+    "builder": "software/product_alpha/build.py",
+    "launcher": "software/product_alpha/run_pilot.py",
+    "default_route": "refrigerator",
+    "adapter_id": "queue-delay-fluid-v1",
+    "commands": [
+      "python3 software/product_alpha/build.py check --route distributed-information",
+      "python3 software/product_alpha/run_pilot.py check --route distributed-information"
+    ],
+    "acceptance_status": "pass"
+  },
   "title": "Why retries can make a slow service collapse",
   "subtitle": "Follow requests, queues, capacity, feedback, failure, and redesign through a distributed information service.",
   "canonical_sources": {
@@ -153,9 +167,9 @@
     "no_real_accounts": true,
     "no_personal_data": true,
     "requirements": [
-      "Do not send automated traffic to a real website, API, school system, account, network, or device.",
       "Use fictional content and synthetic requests only.",
-      "Do not attempt authentication bypass, scanning, flooding, or rate-limit evasion."
+      "Do not interact with a real website, API, school system, account, network, or device.",
+      "Keep all model execution local, bounded, and dependency-free."
     ]
   },
   "atlas": {
@@ -170,7 +184,7 @@
     "The learner shell must call a model adapter through validate, run, summarize, and describe-chart operations.",
     "The generic challenge, evidence, navigation, notes, validation recovery, and accessibility contracts must remain route-independent.",
     "Route-specific equations and calculations must not be embedded directly in the generic shell.",
-    "The refrigerator route must remain the default and retain deterministic output until distributed-information is independently runnable."
+    "The refrigerator route must remain the default and retain deterministic output after distributed-information becomes independently runnable."
   ],
   "acceptance_criteria": [
     "A buildable software/product_alpha/routes/distributed-information.json exists only after the queue adapter is implemented.",
@@ -182,11 +196,16 @@
     "Focused JavaScript and Python tests cover both model adapters and preserve refrigerator behavior."
   ],
   "claim_boundary": {
+    "may_claim": [
+      "a buildable and loopback-runnable distributed-information local alpha route",
+      "a reusable learner shell demonstrated across thermal and queue model adapters",
+      "deterministic dual-route packaging with refrigerator preserved as default"
+    ],
     "does_not_establish": [
-      "a runnable second route",
       "performance of a real distributed service",
       "security of a real school system",
       "empirical learning effectiveness",
+      "product-market fit",
       "public production readiness"
     ]
   }

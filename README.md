@@ -2,7 +2,7 @@
 
 **Principia** is an open, evidence-aware learning system for understanding how scientific principles become mechanisms, models, technologies, failures, investigations, and redesigns.
 
-> **Current program:** **Product Alpha 0.2 — second-route planning and reusable route architecture.** Product Alpha 0.1 passed the deterministic internal multi-perspective review; external participant observation is optional research rather than a roadmap gate. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) and [`reports/product-alpha-0-1-multi-perspective-review.md`](reports/product-alpha-0-1-multi-perspective-review.md). The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
+> **Current program:** **Product Alpha 0.2 — two-route local alpha and route-aware evidence records.** Refrigerator remains the default stable route; distributed-information is independently buildable and loopback-runnable through the reusable model-adapter shell. External participant observation remains optional research rather than a roadmap gate. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md), [`reports/product-alpha-0-1-multi-perspective-review.md`](reports/product-alpha-0-1-multi-perspective-review.md), and [`reports/product-alpha-0-2-route-selection.md`](reports/product-alpha-0-2-route-selection.md). The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
 
 ## What Principia does
 
@@ -20,61 +20,74 @@ observation
 
 The canonical learning corpus remains Markdown and JSON in this repository. The product layer reads that material; it does not replace it with a second content database.
 
-## Product Alpha 0.1
+## Product Alpha 0.2
 
-The first learner-facing route uses a domestic refrigerator and five steps:
+Product Alpha now packages two learner-facing routes through one shared shell.
+
+### Refrigerator
+
+The default route follows a domestic refrigerator through:
 
 1. **Observe** surprising cycling behavior.
 2. **Map** the boundary, stores, inputs, outputs, and flows.
-3. **Model** the cabinet’s thermal response.
+3. **Model** the cabinet’s thermal response with `thermal-cabinet-v1`.
 4. **Diagnose** normal cycling versus abnormal short-cycling.
 5. **Redesign** under explicit constraints and trade-offs.
 
-The alpha includes:
-
-- a responsive learner interface;
-- a dependency-free thermal model;
-- a diagnosis challenge;
-- exact-revision Atlas evidence presentation;
-- a local anonymous facilitator recorder;
-- a deterministic evaluation summarizer;
-- a loopback-only one-command pilot launcher;
-- focused Product Alpha CI.
-
-### Run locally
+Run it locally:
 
 ```bash
-python3 software/product_alpha/run_pilot.py --open
+python3 software/product_alpha/run_pilot.py --route refrigerator --open
 ```
 
-The launcher builds Product Alpha, binds only to `127.0.0.1`, and opens:
+### Distributed information
+
+The second route follows requests, queues, capacity, retry feedback, failure amplification, and resilient information-service redesign through the same five-step grammar. Its deterministic adapter is `queue-delay-fluid-v1`.
+
+Run it locally:
+
+```bash
+python3 software/product_alpha/run_pilot.py --route distributed-information --open
+```
+
+Both commands build a route-bound package, bind only to `127.0.0.1`, and expose:
 
 - learner route: `http://127.0.0.1:8000/`
 - facilitator recorder: `http://127.0.0.1:8000/facilitator.html`
 
-The recorder exports one anonymous JSONL record per learner. It creates no account, writes no browser storage, submits no network request, makes no live Atlas call, and performs no repository mutation.
+The learner shell renders controls, prediction choices, summaries, charts, and limitations from route configuration or model adapters. It creates no account, writes no browser storage, submits no external runtime request, makes no live Atlas call, and performs no repository mutation.
 
 ### Validate
 
 ```bash
-python3 software/product_alpha/build.py check
-python3 software/product_alpha/run_pilot.py check
+python3 software/product_alpha/build.py check --route refrigerator
+python3 software/product_alpha/build.py check --route distributed-information
+python3 software/product_alpha/run_pilot.py check --route refrigerator
+python3 software/product_alpha/run_pilot.py check --route distributed-information
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-### Current internal decision gate
+### Current product authority
 
-Product Alpha 0.1 has passed an eight-perspective internal review covering product strategy, pedagogy, scientific integrity, UX and accessibility, privacy and security, operational reliability, evidence and provenance, and maintainability and governance.
+Product Alpha 0.1 passed an eight-perspective internal review covering product strategy, pedagogy, scientific integrity, UX and accessibility, privacy and security, operational reliability, evidence and provenance, and maintainability and governance.
 
-Validate the decision authority without writing:
+Validate that authority without writing:
 
 ```bash
 python3 software/product_alpha/evaluation/validate_internal_review.py check
 ```
 
-The current action is `advance-to-next-product-planning-review`: keep refrigerator stable, select a second system route, and use it to prove reusable architecture. Optional field-observation tooling remains available but is not required for roadmap progress.
+Product Alpha 0.2 selected distributed-information through a deterministic three-candidate scorecard and now records the route contract as `implemented-local-alpha`.
 
-The review does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, or public production readiness.
+Validate selection and implementation without writing:
+
+```bash
+python3 software/product_alpha/evaluation/validate_route_selection.py check
+```
+
+The two-route local alpha supports claims about deterministic packaging, route generalization, local operation, model boundaries, accessibility contracts, privacy, security, and provenance separation. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, performance of a real distributed service, or public production readiness.
+
+The next concrete defect is route identity in optional evidence records: the learner package is route-aware, while the existing session template still defaults to `refrigerator-v1`. The next milestone is `make-facilitator-and-evidence-records-route-aware`.
 
 ## Principia and Atlas
 
@@ -109,7 +122,7 @@ The retained Phase 12 release-candidate record is [`release/phase-12-release-can
 
 Historical compatibility record: The Phase 12 validator passes on draft PR #14; the release decision remains Hold; the retained candidate identifier is `principia-material-foundation-rc1`. These phrases describe the archived Phase 12 record and do not supersede the current Product Alpha evidence gate.
 
-Live Atlas integration remains disabled. Product Alpha is internally validated as a local alpha and authorized for second-route planning, not a public learning-effectiveness claim or production SaaS release.
+Live Atlas integration remains disabled. Product Alpha is internally validated as a two-route local alpha, not a public learning-effectiveness claim or production SaaS release.
 
 ### Principia & Atlas compatibility
 
@@ -153,7 +166,7 @@ The generated foundation contains 92 learner-facing documents and 20 module page
 | `failure-atlas/` | Recurring failure patterns |
 | `investigations/` | Evidence-gathering activities |
 | `design-challenges/` | Redesign tasks under constraints |
-| `software/product_alpha/` | Current learner route, pilot recorder, and evaluation tools |
+| `software/product_alpha/` | Multi-route learner shell, local recorder, and evaluation tools |
 | `integration/principia-atlas/` | Offline exact-revision compatibility fixtures |
 | `contracts/` | Machine-readable authority boundaries |
 | `sources/` | Source ledgers and review records |

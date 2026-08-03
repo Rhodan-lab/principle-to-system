@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the Product Alpha 0.2 second-route decision without writing files."""
+"""Validate Product Alpha 0.2 route selection and implementation without writing."""
 from __future__ import annotations
 
 import argparse
@@ -38,10 +38,11 @@ EXPECTED_CANDIDATES = {
 EXPECTED_STEPS = ("observe", "map", "model", "diagnose", "redesign")
 EXPECTED_ACTION = "implement-distributed-information-model-adapter-and-route"
 EXPECTED_SELECTED = "distributed-information"
+EXPECTED_IMPLEMENTATION_STATUS = "implemented-local-alpha"
 
 
 class RouteSelectionError(ValueError):
-    """Raised when route-selection authority is inconsistent."""
+    """Raised when route-selection or implementation authority is inconsistent."""
 
 
 def require(condition: bool, message: str) -> None:
@@ -150,6 +151,56 @@ def validate_selection(selection: dict[str, Any]) -> tuple[dict[str, float], dic
     return weights, by_id[EXPECTED_SELECTED]
 
 
+def validate_implementation(contract: dict[str, Any]) -> None:
+    implementation = contract.get("implementation")
+    require(isinstance(implementation, dict), "implemented route must name its implementation files")
+    expected_paths = {
+        "route_path": "software/product_alpha/routes/distributed-information.json",
+        "adapter_asset": "software/product_alpha/model-adapters.js",
+        "learner_shell": "software/product_alpha/index.html",
+        "builder": "software/product_alpha/build.py",
+        "launcher": "software/product_alpha/run_pilot.py",
+    }
+    for key, expected in expected_paths.items():
+        require(implementation.get(key) == expected, f"implementation {key} is invalid")
+        require((ROOT / expected).is_file(), f"implementation file is missing: {expected}")
+    require(implementation.get("default_route") == "refrigerator", "refrigerator must remain default")
+    require(implementation.get("adapter_id") == "queue-delay-fluid-v1", "implemented adapter id is invalid")
+    require(implementation.get("acceptance_status") == "pass", "implementation acceptance status must pass")
+    commands = implementation.get("commands")
+    require(isinstance(commands, list) and len(commands) == 2, "implementation must expose two check commands")
+    require(
+        "python3 software/product_alpha/build.py check --route distributed-information" in commands,
+        "distributed route build command is missing",
+    )
+    require(
+        "python3 software/product_alpha/run_pilot.py check --route distributed-information" in commands,
+        "distributed route launcher command is missing",
+    )
+
+    route = load_json(ROOT / expected_paths["route_path"])
+    require(route.get("id") == EXPECTED_SELECTED, "implemented route id is invalid")
+    model = route.get("model")
+    require(isinstance(model, dict), "implemented route model is required")
+    require(model.get("adapter") == "queue-delay-fluid-v1", "implemented route adapter is invalid")
+    require(len(route.get("steps", [])) == 5, "implemented route must retain five steps")
+
+    shell = (ROOT / expected_paths["learner_shell"]).read_text(encoding="utf-8")
+    require("model-adapters.js" in shell, "learner shell must load model adapters")
+    require("data/${routeId}.json" in shell, "learner shell must load its packaged route identity")
+    require("data/refrigerator.json" not in shell, "learner shell must not hard-code refrigerator data")
+
+    adapter_source = (ROOT / expected_paths["adapter_asset"]).read_text(encoding="utf-8")
+    for adapter_id in ("thermal-cabinet-v1", "queue-delay-fluid-v1"):
+        require(adapter_id in adapter_source, f"adapter registry is missing {adapter_id}")
+
+    builder_source = (ROOT / expected_paths["builder"]).read_text(encoding="utf-8")
+    launcher_source = (ROOT / expected_paths["launcher"]).read_text(encoding="utf-8")
+    require("DEFAULT_ROUTE = \"refrigerator\"" in builder_source, "builder default route changed")
+    require("DEFAULT_ROUTE = \"refrigerator\"" in launcher_source, "launcher default route changed")
+    require("distributed-information" in launcher_source, "launcher must accept the implemented route")
+
+
 def validate_contract(
     contract: dict[str, Any], inventory: dict[str, Any], selected: dict[str, Any]
 ) -> None:
@@ -159,8 +210,9 @@ def validate_contract(
         "route candidate contract is invalid",
     )
     require(contract.get("id") == EXPECTED_SELECTED, "route contract id is invalid")
-    require(contract.get("status") == "selected-for-implementation", "route contract status is invalid")
+    require(contract.get("status") == EXPECTED_IMPLEMENTATION_STATUS, "route contract status is invalid")
     require(contract.get("baseline_route") == "refrigerator", "route contract baseline is invalid")
+    validate_implementation(contract)
 
     canonical_sources = contract.get("canonical_sources")
     require(isinstance(canonical_sources, dict), "canonical_sources must be an object")
@@ -229,13 +281,29 @@ def validate_contract(
     require(isinstance(atlas, dict), "Atlas decision is required")
     require(atlas.get("live") is False, "live Atlas access must remain disabled")
     require(atlas.get("status_inheritance") == "prohibited", "Atlas status inheritance must be prohibited")
-    require(atlas.get("expansion_required") is False, "route selection must not force Atlas expansion")
+    require(atlas.get("expansion_required") is False, "route implementation must not force Atlas expansion")
 
     requirements = "\n".join(str(item).lower() for item in contract.get("reusable_shell_requirements", []))
     for operation in ("validate", "run", "summarize", "describe-chart"):
         require(operation in requirements, f"reusable shell requirements must include {operation}")
     require("refrigerator" in requirements, "reusable shell requirements must preserve refrigerator")
     require(len(contract.get("acceptance_criteria", [])) >= 7, "route acceptance criteria are incomplete")
+
+    boundary = contract.get("claim_boundary")
+    require(isinstance(boundary, dict), "implementation claim boundary is required")
+    may_claim = {str(item).lower() for item in boundary.get("may_claim", [])}
+    require(
+        "a buildable and loopback-runnable distributed-information local alpha route" in may_claim,
+        "implementation claim is missing the runnable local route",
+    )
+    non_claims = {str(item).lower() for item in boundary.get("does_not_establish", [])}
+    for required in (
+        "performance of a real distributed service",
+        "empirical learning effectiveness",
+        "product-market fit",
+        "public production readiness",
+    ):
+        require(required in non_claims, f"implementation claim boundary is missing: {required}")
 
 
 def validate_documents(selection: dict[str, Any], selected: dict[str, Any]) -> None:
@@ -244,14 +312,24 @@ def validate_documents(selection: dict[str, Any], selected: dict[str, Any]) -> N
     lowered_report = report.lower()
     lowered_state = state.lower()
     command = "software/product_alpha/evaluation/validate_route_selection.py check"
-    for text, label in ((lowered_report, "route report"), (lowered_state, "product state")):
-        require(EXPECTED_SELECTED in text, f"{label} must name the selected route")
-        require(EXPECTED_ACTION in text, f"{label} must name the selected action")
-        require("a runnable second route" in text, f"{label} must preserve the runnable-route claim boundary")
+
+    require(EXPECTED_SELECTED in lowered_report, "route report must name the selected route")
+    require(EXPECTED_ACTION in lowered_report, "route report must preserve the selection action")
+    require("a runnable second route" in lowered_report, "route report must preserve its original claim boundary")
     require(command in report, "route report must expose the validator command")
-    require(command in state, "product state must expose the validator command")
     require("4.95" in report, "route report must record the selected weighted score")
     require(str(selected["weighted_score"]) in report, "route report score does not match JSON")
+
+    for marker in (
+        EXPECTED_SELECTED,
+        EXPECTED_IMPLEMENTATION_STATUS,
+        "two-route local alpha",
+        "queue-delay-fluid-v1",
+        "thermal-cabinet-v1",
+    ):
+        require(marker in lowered_state, f"product state must record implementation marker: {marker}")
+    require(command in state, "product state must expose the validator command")
+    require("performance of a real distributed service" in lowered_state, "product state must preserve the real-service boundary")
 
 
 def validate() -> dict[str, Any]:
@@ -271,7 +349,10 @@ def main() -> int:
     selection = validate()
     selected_id = selection["decision"]["selected_route"]
     selected = next(item for item in selection["candidates"] if item["id"] == selected_id)
-    print(f"route-selection-passed: {selected_id} ({selected['weighted_score']:.2f})")
+    print(
+        f"route-selection-passed: {selected_id} ({selected['weighted_score']:.2f}); "
+        f"implementation={EXPECTED_IMPLEMENTATION_STATUS}"
+    )
     return 0
 
 

@@ -73,17 +73,19 @@ jobs:
             software/product_alpha/evaluation/prepare_review.py \
             software/product_alpha/evaluation/validate_internal_review.py \
             software/product_alpha/evaluation/validate_route_selection.py
-      - name: Verify evaluation JSON
+      - name: Verify Product Alpha JSON
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
           python3 -m json.tool reports/product-alpha-0-1-multi-perspective-review.json >/dev/null
           python3 -m json.tool reports/product-alpha-0-2-route-selection.json >/dev/null
           python3 -m json.tool software/product_alpha/route-contracts/distributed-information.json >/dev/null
-      - name: Validate internal product review
-        run: python3 software/product_alpha/evaluation/validate_internal_review.py check
-      - name: Validate second-route selection
-        run: python3 software/product_alpha/evaluation/validate_route_selection.py check
+          python3 -m json.tool software/product_alpha/routes/refrigerator.json >/dev/null
+          python3 -m json.tool software/product_alpha/routes/distributed-information.json >/dev/null
+      - name: Validate product authorities
+        run: |
+          python3 software/product_alpha/evaluation/validate_internal_review.py check
+          python3 software/product_alpha/evaluation/validate_route_selection.py check
       - name: Verify Product Alpha JavaScript syntax
         run: |
           python3 - <<'PY'
@@ -98,12 +100,19 @@ jobs:
               output = Path("/tmp") / f"principia-{filename.removesuffix('.html')}.js"
               output.write_text(scripts[0], encoding="utf-8")
           PY
+          node --check software/product_alpha/model-adapters.js
           node --check /tmp/principia-index.js
           node --check /tmp/principia-pilot-lab.js
       - name: Run Product Alpha JavaScript tests
         run: node --test software/tests/test_product_alpha*.mjs
-      - name: Verify deterministic build
-        run: python3 software/product_alpha/build.py check
+      - name: Verify deterministic builds
+        run: |
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+      - name: Verify both loopback packages
+        run: |
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
       - name: Run Product Alpha tests
         env:
           PYTHONWARNINGS: error::SyntaxWarning

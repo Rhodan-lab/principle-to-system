@@ -34,35 +34,93 @@
     }
   ],
   "model": {
+    "adapter": "thermal-cabinet-v1",
+    "activity_title": "Interactive thermal model",
+    "run_label": "Run model",
     "equation": "C dT/dt = UA(T_room - T) + Q_load - Q_cool",
     "initial_temperature_c": 8,
     "duration_minutes": 180,
     "time_step_seconds": 30,
+    "thermal_capacitance_j_per_k": 180000,
+    "prediction": {
+      "legend": "Before running the model, predict the cabinet-temperature direction.",
+      "error": "Choose whether the temperature will fall, rise, or stay nearly level before running the model.",
+      "initial_message": "Choose a direction, then run the model.",
+      "ready_message": "Run the model to compare this prediction.",
+      "choices": [
+        {
+          "value": "falls",
+          "label": "Falls"
+        },
+        {
+          "value": "rises",
+          "label": "Rises"
+        },
+        {
+          "value": "stays nearly level",
+          "label": "Stays nearly level"
+        }
+      ]
+    },
+    "parameters": [
+      {
+        "id": "room_temperature_c",
+        "label": "Room temperature",
+        "unit": "°C",
+        "type": "range",
+        "minimum": 18,
+        "maximum": 40,
+        "step": 1
+      },
+      {
+        "id": "ua_w_per_k",
+        "label": "Heat leakage, UA",
+        "unit": "W/K",
+        "type": "range",
+        "minimum": 1,
+        "maximum": 8,
+        "step": 0.1
+      },
+      {
+        "id": "load_w",
+        "label": "Internal load",
+        "unit": "W",
+        "type": "range",
+        "minimum": 0,
+        "maximum": 80,
+        "step": 1
+      },
+      {
+        "id": "cooling_w",
+        "label": "Cooling capacity",
+        "unit": "W",
+        "type": "range",
+        "minimum": 40,
+        "maximum": 180,
+        "step": 1
+      },
+      {
+        "id": "cooling_on",
+        "label": "Cooling active",
+        "unit": "",
+        "type": "checkbox"
+      }
+    ],
     "defaults": {
       "room_temperature_c": 28,
-      "thermal_capacitance_j_per_k": 180000,
       "ua_w_per_k": 3.2,
       "load_w": 18,
       "cooling_w": 95,
       "cooling_on": true
     },
     "limits": {
-      "room_temperature_c": [
-        18,
-        40
-      ],
-      "ua_w_per_k": [
-        1,
-        8
-      ],
-      "load_w": [
-        0,
-        80
-      ],
-      "cooling_w": [
-        40,
-        180
-      ]
+      "room_temperature_c": [18, 40],
+      "ua_w_per_k": [1, 8],
+      "load_w": [0, 80],
+      "cooling_w": [40, 180]
+    },
+    "chart": {
+      "title": "Predicted cabinet temperature"
     },
     "limitations": [
       "The cabinet is treated as one uniform temperature.",

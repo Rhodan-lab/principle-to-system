@@ -43,15 +43,20 @@ class ProductAlphaLoadingRuntimeTests(unittest.TestCase):
         self.assertIn(
             'id="evidence" type="button" disabled aria-busy="true"', html
         )
+        self.assertIn('<meta name="principia-route" content="refrigerator">', html)
         self.assertIn("function step(name){if(!route)return;", learner_script)
         loading_marker = 'applyLearnerAvailability("loading")'
         ready_marker = 'applyLearnerAvailability("ready")'
-        fetch_marker = 'await fetch("data/refrigerator.json"'
+        identity_marker = 'meta[name="principia-route"]'
+        fetch_marker = 'await fetch(`data/${routeId}.json`'
         step_marker = "step(order.includes(location.hash.slice(1))"
         self.assertIn(loading_marker, learner_script)
         self.assertIn(ready_marker, learner_script)
         self.assertLess(
-            learner_script.index(loading_marker), learner_script.index(fetch_marker)
+            learner_script.index(loading_marker), learner_script.index(identity_marker)
+        )
+        self.assertLess(
+            learner_script.index(identity_marker), learner_script.index(fetch_marker)
         )
         ready_index = learner_script.index(ready_marker)
         self.assertLess(ready_index, learner_script.index(step_marker, ready_index))
@@ -92,9 +97,13 @@ const evidenceButton = element("#evidence");
 evidenceButton.disabled = true;
 evidenceButton.setAttribute("aria-busy", "true");
 element("#title").textContent = "Loading route…";
+const routeMarker = {{ content: "refrigerator" }};
 const events = {{}};
 global.document = {{
-  querySelector(selector) {{ return element(selector); }},
+  querySelector(selector) {{
+    if (selector === 'meta[name="principia-route"]') return routeMarker;
+    return element(selector);
+  }},
   querySelectorAll(selector) {{
     if (selector === "[data-step]") return [];
     return [];
@@ -103,7 +112,8 @@ global.document = {{
 global.location = {{ hash: "#observe", search: "" }};
 global.addEventListener = (type, handler) => {{ events[type] = handler; }};
 let releaseFetch;
-global.fetch = async () => new Promise(resolve => {{
+global.fetch = async input => new Promise(resolve => {{
+  assert.equal(input, "data/refrigerator.json");
   releaseFetch = () => resolve({{
     ok: true,
     status: 200,

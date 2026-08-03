@@ -63,6 +63,23 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             ["observe", "map", "model", "diagnose", "redesign"],
         )
 
+    def test_contract_records_implemented_local_alpha(self) -> None:
+        self.assertEqual(self.contract["status"], "implemented-local-alpha")
+        implementation = self.contract["implementation"]
+        self.assertEqual(
+            implementation["route_path"],
+            "software/product_alpha/routes/distributed-information.json",
+        )
+        self.assertEqual(
+            implementation["adapter_asset"],
+            "software/product_alpha/model-adapters.js",
+        )
+        self.assertEqual(implementation["default_route"], "refrigerator")
+        self.assertEqual(implementation["adapter_id"], "queue-delay-fluid-v1")
+        self.assertEqual(implementation["acceptance_status"], "pass")
+        for key in ("route_path", "adapter_asset", "learner_shell", "builder", "launcher"):
+            self.assertTrue((REPO_ROOT / implementation[key]).is_file())
+
     def test_contract_requires_reusable_model_adapter_and_safe_execution(self) -> None:
         adapter = self.contract["model_adapter"]
         self.assertEqual(adapter["id"], "queue-delay-fluid-v1")
@@ -79,18 +96,22 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             self.assertIn(marker, requirements)
         self.assertIn("refrigerator", requirements.lower())
 
-    def test_product_state_records_selected_route_and_next_action(self) -> None:
+    def test_product_state_records_two_route_alpha_and_next_defect(self) -> None:
         state = PRODUCT_STATE.read_text(encoding="utf-8")
-        self.assertIn("distributed-information", state)
-        self.assertIn(
-            "implement-distributed-information-model-adapter-and-route",
-            state,
-        )
+        for marker in (
+            "distributed-information",
+            "implemented-local-alpha",
+            "two-route local alpha",
+            "thermal-cabinet-v1",
+            "queue-delay-fluid-v1",
+            "make-facilitator-and-evidence-records-route-aware",
+        ):
+            self.assertIn(marker, state)
         self.assertIn(
             "software/product_alpha/evaluation/validate_route_selection.py check",
             state,
         )
-        self.assertIn("a runnable second route", state.lower())
+        self.assertIn("performance of a real distributed service", state.lower())
 
     def test_validator_is_read_only_and_passes(self) -> None:
         tracked = {
@@ -105,7 +126,7 @@ class ProductAlphaRouteSelectionTests(unittest.TestCase):
             text=True,
         )
         self.assertIn(
-            "route-selection-passed: distributed-information (4.95)",
+            "route-selection-passed: distributed-information (4.95); implementation=implemented-local-alpha",
             completed.stdout,
         )
         for path, content in tracked.items():
