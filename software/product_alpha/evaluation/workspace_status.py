@@ -77,6 +77,13 @@ def _paired_state(paths: Sequence[Path], label: str) -> bool:
     return all(states)
 
 
+def _verified_cohort_complete(report: dict[str, object], label: str) -> bool:
+    value = report.get("cohort_complete")
+    if not isinstance(value, bool):
+        raise ValueError(f"{label} cohort_complete must be boolean")
+    return value
+
+
 def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
     prefix = review_prefix.expanduser().resolve(strict=False)
     return (
@@ -211,7 +218,7 @@ def inspect_workspace(
             "stage": "ready-to-assemble",
             "sessions": preflight["sessions"],
             "minimum_cohort_size": preflight["minimum_cohort_size"],
-            "cohort_complete": True,
+            "cohort_complete": _verified_cohort_complete(preflight, "preflight"),
             "evidence_status": preflight["evidence_status"],
             "predicted_combined_sha256": preflight["predicted_combined_sha256"],
             "source_records_sha256": preflight["source_records_sha256"],
@@ -235,8 +242,10 @@ def inspect_workspace(
             **report,
             "stage": "intake-verified",
             "sessions": verification["sessions"],
-            "cohort_complete": verification["evidence_status"]
-            == "ready-for-human-review",
+            "cohort_complete": _verified_cohort_complete(
+                verification,
+                "workspace intake verification",
+            ),
             "evidence_status": verification["evidence_status"],
             "combined_sha256": verification["combined_sha256"],
             "intake_manifest_sha256": verification["intake_manifest_sha256"],
@@ -251,6 +260,10 @@ def inspect_workspace(
         }
 
     readiness = record_decision.validate_review_ready(root)
+    verified_complete = _verified_cohort_complete(
+        readiness,
+        "advisory readiness",
+    )
     if not decision_complete:
         if handoff_complete:
             raise ValueError("repository handoff exists before the human decision")
@@ -258,8 +271,7 @@ def inspect_workspace(
             **report,
             "stage": "review-ready-for-advisory",
             "sessions": readiness["sessions"],
-            "cohort_complete": readiness["evidence_status"]
-            == "ready-for-human-review",
+            "cohort_complete": verified_complete,
             "evidence_status": readiness["evidence_status"],
             "planning_review_eligible": readiness["planning_review_eligible"],
             "review_json_sha256": readiness["review_json_sha256"],
@@ -296,8 +308,7 @@ def inspect_workspace(
             **report,
             "stage": "advisory-verified",
             "sessions": decision["sessions"],
-            "cohort_complete": decision["evidence_status"]
-            == "ready-for-human-review",
+            "cohort_complete": verified_complete,
             "evidence_status": decision["evidence_status"],
             "primary_action": action,
             "planning_review_action_selected": decision[
@@ -322,8 +333,7 @@ def inspect_workspace(
         **report,
         "stage": "advisory-handoff-verified",
         "sessions": handoff["sessions"],
-        "cohort_complete": handoff["evidence_status"]
-        == "ready-for-human-review",
+        "cohort_complete": verified_complete,
         "evidence_status": handoff["evidence_status"],
         "primary_action": action,
         "planning_review_action_selected": decision[
