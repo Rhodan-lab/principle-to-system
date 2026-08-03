@@ -48,12 +48,17 @@ def _canonical_json(value: Any) -> bytes:
 
 
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"{label}: must be a regular file")
+    raw = path.read_bytes()
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        value = json.loads(raw.decode("utf-8"))
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label}: must be UTF-8") from exc
     except json.JSONDecodeError as exc:
         raise ValueError(f"{label}: invalid JSON: {exc.msg}") from exc
     if not isinstance(value, dict):
-        raise ValueError(f"{label}: session export must contain one JSON object")
+        raise ValueError(f"{label}: must contain one JSON object")
     return value
 
 
