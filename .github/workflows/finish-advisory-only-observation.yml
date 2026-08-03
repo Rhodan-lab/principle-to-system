@@ -40,6 +40,7 @@ jobs:
           python3 software/product_alpha/_repair_advisory_only_transformer.py
           python3 software/product_alpha/_make_optional_observation_advisory_only.py
           python3 software/product_alpha/_finish_advisory_only_runtime_contracts.py
+          git checkout -- software/product_alpha/_make_optional_observation_advisory_only.py
       - name: Validate complete advisory-only boundary
         env:
           PYTHONWARNINGS: error::SyntaxWarning
