@@ -121,3 +121,73 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-optional-observation-no-threshold:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/remove-optional-observation-threshold'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out observation migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/remove-optional-observation-threshold
+          fetch-depth: 0
+      - name: Apply bounded no-threshold migration
+        run: |
+          if grep -q 'optional-descriptive' software/product_alpha/evaluation/summarize.py && \
+             grep -q 'Valid observations' software/product_alpha/pilot-lab.html && \
+             grep -q 'test_single_observation_is_ready_for_optional_review' software/tests/test_product_alpha_evaluation.py; then
+            exit 0
+          fi
+          python3 software/product_alpha/_remove_optional_observation_threshold.py
+      - name: Validate no-threshold observation boundary
+        env:
+          PYTHONWARNINGS: error::SyntaxWarning
+        run: |
+          python3 -m py_compile \
+            software/product_alpha/evaluation/summarize.py \
+            software/product_alpha/evaluation/assemble_workspace.py \
+            software/product_alpha/evaluation/workspace_status.py \
+            software/product_alpha/evaluation/prepare_workspace.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('software/product_alpha/pilot-lab.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
+          if len(scripts) != 1:
+              raise SystemExit('pilot-lab.html must contain exactly one inline script')
+          Path('/tmp/principia-pilot-lab.js').write_text(scripts[0], encoding='utf-8')
+          PY
+          node --check /tmp/principia-pilot-lab.js
+          node --test software/tests/test_product_alpha*.mjs
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "PRODUCT_STATE.md software/product_alpha/PILOT.md software/product_alpha/evaluation/assemble_workspace.py software/product_alpha/evaluation/prepare_workspace.py software/product_alpha/evaluation/summarize.py software/product_alpha/evaluation/workspace_status.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha.py software/tests/test_product_alpha_evaluation.py software/tests/test_product_alpha_human_decision.py software/tests/test_product_alpha_review_packet.py software/tests/test_product_alpha_workspace_intake.py software/tests/test_product_alpha_workspace_status.py "
+      - name: Commit no-threshold observation migration
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            PRODUCT_STATE.md \
+            software/product_alpha/PILOT.md \
+            software/product_alpha/pilot-lab.html \
+            software/product_alpha/evaluation/summarize.py \
+            software/product_alpha/evaluation/assemble_workspace.py \
+            software/product_alpha/evaluation/workspace_status.py \
+            software/product_alpha/evaluation/prepare_workspace.py \
+            software/tests/test_product_alpha.py \
+            software/tests/test_product_alpha_evaluation.py \
+            software/tests/test_product_alpha_workspace_intake.py \
+            software/tests/test_product_alpha_workspace_status.py \
+            software/tests/test_product_alpha_review_packet.py \
+            software/tests/test_product_alpha_human_decision.py
+          git commit -m "Remove participant-count gate from optional observation"
+          git push origin HEAD:agent/remove-optional-observation-threshold
