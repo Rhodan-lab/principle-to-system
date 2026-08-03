@@ -52,11 +52,6 @@ PILOT_LAB_TRANSFORMS = (
         "Pilot Lab build-id state",
     ),
     (
-        b',c=s=>document.querySelector(s);',
-        b',q=s=>document.querySelector(s);',
-        "Pilot Lab selector helper",
-    ),
-    (
         b'if(found.length)fail(`${label}: personal-data fields are not allowed: ${found.join(", ")}.`);if(session.route_id!==ROUTE_ID)fail(',
         b'if(found.length)fail(`${label}: personal-data fields are not allowed: ${found.join(", ")}.`);if(!BUILD_ID_PATTERN.test(session.pilot_build_id))fail(`${label}: pilot_build_id must be a 64-character lowercase SHA-256.`);if(EXPECTED_BUILD_ID&&session.pilot_build_id!==EXPECTED_BUILD_ID)fail(`${label}: pilot_build_id does not match the launcher build.`);if(session.route_id!==ROUTE_ID)fail(',
         "Pilot Lab build-id validation",
