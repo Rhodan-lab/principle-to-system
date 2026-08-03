@@ -73,7 +73,7 @@ jobs:
             software/product_alpha/evaluation/prepare_review.py \
             software/product_alpha/evaluation/validate_internal_review.py \
             software/product_alpha/evaluation/validate_route_selection.py
-      - name: Verify evaluation JSON
+      - name: Verify Product Alpha JSON
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
@@ -82,10 +82,10 @@ jobs:
           python3 -m json.tool software/product_alpha/route-contracts/distributed-information.json >/dev/null
           python3 -m json.tool software/product_alpha/routes/refrigerator.json >/dev/null
           python3 -m json.tool software/product_alpha/routes/distributed-information.json >/dev/null
-      - name: Validate internal product review
-        run: python3 software/product_alpha/evaluation/validate_internal_review.py check
-      - name: Validate second-route selection
-        run: python3 software/product_alpha/evaluation/validate_route_selection.py check
+      - name: Validate product authorities
+        run: |
+          python3 software/product_alpha/evaluation/validate_internal_review.py check
+          python3 software/product_alpha/evaluation/validate_route_selection.py check
       - name: Verify Product Alpha JavaScript syntax
         run: |
           python3 - <<'PY'
@@ -119,54 +119,3 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
-
-  apply-model-adapter-shell:
-    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-adapter-implementation'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Check out implementation branch
-        uses: actions/checkout@v4
-        with:
-          ref: agent/product-alpha-adapter-implementation
-          fetch-depth: 0
-      - name: Apply bounded learner-shell update
-        run: |
-          if grep -q 'model-adapters.js' software/product_alpha/index.html && \
-             grep -q 'queue-delay-fluid-v1' software/product_alpha/index.html && \
-             grep -q 'DEFAULT_ROUTE = "refrigerator"' software/product_alpha/run_pilot.py; then
-            exit 0
-          fi
-          python3 software/product_alpha/_apply_model_adapter_shell.py
-      - name: Validate bounded shell update
-        run: |
-          python3 -m py_compile software/product_alpha/build.py software/product_alpha/run_pilot.py
-          node --check software/product_alpha/model-adapters.js
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          html=Path('software/product_alpha/index.html').read_text(encoding='utf-8')
-          scripts=re.findall(r'<script>(.*?)</script>',html,re.S)
-          if len(scripts)!=1:
-              raise SystemExit('index.html must contain exactly one inline script')
-          Path('/tmp/principia-index.js').write_text(scripts[0],encoding='utf-8')
-          PY
-          node --check /tmp/principia-index.js
-          python3 software/product_alpha/build.py check --route refrigerator
-          python3 software/product_alpha/build.py check --route distributed-information
-          python3 software/product_alpha/run_pilot.py check --route refrigerator
-          python3 software/product_alpha/run_pilot.py check --route distributed-information
-          node --test software/tests/test_product_alpha_model_adapters.mjs
-          git diff --check
-          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/product_alpha/index.html software/product_alpha/run_pilot.py "
-      - name: Commit learner-shell update
-        run: |
-          if git diff --quiet; then
-            exit 0
-          fi
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add software/product_alpha/build.py software/product_alpha/index.html software/product_alpha/run_pilot.py
-          git commit -m "Implement route-driven Product Alpha model shell"
-          git push origin HEAD:agent/product-alpha-adapter-implementation
