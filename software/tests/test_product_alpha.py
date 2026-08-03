@@ -103,33 +103,22 @@ class ProductAlphaTests(unittest.TestCase):
         for relative in expected:
             self.assertTrue((output / relative).is_file(), relative)
 
-    def test_build_normalizes_duplicate_counter_to_additive_increment(self) -> None:
+    def test_source_and_build_preserve_additive_duplicate_counter(self) -> None:
         output = self.root / "dist"
         source = self.root / "software" / "product_alpha" / "pilot-lab.html"
         build_module.build(self.root, output)
         source_bytes = source.read_bytes()
         built_bytes = (output / "pilot-lab.html").read_bytes()
-        self.assertEqual(
-            source_bytes.count(build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG),
-            1,
-        )
-        self.assertNotIn(
-            build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG,
-            built_bytes,
-        )
-        self.assertEqual(
-            built_bytes.count(build_module.PILOT_LAB_DUPLICATE_COUNTER_FIX),
-            1,
-        )
+        bug = b"state.duplicates=+1;"
+        additive = b"state.duplicates+=1;"
+        self.assertNotIn(bug, source_bytes)
+        self.assertNotIn(bug, built_bytes)
+        self.assertEqual(source_bytes.count(additive), 1)
+        self.assertEqual(built_bytes.count(additive), 1)
 
     def test_static_asset_guards_reject_ambiguous_state(self) -> None:
         with self.assertRaisesRegex(ValueError, "route identity must occur exactly once"):
             build_module.prepare_static_asset("pilot-lab.html", b"no counter")
-        with self.assertRaisesRegex(ValueError, "route identity must occur exactly once"):
-            build_module.prepare_static_asset(
-                "pilot-lab.html",
-                build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG * 2,
-            )
         source_index = (
             self.root / "software" / "product_alpha" / "index.html"
         ).read_bytes()

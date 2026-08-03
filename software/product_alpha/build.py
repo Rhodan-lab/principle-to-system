@@ -22,9 +22,6 @@ EVALUATION_ASSETS = (
     "evaluation/rubric.json",
     "evaluation/session-template.json",
 )
-PILOT_LAB_DUPLICATE_COUNTER_BUG = b"state.duplicates=+1;"
-PILOT_LAB_DUPLICATE_COUNTER_FIX = b"state.duplicates+=1;"
-
 FACILITATOR_TRANSFORMS = (
     (
         b'const q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null;',
@@ -292,7 +289,7 @@ def _replace_once(data: bytes, old: bytes, new: bytes, label: str) -> bytes:
 
 
 def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_ROUTE) -> bytes:
-    """Apply bounded packaging repairs and reject ambiguous asset states."""
+    """Apply bounded route packaging transforms and reject ambiguous asset states."""
     evidence_route = route_identity.evidence_route_id(route)
     if relative_path == "evaluation/rubric.json":
         rubric = json.loads(data.decode("utf-8"))
@@ -330,12 +327,6 @@ def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_R
             f'const ROUTE_ID="{evidence_route}"'.encode("utf-8"),
             1,
         )
-    data = _replace_once(
-        data,
-        PILOT_LAB_DUPLICATE_COUNTER_BUG,
-        PILOT_LAB_DUPLICATE_COUNTER_FIX,
-        "Pilot Lab duplicate counter",
-    )
     for old, new, label in PILOT_LAB_TRANSFORMS:
         data = _replace_once(data, old, new, label)
     return data
