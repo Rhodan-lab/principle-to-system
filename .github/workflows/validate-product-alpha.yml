@@ -144,7 +144,7 @@ jobs:
         run: |
           python3 -m py_compile software/product_alpha/build.py
           python3 -m unittest discover -s software/tests -p 'test_product_alpha.py' -v
-          node --test software/tests/test_product_alpha_pilot_lab_state.mjs
+          node --test software/tests/test_product_alpha_pilot_lab_batches.mjs
           python3 software/product_alpha/build.py check --route refrigerator
           python3 software/product_alpha/build.py check --route distributed-information
           python3 software/product_alpha/run_pilot.py check --route refrigerator
