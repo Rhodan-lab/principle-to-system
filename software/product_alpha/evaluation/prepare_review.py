@@ -60,6 +60,11 @@ def path_present(path: Path) -> bool:
     return path.is_symlink() or path.exists()
 
 
+def publish_exclusive(staged_path: Path, destination: Path) -> None:
+    """Atomically publish staged bytes without replacing an occupied destination."""
+    os.link(staged_path, destination)
+
+
 def _is_within(path: Path, directory: Path) -> bool:
     try:
         path.resolve().relative_to(directory.resolve())
@@ -294,14 +299,17 @@ def write_review_outputs(
         if path_present(path):
             raise FileExistsError(f"temporary review output already exists: {path}")
 
+    published: list[Path] = []
     try:
         temporary_paths[0].write_bytes(json_bytes)
         temporary_paths[1].write_bytes(markdown_bytes)
-        os.replace(temporary_paths[0], json_path)
-        os.replace(temporary_paths[1], markdown_path)
+        publish_exclusive(temporary_paths[0], json_path)
+        published.append(json_path)
+        publish_exclusive(temporary_paths[1], markdown_path)
+        published.append(markdown_path)
     except Exception:
-        json_path.unlink(missing_ok=True)
-        markdown_path.unlink(missing_ok=True)
+        for path in reversed(published):
+            path.unlink(missing_ok=True)
         raise
     finally:
         for path in temporary_paths:
