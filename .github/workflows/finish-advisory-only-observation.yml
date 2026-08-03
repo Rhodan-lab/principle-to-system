@@ -34,9 +34,12 @@ jobs:
              grep -q 'test_optional_observation_rejects_planning_advance' software/tests/test_product_alpha_human_decision.py; then
             exit 0
           fi
-          python3 -m py_compile software/product_alpha/_repair_advisory_only_transformer.py
+          python3 -m py_compile \
+            software/product_alpha/_repair_advisory_only_transformer.py \
+            software/product_alpha/_finish_advisory_only_runtime_contracts.py
           python3 software/product_alpha/_repair_advisory_only_transformer.py
           python3 software/product_alpha/_make_optional_observation_advisory_only.py
+          python3 software/product_alpha/_finish_advisory_only_runtime_contracts.py
       - name: Validate complete advisory-only boundary
         env:
           PYTHONWARNINGS: error::SyntaxWarning
