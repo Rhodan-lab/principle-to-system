@@ -23,6 +23,7 @@ const {
   stageReplacement,
   cancelReplacement,
   takeReplacement,
+  pilotLabAvailability,
 } = module.exports;
 
 function file(
@@ -207,4 +208,38 @@ test("wide validation ledger is a keyboard-scrollable named region", () => {
   assert.match(html, /class="table-scroll" role="region" aria-label="Loaded session validation ledger" tabindex="0"/);
   assert.match(html, /\.table-scroll\{max-width:100%;overflow-x:auto\}/);
   assert.match(html, /\.table-scroll:focus-visible\{outline:3px solid var\(--accent\)/);
+});
+
+test("Pilot Lab availability requires an exact launcher build identity", () => {
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(pilotLabAvailability("a".repeat(64)))),
+    { ready: true, disabled: false },
+  );
+  for (const buildId of ["", "not-a-build-id", "A".repeat(64), "a".repeat(63)]) {
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(pilotLabAvailability(buildId))),
+      { ready: false, disabled: true },
+    );
+  }
+});
+
+test("missing or invalid build identity keeps Pilot Lab inert", () => {
+  assert.match(html, /id="workspaceStatus" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"/);
+  assert.match(html, /function applyPilotLabAvailability\(buildId\)/);
+  assert.match(html, /document\.querySelectorAll\("button,input"\)\.forEach\(node=>node\.disabled=view\.disabled\)/);
+  assert.match(html, /q\("#drop"\)\.setAttribute\("aria-disabled",String\(view\.disabled\)\)/);
+
+  const guardAt = html.indexOf("if(!applyPilotLabAvailability(EXPECTED_BUILD_ID)){");
+  const statusAt = html.indexOf("Pilot build ID is missing or invalid", guardAt);
+  const assertiveAt = html.indexOf('status.setAttribute("aria-live","assertive")', statusAt);
+  const focusAt = html.indexOf("status.focus()", assertiveAt);
+  const elseAt = html.indexOf("}else{", focusAt);
+  const handlerAt = html.indexOf('q("#chooseFiles").addEventListener', elseAt);
+
+  assert.notEqual(guardAt, -1);
+  assert.ok(guardAt < statusAt, "invalid startup must announce a specific build error");
+  assert.ok(statusAt < assertiveAt, "the build error must become assertive");
+  assert.ok(assertiveAt < focusAt, "the error must be announced before focus moves");
+  assert.ok(focusAt < elseAt, "invalid startup must stay outside the ready branch");
+  assert.ok(elseAt < handlerAt, "file handlers must only install for a valid launcher build");
 });
