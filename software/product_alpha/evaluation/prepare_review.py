@@ -69,7 +69,8 @@ def _is_within(path: Path, directory: Path) -> bool:
 
 
 def review_output_paths(prefix: Path) -> tuple[Path, Path]:
-    resolved = prefix.expanduser().resolve()
+    expanded = prefix.expanduser()
+    resolved = expanded.parent.resolve(strict=False) / expanded.name
     json_path = resolved.with_suffix(".json")
     markdown_path = resolved.with_suffix(".md")
     for path in (json_path, markdown_path):
