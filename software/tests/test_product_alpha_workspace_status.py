@@ -20,13 +20,18 @@ import review_workspace  # noqa: E402
 import workspace_status  # noqa: E402
 
 BUILD_ID = "a" * 64
+DEFAULT_ROUTE_ID = "refrigerator-v1"
+DISTRIBUTED_ROUTE_ID = "distributed-information-v1"
 
 
-def session(session_id: str) -> dict[str, object]:
+def session(
+    session_id: str,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> dict[str, object]:
     return {
         "pilot_build_id": BUILD_ID,
         "session_id": session_id,
-        "route_id": "refrigerator-v1",
+        "route_id": route_id,
         "started": True,
         "completed_steps": ["observe", "map", "model", "diagnose", "redesign"],
         "duration_minutes": 28,
@@ -43,45 +48,72 @@ def session(session_id: str) -> dict[str, object]:
     }
 
 
-def create_workspace(root: Path) -> Path:
+def create_workspace(
+    root: Path,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> Path:
     workspace = root / "cohort"
-    prepare_workspace.prepare_workspace(workspace, BUILD_ID)
+    prepare_workspace.prepare_workspace(
+        workspace,
+        BUILD_ID,
+        route_id=route_id,
+    )
     return workspace
 
 
-def write_sessions(workspace: Path, count: int) -> None:
+def write_sessions(
+    workspace: Path,
+    count: int,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> None:
     for index in range(1, count + 1):
         path = workspace / "incoming-sessions" / f"session-{index:03d}.jsonl"
         path.write_text(
-            json.dumps(session(f"anonymous-{index:03d}"), sort_keys=True) + "\n",
+            json.dumps(
+                session(f"anonymous-{index:03d}", route_id),
+                sort_keys=True,
+            )
+            + "\n",
             encoding="utf-8",
         )
 
 
-def assemble(workspace: Path, count: int = 5) -> None:
-    write_sessions(workspace, count)
+def assemble(
+    workspace: Path,
+    count: int = 5,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> None:
+    write_sessions(workspace, count, route_id)
     assemble_workspace.assemble_workspace(workspace)
 
 
-def review(workspace: Path, count: int = 5) -> None:
-    assemble(workspace, count)
+def review(
+    workspace: Path,
+    count: int = 5,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> None:
+    assemble(workspace, count, route_id)
     review_workspace.prepare_workspace_review(workspace)
 
 
-def decide(workspace: Path, count: int = 5) -> None:
-    review(workspace, count)
+def decide(
+    workspace: Path,
+    count: int = 5,
+    route_id: str = DEFAULT_ROUTE_ID,
+) -> None:
+    review(workspace, count, route_id)
     record_decision.record_workspace_decision(
         workspace,
         "revise-current-route",
         "facilitator-reviewer",
         "2026-08-02",
         "Repeated model-control confusion requires a bounded route revision.",
-        "Review the revised refrigerator route before scheduling a repeat cohort.",
+        "Review the revised route before scheduling another optional observation set.",
     )
 
 
-def handoff(workspace: Path) -> Path:
-    prefix = workspace / "handoff" / "refrigerator-product-change"
+def handoff(workspace: Path, route_slug: str = "refrigerator") -> Path:
+    prefix = workspace / "handoff" / f"{route_slug}-product-change"
     prepare_handoff.write_handoff(workspace, prefix)
     return prefix
 
@@ -178,6 +210,45 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             self.assertRegex(str(report["decision_receipt_sha256"]), r"^[0-9a-f]{64}$")
             self.assertIn("prepare_handoff.py prepare", str(report["next_command"]))
             self.assertIn("prepare_handoff.py check", str(report["validation_command"]))
+
+    def test_distributed_route_uses_route_specific_handoff_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = create_workspace(
+                Path(directory),
+                route_id=DISTRIBUTED_ROUTE_ID,
+            )
+            decide(
+                workspace,
+                count=2,
+                route_id=DISTRIBUTED_ROUTE_ID,
+            )
+
+            report = workspace_status.inspect_workspace(workspace)
+            expected_prefix = (
+                workspace / "handoff" / "distributed-information-product-change"
+            )
+
+            self.assertEqual(report["route_id"], DISTRIBUTED_ROUTE_ID)
+            self.assertEqual(report["handoff_output_prefix"], str(expected_prefix))
+            self.assertIn(
+                "distributed-information-product-change",
+                str(report["next_command"]),
+            )
+            self.assertNotIn(
+                "refrigerator-product-change",
+                str(report["next_command"]),
+            )
+
+            handoff(workspace, route_slug="distributed-information")
+            completed = workspace_status.inspect_workspace(workspace)
+
+            self.assertEqual(completed["stage"], "advisory-handoff-verified")
+            self.assertTrue(completed["artifacts"]["handoff_json"])
+            self.assertTrue(completed["artifacts"]["handoff_markdown"])
+            self.assertIn(
+                "distributed-information-product-change",
+                str(completed["validation_command"]),
+            )
 
     def test_reports_verified_handoff_and_human_follow_up(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
