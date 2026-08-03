@@ -55,6 +55,11 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def path_present(path: Path) -> bool:
+    """Return whether an output name is occupied, including by a broken symlink."""
+    return path.is_symlink() or path.exists()
+
+
 def _is_within(path: Path, directory: Path) -> bool:
     try:
         path.resolve().relative_to(directory.resolve())
@@ -73,7 +78,7 @@ def review_output_paths(prefix: Path) -> tuple[Path, Path]:
                 "review packets must be written outside the repository in the "
                 "private facilitator-controlled cohort folder"
             )
-        if path.exists():
+        if path_present(path):
             raise FileExistsError(f"refusing to overwrite existing review output: {path}")
     return json_path, markdown_path
 
@@ -285,7 +290,7 @@ def write_review_outputs(
         markdown_path.with_name(f".{markdown_path.name}.tmp-{os.getpid()}"),
     )
     for path in temporary_paths:
-        if path.exists():
+        if path_present(path):
             raise FileExistsError(f"temporary review output already exists: {path}")
 
     try:
@@ -299,8 +304,7 @@ def write_review_outputs(
         raise
     finally:
         for path in temporary_paths:
-            if path.exists():
-                path.unlink()
+            path.unlink(missing_ok=True)
 
     return json_path, markdown_path, sha256(json_bytes)
 
