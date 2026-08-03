@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Record and verify one immutable human decision for a Product Alpha review."""
+"""Record and verify one immutable optional-observation advisory record."""
 
 from __future__ import annotations
 
@@ -154,7 +154,7 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
     decision_json, decision_markdown, decision_receipt = _decision_paths(review_prefix)
     return {
         **verification,
-        "decision": "human-decision-ready",
+        "decision": "optional-advisory-ready",
         "review_packet_contract": expected_packet["contract"],
         "review_json": str(review_json),
         "review_markdown": str(review_markdown),
@@ -403,7 +403,7 @@ def record_workspace_decision(
     rationale: str,
     next_checkpoint: str,
 ) -> dict[str, object]:
-    """Verify, build, and write one immutable private human decision record."""
+    """Verify, build, and write one immutable private advisory record."""
     readiness = validate_review_ready(workspace)
     record = _build_decision_record(
         readiness,
@@ -426,7 +426,7 @@ def record_workspace_decision(
         raise ValueError("decision record human_decision must be an object")
     return {
         "contract": CONTRACT,
-        "decision": "human-decision-record-created",
+        "decision": "optional-advisory-record-created",
         "workspace": readiness["workspace"],
         "pilot_build_id": readiness["pilot_build_id"],
         "route_id": readiness["route_id"],
@@ -436,6 +436,9 @@ def record_workspace_decision(
         "decision_receipt": str(receipt_path),
         "decision_record_sha256": record_sha256,
         "decision_receipt_sha256": receipt_sha256,
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "automatic_repository_mutation": False,
         "human_review_recorded": True,
     }
@@ -484,7 +487,7 @@ def _decision_fields(record: dict[str, object]) -> tuple[str, str, str, str, str
 
 
 def verify_workspace_decision(workspace: Path) -> dict[str, object]:
-    """Verify the complete decision artifact trio and current evidence bindings."""
+    """Verify the complete advisory artifact trio and current evidence bindings."""
     readiness = validate_review_ready(workspace)
     json_path = Path(str(readiness["decision_json"]))
     markdown_path = Path(str(readiness["decision_markdown"]))
@@ -538,7 +541,7 @@ def verify_workspace_decision(workspace: Path) -> dict[str, object]:
         raise ValueError("decision record human_decision must be an object")
     return {
         "contract": VERIFICATION_CONTRACT,
-        "decision": "human-decision-record-verified",
+        "decision": "optional-advisory-record-verified",
         "workspace": readiness["workspace"],
         "pilot_build_id": readiness["pilot_build_id"],
         "route_id": readiness["route_id"],
@@ -559,6 +562,9 @@ def verify_workspace_decision(workspace: Path) -> dict[str, object]:
         "combined_sha256": readiness["combined_sha256"],
         "intake_manifest_sha256": readiness["intake_manifest_sha256"],
         "source_records_sha256": readiness["source_records_sha256"],
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "raw_sources_verified": True,
         "writes_performed": False,
         "automatic_repository_mutation": False,
@@ -573,8 +579,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         choices=("record", "check", "verify"),
         default="record",
         help=(
-            "record a decision, check pre-record readiness, or verify existing "
-            "decision artifacts"
+            "record an advisory interpretation, check pre-record readiness, or verify "
+            "existing advisory artifacts"
         ),
     )
     parser.add_argument("--workspace", type=Path, required=True)
@@ -619,7 +625,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.next_checkpoint,
             )
     except (OSError, ValueError) as exc:
-        raise SystemExit(f"workspace decision failed: {exc}") from exc
+        raise SystemExit(f"workspace advisory failed: {exc}") from exc
     print(json.dumps(report, sort_keys=True))
     return 0
 
