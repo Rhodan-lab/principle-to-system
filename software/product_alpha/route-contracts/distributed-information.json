@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "contract": "principia-product-alpha-route-candidate/0.1",
+  "id": "distributed-information",
+  "status": "selected-for-implementation",
+  "selected_by": "reports/product-alpha-0-2-route-selection.json",
+  "baseline_route": "refrigerator",
+  "title": "Why retries can make a slow service collapse",
+  "subtitle": "Follow requests, queues, capacity, feedback, failure, and redesign through a distributed information service.",
+  "canonical_sources": {
+    "system": {
+      "path": "system-dossiers/web-service-request.md",
+      "slug": "system-dossier-web-service-request",
+      "artifact_revision": 1
+    },
+    "failure": {
+      "path": "failure-atlas/retry-storm-queue-collapse.md",
+      "slug": "failure-pattern-retry-storm-queue-collapse",
+      "artifact_revision": 1
+    },
+    "investigation": {
+      "path": "investigations/queue-delay-near-capacity.md",
+      "slug": "investigation-queue-delay-near-capacity",
+      "artifact_revision": 1
+    },
+    "design": {
+      "path": "design-challenges/resilient-school-information-service.md",
+      "slug": "design-challenge-resilient-school-information-service",
+      "artifact_revision": 1
+    }
+  },
+  "learner_steps": [
+    {
+      "id": "observe",
+      "prompt": "Which visible result could be caused by several hidden stages rather than one slow server?"
+    },
+    {
+      "id": "map",
+      "prompt": "Choose the service boundary. Where do requests, responses, queues, state, and control information cross it?"
+    },
+    {
+      "id": "model",
+      "prompt": "Predict what happens to delay and backlog as offered load approaches or exceeds service capacity."
+    },
+    {
+      "id": "diagnose",
+      "prompt": "Distinguish a simple capacity shortage from a retry feedback loop that amplifies the original slowdown."
+    },
+    {
+      "id": "redesign",
+      "prompt": "Preserve critical public information under load while balancing freshness, accessibility, privacy, reliability, and operational complexity."
+    }
+  ],
+  "model_adapter": {
+    "id": "queue-delay-fluid-v1",
+    "kind": "deterministic-queue",
+    "equations": [
+      "lambda_offered = lambda_external * (1 + retry_fraction)",
+      "rho = lambda_offered / mu",
+      "W = 1 / (mu - lambda_offered) when lambda_offered < mu",
+      "dB/dt = lambda_offered - mu while backlog is positive"
+    ],
+    "parameters": [
+      {
+        "id": "external_arrival_rate_rps",
+        "label": "External arrival rate",
+        "unit": "requests/s",
+        "default": 7.5,
+        "minimum": 1,
+        "maximum": 15,
+        "step": 0.5
+      },
+      {
+        "id": "service_rate_rps",
+        "label": "Service capacity",
+        "unit": "requests/s",
+        "default": 10,
+        "minimum": 2,
+        "maximum": 20,
+        "step": 0.5
+      },
+      {
+        "id": "retry_fraction",
+        "label": "Retry fraction",
+        "unit": "fraction",
+        "default": 0.1,
+        "minimum": 0,
+        "maximum": 1,
+        "step": 0.05
+      },
+      {
+        "id": "queue_capacity_requests",
+        "label": "Queue capacity",
+        "unit": "requests",
+        "default": 50,
+        "minimum": 5,
+        "maximum": 200,
+        "step": 5
+      },
+      {
+        "id": "observation_seconds",
+        "label": "Observation duration",
+        "unit": "s",
+        "default": 30,
+        "minimum": 10,
+        "maximum": 120,
+        "step": 10
+      }
+    ],
+    "prediction": {
+      "legend": "Before running the model, predict the service response.",
+      "choices": [
+        "Delay remains close to one service time.",
+        "Delay and backlog grow sharply near or above capacity.",
+        "Retries always reduce offered load."
+      ]
+    },
+    "outputs": [
+      "offered_arrival_rate_rps",
+      "utilization",
+      "stability_classification",
+      "predicted_mean_time_seconds_when_stable",
+      "backlog_growth_requests_per_second",
+      "estimated_backlog_after_observation",
+      "estimated_rejected_requests"
+    ],
+    "chart": {
+      "title": "Predicted queue response",
+      "description_template": "Backlog and delay under the selected arrival, capacity, retry, queue, and duration assumptions.",
+      "x_axis": "observation time",
+      "y_axis": "estimated backlog"
+    },
+    "limitations": [
+      "The model treats rates as averages and does not simulate burst distributions or several dependent queues.",
+      "The M/M/1 mean-delay relation is shown only when offered load is below capacity and its assumptions remain explicit.",
+      "Synthetic results do not predict a specific website, API, network, or school service."
+    ]
+  },
+  "diagnosis_challenge": {
+    "question": "A dependency slows, clients time out together, retries increase offered load, and the queue keeps growing after some capacity returns. What is the best first diagnosis?",
+    "options": [
+      "The service only needs an unlimited queue so no request is rejected.",
+      "A retry feedback loop is amplifying the slowdown; retry ownership, backoff, deadlines, and queue bounds must be examined.",
+      "Low average utilization proves that the user-facing service is healthy.",
+      "The original operations definitely failed because clients timed out."
+    ],
+    "correct_index": 1,
+    "explanation": "A timeout does not prove the original work stopped. Synchronized retries can increase offered load above degraded capacity, extend queues, and create a positive-feedback collapse."
+  },
+  "safety_boundaries": {
+    "synthetic_only": true,
+    "no_live_traffic": true,
+    "no_real_accounts": true,
+    "no_personal_data": true,
+    "requirements": [
+      "Do not send automated traffic to a real website, API, school system, account, network, or device.",
+      "Use fictional content and synthetic requests only.",
+      "Do not attempt authentication bypass, scanning, flooding, or rate-limit evasion."
+    ]
+  },
+  "atlas": {
+    "live": false,
+    "status_inheritance": "prohibited",
+    "expansion_required": false,
+    "references": [],
+    "decision": "Defer Atlas expansion until implementation reveals a concrete exact-revision evidence gap."
+  },
+  "reusable_shell_requirements": [
+    "All model labels, controls, prediction choices, output names, chart semantics, and limitations must come from the route payload or a model adapter.",
+    "The learner shell must call a model adapter through validate, run, summarize, and describe-chart operations.",
+    "The generic challenge, evidence, navigation, notes, validation recovery, and accessibility contracts must remain route-independent.",
+    "Route-specific equations and calculations must not be embedded directly in the generic shell.",
+    "The refrigerator route must remain the default and retain deterministic output until distributed-information is independently runnable."
+  ],
+  "acceptance_criteria": [
+    "A buildable software/product_alpha/routes/distributed-information.json exists only after the queue adapter is implemented.",
+    "Both refrigerator and distributed-information pass deterministic build checks.",
+    "The selected route renders five steps from canonical sources.",
+    "Prediction is required before the queue model runs.",
+    "Diagnosis is required before feedback is shown.",
+    "No live traffic, external dependency, persistence, analytics, account, or repository mutation is introduced.",
+    "Focused JavaScript and Python tests cover both model adapters and preserve refrigerator behavior."
+  ],
+  "claim_boundary": {
+    "does_not_establish": [
+      "a runnable second route",
+      "performance of a real distributed service",
+      "security of a real school system",
+      "empirical learning effectiveness",
+      "public production readiness"
+    ]
+  }
+}

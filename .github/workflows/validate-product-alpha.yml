@@ -5,8 +5,9 @@ on:
     paths:
       - "PRODUCT_STATE.md"
       - "README.md"
-      - "reports/product-alpha-0-1-*.md"
-      - "reports/product-alpha-0-1-*.json"
+      - "experiences/phase-11b-inventory.json"
+      - "reports/product-alpha-0-*.md"
+      - "reports/product-alpha-0-*.json"
       - "software/product_alpha/**"
       - "software/tests/test_product_alpha*.py"
       - "software/tests/test_product_alpha*.mjs"
@@ -14,13 +15,18 @@ on:
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
       - "design-challenges/passive-cooler.md"
+      - "system-dossiers/web-service-request.md"
+      - "failure-atlas/retry-storm-queue-collapse.md"
+      - "investigations/queue-delay-near-capacity.md"
+      - "design-challenges/resilient-school-information-service.md"
       - ".github/workflows/validate-product-alpha.yml"
   push:
     paths:
       - "PRODUCT_STATE.md"
       - "README.md"
-      - "reports/product-alpha-0-1-*.md"
-      - "reports/product-alpha-0-1-*.json"
+      - "experiences/phase-11b-inventory.json"
+      - "reports/product-alpha-0-*.md"
+      - "reports/product-alpha-0-*.json"
       - "software/product_alpha/**"
       - "software/tests/test_product_alpha*.py"
       - "software/tests/test_product_alpha*.mjs"
@@ -28,6 +34,10 @@ on:
       - "failure-atlas/feedback-instability.md"
       - "investigations/room-cooling.md"
       - "design-challenges/passive-cooler.md"
+      - "system-dossiers/web-service-request.md"
+      - "failure-atlas/retry-storm-queue-collapse.md"
+      - "investigations/queue-delay-near-capacity.md"
+      - "design-challenges/resilient-school-information-service.md"
       - ".github/workflows/validate-product-alpha.yml"
 
 permissions:
@@ -61,14 +71,19 @@ jobs:
             software/product_alpha/evaluation/prepare_handoff.py \
             software/product_alpha/evaluation/verify_cohort.py \
             software/product_alpha/evaluation/prepare_review.py \
-            software/product_alpha/evaluation/validate_internal_review.py
+            software/product_alpha/evaluation/validate_internal_review.py \
+            software/product_alpha/evaluation/validate_route_selection.py
       - name: Verify evaluation JSON
         run: |
           python3 -m json.tool software/product_alpha/evaluation/rubric.json >/dev/null
           python3 -m json.tool software/product_alpha/evaluation/session-template.json >/dev/null
           python3 -m json.tool reports/product-alpha-0-1-multi-perspective-review.json >/dev/null
+          python3 -m json.tool reports/product-alpha-0-2-route-selection.json >/dev/null
+          python3 -m json.tool software/product_alpha/route-contracts/distributed-information.json >/dev/null
       - name: Validate internal product review
         run: python3 software/product_alpha/evaluation/validate_internal_review.py check
+      - name: Validate second-route selection
+        run: python3 software/product_alpha/evaluation/validate_route_selection.py check
       - name: Verify Product Alpha JavaScript syntax
         run: |
           python3 - <<'PY'
