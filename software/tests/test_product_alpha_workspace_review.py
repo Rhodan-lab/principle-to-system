@@ -72,6 +72,12 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             self.assertEqual(verification["evidence_status"], "ready-for-human-review")
             self.assertTrue(verification["raw_sources_verified"])
             self.assertEqual(verification["source_record_count"], 5)
+            self.assertEqual(
+                verification["observation_mode"],
+                "optional-descriptive",
+            )
+            self.assertFalse(verification["roadmap_gate"])
+            self.assertFalse(verification["decision_authority"])
             self.assertRegex(
                 str(verification["intake_manifest_sha256"]),
                 r"^[0-9a-f]{64}$",
@@ -132,19 +138,31 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             self.assertEqual(list((workspace / "review").iterdir()), [])
 
     def test_rejects_relaxed_intake_review_boundary(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            workspace = assembled_workspace(Path(directory), count=1)
-            intake_path = workspace / "verified" / "intake-manifest.json"
-            intake = json.loads(intake_path.read_text(encoding="utf-8"))
-            intake["human_review_required"] = False
-            intake_path.write_text(
-                json.dumps(intake, indent=2, sort_keys=True) + "\n",
-                encoding="utf-8",
-            )
+        cases = (
+            ("human_review_required", False, "human_review_required=true"),
+            (
+                "observation_mode",
+                "required-product-gate",
+                "observation_mode must be 'optional-descriptive'",
+            ),
+            ("roadmap_gate", True, "roadmap_gate=false"),
+            ("decision_authority", True, "decision_authority=false"),
+        )
+        for field, replacement, message in cases:
+            with self.subTest(field=field):
+                with tempfile.TemporaryDirectory() as directory:
+                    workspace = assembled_workspace(Path(directory), count=1)
+                    intake_path = workspace / "verified" / "intake-manifest.json"
+                    intake = json.loads(intake_path.read_text(encoding="utf-8"))
+                    intake[field] = replacement
+                    intake_path.write_text(
+                        json.dumps(intake, indent=2, sort_keys=True) + "\n",
+                        encoding="utf-8",
+                    )
 
-            with self.assertRaisesRegex(ValueError, "human_review_required=true"):
-                review_workspace.verify_workspace_intake(workspace)
-            self.assertEqual(list((workspace / "review").iterdir()), [])
+                    with self.assertRaisesRegex(ValueError, message):
+                        review_workspace.verify_workspace_intake(workspace)
+                    self.assertEqual(list((workspace / "review").iterdir()), [])
 
     def test_cli_check_reports_verified_chain_without_writing_review(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -166,6 +184,9 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             self.assertEqual(report["decision"], "workspace-intake-verified")
             self.assertEqual(report["sessions"], 1)
             self.assertTrue(report["raw_sources_verified"])
+            self.assertEqual(report["observation_mode"], "optional-descriptive")
+            self.assertFalse(report["roadmap_gate"])
+            self.assertFalse(report["decision_authority"])
             self.assertEqual(list((workspace / "review").iterdir()), [])
 
 
