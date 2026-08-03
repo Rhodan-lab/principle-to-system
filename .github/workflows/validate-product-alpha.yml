@@ -121,3 +121,43 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-bound-tool-navigation:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-bound-tool-navigation'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out tool navigation branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-bound-tool-navigation
+          fetch-depth: 0
+      - name: Apply bounded tool navigation
+        run: |
+          if grep -q 'id="recorderLink"' software/product_alpha/pilot-lab.html && \
+             grep -q 'Pilot Lab recorder navigation preserves launcher build identity' software/tests/test_product_alpha_pilot_lab_route_identity.mjs; then
+            exit 0
+          fi
+          python3 software/product_alpha/_bind_pilot_lab_tool_navigation.py
+      - name: Validate build-bound tool navigation
+        run: |
+          node --test \
+            software/tests/test_product_alpha_pilot_lab_route_identity.mjs \
+            software/tests/test_product_alpha_pilot_lab_batches.mjs
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_route_identity.mjs "
+      - name: Commit build-bound tool navigation
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/pilot-lab.html software/tests/test_product_alpha_pilot_lab_route_identity.mjs
+          git commit -m "Preserve build identity across Pilot Lab navigation"
+          git push origin HEAD:agent/product-alpha-bound-tool-navigation
