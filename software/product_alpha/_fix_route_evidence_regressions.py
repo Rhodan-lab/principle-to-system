@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fix route-identity import and explicit workspace route test expectations."""
+"""Fix route-identity imports and explicit route test expectations."""
 from pathlib import Path
 
 
@@ -22,3 +22,11 @@ replace_once(
     '            build.assert_called_once_with("build", output.resolve(), "refrigerator")',
     "workspace explicit refrigerator build",
 )
+
+asset_test = Path("software/tests/test_product_alpha.py")
+text = asset_test.read_text(encoding="utf-8")
+old = 'with self.assertRaisesRegex(ValueError, "exactly one canonical state"):'
+new = 'with self.assertRaisesRegex(ValueError, "route identity must occur exactly once"):'
+if text.count(old) != 2:
+    raise SystemExit("static asset guard assertions: expected two anchors")
+asset_test.write_text(text.replace(old, new), encoding="utf-8")
