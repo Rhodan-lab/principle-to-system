@@ -36,6 +36,7 @@ class ProductAlphaDiagnosisRuntimeTests(unittest.TestCase):
             scripts = SCRIPT_PATTERN.findall(html)
             self.assertEqual(len(scripts), 1)
             learner_script = scripts[0]
+            adapter_script = (output / "model-adapters.js").read_text(encoding="utf-8")
             route = json.loads(
                 (output / "data" / "refrigerator.json").read_text(encoding="utf-8")
             )
@@ -44,6 +45,7 @@ class ProductAlphaDiagnosisRuntimeTests(unittest.TestCase):
 
         harness = rf"""
 const assert = require("node:assert/strict");
+{adapter_script}
 const routeData = {json.dumps(route, ensure_ascii=False, separators=(',', ':'))};
 const elements = new Map();
 let selectedDiagnosis = null;
@@ -72,8 +74,10 @@ function element(selector) {{
   return elements.get(selector);
 }}
 
+const routeMarker = {{ content: "refrigerator" }};
 global.document = {{
   querySelector(selector) {{
+    if (selector === 'meta[name="principia-route"]') return routeMarker;
     if (selector === 'input[name="d"]:checked') return selectedDiagnosis;
     return element(selector);
   }},
