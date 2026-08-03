@@ -131,9 +131,9 @@
       "status": "pass",
       "summary": "Canonical Principia sources and exact-revision Atlas references remain separate, explicit, advisory, and locally packaged.",
       "evidence": [
-        "contracts/principia-atlas-status-authority.json",
-        "integration/principia-atlas/bridge-manifest.json",
-        "software/product_alpha/build.py"
+        "contracts/principia-atlas/0.1/bridge-manifest.schema.json",
+        "integration/principia-atlas/README.md",
+        "scripts/validate_principia_atlas_bridge.py"
       ],
       "strengths": [
         "no live Atlas dependency",
