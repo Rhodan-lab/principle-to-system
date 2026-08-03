@@ -121,3 +121,43 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-visible-route-identity:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-visible-route-identity'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out visible identity branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-visible-route-identity
+          fetch-depth: 0
+      - name: Apply bounded learner and recorder update
+        run: |
+          if grep -q 'assertRecorderRouteIdentity' software/product_alpha/facilitator.html && \
+             grep -q 'Product Alpha 0.2' software/product_alpha/index.html; then
+            exit 0
+          fi
+          python3 software/product_alpha/_apply_visible_route_identity.py
+      - name: Validate visible route identity
+        run: |
+          node --test \
+            software/tests/test_product_alpha_facilitator_capture.mjs \
+            software/tests/test_product_alpha_visible_route_identity.mjs
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/facilitator.html software/product_alpha/index.html "
+      - name: Commit visible identity update
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/facilitator.html software/product_alpha/index.html
+          git commit -m "Show and verify the packaged recorder route"
+          git push origin HEAD:agent/product-alpha-visible-route-identity
