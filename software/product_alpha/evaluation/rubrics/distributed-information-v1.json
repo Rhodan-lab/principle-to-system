@@ -1,0 +1,45 @@
+{
+  "schema": "principia-product-alpha-pilot-rubric/0.1",
+  "route_id": "distributed-information-v1",
+  "score_scale": {
+    "0": "Missing, contradicted, or copied without explanation.",
+    "1": "Partly correct but incomplete, fragile, or poorly bounded.",
+    "2": "Mechanistic, appropriately bounded, and transferable."
+  },
+  "measures": {
+    "mechanism_explanation": {
+      "prompt": "Explain how requests, service capacity, queues, timeouts, and retries can interact to amplify a slowdown.",
+      "score_2_evidence": "Connects external demand, offered load, finite service capacity, queue growth, timeouts, and retry feedback without treating every retry as successful recovery."
+    },
+    "model_reasoning": {
+      "prompt": "Predict how changing one queue-model control changes delay, backlog, or rejected work, then explain why.",
+      "score_2_evidence": "Predicts direction before observing, links the result to utilization or backlog growth, and states a model assumption or limitation."
+    },
+    "failure_diagnosis": {
+      "prompt": "Distinguish a simple capacity shortage from a retry feedback loop and name an observation that would help decide.",
+      "score_2_evidence": "Uses offered load, retry timing, queue depth, completion evidence, or recovery behavior and does not assume that a timeout cancelled the original operation."
+    },
+    "evidence_boundary": {
+      "prompt": "State what the synthetic model and reviewed source material support and what they do not prove about a live information service.",
+      "score_2_evidence": "Separates model-derived claims from measurements of a real service, preserves stated assumptions, and avoids claiming real-system performance or security."
+    },
+    "redesign_tradeoff": {
+      "prompt": "Choose one redesign under a stated constraint and explain its benefit, cost, and remaining risk.",
+      "score_2_evidence": "Links the redesign to the failure mechanism, names a real trade-off across reliability, freshness, accessibility, privacy, or operational complexity, and identifies evidence that could change the choice."
+    }
+  },
+  "recommended_confusion_tags": [
+    "navigation",
+    "reading-density",
+    "system-boundary",
+    "request-versus-operation",
+    "queue-versus-service",
+    "utilization-near-capacity",
+    "retry-versus-recovery",
+    "timeout-versus-cancellation",
+    "model-controls",
+    "model-to-world-transfer",
+    "evidence-status",
+    "redesign-tradeoff"
+  ]
+}
