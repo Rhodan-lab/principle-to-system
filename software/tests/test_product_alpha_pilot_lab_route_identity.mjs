@@ -8,7 +8,7 @@ const match = html.match(/<script>([\s\S]*?)<\/script>/);
 assert.ok(match, "Pilot Lab must contain one inline script");
 const sandbox = { module: { exports: {} }, exports: {} };
 vm.runInNewContext(match[1], sandbox, { filename: "pilot-lab.html" });
-const { routeIdentityLabel, pilotLabExportName } = sandbox.module.exports;
+const { routeIdentityLabel, pilotLabExportName, buildBoundToolUrl } = sandbox.module.exports;
 
 test("Pilot Lab visibly identifies Product Alpha 0.2 and its route", () => {
   assert.match(html, /Principia Product Alpha 0\.2 — Pilot Lab/);
@@ -67,4 +67,31 @@ test("all download handlers use route-specific filenames", () => {
   );
   assert.doesNotMatch(html, /download\("product-alpha-pilot-summary/);
   assert.doesNotMatch(html, /download\("product-alpha-validated-sessions/);
+});
+
+test("Pilot Lab recorder navigation preserves launcher build identity", () => {
+  const buildId = "a".repeat(64);
+  assert.equal(
+    buildBoundToolUrl("facilitator.html", buildId),
+    `facilitator.html?build_id=${buildId}`,
+  );
+  assert.throws(
+    () => buildBoundToolUrl("facilitator.html", "not-a-build-id"),
+    /invalid Pilot build identity/,
+  );
+  assert.throws(
+    () => buildBoundToolUrl("unknown.html", buildId),
+    /unsupported Product Alpha tool path/,
+  );
+  assert.match(
+    html,
+    /id="recorderLink" href="#" aria-disabled="true" tabindex="-1">Recorder/,
+  );
+  assert.match(html, /a\[aria-disabled="true"\]\{pointer-events:none;opacity:\.55\}/);
+  assert.match(
+    html,
+    /link\.href=buildBoundToolUrl\("facilitator\.html",buildId\)/,
+  );
+  assert.match(html, /link\.removeAttribute\("tabindex"\)/);
+  assert.match(html, /link\.setAttribute\("tabindex","-1"\)/);
 });
