@@ -26,6 +26,7 @@ class ProductAlphaTests(unittest.TestCase):
         for relative in (
             "routes/refrigerator.json",
             "index.html",
+            "model-adapters.js",
             "facilitator.html",
             "pilot-lab.html",
             "evaluation/rubric.json",
@@ -85,11 +86,12 @@ class ProductAlphaTests(unittest.TestCase):
         for relative in first_files:
             self.assertEqual((first / relative).read_bytes(), (second / relative).read_bytes())
 
-    def test_build_includes_pilot_lab(self) -> None:
+    def test_build_includes_pilot_lab_and_model_adapters(self) -> None:
         output = self.root / "dist"
         manifest = build_module.build(self.root, output)
         expected = {
             "index.html",
+            "model-adapters.js",
             "facilitator.html",
             "pilot-lab.html",
             "evaluation/rubric.json",
@@ -97,7 +99,7 @@ class ProductAlphaTests(unittest.TestCase):
             "data/refrigerator.json",
         }
         self.assertEqual({item["path"] for item in manifest["files"]}, expected)
-        self.assertEqual(manifest["file_count"], 6)
+        self.assertEqual(manifest["file_count"], 7)
         for relative in expected:
             self.assertTrue((output / relative).is_file(), relative)
 
@@ -120,7 +122,7 @@ class ProductAlphaTests(unittest.TestCase):
             1,
         )
 
-    def test_duplicate_counter_guard_rejects_ambiguous_assets(self) -> None:
+    def test_static_asset_guards_reject_ambiguous_state(self) -> None:
         with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
             build_module.prepare_static_asset("pilot-lab.html", b"no counter")
         with self.assertRaisesRegex(ValueError, "exactly one canonical state"):
@@ -128,8 +130,20 @@ class ProductAlphaTests(unittest.TestCase):
                 "pilot-lab.html",
                 build_module.PILOT_LAB_DUPLICATE_COUNTER_BUG * 2,
             )
+        source_index = (
+            self.root / "software" / "product_alpha" / "index.html"
+        ).read_bytes()
+        packaged = build_module.prepare_static_asset(
+            "index.html", source_index, "distributed-information"
+        )
+        self.assertIn(
+            b'<meta name="principia-route" content="distributed-information">',
+            packaged,
+        )
+        with self.assertRaisesRegex(ValueError, "route marker must occur exactly once"):
+            build_module.prepare_static_asset("index.html", b"unchanged")
         self.assertEqual(
-            build_module.prepare_static_asset("index.html", b"unchanged"),
+            build_module.prepare_static_asset("model-adapters.js", b"unchanged"),
             b"unchanged",
         )
 
@@ -140,6 +154,7 @@ class ProductAlphaTests(unittest.TestCase):
         self.assertEqual(payload["contract"], "principia-product-alpha-route/0.1")
         self.assertEqual(set(payload["learner_steps"]), {"observe", "map", "model", "diagnose", "redesign"})
         self.assertEqual(len(payload["canonical_sources"]), 4)
+        self.assertEqual(payload["model"]["adapter"], "thermal-cabinet-v1")
         self.assertFalse(payload["atlas"]["live"])
         self.assertEqual(payload["atlas"]["references"][0]["revision"], 2)
         self.assertFalse(payload["product_boundaries"]["external_network_required"])
@@ -148,7 +163,7 @@ class ProductAlphaTests(unittest.TestCase):
         source_root = self.root / "software" / "product_alpha"
         combined = "\n".join(
             (source_root / name).read_text(encoding="utf-8")
-            for name in ("index.html", "facilitator.html", "pilot-lab.html")
+            for name in ("index.html", "model-adapters.js", "facilitator.html", "pilot-lab.html")
         )
         self.assertNotIn("https://", combined)
         self.assertNotIn("http://", combined)
