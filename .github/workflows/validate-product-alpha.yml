@@ -121,3 +121,43 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-source-duplicate-counter:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-source-duplicate-counter'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out duplicate counter branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-source-duplicate-counter
+          fetch-depth: 0
+      - name: Apply bounded source correction
+        run: |
+          if grep -q 'state.duplicates+=1;' software/product_alpha/pilot-lab.html && \
+             ! grep -q 'PILOT_LAB_DUPLICATE_COUNTER_BUG' software/product_alpha/build.py; then
+            exit 0
+          fi
+          python3 software/product_alpha/_remove_duplicate_counter_repair.py
+      - name: Validate source and packaged counters
+        run: |
+          python3 -m py_compile software/product_alpha/build.py
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha.py' -v
+          node --test software/tests/test_product_alpha_pilot_lab_state.mjs
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha.py "
+      - name: Commit source duplicate counter correction
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/build.py software/product_alpha/pilot-lab.html software/tests/test_product_alpha.py
+          git commit -m "Keep Pilot Lab duplicate counting correct in source"
+          git push origin HEAD:agent/product-alpha-source-duplicate-counter
