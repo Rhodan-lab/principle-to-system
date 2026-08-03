@@ -359,13 +359,14 @@ def assemble_workspace(
 
     plan.combined.parent.mkdir(parents=True, exist_ok=True)
     plan.intake.parent.mkdir(parents=True, exist_ok=True)
-    with plan.combined.open("xb") as stream:
-        stream.write(plan.combined_bytes)
     try:
+        with plan.combined.open("xb") as stream:
+            stream.write(plan.combined_bytes)
         with plan.intake.open("x", encoding="utf-8") as stream:
             stream.write(intake_text)
     except Exception:
         plan.combined.unlink(missing_ok=True)
+        plan.intake.unlink(missing_ok=True)
         raise
     return report
 
