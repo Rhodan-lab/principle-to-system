@@ -94,13 +94,18 @@ test("thermal chart summary remains available through the adapter boundary",()=>
   });
 });
 
-test("model chart exposes a route-driven title and dynamic description",()=>{
+test("model chart exposes route-driven titles and a dynamic description",()=>{
+  const adapterSource=readFileSync(resolve(here,"../product_alpha/model-adapters.js"),"utf8");
+  const refrigeratorRoute=readFileSync(resolve(here,"../product_alpha/routes/refrigerator.json"),"utf8");
+  const informationRoute=readFileSync(resolve(here,"../product_alpha/routes/distributed-information.json"),"utf8");
   assert.match(html,/id="chart"[^>]+aria-labelledby="chartTitle chartDescription"/);
   assert.match(html,/<title id="chartTitle">Predicted model response<\/title>/);
   assert.match(html,/<script src="model-adapters\.js"><\/script>/);
   assert.match(html,/adapter\.describeChart\(route\.model,result\)/);
   assert.match(html,/adapter\.draw\(route\.model,result,q\("#chart"\),description\)/);
-  assert.match(readFileSync(resolve(here,"../product_alpha/model-adapters.js"),"utf8"),/Predicted cabinet temperature/);
+  assert.match(adapterSource,/esc\(model\.chart\.title\)/);
+  assert.match(refrigeratorRoute,/"title": "Predicted cabinet temperature"/);
+  assert.match(informationRoute,/"title": "Predicted queue response"/);
   assert.doesNotMatch(html,/id="chart"[^>]+aria-label="Predicted cabinet temperature"/);
 });
 
