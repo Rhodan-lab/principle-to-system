@@ -36,6 +36,7 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
             scripts = SCRIPT_PATTERN.findall(html)
             self.assertEqual(len(scripts), 1)
             learner_script = scripts[0]
+            adapter_script = (output / "model-adapters.js").read_text(encoding="utf-8")
             route = json.loads(
                 (output / "data" / "refrigerator.json").read_text(encoding="utf-8")
             )
@@ -46,12 +47,14 @@ class ProductAlphaLearnerRuntimeTests(unittest.TestCase):
         self.assertIn("function hideModelResult", learner_script)
         self.assertIn('addEventListener("change"', learner_script)
         self.assertIn("function displayedTrend", learner_script)
-        self.assertIn("points.at(-1).t", learner_script)
-        self.assertIn("points[0].t", learner_script)
-        self.assertNotIn('trend=end<start?"falls"', learner_script)
+        self.assertIn("modelAdapter().validate", learner_script)
+        self.assertIn("points.at(-1).t", adapter_script)
+        self.assertIn("points[0].t", adapter_script)
+        self.assertNotIn('trend=end<start?"falls"', adapter_script)
 
         harness = rf"""
 const assert = require("node:assert/strict");
+{adapter_script}
 const routeData = {json.dumps(route, ensure_ascii=False, separators=(',', ':'))};
 const elements = new Map();
 function element(selector) {{
@@ -126,8 +129,10 @@ function invalidateFrom(input) {{
   assert.equal(element("#result").textContent, "");
   assert.equal(predictions.some(item => item.checked), false);
 }}
+const routeMarker = {{ content: "refrigerator" }};
 global.document = {{
   querySelector(selector) {{
+    if (selector === 'meta[name="principia-route"]') return routeMarker;
     if (selector === 'input[name="model-prediction"]:checked') {{
       return predictions.find(item => item.checked) || null;
     }}
