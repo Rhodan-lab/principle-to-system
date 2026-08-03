@@ -1,0 +1,143 @@
+{
+  "id": "distributed-information",
+  "title": "Why retries can make a slow service collapse",
+  "subtitle": "Follow requests, queues, capacity, feedback, failure, and redesign through a distributed information service.",
+  "sources": {
+    "system": "system-dossiers/web-service-request.md",
+    "failure": "failure-atlas/retry-storm-queue-collapse.md",
+    "investigation": "investigations/queue-delay-near-capacity.md",
+    "design": "design-challenges/resilient-school-information-service.md"
+  },
+  "failure_section": "4. Amplifying mechanism",
+  "investigation_section": "10. Model revision",
+  "design_section": "3. Requirements and success measures",
+  "steps": [
+    {
+      "id": "observe",
+      "prompt": "Which visible result could be caused by several hidden stages rather than one slow server?"
+    },
+    {
+      "id": "map",
+      "prompt": "Choose the service boundary. Where do requests, responses, queues, state, and control information cross it?"
+    },
+    {
+      "id": "model",
+      "prompt": "Predict what happens to delay and backlog as offered load approaches or exceeds service capacity."
+    },
+    {
+      "id": "diagnose",
+      "prompt": "Distinguish a simple capacity shortage from a retry feedback loop that amplifies the original slowdown."
+    },
+    {
+      "id": "redesign",
+      "prompt": "Preserve critical public information under load while balancing freshness, accessibility, privacy, reliability, and operational complexity."
+    }
+  ],
+  "model": {
+    "adapter": "queue-delay-fluid-v1",
+    "activity_title": "Interactive queue model",
+    "run_label": "Run model",
+    "equation": "λ_offered = λ_external(1 + p_retry); ρ = λ_offered / μ; dB/dt = max(0, λ_offered - μ)",
+    "prediction": {
+      "legend": "Before running the model, predict the service response.",
+      "error": "Choose a queue-response prediction before running the model.",
+      "initial_message": "Choose a response, then run the model.",
+      "ready_message": "Run the model to compare this prediction.",
+      "choices": [
+        {
+          "value": "stable",
+          "label": "Delay stays close to one service time."
+        },
+        {
+          "value": "sharp-growth",
+          "label": "Delay or backlog grows sharply near or above capacity."
+        },
+        {
+          "value": "retries-reduce-load",
+          "label": "Retries always reduce offered load."
+        }
+      ]
+    },
+    "parameters": [
+      {
+        "id": "external_arrival_rate_rps",
+        "label": "External arrival rate",
+        "unit": "requests/s",
+        "type": "range",
+        "minimum": 1,
+        "maximum": 15,
+        "step": 0.5
+      },
+      {
+        "id": "service_rate_rps",
+        "label": "Service capacity",
+        "unit": "requests/s",
+        "type": "range",
+        "minimum": 2,
+        "maximum": 20,
+        "step": 0.5
+      },
+      {
+        "id": "retry_fraction",
+        "label": "Retry fraction",
+        "unit": "fraction",
+        "type": "range",
+        "minimum": 0,
+        "maximum": 1,
+        "step": 0.05
+      },
+      {
+        "id": "queue_capacity_requests",
+        "label": "Queue capacity",
+        "unit": "requests",
+        "type": "range",
+        "minimum": 5,
+        "maximum": 200,
+        "step": 5
+      },
+      {
+        "id": "observation_seconds",
+        "label": "Observation duration",
+        "unit": "s",
+        "type": "range",
+        "minimum": 10,
+        "maximum": 120,
+        "step": 10
+      }
+    ],
+    "defaults": {
+      "external_arrival_rate_rps": 7.5,
+      "service_rate_rps": 10,
+      "retry_fraction": 0.1,
+      "queue_capacity_requests": 50,
+      "observation_seconds": 30
+    },
+    "limits": {
+      "external_arrival_rate_rps": [1, 15],
+      "service_rate_rps": [2, 20],
+      "retry_fraction": [0, 1],
+      "queue_capacity_requests": [5, 200],
+      "observation_seconds": [10, 120]
+    },
+    "chart": {
+      "title": "Predicted queue response"
+    },
+    "limitations": [
+      "The model treats rates as averages and does not simulate burst distributions or several dependent queues.",
+      "The mean-delay relation is shown only below capacity and depends on its stated queueing assumptions.",
+      "Synthetic results do not predict a specific website, API, network, or school service."
+    ]
+  },
+  "challenge": {
+    "question": "A dependency slows, clients time out together, retries increase offered load, and the queue keeps growing after some capacity returns. What is the best first diagnosis?",
+    "options": [
+      "The service only needs an unlimited queue so no request is rejected.",
+      "A retry feedback loop is amplifying the slowdown; retry ownership, backoff, deadlines, and queue bounds must be examined.",
+      "Low average utilization proves that the user-facing service is healthy.",
+      "The original operations definitely failed because clients timed out."
+    ],
+    "correct_index": 1,
+    "explanation": "A timeout does not prove that the original work stopped. Synchronized retries can increase offered load above degraded capacity, extend queues, and create a positive-feedback collapse."
+  },
+  "atlas_references": []
+}
