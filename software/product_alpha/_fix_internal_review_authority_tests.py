@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Align generated authority tests with semantic command and wording boundaries."""
+"""Align generated authority artifacts with semantic and formatting boundaries."""
 from pathlib import Path
 
-PATH = Path("software/tests/test_product_alpha_state_authority.py")
-text = PATH.read_text(encoding="utf-8")
+TEST_PATH = Path("software/tests/test_product_alpha_state_authority.py")
+test_text = TEST_PATH.read_text(encoding="utf-8")
 
 old_authority = '        self.assertIn("does not authorize", lowered)\n'
 new_authority = (
@@ -11,13 +11,23 @@ new_authority = (
     '            "does not authorize" in lowered or "do not authorize" in lowered\n'
     '        )\n'
 )
-if text.count(old_authority) != 1:
+if test_text.count(old_authority) != 1:
     raise SystemExit("optional-authority assertion anchor changed")
-text = text.replace(old_authority, new_authority, 1)
+test_text = test_text.replace(old_authority, new_authority, 1)
 
 old_local_command = '            self.assertNotIn("run_pilot.py --open", text)\n'
-if text.count(old_local_command) != 1:
+if test_text.count(old_local_command) != 1:
     raise SystemExit("local inspection command assertion anchor changed")
-text = text.replace(old_local_command, "", 1)
+test_text = test_text.replace(old_local_command, "", 1)
+TEST_PATH.write_text(test_text, encoding="utf-8")
 
-PATH.write_text(text, encoding="utf-8")
+REPORT_PATH = Path("reports/product-alpha-0-1-pilot-summary.md")
+report_text = REPORT_PATH.read_text(encoding="utf-8")
+for line in (
+    "**Status:** superseded as active decision authority  \n",
+    "**Current authority:** `reports/product-alpha-0-1-multi-perspective-review.json`  \n",
+):
+    if report_text.count(line) != 1:
+        raise SystemExit(f"report whitespace anchor changed: {line!r}")
+    report_text = report_text.replace(line, line.rstrip() + "\n", 1)
+REPORT_PATH.write_text(report_text, encoding="utf-8")
