@@ -202,3 +202,24 @@ test("validation errors are announced, marked, and focused", () => {
   assert.match(html, /kind==="error"\?"assertive":"polite"/);
   assert.match(html, /a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible/);
 });
+
+test("clipboard failure restores the download fallback", () => {
+  assert.match(html, /id="download" type="submit">Validate and download JSONL<\/button>/);
+  const source = html.match(
+    /async function copyRecord\(\)\{([\s\S]*?)\}\nfunction resetForm/,
+  );
+  assert.ok(source, "copyRecord source must be testable");
+  const body = source[1];
+  const cancelAt = body.indexOf("cancelCapture(captureState)");
+  const applyAt = body.indexOf("applyCaptureState()", cancelAt);
+  const statusAt = body.indexOf("Clipboard access is unavailable", cancelAt);
+  const focusAt = body.indexOf('q("#download").focus()', cancelAt);
+
+  assert.notEqual(cancelAt, -1);
+  assert.notEqual(applyAt, -1);
+  assert.notEqual(statusAt, -1);
+  assert.notEqual(focusAt, -1);
+  assert.ok(cancelAt < applyAt, "failed copy must release the reservation first");
+  assert.ok(applyAt < statusAt, "controls must be re-enabled before fallback guidance");
+  assert.ok(statusAt < focusAt, "fallback guidance must be set before focus moves");
+});
