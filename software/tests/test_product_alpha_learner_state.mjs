@@ -136,3 +136,53 @@ test("model and diagnosis reject empty choices before recording completion",()=>
   assert.ok(challengeSource[1].indexOf("reportChoiceError(")<challengeSource[1].indexOf("markDiagnosisChecked(session)"));
   assert.match(challengeSource[1],/clearChoiceError\("#diagnosisChoice","#feedback"\)/);
 });
+
+test("learner availability distinguishes loading, ready, and error",()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(api.learnerAvailability("loading"))),{
+    busy:true,
+    disabled:true,
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(api.learnerAvailability("ready"))),{
+    busy:false,
+    disabled:false,
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(api.learnerAvailability("error"))),{
+    busy:false,
+    disabled:true,
+  });
+  assert.throws(()=>api.learnerAvailability("unknown"),/invalid learner availability/);
+});
+
+test("learner route fails closed when route data cannot load",()=>{
+  assert.match(html,/<h1 id="title" tabindex="-1">Loading route…<\/h1>/);
+  assert.match(html,/id="stepStatus" role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html,/a\[aria-disabled="true"\]\{pointer-events:none;opacity:\.55\}/);
+  assert.match(html,/function applyLearnerAvailability\(state\)/);
+  assert.match(html,/document\.querySelectorAll\('a\[href\^="#"\]'\)/);
+  assert.match(html,/q\("#note"\)\.disabled=view\.disabled/);
+  assert.match(html,/q\("#evidence"\)\.disabled=view\.disabled/);
+
+  const initSource=html.match(/async function init\(\)\{([\s\S]*?)\}\nif\(typeof document/);
+  assert.ok(initSource,"init source must be testable");
+  const initBody=initSource[1];
+  const loadingAt=initBody.indexOf('applyLearnerAvailability("loading")');
+  const fetchAt=initBody.indexOf('await fetch("data/refrigerator.json"');
+  const handlerAt=initBody.indexOf('q("#note").addEventListener');
+  const readyAt=initBody.indexOf('applyLearnerAvailability("ready")');
+  const stepAt=initBody.indexOf("step(",readyAt);
+  assert.ok(loadingAt<fetchAt,"learner controls must lock before route loading begins");
+  assert.ok(handlerAt<readyAt,"learner controls become ready only after handlers install");
+  assert.ok(readyAt<stepAt,"the initial step renders only after controls become ready");
+
+  const failureSource=html.match(/function reportLearnerLoadFailure\(error\)\{([\s\S]*?)\}\nasync function init/);
+  assert.ok(failureSource,"load failure source must be testable");
+  const failureBody=failureSource[1];
+  const errorAt=failureBody.indexOf('applyLearnerAvailability("error")');
+  const announceAt=failureBody.indexOf('setAttribute("aria-live","assertive")');
+  const titleAt=failureBody.indexOf('document.title="Product Alpha could not load"');
+  const focusAt=failureBody.indexOf('title.focus()');
+  assert.ok(errorAt<announceAt,"controls must disable before the error is announced");
+  assert.ok(announceAt<titleAt,"the live error must precede the document-title update");
+  assert.ok(titleAt<focusAt,"the failure title must be updated before focus moves");
+  assert.match(html,/init\(\)\.catch\(reportLearnerLoadFailure\)/);
+});
