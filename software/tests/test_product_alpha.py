@@ -179,7 +179,10 @@ class ProductAlphaTests(unittest.TestCase):
         self.assertIn("cohort-incomplete", asset)
         self.assertIn("recurring-confusion:", asset)
         self.assertIn("application/x-ndjson", asset)
-        self.assertIn("product-alpha-pilot-summary.md", asset)
+        self.assertIn("pilotLabExportName", asset)
+        self.assertIn("product-alpha-${slug}-pilot-summary.md", asset)
+        self.assertIn("product-alpha-${slug}-validated-sessions.jsonl", asset)
+        self.assertNotIn('download("product-alpha-pilot-summary', asset)
         self.assertIn("Refreshing clears the workspace", asset)
 
 
