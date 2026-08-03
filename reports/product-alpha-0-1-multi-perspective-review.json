@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "review_id": "product-alpha-0.1-internal-multi-perspective-2026-08-03",
+  "review_date": "2026-08-03",
+  "product": "Principia Product Alpha 0.1",
+  "route": "refrigerator",
+  "method": "deterministic repository review across product, pedagogy, science, UX, privacy, operations, provenance, and maintainability",
+  "authority": "internal-multi-perspective-review",
+  "decision": {
+    "action": "advance-to-next-product-planning-review",
+    "rationale": "The refrigerator baseline is coherent, bounded, accessible, private, deterministic, and operationally fail-closed across all required internal perspectives. External participant observation is optional research and is not a roadmap gate.",
+    "authorized_next_work": [
+      "select and scope a second system route",
+      "extract reusable route architecture without destabilizing refrigerator",
+      "prototype the second route against the same canonical-content and trust boundaries",
+      "extend Atlas only when the selected route requires new exact-revision evidence"
+    ],
+    "not_authorized": [
+      "claim empirical learning effectiveness",
+      "claim retention or transfer",
+      "claim product-market fit",
+      "claim public production readiness",
+      "silently weaken privacy, provenance, or deterministic-build boundaries"
+    ]
+  },
+  "perspectives": [
+    {
+      "id": "product-strategy",
+      "status": "pass",
+      "summary": "The product has a clear learner-facing value proposition, one complete end-to-end route, explicit boundaries, and a separable trust substrate.",
+      "evidence": [
+        "README.md",
+        "PRODUCT_STATE.md",
+        "software/product_alpha/index.html"
+      ],
+      "strengths": [
+        "one coherent Observe-Map-Model-Diagnose-Redesign journey",
+        "canonical content remains authoritative",
+        "refrigerator can remain a stable baseline while planning the next route"
+      ],
+      "residual_risk": "A second route may expose hidden refrigerator-specific assumptions in the product architecture.",
+      "next_action": "Use the second route to test reuse rather than adding more readiness abstractions."
+    },
+    {
+      "id": "pedagogy",
+      "status": "pass",
+      "summary": "The interaction sequence requires prediction, mechanism, model interpretation, diagnosis, evidence boundaries, and trade-off reasoning rather than passive reading.",
+      "evidence": [
+        "software/product_alpha/index.html",
+        "software/tests/test_product_alpha_learner_state.mjs",
+        "software/tests/test_product_alpha_learner_runtime.py"
+      ],
+      "strengths": [
+        "prediction is required before model execution",
+        "diagnosis requires an explicit choice before feedback",
+        "learner notes and reasoning state persist only in the active tab"
+      ],
+      "residual_risk": "Internal inspection cannot establish comprehension, retention, transfer, or engagement outcomes.",
+      "next_action": "Preserve the mechanism-first sequence and compare its implementation across the second route."
+    },
+    {
+      "id": "scientific-integrity",
+      "status": "pass",
+      "summary": "The route uses a bounded thermal model, makes assumptions and limitations visible, and separates model output from real-system conclusions.",
+      "evidence": [
+        "system-dossiers/refrigerator.md",
+        "investigations/room-cooling.md",
+        "software/product_alpha/index.html"
+      ],
+      "strengths": [
+        "model direction and visible numerical precision are deterministic",
+        "limitations are exposed beside the model",
+        "evidence status is not treated as proof of a physical conclusion"
+      ],
+      "residual_risk": "A minimum model can still be overgeneralized if future route copy weakens the current boundary language.",
+      "next_action": "Require each future route to name assumptions, useful scope, and failure conditions."
+    },
+    {
+      "id": "ux-accessibility",
+      "status": "pass",
+      "summary": "Learner, facilitator, and Pilot Lab surfaces provide keyboard access, visible focus, named controls, live error recovery, accessible tables, and described dynamic graphics.",
+      "evidence": [
+        "software/product_alpha/index.html",
+        "software/product_alpha/facilitator.html",
+        "software/product_alpha/pilot-lab.html"
+      ],
+      "strengths": [
+        "choice errors identify and focus the correction target",
+        "dynamic thermal results include SVG title and description",
+        "loading and failure states disable inert interactions"
+      ],
+      "residual_risk": "Static and harness-based coverage cannot represent every browser and assistive-technology combination.",
+      "next_action": "Reuse the same accessibility contracts in the second route and add targeted regression tests for new interactions."
+    },
+    {
+      "id": "privacy-security",
+      "status": "pass",
+      "summary": "The product is local-first, has no accounts or analytics, avoids browser persistence, binds only to loopback, and fails closed on untrusted host or asset conditions.",
+      "evidence": [
+        "software/product_alpha/LOOPBACK_SECURITY.md",
+        "software/product_alpha/run_pilot.py",
+        "software/tests/test_product_alpha_pilot_smoke.py"
+      ],
+      "strengths": [
+        "exact loopback Host validation",
+        "no-store, CSP, framing, resource-isolation, and permissions headers",
+        "no automatic upload or repository mutation"
+      ],
+      "residual_risk": "Optional free-text exports can still contain sensitive text if an operator enters it.",
+      "next_action": "Keep free text optional, local, and outside repository authority."
+    },
+    {
+      "id": "operational-reliability",
+      "status": "pass",
+      "summary": "Builds are deterministic, runtime identity is hash-bound, launchers fail closed on drift, and initialization and clipboard failure paths recover explicitly.",
+      "evidence": [
+        "software/product_alpha/build.py",
+        "software/product_alpha/launch_workspace.py",
+        ".github/workflows/validate-product-alpha.yml"
+      ],
+      "strengths": [
+        "deterministic package verification",
+        "build-bound local launcher and recorder",
+        "focused JavaScript, Python, runtime, smoke, and clean-repository CI"
+      ],
+      "residual_risk": "The current package remains a local alpha rather than a hosted multi-user service.",
+      "next_action": "Prove route reuse before introducing hosting, accounts, or production infrastructure."
+    },
+    {
+      "id": "evidence-provenance",
+      "status": "pass",
+      "summary": "Canonical Principia sources and exact-revision Atlas references remain separate, explicit, advisory, and locally packaged.",
+      "evidence": [
+        "contracts/principia-atlas-status-authority.json",
+        "integration/principia-atlas/bridge-manifest.json",
+        "software/product_alpha/build.py"
+      ],
+      "strengths": [
+        "no live Atlas dependency",
+        "no status inheritance",
+        "canonical source extraction is deterministic"
+      ],
+      "residual_risk": "A new route may need evidence entities not present in the accepted Atlas baseline.",
+      "next_action": "Expand Atlas only from a concrete next-route evidence requirement."
+    },
+    {
+      "id": "maintainability-governance",
+      "status": "pass",
+      "summary": "The repository has explicit authority files, bounded workflows, extensive regression coverage, and a clear rule against recursive readiness work without product need.",
+      "evidence": [
+        "PRODUCT_STATE.md",
+        "PROJECT_STATE.md",
+        "software/tests/test_product_alpha_state_authority.py"
+      ],
+      "strengths": [
+        "current product authority is separate from historical phase history",
+        "changes are protected by focused CI",
+        "GitHub issues are not required for execution"
+      ],
+      "residual_risk": "Governance documents can become stale when implementation moves quickly.",
+      "next_action": "Keep one concise current-state authority and update it only for material product decisions."
+    }
+  ],
+  "claim_boundary": {
+    "may_claim": [
+      "internally validated product coherence",
+      "deterministic and fail-closed local operation",
+      "bounded scientific and provenance design",
+      "tested accessibility, privacy, and security contracts",
+      "authorization to begin next-product planning"
+    ],
+    "does_not_establish": [
+      "empirical learning effectiveness",
+      "retention",
+      "transfer",
+      "engagement outcomes",
+      "product-market fit",
+      "public production readiness"
+    ]
+  }
+}
