@@ -144,11 +144,14 @@ jobs:
             software.tests.test_product_alpha_route_identity \
             software.tests.test_product_alpha_route_aware_evidence -v
           git diff --check
-          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/tests/test_product_alpha_workspace_launch.py "
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/tests/test_product_alpha.py software/tests/test_product_alpha_workspace_launch.py "
       - name: Commit regression fixes
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add software/product_alpha/build.py software/tests/test_product_alpha_workspace_launch.py
+          git add \
+            software/product_alpha/build.py \
+            software/tests/test_product_alpha.py \
+            software/tests/test_product_alpha_workspace_launch.py
           git commit -m "Fix route-aware evidence import regressions"
           git push origin HEAD:agent/product-alpha-route-aware-evidence
