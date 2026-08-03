@@ -115,6 +115,7 @@ jobs:
             exit 0
           fi
           python3 software/product_alpha/_apply_internal_review_authority.py
+          python3 software/product_alpha/_fix_internal_review_authority_tests.py
       - name: Validate bounded authority update
         run: |
           python3 software/product_alpha/evaluation/validate_internal_review.py check
