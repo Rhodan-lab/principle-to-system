@@ -69,6 +69,24 @@ class ProductAlphaReviewOutputPresenceTests(unittest.TestCase):
 
             self.assertTrue(json_path.is_symlink())
 
+    def test_output_prefix_leaf_symlink_does_not_redirect_pair(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            private = root / "private"
+            private.mkdir()
+            external = root / "external-prefix"
+            prefix = private / "refrigerator-review"
+            try:
+                prefix.symlink_to(external)
+            except OSError as exc:
+                self.skipTest(f"symlinks unavailable: {exc}")
+
+            json_path, markdown_path = prepare_review.review_output_paths(prefix)
+
+            self.assertEqual(json_path, private / "refrigerator-review.json")
+            self.assertEqual(markdown_path, private / "refrigerator-review.md")
+            self.assertNotEqual(json_path, external.with_suffix(".json"))
+
     def test_writer_refuses_broken_temporary_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
