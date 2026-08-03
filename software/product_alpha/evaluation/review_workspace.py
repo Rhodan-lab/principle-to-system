@@ -63,6 +63,7 @@ def _validate_intake_authority_boundary(intake: dict[str, Any]) -> None:
 def _source_records(
     incoming: Path,
     expected_build_id: str,
+    expected_route_id: str,
 ) -> list[dict[str, str]]:
     if not incoming.is_dir():
         raise ValueError("incoming session directory is missing")
@@ -87,7 +88,11 @@ def _source_records(
         if not isinstance(value, dict):
             raise ValueError(f"{path.name}: session export must contain one JSON object")
         try:
-            session = verify_cohort.pilot_summary.validate_session(value, 1)
+            session = verify_cohort.pilot_summary.validate_session(
+                value,
+                1,
+                expected_route_id,
+            )
         except ValueError as exc:
             detail = str(exc).removeprefix("line 1: ")
             raise ValueError(f"{path.name}: {detail}") from exc
@@ -198,7 +203,11 @@ def verify_workspace_intake(
         raise ValueError("combined cohort SHA-256 does not match intake manifest")
 
     expected_sources = _intake_source_records(intake.get("source_records"))
-    actual_sources = _source_records(incoming, manifest["pilot_build_id"])
+    actual_sources = _source_records(
+        incoming,
+        str(manifest["pilot_build_id"]),
+        str(manifest["route_id"]),
+    )
     if actual_sources != expected_sources:
         raise ValueError("raw incoming exports do not match intake manifest hashes")
 
