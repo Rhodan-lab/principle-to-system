@@ -164,20 +164,20 @@ class ProductAlphaHandoffTests(unittest.TestCase):
             workspace = decided_workspace(Path(directory))
             prefix = workspace / "handoff" / "repository-candidate"
             json_path, markdown_path = prepare_handoff._output_paths(prefix)
-            real_replace = prepare_handoff.os.replace
+            real_publish = prepare_review.publish_exclusive
             calls = 0
 
-            def fail_second_replace(source: Path, destination: Path) -> None:
+            def fail_second_publish(source: Path, destination: Path) -> None:
                 nonlocal calls
                 calls += 1
                 if calls == 2:
                     raise OSError("forced second publication failure")
-                real_replace(source, destination)
+                real_publish(source, destination)
 
             with mock.patch.object(
-                prepare_handoff.os,
-                "replace",
-                side_effect=fail_second_replace,
+                prepare_review,
+                "publish_exclusive",
+                side_effect=fail_second_publish,
             ):
                 with self.assertRaisesRegex(OSError, "forced second publication"):
                     prepare_handoff.write_handoff(workspace, prefix)
