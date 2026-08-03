@@ -1,6 +1,6 @@
 # Principia Product Alpha 0.2
 
-Product Alpha is a local-first learner application built from canonical Principia Markdown and JSON. It now supports two independently buildable routes through one route-driven learner shell:
+Product Alpha is a local-first learner application built from canonical Principia Markdown and JSON. It supports two independently buildable routes through one route-driven learner shell:
 
 - `refrigerator` using `thermal-cabinet-v1`;
 - `distributed-information` using `queue-delay-fluid-v1`.
@@ -34,7 +34,8 @@ Route configuration or a model adapter owns:
 - model equations and execution;
 - summaries and output names;
 - chart title and description;
-- model limitations.
+- model limitations;
+- route-specific evaluation rubric.
 
 ## Model-adapter boundary
 
@@ -110,6 +111,15 @@ build-manifest.json
 
 The manifest and Pilot build identity bind the exact packaged bytes.
 
+The software-to-evidence identity mapping is:
+
+| Software route | Evidence route |
+|---|---|
+| `refrigerator` | `refrigerator-v1` |
+| `distributed-information` | `distributed-information-v1` |
+
+For each package, the builder binds both `evaluation/session-template.json` and `evaluation/rubric.json` to the matching evidence route. It rejects a rubric-route mismatch. The facilitator recorder therefore exports the packaged route rather than accepting a manual route choice.
+
 ## Validate both routes
 
 ```bash
@@ -122,6 +132,34 @@ python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
 The loopback launcher binds only to `127.0.0.1`, rejects untrusted Host headers, uses no-store and restrictive response headers, verifies the route payload and manifest, and requires the local adapter asset.
+
+## Route-aware private workspaces
+
+Prepare a refrigerator workspace:
+
+```bash
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/refrigerator-observation \
+  --route refrigerator
+```
+
+Prepare a distributed-information workspace:
+
+```bash
+python3 software/product_alpha/prepare_pilot.py \
+  --workspace /private/path/distributed-information-observation \
+  --route distributed-information
+```
+
+Launch either prepared workspace with the same command:
+
+```bash
+python3 software/product_alpha/launch_workspace.py \
+  --workspace /private/path/<route>-observation \
+  --open
+```
+
+The workspace manifest stores the evidence route. The launcher maps it back to the matching software route, rebuilds that route, and refuses to open unless the deterministic build identity matches the workspace. Intake validation rejects unknown routes, route drift, mixed-route cohorts, mixed-build cohorts, duplicates, malformed records, and personal-data fields.
 
 ## Product authorities
 
@@ -144,17 +182,19 @@ software/product_alpha/route-contracts/distributed-information.json
 status: implemented-local-alpha
 ```
 
-## Current evidence-record limitation
+## Current verification boundary
 
-Learner packaging and launch are route-aware. The optional facilitator and evidence-record chain still contains a refrigerator-specific session-template route ID.
+Route identity is now bound through learner packaging, the facilitator recorder, Pilot Lab, summaries, workspace intake, and workspace launch. Existing refrigerator records remain valid.
 
-Until that is corrected, do not treat distributed-information recorder exports as route-integrity-complete evidence. The next product milestone is:
+The remaining test gap is a full distributed-information fixture through the unchanged private review, decision, receipt, and handoff chain. Lower-level route tests already cover package identity, rubric identity, session validation, mixed-route rejection, summary identity, route-specific workspace paths, and route-bound launch.
+
+The next concrete milestone is:
 
 ```text
-make-facilitator-and-evidence-records-route-aware
+prove-distributed-information-evidence-chain-end-to-end
 ```
 
-This limitation does not block local learner-route development or inspection. It prevents optional evidence from being mislabeled.
+This means adding a deterministic synthetic integration fixture. It does not mean inventing real learner evidence.
 
 ## Optional field observation
 
@@ -162,7 +202,7 @@ Field observation is optional research, not a roadmap gate or release prerequisi
 
 [`PILOT.md`](PILOT.md) documents the repository-external workspace, recorder, Pilot Lab, aggregation, review, decision, and handoff tools. Those tools retain privacy, non-overwrite, hash-binding, and no-repository-mutation boundaries.
 
-They must not collect identifying information, and they must not be used for distributed-information evidence until route identity is bound through the full record chain.
+Both routes may use the optional tooling, but one workspace must contain exactly one route and one build.
 
 ## Safety and privacy boundaries
 
@@ -180,6 +220,8 @@ The current package may support claims about:
 - two buildable and loopback-runnable learner routes;
 - reusable model-adapter architecture;
 - deterministic route-bound packaging;
+- route-specific evaluation rubrics;
+- route-bound local evidence records and workspaces;
 - local-first privacy and security contracts;
 - tested prediction, diagnosis, accessibility, and failure-recovery behavior.
 
