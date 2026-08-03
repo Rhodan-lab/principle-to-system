@@ -171,7 +171,7 @@ def load_config(root: Path, route: str) -> dict[str, Any]:
     if not config_path.is_file():
         raise FileNotFoundError(f"missing route config: {config_path.relative_to(root)}")
     config = json.loads(config_path.read_text(encoding="utf-8"))
-    required = {"id", "title", "sources", "steps", "model", "atlas_references"}
+    required = {"id", "title", "sources", "steps", "model", "evaluation", "atlas_references"}
     missing = sorted(required - config.keys())
     if missing:
         raise ValueError(f"route config missing fields: {', '.join(missing)}")
@@ -182,6 +182,16 @@ def load_config(root: Path, route: str) -> dict[str, Any]:
         raise ValueError("Product Alpha route model adapter is unsupported")
     if not isinstance(model.get("parameters"), list) or not model["parameters"]:
         raise ValueError("Product Alpha route model parameters are required")
+    evaluation = config.get("evaluation")
+    if not isinstance(evaluation, dict):
+        raise ValueError("Product Alpha route evaluation config is required")
+    rubric_path = evaluation.get("rubric")
+    if (
+        not isinstance(rubric_path, str)
+        or not rubric_path.startswith("software/product_alpha/evaluation/")
+        or not (root / rubric_path).is_file()
+    ):
+        raise ValueError("Product Alpha route rubric path is invalid")
     return config
 
 
@@ -284,6 +294,13 @@ def _replace_once(data: bytes, old: bytes, new: bytes, label: str) -> bytes:
 def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_ROUTE) -> bytes:
     """Apply bounded packaging repairs and reject ambiguous asset states."""
     evidence_route = route_identity.evidence_route_id(route)
+    if relative_path == "evaluation/rubric.json":
+        rubric = json.loads(data.decode("utf-8"))
+        if rubric.get("route_id") != evidence_route:
+            raise ValueError(
+                f"rubric route_id must be {evidence_route!r} for route {route!r}"
+            )
+        return data
     if relative_path == "index.html":
         marker = b'<meta name="principia-route" content="refrigerator">'
         replacement = f'<meta name="principia-route" content="{route}">'.encode("utf-8")
@@ -326,9 +343,15 @@ def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_R
 
 def copy_static_files(root: Path, output: Path, route: str = DEFAULT_ROUTE) -> list[dict[str, str]]:
     assets = root / "software" / "product_alpha"
+    config = load_config(root, route)
+    rubric_source = root / config["evaluation"]["rubric"]
     copied: list[dict[str, str]] = []
     for relative_path in (*STATIC_ASSETS, *EVALUATION_ASSETS):
-        source = assets / relative_path
+        source = (
+            rubric_source
+            if relative_path == "evaluation/rubric.json"
+            else assets / relative_path
+        )
         if not source.is_file():
             raise FileNotFoundError(
                 f"missing Product Alpha asset: {source.relative_to(root)}"

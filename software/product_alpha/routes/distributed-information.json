@@ -113,11 +113,26 @@
       "observation_seconds": 30
     },
     "limits": {
-      "external_arrival_rate_rps": [1, 15],
-      "service_rate_rps": [2, 20],
-      "retry_fraction": [0, 1],
-      "queue_capacity_requests": [5, 200],
-      "observation_seconds": [10, 120]
+      "external_arrival_rate_rps": [
+        1,
+        15
+      ],
+      "service_rate_rps": [
+        2,
+        20
+      ],
+      "retry_fraction": [
+        0,
+        1
+      ],
+      "queue_capacity_requests": [
+        5,
+        200
+      ],
+      "observation_seconds": [
+        10,
+        120
+      ]
     },
     "chart": {
       "title": "Predicted queue response"
@@ -139,5 +154,8 @@
     "correct_index": 1,
     "explanation": "A timeout does not prove that the original work stopped. Synchronized retries can increase offered load above degraded capacity, extend queues, and create a positive-feedback collapse."
   },
-  "atlas_references": []
+  "atlas_references": [],
+  "evaluation": {
+    "rubric": "software/product_alpha/evaluation/rubrics/distributed-information-v1.json"
+  }
 }
