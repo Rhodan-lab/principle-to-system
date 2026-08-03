@@ -3,7 +3,7 @@ title: "Principia current product state"
 slug: principia-current-product-state
 domain: product
 status: reviewed
-artifact_revision: 9
+artifact_revision: 10
 release_status: alpha
 prerequisites: []
 connections: [product-alpha-refrigerator, product-alpha-internal-multi-perspective-review, product-alpha-0-2-route-selection, product-alpha-distributed-information]
@@ -14,10 +14,10 @@ content_license: CC-BY-4.0
 # Principia current product state
 
 **Last updated:** 2026-08-03
-**Active milestone:** Product Alpha 0.2 — two-route local alpha with route-bound evidence and rubrics
+**Active milestone:** Product Alpha 0.2 — two-route local alpha with route-bound evidence, rubrics, and verified distributed evidence chain
 **Active repository:** `Rhodan-lab/principle-to-system`
 **Supporting repository:** `Rhodan-lab/Atlas`
-**Decision authority:** internal multi-perspective review, validated route selection, implemented route contract, route-aware evidence tests, and focused Product Alpha CI
+**Decision authority:** internal multi-perspective review, validated route selection, implemented route contract, route-aware evidence tests, distributed synthetic integration coverage, and focused Product Alpha CI
 
 ## Current decision
 
@@ -43,6 +43,7 @@ baseline route: refrigerator
 second route: distributed-information
 learner architecture: two-route local alpha
 evidence architecture: route-bound local records
+distributed evidence chain: verified with deterministic synthetic integration fixtures
 ```
 
 External participant observation remains optional research. It is not a roadmap gate, release prerequisite, or authority requirement. GitHub issues are not part of the current execution workflow.
@@ -180,6 +181,8 @@ The project may claim:
 - route-specific model controls, diagnosis, and evaluation rubrics;
 - route-bound facilitator records, Pilot Lab summaries, and repository-external workspaces;
 - rejection of unknown, mismatched, or mixed route identities in the evidence intake path;
+- deterministic synthetic integration coverage from distributed-information workspace preparation through intake, review, decision, receipt, handoff, and verification;
+- route-specific generated workspace documentation and artifact paths;
 - prediction-before-model and diagnosis-before-feedback contracts for both routes;
 - local-first operation without accounts, analytics, browser persistence, cloud storage, or live Atlas calls;
 - preservation of accessibility, privacy, security, and provenance boundaries during route generalization.
@@ -194,6 +197,7 @@ The current evidence does not establish:
 - validated comprehension, retention, transfer, or engagement outcomes;
 - product-market fit;
 - public production readiness;
+- that synthetic integration fixtures are real learner sessions;
 - that internal inspection substitutes for measured human outcomes.
 
 These are claim boundaries, not roadmap blockers.
@@ -218,29 +222,41 @@ The implementation now:
 8. rebuilds the exact software route represented by the workspace before launch;
 9. preserves existing `refrigerator-v1` compatibility.
 
-## Current next action
-
-The remaining verification gap is not another abstraction or a third route. Existing lower-level tests prove route binding at package, session, summary, intake, and workspace-launch boundaries, while the historical review, decision, receipt, and handoff suites still use refrigerator fixtures.
-
-The next concrete repository change should add one distributed-information integration fixture that exercises the unchanged private evidence chain through:
-
-```text
-prepare → collect synthetic fixture records → assemble → review → decision → receipt → handoff → verify
-```
-
-It must prove that every generated artifact preserves `distributed-information-v1`, uses route-specific paths, remains de-identified, and refuses route drift. It must use deterministic synthetic test fixtures only and must not fabricate real learner evidence.
-
-The next milestone is therefore:
+The distributed evidence-chain milestone is also complete:
 
 ```text
 prove-distributed-information-evidence-chain-end-to-end
 ```
 
+A deterministic synthetic fixture now exercises:
+
+```text
+prepare → collect fixture records → assemble → review → decision → receipt → handoff → verify
+```
+
+The test proves that every generated JSON artifact preserves `distributed-information-v1`, generated filenames use the distributed route slug, reviewed distributed confusion tags remain canonical, private notes and session identifiers stay out of the handoff, and route drift is rejected before verified outputs are written. The fixture is test data only and must not be represented as real learner evidence.
+
+## Current execution boundary
+
+No known route-identity, rubric-binding, or distributed evidence-chain defect remains open in the active Product Alpha authority.
+
+The next repository change must be driven by a concrete finding in one of these categories:
+
+- learner or facilitator usability;
+- accessibility;
+- privacy or security;
+- deterministic build or loopback runtime;
+- operator error prevention;
+- a real canonical content or provenance gap revealed by implementation;
+- a measured need from optional observation.
+
+Do not create another abstract readiness layer merely to continue activity. Do not add a third route, expand Atlas, or begin public deployment without a concrete requirement and bounded acceptance criteria.
+
 ## Optional field-evaluation capability
 
 Recorder, Pilot Lab, repository-external workspace, aggregation, review, decision, receipt, and handoff tools remain optional research capability. They are not required for roadmap progress.
 
-Both routes may now use this local evidence tooling without route mislabeling. A refrigerator workspace and a distributed-information workspace remain separate cohorts and cannot be combined.
+Both routes may use this local evidence tooling without route mislabeling. A refrigerator workspace and a distributed-information workspace remain separate cohorts and cannot be combined.
 
 Prepare either route explicitly:
 
@@ -264,7 +280,7 @@ The route uses reviewed canonical Principia material and direct source boundarie
 
 Do not begin these merely because two routes and route-aware records are runnable:
 
-- a third route before the distributed-information evidence chain has one full integration test;
+- a third route without a concrete learner, product, or canonical-content requirement;
 - public production deployment;
 - account systems;
 - behavioral analytics;
