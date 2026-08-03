@@ -182,19 +182,13 @@ software/product_alpha/route-contracts/distributed-information.json
 status: implemented-local-alpha
 ```
 
-## Current verification boundary
+## Verified evidence boundary
 
-Route identity is now bound through learner packaging, the facilitator recorder, Pilot Lab, summaries, workspace intake, and workspace launch. Existing refrigerator records remain valid.
+Route identity is bound through learner packaging, the facilitator recorder, Pilot Lab, summaries, workspace intake, review, human-decision records, receipts, handoff candidates, and workspace launch. Existing refrigerator records remain valid.
 
-The remaining test gap is a full distributed-information fixture through the unchanged private review, decision, receipt, and handoff chain. Lower-level route tests already cover package identity, rubric identity, session validation, mixed-route rejection, summary identity, route-specific workspace paths, and route-bound launch.
+A deterministic synthetic distributed-information fixture exercises the private chain from workspace preparation through assembly, review, decision, receipt, handoff, and verification. It proves route-specific filenames, `distributed-information-v1` propagation, canonical distributed confusion tags, privacy redaction, and fail-closed route-drift handling.
 
-The next concrete milestone is:
-
-```text
-prove-distributed-information-evidence-chain-end-to-end
-```
-
-This means adding a deterministic synthetic integration fixture. It does not mean inventing real learner evidence.
+The fixture is test data only. It is not real learner evidence and does not support a learning-effectiveness claim. No known route-identity, rubric-binding, or distributed evidence-chain defect remains open; further work must respond to a concrete usability, accessibility, privacy, security, determinism, operator-safety, canonical-content, or provenance finding.
 
 ## Optional field observation
 

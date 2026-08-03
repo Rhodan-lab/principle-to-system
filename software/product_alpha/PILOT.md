@@ -119,7 +119,7 @@ They do not authorize another route, public release, SaaS infrastructure, empiri
 
 Lower-level tests cover both route packages, route-specific rubrics, facilitator record identity, Pilot Lab identity, session validation, mixed-route rejection, summary identity, route-specific workspace paths, and route-bound workspace launch.
 
-The next repository verification is one deterministic synthetic distributed-information fixture through preparation, assembly, review, decision, receipt, handoff, and verification. That fixture is test data only and must not be represented as real learner evidence.
+A deterministic synthetic distributed-information fixture now verifies preparation, assembly, review, decision, receipt, handoff, verification, route-specific filenames, privacy redaction, and route-drift rejection. That fixture is test data only and must not be represented as real learner evidence.
 
 ## Claim boundary
 

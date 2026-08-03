@@ -89,7 +89,7 @@ python3 software/product_alpha/evaluation/validate_route_selection.py check
 
 The two-route local alpha supports claims about deterministic packaging, route generalization, route-specific rubrics, local evidence identity, local operation, model boundaries, accessibility contracts, privacy, security, and provenance separation. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, performance of a real distributed service, or public production readiness.
 
-The former milestone `make-facilitator-and-evidence-records-route-aware` is complete. The next concrete verification task is `prove-distributed-information-evidence-chain-end-to-end`: add one deterministic synthetic integration fixture that exercises preparation, intake, review, decision, receipt, handoff, and verification without pretending the fixture is real learner evidence.
+The milestones `make-facilitator-and-evidence-records-route-aware` and `prove-distributed-information-evidence-chain-end-to-end` are complete. A deterministic synthetic fixture now verifies distributed-information preparation, intake, review, decision, receipt, handoff, route-specific filenames, privacy redaction, and route-drift rejection. The fixture is test data, not real learner evidence. Further work is defect-driven; no third route, Atlas expansion, or public deployment is authorized without a concrete requirement.
 
 ## Principia and Atlas
 
