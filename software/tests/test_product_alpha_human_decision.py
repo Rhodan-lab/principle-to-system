@@ -89,7 +89,10 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             binding = record["review_packet_binding"]
             human = record["human_decision"]
 
-            self.assertEqual(report["decision"], "human-decision-record-created")
+            self.assertEqual(report["decision"], "optional-advisory-record-created")
+            self.assertTrue(report["advisory_only"])
+            self.assertFalse(report["roadmap_gate"])
+            self.assertFalse(report["decision_authority"])
             self.assertEqual(human["primary_action"], "revise-current-route")
             self.assertFalse(human["planning_review_action_selected"])
             self.assertEqual(binding["json_sha256"], original_json_sha)
@@ -136,7 +139,10 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
                 report["contract"],
                 "principia-product-alpha-human-decision-verification/0.1",
             )
-            self.assertEqual(report["decision"], "human-decision-record-verified")
+            self.assertEqual(report["decision"], "optional-advisory-record-verified")
+            self.assertTrue(report["advisory_only"])
+            self.assertFalse(report["roadmap_gate"])
+            self.assertFalse(report["decision_authority"])
             self.assertEqual(report["primary_action"], "revise-current-route")
             self.assertTrue(report["raw_sources_verified"])
             self.assertFalse(report["writes_performed"])
@@ -173,7 +179,9 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
                 for path in (workspace / "review").iterdir()
             }
 
-            self.assertEqual(report["decision"], "human-decision-record-verified")
+            self.assertEqual(report["decision"], "optional-advisory-record-verified")
+            self.assertTrue(report["advisory_only"])
+            self.assertFalse(report["decision_authority"])
             self.assertEqual(before, after)
 
     def test_rejects_coordinated_decision_pair_edit_against_receipt(self) -> None:
@@ -311,7 +319,7 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             )
             report = json.loads(completed.stdout)
 
-            self.assertEqual(report["decision"], "human-decision-ready")
+            self.assertEqual(report["decision"], "optional-advisory-ready")
             self.assertFalse(report["planning_review_eligible"])
             self.assertTrue(report["advisory_only"])
             self.assertFalse(report["decision_authority"])
