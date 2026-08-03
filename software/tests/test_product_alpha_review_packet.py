@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EVALUATION_DIR = REPO_ROOT / "software" / "product_alpha" / "evaluation"
@@ -154,7 +155,12 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertEqual(summary["evidence_status"], "ready-for-human-review")
         self.assertEqual(summary["minimum_cohort_size"], 0)
         self.assertTrue(summary["cohort_complete"])
-        self.assertFalse(any(signal["code"] == "cohort-incomplete" for signal in summary["revision_signals"]))
+        self.assertFalse(
+            any(
+                signal["code"] == "cohort-incomplete"
+                for signal in summary["revision_signals"]
+            )
+        )
         self.assertFalse(packet["review"]["planning_review_eligible"])
         self.assertEqual(packet["review"]["status"], "optional-advisory-review")
 
@@ -177,7 +183,10 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertIn("revise-current-route", markdown)
         self.assertNotIn("advance-to-next-product-planning-review", markdown)
         self.assertIn("cannot authorize or block roadmap work", markdown)
-        self.assertIn("internal multi-perspective review remains the product decision authority", markdown)
+        self.assertIn(
+            "internal multi-perspective review remains the product decision authority",
+            markdown,
+        )
         self.assertNotIn("private note", markdown)
         self.assertNotIn("facilitator_notes", markdown)
 
@@ -212,6 +221,40 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             self.assertEqual(first_hash, second_hash)
             with self.assertRaisesRegex(FileExistsError, "refusing to overwrite"):
                 review_packet.write_review_outputs(first_prefix, packet)
+
+    def test_write_outputs_roll_back_when_pair_publish_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "sessions.jsonl"
+            write_sessions(input_path)
+            packet = review_packet.build_review_packet(input_path, BUILD_ID)
+            prefix = root / "private" / "review"
+            json_path = prefix.with_suffix(".json")
+            markdown_path = prefix.with_suffix(".md")
+            real_replace = review_packet.os.replace
+            replace_calls = 0
+
+            def fail_second_replace(source: object, target: object) -> None:
+                nonlocal replace_calls
+                replace_calls += 1
+                if replace_calls == 2:
+                    raise OSError("simulated second review publish failure")
+                real_replace(source, target)
+
+            with mock.patch.object(
+                review_packet.os,
+                "replace",
+                side_effect=fail_second_replace,
+            ):
+                with self.assertRaisesRegex(
+                    OSError,
+                    "simulated second review publish failure",
+                ):
+                    review_packet.write_review_outputs(prefix, packet)
+
+            self.assertFalse(json_path.exists())
+            self.assertFalse(markdown_path.exists())
+            self.assertEqual(list(json_path.parent.glob(".*.tmp-*")), [])
 
     def test_subprocess_command_creates_verified_pair(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
