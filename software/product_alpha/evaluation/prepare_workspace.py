@@ -103,31 +103,23 @@ The status command recognizes prepared, collecting, ready-to-assemble, intake-ve
 
 1. Place individual anonymous recorder exports (`.jsonl` or `.json`) in `incoming-sessions/`.
 
-2. During collection, validate the current files without sealing the cohort:
+2. While the optional observation set is open, validate the current files without writing verified outputs:
 
 ```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py check \\
+python3 software/product_alpha/evaluation/assemble_workspace.py check \
   --workspace {workspace_arg}
 ```
 
-The check command fully validates every current export, rejects malformed, mixed-build, duplicate, personal-data-bearing, symlinked, or unsupported records, predicts the exact combined JSONL and source-record hashes, reports the valid session count and cohort status, and writes nothing. It is safe to repeat after each new session.
+The check command fully validates every current export, rejects malformed, mixed-build, duplicate, personal-data-bearing, symlinked, or unsupported records, predicts the exact combined JSONL and source-record hashes, reports the valid observation count, and writes nothing. It is safe to repeat after each new record.
 
-3. After collection is intentionally closed and the documented minimum has been reached, assemble the immutable cohort intake:
+3. Whenever the project intentionally closes a non-empty optional observation set, assemble the immutable intake:
 
 ```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py \\
+python3 software/product_alpha/evaluation/assemble_workspace.py \
   --workspace {workspace_arg}
 ```
 
-Normal assembly refuses fewer than five valid sessions so a facilitator cannot accidentally lock an incomplete cohort while collection is still active. If the pilot must close early because recruitment or execution stopped, make that decision explicit:
-
-```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py \\
-  --workspace {workspace_arg} \\
-  --allow-incomplete
-```
-
-Assembly validates every file again, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export, the source-record set, and the combined JSONL. Source files are not changed. Existing verified outputs are never overwritten. `--allow-incomplete` records an intentional early closure; it does not make the evidence complete or eligible for planning advance.
+There is no minimum observation count and no incomplete-cohort override. Assembly validates every file again, sorts accepted records by anonymous session ID, and writes `verified/anonymous-sessions.jsonl` plus `verified/intake-manifest.json`. The intake manifest hashes every raw export, the source-record set, and the combined JSONL. Source files are not changed and existing verified outputs are never overwritten. Assembly records optional descriptive evidence only; it never authorizes or blocks roadmap progress.
 
 4. Check the complete workspace evidence chain without writing review outputs:
 
@@ -205,7 +197,7 @@ Keep participant identities out of reviewer, rationale, and checkpoint text. A r
 
 `verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound commands are the supported end-to-end path because they prove that review, decision, and handoff artifacts still match the earlier intake and unchanged raw exports.
 
-Do not treat an empty directory, an incomplete cohort, an intake manifest, a review packet, a decision record, a decision receipt, a repository handoff candidate, or this workspace manifest as proof of learning effectiveness. Human judgment remains required, and no generated artifact by itself authorizes a second route or public release.
+Do not treat an empty directory, an optional observation set, an intake manifest, a review packet, a decision record, a decision receipt, a repository handoff candidate, or this workspace manifest as proof of learning effectiveness. No generated artifact authorizes or blocks roadmap progress, a second route, or public release.
 """
 
 

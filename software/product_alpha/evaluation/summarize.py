@@ -17,7 +17,7 @@ if str(PRODUCT_ALPHA_ROOT) not in sys.path:
 import route_identity
 
 ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
-MIN_COHORT_SIZE = 5
+MIN_COHORT_SIZE = 0  # compatibility sentinel: optional observation has no minimum
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
 SCORE_KEYS = [
@@ -187,16 +187,6 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
 
 def revision_signals(summary: dict[str, Any]) -> list[dict[str, str]]:
     signals: list[dict[str, str]] = []
-    if summary["sessions"] < MIN_COHORT_SIZE:
-        signals.append(
-            {
-                "code": "cohort-incomplete",
-                "message": (
-                    f"Only {summary['sessions']} valid sessions are present; "
-                    f"the documented minimum is {MIN_COHORT_SIZE}."
-                ),
-            }
-        )
     if summary["started"] and summary["completion_rate"] < 0.5:
         signals.append(
             {
@@ -293,12 +283,15 @@ def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
     summary: dict[str, Any] = {
-        "contract": "principia-product-alpha-pilot-summary/0.3",
+        "contract": "principia-product-alpha-pilot-summary/0.4",
         "pilot_build_id": pilot_build_id,
         "route_id": route_id,
         "sessions": len(sessions),
         "minimum_cohort_size": MIN_COHORT_SIZE,
-        "cohort_complete": len(sessions) >= MIN_COHORT_SIZE,
+        "cohort_complete": True,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
         "started": started,
         "finished": finished,
         "completion_rate": round(finished / started, 3) if started else 0.0,
@@ -312,11 +305,7 @@ def summarize(sessions: list[dict[str, Any]]) -> dict[str, Any]:
         "voluntary_continue": continuation,
     }
     summary["revision_signals"] = revision_signals(summary)
-    summary["evidence_status"] = (
-        "incomplete"
-        if not summary["cohort_complete"]
-        else "ready-for-human-review"
-    )
+    summary["evidence_status"] = "ready-for-human-review"
     return summary
 
 
@@ -327,10 +316,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
         f"- Evidence status: **{summary['evidence_status']}**",
         f"- Pilot build ID: `{summary['pilot_build_id']}`",
         f"- Route: `{summary['route_id']}`",
-        (
-            f"- Valid sessions: {summary['sessions']} / minimum "
-            f"{summary['minimum_cohort_size']}"
-        ),
+        f"- Valid observations: {summary['sessions']} (no minimum count)",
         f"- Started: {summary['started']}",
         f"- Finished: {summary['finished']}",
         f"- Completion rate: {summary['completion_rate']:.1%}",
@@ -384,8 +370,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
             lines.append(f"- `{signal['code']}` — {signal['message']}")
     else:
         lines.append(
-            "- No automatic revision trigger was detected. "
-            "Human review is still required."
+            "- No automatic product signal was detected. Optional review may still add context."
         )
 
     lines.extend(
@@ -394,10 +379,10 @@ def render_markdown(summary: dict[str, Any]) -> str:
             "## Decision boundary",
             "",
             (
-                "Use these aggregates to choose one primary product action. "
-                "Do not commit raw session records or identifiable notes. "
-                "A tool-generated status never authorizes a second route, public "
-                "release, SaaS expansion, or a learning-effectiveness claim."
+                "These optional aggregates may inform a product discussion, but they "
+                "never authorize or block roadmap progress. Do not commit raw session "
+                "records or identifiable notes. A tool-generated status never authorizes "
+                "a second route, public release, SaaS expansion, or a learning-effectiveness claim."
             ),
             "",
         ]

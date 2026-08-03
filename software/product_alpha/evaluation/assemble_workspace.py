@@ -266,6 +266,9 @@ def preflight_workspace(
         "writes_performed": False,
         "raw_source_files_modified": False,
         "human_review_required": True,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
     }
 
 
@@ -284,13 +287,6 @@ def assemble_workspace(
         raise FileExistsError(f"intake manifest already exists: {plan.intake}")
 
     complete = bool(plan.summary["cohort_complete"])
-    if not complete and not allow_incomplete:
-        raise ValueError(
-            f"cohort has {len(plan.sessions)} valid sessions; "
-            f"the documented minimum is {pilot_summary.MIN_COHORT_SIZE}. "
-            "Run the check command while collecting, or pass --allow-incomplete "
-            "only when intentionally closing the cohort early."
-        )
 
     report: dict[str, object] = {
         "contract": CONTRACT,
@@ -307,7 +303,10 @@ def assemble_workspace(
         "combined_sha256": plan.combined_sha256,
         "source_records_sha256": plan.source_records_sha256,
         "source_records": list(plan.source_records),
-        "incomplete_assembly_authorized": not complete and allow_incomplete,
+        "incomplete_assembly_authorized": False,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
         "raw_source_files_modified": False,
         "human_review_required": True,
     }
@@ -344,7 +343,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--allow-incomplete",
         action="store_true",
-        help="intentionally seal fewer than the documented minimum sessions",
+        help="deprecated compatibility flag; optional observation has no minimum",
     )
     args = parser.parse_args(argv)
     if args.command == "check" and args.allow_incomplete:

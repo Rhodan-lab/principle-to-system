@@ -39,7 +39,7 @@ def session(session_id: str, steps: list[str], **overrides):
 
 
 class ProductAlphaEvaluationTests(unittest.TestCase):
-    def test_summary_is_deterministic_and_marks_incomplete_cohort(self):
+    def test_summary_is_deterministic_and_has_no_observation_threshold(self):
         sessions = [
             session("anonymous-001", MODULE.STEPS, confusion_tags=["model-controls"]),
             session(
@@ -54,20 +54,25 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
         first = MODULE.render_markdown(summary)
         second = MODULE.render_markdown(MODULE.summarize(sessions))
         self.assertEqual(first, second)
-        self.assertEqual(summary["contract"], "principia-product-alpha-pilot-summary/0.3")
+        self.assertEqual(summary["contract"], "principia-product-alpha-pilot-summary/0.4")
         self.assertEqual(summary["pilot_build_id"], BUILD_ID)
-        self.assertEqual(summary["evidence_status"], "incomplete")
-        self.assertFalse(summary["cohort_complete"])
+        self.assertEqual(summary["evidence_status"], "ready-for-human-review")
+        self.assertTrue(summary["cohort_complete"])
+        self.assertEqual(summary["minimum_cohort_size"], 0)
+        self.assertEqual(summary["observation_mode"], "optional-descriptive")
+        self.assertFalse(summary["roadmap_gate"])
+        self.assertFalse(summary["decision_authority"])
         self.assertIn(f"Pilot build ID: `{BUILD_ID}`", first)
+        self.assertIn("Valid observations: 2 (no minimum count)", first)
         self.assertIn("Completion rate: 50.0%", first)
         self.assertIn("`model-controls`: 2", first)
-        self.assertIn("`cohort-incomplete`", first)
+        self.assertNotIn("`cohort-incomplete`", first)
         self.assertIn("`recurring-confusion:model-controls`", first)
 
-    def test_complete_cohort_is_ready_for_human_review(self):
-        sessions = [session(f"anonymous-{index:03d}", MODULE.STEPS) for index in range(1, 6)]
-        summary = MODULE.summarize(sessions)
+    def test_single_observation_is_ready_for_optional_review(self):
+        summary = MODULE.summarize([session("anonymous-001", MODULE.STEPS)])
         self.assertTrue(summary["cohort_complete"])
+        self.assertEqual(summary["minimum_cohort_size"], 0)
         self.assertEqual(summary["evidence_status"], "ready-for-human-review")
         self.assertFalse(
             any(signal["code"] == "cohort-incomplete" for signal in summary["revision_signals"])

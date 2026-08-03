@@ -72,7 +72,7 @@ class ProductAlphaVerifyCohortTests(unittest.TestCase):
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertEqual(first.stdout, second.stdout)
         payload = json.loads(first.stdout)
-        self.assertEqual(payload["contract"], "principia-product-alpha-pilot-summary/0.3")
+        self.assertEqual(payload["contract"], "principia-product-alpha-pilot-summary/0.4")
         self.assertEqual(payload["pilot_build_id"], BUILD_A)
         self.assertEqual(payload["sessions"], 2)
 

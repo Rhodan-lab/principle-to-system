@@ -117,6 +117,9 @@ def _base_report(
         "writes_performed": False,
         "automatic_repository_mutation": False,
         "human_review_required": True,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
     }
 
 
@@ -195,41 +198,17 @@ def inspect_workspace(
             root,
             repo_root=repo_root,
         )
-        complete = preflight["cohort_complete"] is True
-        if complete:
-            return {
-                **report,
-                "stage": "ready-to-assemble",
-                "sessions": preflight["sessions"],
-                "minimum_cohort_size": preflight["minimum_cohort_size"],
-                "cohort_complete": True,
-                "evidence_status": preflight["evidence_status"],
-                "predicted_combined_sha256": preflight[
-                    "predicted_combined_sha256"
-                ],
-                "source_records_sha256": preflight["source_records_sha256"],
-                "next_action": "assemble-immutable-intake",
-                "next_command": _workspace_command(
-                    "assemble_workspace.py",
-                    root,
-                ),
-                "validation_command": _workspace_command(
-                    "assemble_workspace.py",
-                    root,
-                    "check",
-                ),
-            }
         return {
             **report,
-            "stage": "collecting",
+            "stage": "ready-to-assemble",
             "sessions": preflight["sessions"],
             "minimum_cohort_size": preflight["minimum_cohort_size"],
-            "cohort_complete": False,
+            "cohort_complete": True,
             "evidence_status": preflight["evidence_status"],
             "predicted_combined_sha256": preflight["predicted_combined_sha256"],
             "source_records_sha256": preflight["source_records_sha256"],
-            "next_action": "collect-more-session-records",
-            "next_command": _launch_command(root),
+            "next_action": "assemble-immutable-intake",
+            "next_command": _workspace_command("assemble_workspace.py", root),
             "validation_command": _workspace_command(
                 "assemble_workspace.py",
                 root,

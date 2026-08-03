@@ -52,10 +52,7 @@ def reviewed_workspace(root: Path, count: int = 5) -> Path:
             json.dumps(value, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-    assemble_workspace.assemble_workspace(
-        workspace,
-        allow_incomplete=count < 5,
-    )
+    assemble_workspace.assemble_workspace(workspace)
     review_workspace.prepare_workspace_review(workspace)
     return workspace
 
@@ -217,23 +214,23 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "artifact trio is incomplete"):
                 record_decision.verify_workspace_decision(workspace)
 
-    def test_blocks_planning_advance_for_incomplete_cohort(self) -> None:
+    def test_optional_small_set_does_not_block_recording_a_planning_action(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = reviewed_workspace(Path(directory), count=2)
 
-            with self.assertRaisesRegex(ValueError, "requires ready-for-human-review"):
-                record_decision.record_workspace_decision(
-                    workspace,
-                    "advance-to-next-product-planning-review",
-                    "facilitator-reviewer",
-                    "2026-08-02",
-                    "The current evidence is intentionally incomplete and cannot advance.",
-                    "Run the remaining learner sessions before another decision review.",
-                )
-
-            self.assertFalse(
-                (workspace / "review" / "refrigerator-review-decision.json").exists()
+            report = record_decision.record_workspace_decision(
+                workspace,
+                "advance-to-next-product-planning-review",
+                "facilitator-reviewer",
+                "2026-08-02",
+                "Optional observations were reviewed without treating their count as a gate.",
+                "Use the internal multi-perspective authority for the actual roadmap decision.",
             )
+
+            decision = json.loads(Path(str(report["decision_json"])).read_text(encoding="utf-8"))
+            self.assertTrue(decision["human_decision"]["planning_review_action_selected"])
+            self.assertFalse(decision["boundaries"]["automatic_repository_mutation"])
+            self.assertFalse(decision["boundaries"]["second_route_authorized"])
 
     def test_rejects_modified_review_markdown(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

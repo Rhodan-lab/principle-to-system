@@ -36,7 +36,7 @@ class ProductAlphaCohortBindingTests(unittest.TestCase):
         for asset in (source_pilot_lab, pilot_lab):
             self.assertIn("EXPECTED_BUILD_ID", asset)
             self.assertIn("pilot_build_id does not match the cohort build", asset)
-            self.assertIn("principia-product-alpha-pilot-summary/0.3", asset)
+            self.assertIn("principia-product-alpha-pilot-summary/0.4", asset)
 
         self.assertIn("EXPECTED_BUILD_ID", pilot_lab)
         self.assertIn(",q=s=>document.querySelector(s);", source_pilot_lab)

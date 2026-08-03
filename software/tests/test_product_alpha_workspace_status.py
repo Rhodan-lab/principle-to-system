@@ -60,10 +60,7 @@ def write_sessions(workspace: Path, count: int) -> None:
 
 def assemble(workspace: Path, count: int = 5) -> None:
     write_sessions(workspace, count)
-    assemble_workspace.assemble_workspace(
-        workspace,
-        allow_incomplete=count < 5,
-    )
+    assemble_workspace.assemble_workspace(workspace)
 
 
 def review(workspace: Path, count: int = 5) -> None:
@@ -111,16 +108,17 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             self.assertIn("launch_workspace.py", str(report["next_command"]))
             self.assertEqual(list((workspace / "verified").iterdir()), [])
 
-    def test_reports_collecting_without_sealing(self) -> None:
+    def test_reports_any_valid_observation_set_ready_to_assemble(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = create_workspace(Path(directory))
             write_sessions(workspace, 2)
             report = workspace_status.inspect_workspace(workspace)
 
-            self.assertEqual(report["stage"], "collecting")
+            self.assertEqual(report["stage"], "ready-to-assemble")
             self.assertEqual(report["sessions"], 2)
-            self.assertFalse(report["cohort_complete"])
-            self.assertEqual(report["next_action"], "collect-more-session-records")
+            self.assertTrue(report["cohort_complete"])
+            self.assertEqual(report["minimum_cohort_size"], 0)
+            self.assertEqual(report["next_action"], "assemble-immutable-intake")
             self.assertRegex(str(report["predicted_combined_sha256"]), r"^[0-9a-f]{64}$")
             self.assertEqual(list((workspace / "verified").iterdir()), [])
 
