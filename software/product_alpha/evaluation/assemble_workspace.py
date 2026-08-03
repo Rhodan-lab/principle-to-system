@@ -70,10 +70,20 @@ def _is_within(path: Path, root: Path) -> bool:
     return True
 
 
+def _path_present(path: Path) -> bool:
+    """Return whether a filesystem entry exists, including a broken symlink."""
+    return path.is_symlink() or path.exists()
+
+
 def _member(workspace: Path, relative: object, label: str) -> Path:
     if not isinstance(relative, str) or not relative.strip():
         raise ValueError(f"workspace manifest {label} path must be non-empty text")
-    candidate = (workspace / relative).resolve(strict=False)
+    relative_path = Path(relative)
+    if relative_path.is_absolute():
+        raise ValueError(f"workspace manifest {label} path must be relative")
+
+    unresolved = workspace / relative_path
+    candidate = unresolved.parent.resolve(strict=False) / unresolved.name
     try:
         candidate.relative_to(workspace)
     except ValueError as exc:
@@ -155,8 +165,8 @@ def _build_plan(
         raise ValueError("workspace must be outside the repository")
 
     manifest, incoming, combined, intake = _load_workspace(root)
-    if not incoming.is_dir():
-        raise ValueError("incoming session directory is missing")
+    if incoming.is_symlink() or not incoming.is_dir():
+        raise ValueError("incoming session directory must be a regular directory")
 
     entries = sorted(incoming.iterdir(), key=lambda path: path.name)
     if not entries:
@@ -259,8 +269,8 @@ def _intake_report(plan: WorkspaceIntakePlan) -> dict[str, object]:
 
 def _verified_output_state(plan: WorkspaceIntakePlan) -> dict[str, bool]:
     states = {
-        "combined_jsonl": plan.combined.exists(),
-        "intake_manifest": plan.intake.exists(),
+        "combined_jsonl": _path_present(plan.combined),
+        "intake_manifest": _path_present(plan.intake),
     }
     if any(states.values()) and not all(states.values()):
         raise ValueError("verified intake output pair is incomplete")
@@ -328,9 +338,9 @@ def assemble_workspace(
     """Validate private exports and write one immutable cohort intake."""
     plan = _build_plan(workspace, repo_root=repo_root)
 
-    if plan.combined.exists():
+    if _path_present(plan.combined):
         raise FileExistsError(f"combined cohort already exists: {plan.combined}")
-    if plan.intake.exists():
+    if _path_present(plan.intake):
         raise FileExistsError(f"intake manifest already exists: {plan.intake}")
 
     report = _intake_report(plan)
