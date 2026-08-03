@@ -254,7 +254,7 @@ test("recorder load failure disables inert controls and focuses the error", () =
   const fetchAt = body.indexOf("await Promise.all(");
   const readyAt = body.indexOf('applyRecorderAvailability("ready")');
   const captureAt = body.indexOf("applyCaptureState()", readyAt);
-  const errorAt = body.indexOf('applyRecorderAvailability("error")');
+  const errorAt = body.lastIndexOf('applyRecorderAvailability("error")');
   const statusAt = body.indexOf("Serve the Product Alpha build", errorAt);
   const focusAt = body.indexOf('q("#status").focus()', errorAt);
 
@@ -263,4 +263,25 @@ test("recorder load failure disables inert controls and focuses the error", () =
   assert.ok(readyAt < captureAt, "capture state applies after controls become available");
   assert.ok(errorAt < statusAt, "inert controls must disable before the error is announced");
   assert.ok(statusAt < focusAt, "the error must be announced before focus moves");
+});
+
+test("missing or invalid build identity keeps the recorder inert", () => {
+  const source = html.match(/async function init\(\)\{([\s\S]*?)\}\nif\(typeof document/);
+  assert.ok(source, "init source must be testable");
+  const body = source[1];
+  const guardAt = body.indexOf("if(!BUILD_ID_PATTERN.test(pilotBuildId)){");
+  const errorAt = body.indexOf('applyRecorderAvailability("error")', guardAt);
+  const statusAt = body.indexOf("Pilot build ID is missing or invalid", errorAt);
+  const focusAt = body.indexOf('q("#status").focus()', statusAt);
+  const returnAt = body.indexOf("return}", focusAt);
+  const listenersAt = body.indexOf('[q("#sessionId")', guardAt);
+  const readyAt = body.indexOf('applyRecorderAvailability("ready")', guardAt);
+
+  assert.notEqual(guardAt, -1);
+  assert.ok(guardAt < errorAt, "invalid build identity must enter the inert state");
+  assert.ok(errorAt < statusAt, "controls must disable before the error is announced");
+  assert.ok(statusAt < focusAt, "the build identity error must be announced before focus moves");
+  assert.ok(focusAt < returnAt, "startup must stop after focusing the persistent error");
+  assert.ok(returnAt < listenersAt, "invalid startup must stop before handlers are installed");
+  assert.ok(returnAt < readyAt, "invalid startup must never enable recorder controls");
 });
