@@ -140,6 +140,7 @@ jobs:
             exit 0
           fi
           python3 software/product_alpha/_apply_route_aware_evidence.py
+          python3 software/product_alpha/_fix_route_evidence_default_marker.py
       - name: Validate bounded evidence update
         run: |
           python3 -m py_compile \
