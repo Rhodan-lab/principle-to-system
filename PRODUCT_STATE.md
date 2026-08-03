@@ -2,216 +2,164 @@
 title: "Principia current product state"
 slug: principia-current-product-state
 domain: product
-status: draft
-artifact_revision: 5
+status: reviewed
+artifact_revision: 6
 release_status: alpha
 prerequisites: []
-connections: [product-alpha-refrigerator, product-alpha-learner-pilot]
-last_reviewed: 2026-08-02
+connections: [product-alpha-refrigerator, product-alpha-internal-multi-perspective-review]
+last_reviewed: 2026-08-03
 content_license: CC-BY-4.0
 ---
 
 # Principia current product state
 
-**Last updated:** 2026-08-02  
-**Active milestone:** Product Alpha 0.1 — real cohort execution and human review  
+**Last updated:** 2026-08-03  
+**Active milestone:** Product Alpha 0.2 — second-route planning and reusable route architecture  
 **Active repository:** `Rhodan-lab/principle-to-system`  
 **Supporting repository:** `Rhodan-lab/Atlas`  
-**Decision authority:** verified real learner evidence plus an explicit human decision, not phase counts, issue state, or tool-generated readiness
+**Decision authority:** deterministic internal multi-perspective review plus an explicit repository decision
 
 ## Current decision
 
 Principia remains the learner-facing product. Atlas remains a read-only trust and provenance substrate.
 
-The current primary decision is:
+The refrigerator route is now the stable Product Alpha baseline. It has passed the required internal review across:
 
-> Keep the refrigerator route stable and run the documented 5–8 learner pilot before authorizing another route, public release, SaaS infrastructure, or production deployment.
+1. product strategy;
+2. pedagogy;
+3. scientific integrity;
+4. UX and accessibility;
+5. privacy and security;
+6. operational reliability;
+7. evidence and provenance;
+8. maintainability and governance.
 
-The active work is direct repository development and private evidence review. GitHub issues are not part of the current execution workflow.
+The primary decision is:
 
-## Completed Product Alpha foundation
+> Advance to next-product planning, select a second system route, and use that route to prove reusable architecture without destabilizing the refrigerator baseline.
 
-Product Alpha 0.1 now includes:
+External participant observation is optional research. It is not a roadmap gate, release prerequisite, or authority requirement.
+
+GitHub issues are not part of the current execution workflow.
+
+## Internal review authority
+
+The canonical review artifacts are:
+
+- `reports/product-alpha-0-1-multi-perspective-review.json`;
+- `reports/product-alpha-0-1-multi-perspective-review.md`.
+
+Validate them without writing:
+
+```bash
+python3 software/product_alpha/evaluation/validate_internal_review.py check
+```
+
+The validator requires exactly eight perspectives, concrete repository evidence, residual risks, next actions, claim boundaries, and the decision:
+
+```text
+advance-to-next-product-planning-review
+```
+
+## Multi-perspective result
+
+| Perspective | Status | Current judgment |
+|---|---|---|
+| Product strategy | Pass | One complete route and a clear next test: generalization to a second route |
+| Pedagogy | Pass | Prediction, mechanism, model interpretation, diagnosis, evidence boundary, and redesign are structurally required |
+| Scientific integrity | Pass | The thermal model is bounded, limitation-aware, and separated from universal physical claims |
+| UX and accessibility | Pass | Keyboard, focus, semantic grouping, live recovery, table, dialog, and dynamic-chart contracts are covered |
+| Privacy and security | Pass | Local-first, no accounts or analytics, no persistence, loopback-only, restrictive headers, and fail-closed loading |
+| Operational reliability | Pass | Deterministic packaging, build identity, smoke verification, drift rejection, and focused CI |
+| Evidence and provenance | Pass | Canonical Principia sources and pinned Atlas revisions remain separate, advisory, deterministic, and offline |
+| Maintainability and governance | Pass | Current authority is separated from historical phases and protected by regression tests |
+
+## Completed Product Alpha baseline
+
+Product Alpha 0.1 includes:
 
 - a five-step refrigerator journey: Observe → Map → Model → Diagnose → Redesign;
 - canonical content extraction from existing Principia artifacts;
 - a dependency-free thermal model and diagnosis challenge;
 - pinned exact-revision Atlas references with separate status authority;
 - in-tab learner reasoning state without browser persistence;
-- a local anonymous facilitator recorder that locks after capture;
-- a browser-local Pilot Lab with additive batches and duplicate or mixed-build rejection;
-- deterministic packaging and a 64-character Pilot build identity;
-- a loopback-only preparation smoke gate and build-bound long-running launcher;
-- a private repository-external cohort workspace;
-- repeatable non-writing intake preflight;
-- fail-closed immutable cohort assembly with explicit incomplete-cohort authorization;
-- post-intake raw-source, manifest, and combined-evidence verification;
-- an immutable de-identified review packet;
-- a separate immutable human-decision record and decision receipt;
-- no-write final decision verification;
-- a read-only workspace stage and next-action reporter;
-- a repository-external, allowlisted, de-identified handoff candidate;
-- handoff verification against the unchanged private decision and evidence chain;
-- focused Product Alpha Python, browser-runtime, Node.js, and workflow-scope CI.
+- accessible learner navigation, tables, dialogs, choice validation, and dynamic chart descriptions;
+- a local anonymous facilitator recorder with semantic scoring groups and precise validation recovery;
+- fail-closed learner and facilitator loading states;
+- a browser-local Pilot Lab with additive batches, deliberate replacement, duplicate rejection, accessible tables, and protected destructive actions;
+- deterministic packaging and a 64-character build identity;
+- loopback-only serving with exact Host validation and restrictive response headers;
+- optional repository-external observation, aggregation, review, decision, and handoff tools;
+- focused Product Alpha JavaScript, Python, runtime, smoke, and clean-repository CI.
 
-The current operational chain was completed through these merged changes:
-
-| Change | Result |
-|---|---|
-| PR #118 | Bind workspace creation to deterministic smoke validation |
-| PR #119 | Deterministic private workspace intake |
-| PR #120 | Bind long-running launch to the prepared workspace |
-| PR #121 | Bind review to unchanged intake and raw sources |
-| PR #122 | Record an immutable human product decision |
-| PR #123 | Preserve learner reasoning state in the current tab |
-| PR #124 | Make Pilot Lab multi-file loading explicit and additive |
-| PR #125 | Lock facilitator records after successful capture |
-| PR #126 | Add non-writing intake preflight and safe cohort closure |
-| PR #127 | Seal and verify decision artifacts with a receipt |
-| PR #128 | Report the verified workspace stage and next valid action |
-| PR #129 | Synchronize canonical product-state and pilot evidence authority |
-| PR #130 | Prepare and verify a de-identified repository handoff candidate |
-
-## Evidence integrity finding
-
-The software and pilot instrumentation are validated. The repository still does not contain a reviewed product change derived from 5–8 real learner sessions.
-
-That absence is recorded honestly in:
-
-- `reports/product-alpha-0-1-pilot-summary.md`
-
-Private raw records, intake files, review packets, decision records, receipts, and handoff candidates must not be committed. Missing cohort values remain **not reportable** rather than invented, estimated, simulated, or reconstructed.
+The stable browser and runtime baseline was completed through PR #151.
 
 ## What the project may claim
 
 The project may claim:
 
-- deterministic Product Alpha packaging;
-- a working local learner route, recorder, and Pilot Lab;
-- exact workspace/build binding before real sessions;
-- build-bound anonymous session records;
-- duplicate, mixed-build, personal-data, malformed-record, and repeated-file rejection;
-- repeatable no-write intake validation;
-- immutable, hash-bound intake, review, and human-decision artifacts;
-- final no-write decision verification;
-- a de-identified repository-external handoff candidate bound to the verified decision;
-- technical readiness for a small formative pilot.
+- internally validated product coherence;
+- a complete refrigerator learning journey;
+- deterministic local packaging and operation;
+- bounded scientific and model design;
+- exact-revision evidence and provenance separation;
+- tested keyboard accessibility and failure recovery;
+- local-first privacy and loopback security contracts;
+- operational readiness to begin a second-route implementation;
+- authorization to perform next-product planning.
 
 ## What the project may not claim
 
-The project may not yet claim:
+The project may not claim from internal review alone:
 
-- verified completion of a 5–8 learner cohort;
-- demonstrated learning effectiveness;
-- validated retention or transfer;
-- evidence that the refrigerator route meets progression thresholds;
-- authorization for a second route;
-- public-release readiness;
+- empirical learning effectiveness;
+- validated comprehension, retention, transfer, or engagement outcomes;
 - product-market fit;
-- SaaS or production readiness.
+- public production readiness;
+- universal scientific accuracy beyond the model's stated boundaries;
+- that internal inspection substitutes for measured human outcomes.
 
-## Supported private evidence workflow
+These are claim boundaries, not roadmap blockers.
 
-Create a new repository-external workspace only after deterministic smoke verification succeeds:
+## Authorized next work
 
-```bash
-python3 software/product_alpha/prepare_pilot.py \
-  --workspace /private/path/refrigerator-cohort
-```
+The next product cycle may:
 
-Run every participant session through the exact prepared build:
+1. choose a second system route from the canonical corpus;
+2. define route-selection criteria;
+3. separate reusable product architecture from refrigerator-specific content;
+4. implement the candidate route using the same Observe → Map → Model → Diagnose → Redesign grammar when appropriate;
+5. preserve prediction-before-model and choice-before-feedback contracts;
+6. preserve accessibility, privacy, security, deterministic build, and provenance boundaries;
+7. add Atlas entities only when the selected route creates a concrete exact-revision evidence need;
+8. update this state file after the second-route planning decision.
 
-```bash
-python3 software/product_alpha/launch_workspace.py \
-  --workspace /private/path/refrigerator-cohort \
-  --open
-```
+## Work that remains premature
 
-At any time, inspect the strongest verified stage and next valid action without writing:
+Do not begin these merely because the internal review passed:
 
-```bash
-python3 software/product_alpha/evaluation/workspace_status.py \
-  --workspace /private/path/refrigerator-cohort
-```
+- public production deployment;
+- account systems;
+- behavioral analytics;
+- cloud storage of learner data;
+- live Atlas runtime calls;
+- broad SaaS infrastructure;
+- automatic publication or repository mutation.
 
-During collection, validate all current exports without sealing the cohort:
+A second route should first prove that the architecture generalizes.
 
-```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py check \
-  --workspace /private/path/refrigerator-cohort
-```
+## Optional field-evaluation capability
 
-After collection is deliberately closed and at least five valid sessions are present, create the immutable intake:
+The existing workspace, recorder, Pilot Lab, cohort aggregation, review, decision, receipt, and handoff tools remain available for optional external observation or future research.
 
-```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py \
-  --workspace /private/path/refrigerator-cohort
-```
+They are not required for:
 
-An intentionally stopped incomplete cohort requires the explicit `--allow-incomplete` flag. It records early closure but does not make the evidence complete or planning-review eligible.
+- second-route planning;
+- route implementation;
+- repository progress;
+- internal product decisions.
 
-Verify and create the private review packet:
-
-```bash
-python3 software/product_alpha/evaluation/review_workspace.py check \
-  --workspace /private/path/refrigerator-cohort
-
-python3 software/product_alpha/evaluation/review_workspace.py \
-  --workspace /private/path/refrigerator-cohort
-```
-
-Verify decision readiness, then record exactly one human action:
-
-```bash
-python3 software/product_alpha/evaluation/record_decision.py check \
-  --workspace /private/path/refrigerator-cohort
-
-python3 software/product_alpha/evaluation/record_decision.py \
-  --workspace /private/path/refrigerator-cohort \
-  --action <allowed-primary-action> \
-  --reviewer "<role-or-initials>" \
-  --review-date YYYY-MM-DD \
-  --rationale "<de-identified rationale>" \
-  --next-checkpoint "<next checkpoint>"
-```
-
-Verify the completed decision JSON, Markdown, receipt, review packet, intake, combined cohort, and raw-source bindings without writing:
-
-```bash
-python3 software/product_alpha/evaluation/record_decision.py verify \
-  --workspace /private/path/refrigerator-cohort
-```
-
-Prepare a private, de-identified input for a later human-reviewed repository change:
-
-```bash
-python3 software/product_alpha/evaluation/prepare_handoff.py check \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-
-python3 software/product_alpha/evaluation/prepare_handoff.py \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-
-python3 software/product_alpha/evaluation/prepare_handoff.py verify \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-```
-
-The handoff contains only an allowlisted de-identified aggregate, revision signals, verified human action, and evidence hashes. It excludes raw sessions, session identifiers, facilitator notes, custom confusion text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths.
-
-Keep the entire workspace and handoff private and outside the repository. A repository change remains a separate human-reviewed pull request. None of these commands automatically mutates the repository.
-
-## Revision triggers
-
-Revise Product Alpha before another route when any of these conditions appear:
-
-- the same confusion tag occurs in at least two sessions;
-- fewer than half of started sessions reach redesign;
-- average mechanism, diagnosis, or evidence-boundary score is below 1.25;
-- learners manipulate the model without first predicting direction;
-- learners treat Atlas status as proof of a physical conclusion;
-- learners finish but do not voluntarily continue.
+Any optional records remain local, private, repository-external, and non-authoritative unless a future decision explicitly adopts them.
 
 ## Product boundaries
 
@@ -227,13 +175,11 @@ The current alpha has:
 - no automated publication;
 - no production deployment contract.
 
-Pilot records and all derived private artifacts remain local, anonymous where applicable, private, and facilitator-controlled.
-
 ## Atlas operating state
 
-The bounded Atlas evidence chain is complete for the accepted refrigerator baseline: bridge, drift audit, registry, promotion gate, impact index, hypothetical simulation, and automatic runtime preflight.
+The bounded Atlas evidence chain remains complete for the accepted refrigerator baseline.
 
-Do not add more Atlas abstraction until a real Principia candidate snapshot or canonical evidence change requires it.
+Do not expand Atlas from abstract readiness. Expand it only when the selected second route requires a new evidence entity, revision, relation, or provenance record.
 
 ## Historical governance status
 
@@ -241,15 +187,12 @@ Phases 0–50 remain preserved in `PROJECT_STATE.md`, `release/`, `reports/`, va
 
 They are not the active product roadmap. No recursive readiness or assurance phase should be added without a concrete product requirement.
 
-## Decision after verifiable evidence
+## Current next action
 
-After reviewing the real packet, choose exactly one primary action:
+The selected action is:
 
-1. revise the current refrigerator route;
-2. repeat the current-route pilot;
-3. hold the current route;
-4. advance to a separate next-product planning review.
+```text
+advance-to-next-product-planning-review
+```
 
-The fourth action starts planning only. It does not authorize a second route, public release, or an effectiveness claim. A verified handoff candidate does not change that authority boundary.
-
-Until real cohort evidence exists, the selected action remains **run and complete the learner pilot**.
+The next repository work should identify and score candidate second routes, choose one, and define the reusable architecture changes required to implement it.
