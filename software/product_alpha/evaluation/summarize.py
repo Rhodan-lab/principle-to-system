@@ -63,6 +63,14 @@ PII_KEYS = {
     "school",
     "username",
 }
+PII_TEXT_PATTERNS = (
+    re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:name|school|username|phone|email|address|birthdate|date of birth)\s*:",
+        re.IGNORECASE,
+    ),
+    re.compile(r"(?:\+?\d[\s().-]*){7,}"),
+)
 
 
 def _object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -84,6 +92,10 @@ def _contains_unsupported_control(value: str, *, allow_multiline: bool) -> bool:
         (ord(character) < 32 and character not in allowed) or ord(character) == 127
         for character in value
     )
+
+
+def _contains_personal_data_text(value: str) -> bool:
+    return any(pattern.search(value) for pattern in PII_TEXT_PATTERNS)
 
 
 def _walk_keys(value: Any) -> Iterable[str]:
@@ -208,6 +220,10 @@ def validate_session(
             raise ValueError(
                 f"line {line_number}: confusion tag contains unsupported control characters"
             )
+        if _contains_personal_data_text(tag):
+            raise ValueError(
+                f"line {line_number}: confusion tag contains possible personal data"
+            )
         if tag in seen_tags:
             raise ValueError(
                 f"line {line_number}: duplicate confusion tag {tag!r} is not allowed"
@@ -230,6 +246,10 @@ def validate_session(
     if _contains_unsupported_control(notes, allow_multiline=True):
         raise ValueError(
             f"line {line_number}: facilitator_notes contains unsupported control characters"
+        )
+    if _contains_personal_data_text(notes):
+        raise ValueError(
+            f"line {line_number}: facilitator_notes contains possible personal data"
         )
 
     return session
