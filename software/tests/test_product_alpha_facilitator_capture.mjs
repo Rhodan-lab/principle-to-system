@@ -16,6 +16,7 @@ const {
   markCaptured,
   startNextSession,
   captureView,
+  recorderAvailability,
   validationFocusSelector,
 } = sandbox.module.exports;
 
@@ -222,4 +223,44 @@ test("clipboard failure restores the download fallback", () => {
   assert.ok(cancelAt < applyAt, "failed copy must release the reservation first");
   assert.ok(applyAt < statusAt, "controls must be re-enabled before fallback guidance");
   assert.ok(statusAt < focusAt, "fallback guidance must be set before focus moves");
+});
+
+test("recorder availability distinguishes loading, ready, and error", () => {
+  assert.deepEqual(plain(recorderAvailability("loading")), {
+    busy: true,
+    disabled: true,
+  });
+  assert.deepEqual(plain(recorderAvailability("ready")), {
+    busy: false,
+    disabled: false,
+  });
+  assert.deepEqual(plain(recorderAvailability("error")), {
+    busy: false,
+    disabled: true,
+  });
+  assert.throws(() => recorderAvailability("unknown"), /invalid recorder availability/);
+});
+
+test("recorder load failure disables inert controls and focuses the error", () => {
+  assert.match(html, /function applyRecorderAvailability\(state\)/);
+  assert.match(html, /form\.setAttribute\("aria-busy",String\(view\.busy\)\)/);
+  assert.match(html, /form\.setAttribute\("aria-disabled","true"\)/);
+  assert.match(html, /form\.querySelectorAll\("input,select,textarea,button"\)\.forEach\(node=>node\.disabled=view\.disabled\)/);
+
+  const source = html.match(/async function init\(\)\{([\s\S]*?)\}\nif\(typeof document/);
+  assert.ok(source, "init source must be testable");
+  const body = source[1];
+  const loadingAt = body.indexOf('applyRecorderAvailability("loading")');
+  const fetchAt = body.indexOf("await Promise.all(");
+  const readyAt = body.indexOf('applyRecorderAvailability("ready")');
+  const captureAt = body.indexOf("applyCaptureState()", readyAt);
+  const errorAt = body.indexOf('applyRecorderAvailability("error")');
+  const statusAt = body.indexOf("Serve the Product Alpha build", errorAt);
+  const focusAt = body.indexOf('q("#status").focus()', errorAt);
+
+  assert.ok(loadingAt < fetchAt, "controls must lock before asset loading begins");
+  assert.ok(fetchAt < readyAt, "controls become ready only after assets load");
+  assert.ok(readyAt < captureAt, "capture state applies after controls become available");
+  assert.ok(errorAt < statusAt, "inert controls must disable before the error is announced");
+  assert.ok(statusAt < focusAt, "the error must be announced before focus moves");
 });
