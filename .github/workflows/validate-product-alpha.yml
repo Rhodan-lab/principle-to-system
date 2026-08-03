@@ -121,3 +121,41 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-workspace-readme-route-fix:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-route-aware-evidence'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out evidence branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-route-aware-evidence
+          fetch-depth: 0
+      - name: Apply bounded workspace README fix
+        run: |
+          if grep -q 'review/{route_slug}-review-decision.json' software/product_alpha/evaluation/prepare_workspace.py; then
+            exit 0
+          fi
+          python3 software/product_alpha/_fix_route_workspace_readme.py
+      - name: Validate distributed workspace documentation
+        env:
+          PYTHONWARNINGS: error::SyntaxWarning
+        run: |
+          python3 -m py_compile software/product_alpha/evaluation/prepare_workspace.py
+          python3 -m unittest \
+            software.tests.test_product_alpha_distributed_evidence_chain \
+            software.tests.test_product_alpha_workspace -v
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/evaluation/prepare_workspace.py "
+      - name: Commit workspace README fix
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/evaluation/prepare_workspace.py
+          git commit -m "Make generated workspace docs route-specific"
+          git push origin HEAD:agent/product-alpha-route-aware-evidence
