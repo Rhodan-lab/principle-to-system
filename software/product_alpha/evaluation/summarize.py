@@ -25,6 +25,8 @@ MAX_SESSION_ID_LENGTH = 120
 MAX_CONFUSION_TAGS = 32
 MAX_CONFUSION_TAG_LENGTH = 80
 MAX_FACILITATOR_NOTES_LENGTH = 1200
+MAX_INPUT_BYTES = 16 * 1024 * 1024
+MAX_SESSION_RECORDS = 500
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
 SCORE_KEYS = [
     "mechanism_explanation",
@@ -234,15 +236,30 @@ def validate_session(
 
 
 def load_sessions(path: Path) -> list[dict[str, Any]]:
+    with path.open("rb") as stream:
+        raw = stream.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        raise ValueError(
+            f"input exceeds the {MAX_INPUT_BYTES}-byte Product Alpha session limit"
+        )
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError("input must be UTF-8") from exc
+
     sessions: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
     cohort_build_id: str | None = None
     cohort_route_id: str | None = None
-    for line_number, raw_line in enumerate(
-        path.read_text(encoding="utf-8").splitlines(), 1
-    ):
+    record_count = 0
+    for line_number, raw_line in enumerate(text.splitlines(), 1):
         if not raw_line.strip():
             continue
+        record_count += 1
+        if record_count > MAX_SESSION_RECORDS:
+            raise ValueError(
+                f"input contains more than {MAX_SESSION_RECORDS} Product Alpha sessions"
+            )
         try:
             value = json.loads(
                 raw_line,
