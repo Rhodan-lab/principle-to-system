@@ -43,21 +43,74 @@ jobs:
           if text.count(scan_old) != 1:
               raise SystemExit(f"transformer scan guard: expected one anchor, found {text.count(scan_old)}")
           text = text.replace(scan_old, scan_new, 1)
-          old = '''replace_once(
+
+          decision_old = '''replace_once(
               record,
               '        "evidence_status": readiness["evidence_status"],\\n        "sessions": readiness["sessions"],',
               '        "evidence_status": readiness["evidence_status"],\\n        "sessions": readiness["sessions"],\\n        "observation_mode": "optional-descriptive",\\n        "advisory_only": True,\\n        "roadmap_gate": False,\\n        "decision_authority": False,',
               "decision top-level advisory fields",
           )'''
-          new = '''replace_once(
+          decision_new = '''replace_once(
               record,
               '        "evidence_status": readiness["evidence_status"],\\n        "sessions": readiness["sessions"],\\n        "review_packet_binding": {',
               '        "evidence_status": readiness["evidence_status"],\\n        "sessions": readiness["sessions"],\\n        "observation_mode": "optional-descriptive",\\n        "advisory_only": True,\\n        "roadmap_gate": False,\\n        "decision_authority": False,\\n        "review_packet_binding": {',
               "decision top-level advisory fields",
           )'''
-          if text.count(old) != 1:
-              raise SystemExit(f"decision record transformer block: expected one anchor, found {text.count(old)}")
-          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          if text.count(decision_old) != 1:
+              raise SystemExit(f"decision record transformer block: expected one anchor, found {text.count(decision_old)}")
+          text = text.replace(decision_old, decision_new, 1)
+
+          handoff_old = """replace_once(
+              handoff,
+              '''    boundaries = packet.get(\"boundaries\")
+              if not isinstance(boundaries, dict):
+                  raise ValueError(\"review packet boundaries must be an object\")''',
+              '''    review = packet.get(\"review\")
+              if not isinstance(review, dict):
+                  raise ValueError(\"review packet review must be an object\")
+              for key, expected in (
+                  (\"planning_review_eligible\", False),
+                  (\"advisory_only\", True),
+                  (\"roadmap_gate\", False),
+                  (\"decision_authority\", False),
+              ):
+                  if review.get(key) is not expected:
+                      raise ValueError(f\"review packet advisory field {key!r} is invalid\")
+              boundaries = packet.get(\"boundaries\")
+              if not isinstance(boundaries, dict):
+                  raise ValueError(\"review packet boundaries must be an object\")''',
+              \"handoff review advisory validation\",
+          )"""
+          handoff_new = """replace_once(
+              handoff,
+              '''    summary = packet.get(\"aggregate_summary\")
+              boundaries = packet.get(\"boundaries\")
+              if not isinstance(summary, dict) or set(summary) != SAFE_SUMMARY_KEYS:
+                  raise ValueError(\"review packet aggregate summary fields are not handoff-safe\")
+              if not isinstance(boundaries, dict):
+                  raise ValueError(\"review packet boundaries must be an object\")''',
+              '''    summary = packet.get(\"aggregate_summary\")
+              review = packet.get(\"review\")
+              boundaries = packet.get(\"boundaries\")
+              if not isinstance(summary, dict) or set(summary) != SAFE_SUMMARY_KEYS:
+                  raise ValueError(\"review packet aggregate summary fields are not handoff-safe\")
+              if not isinstance(review, dict):
+                  raise ValueError(\"review packet review must be an object\")
+              for key, expected in (
+                  (\"planning_review_eligible\", False),
+                  (\"advisory_only\", True),
+                  (\"roadmap_gate\", False),
+                  (\"decision_authority\", False),
+              ):
+                  if review.get(key) is not expected:
+                      raise ValueError(f\"review packet advisory field {key!r} is invalid\")
+              if not isinstance(boundaries, dict):
+                  raise ValueError(\"review packet boundaries must be an object\")''',
+              \"handoff review advisory validation\",
+          )"""
+          if text.count(handoff_old) != 1:
+              raise SystemExit(f"handoff transformer block: expected one anchor, found {text.count(handoff_old)}")
+          path.write_text(text.replace(handoff_old, handoff_new, 1), encoding="utf-8")
           PY
           python3 software/product_alpha/_make_optional_observation_advisory_only.py
       - name: Validate advisory-only authority boundary
