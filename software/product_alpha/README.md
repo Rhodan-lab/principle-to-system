@@ -1,321 +1,194 @@
-# Principia Product Alpha 0.1
+# Principia Product Alpha 0.2
 
-This package is the first learner-facing product slice built from the existing Principia material foundation. It replaces phase-count growth with a concrete refrigerator journey, deterministic internal review, and optional local field-evaluation tools that require no accounts, analytics, cloud storage, or external runtime calls.
+Product Alpha is a local-first learner application built from canonical Principia Markdown and JSON. It now supports two independently buildable routes through one route-driven learner shell:
 
-## Alpha route
+- `refrigerator` using `thermal-cabinet-v1`;
+- `distributed-information` using `queue-delay-fluid-v1`.
 
-The first route asks a learner to understand a domestic refrigerator through five steps:
+The package requires no account, analytics, cloud storage, browser persistence, live Atlas call, or external runtime dependency.
 
-1. observe surprising behavior;
-2. map system boundaries and flows;
-3. manipulate a minimum thermal model;
-4. diagnose normal cycling versus abnormal short-cycling;
-5. redesign under constraints.
+## Learner grammar
 
-Canonical Principia Markdown remains authoritative. The build extracts required sections from the existing system dossier, failure pattern, investigation, and design challenge. The route configuration contains interaction structure, prompts, a bounded model, and pinned Atlas references; it does not duplicate the canonical learning corpus.
-
-## Optional field-evaluation path
-
-This path is retained for optional external observation or future research. It is not required for route planning, implementation, or repository progress.
-
-Prepare a new private destination outside the repository before any optional observation session:
-
-```bash
-python3 software/product_alpha/prepare_pilot.py \
-  --workspace /private/path/refrigerator-cohort
-```
-
-Preparation performs a deterministic build check, packages a fresh temporary build, starts the exact product on an OS-selected `127.0.0.1` port, fetches the learner page, build-bound recorder, build-bound Pilot Lab, route payload, and exact build manifest, verifies no-store and security response headers, and confirms that the served manifest bytes match the 64-character Pilot build ID. The workspace is created only after that smoke gate succeeds.
-
-A successful command reports:
+Both routes use the same progression:
 
 ```text
-pilot-preparation-passed
+Observe → Map → Model → Diagnose → Redesign
 ```
 
-It stores no session data and creates no placeholder evidence. Smoke failure leaves no workspace. Repository-local or existing destinations are rejected without overwrite.
+The shared shell owns:
 
-Launch every participant session through the prepared workspace:
+- navigation and step state;
+- learner notes that remain in the active tab;
+- prediction-before-model validation;
+- diagnosis-before-feedback validation;
+- canonical content rendering;
+- keyboard access, visible focus, and live error recovery;
+- evidence and claim boundaries;
+- fail-closed route loading.
 
-```bash
-python3 software/product_alpha/launch_workspace.py \
-  --workspace /private/path/refrigerator-cohort \
-  --open
-```
+Route configuration or a model adapter owns:
 
-The launcher rebuilds Product Alpha and fails closed unless the current deterministic build exactly matches `workspace.json`. Only then does it serve the learner route, recorder, and Pilot Lab on `127.0.0.1`. Every recorder export carries that exact build ID. The launcher stores no session data and does not modify the workspace.
+- activity title;
+- parameter controls, labels, ranges, and units;
+- prediction choices;
+- model equations and execution;
+- summaries and output names;
+- chart title and description;
+- model limitations.
 
-Useful lower-level options remain available:
+## Model-adapter boundary
 
-```bash
-# Verify workspace/build binding without serving
-python3 software/product_alpha/launch_workspace.py check \
-  --workspace /private/path/refrigerator-cohort
-
-# Verify deterministic files and build identity
-python3 software/product_alpha/run_pilot.py check
-
-# Exercise the complete ephemeral loopback HTTP path
-python3 software/product_alpha/run_pilot.py smoke
-
-# Create an empty workspace from an already recorded build ID
-python3 software/product_alpha/evaluation/prepare_workspace.py \
-  --workspace /private/path/refrigerator-cohort \
-  --expect-build-id <64-character-pilot-build-id>
-```
-
-A bare `python3 -m http.server` launch is static inspection only. It does not create the supported build-bound recorder and Pilot Lab URLs or enforce workspace/build identity, so it must not collect pilot evidence.
-
-## Private cohort workspace
-
-Preparation creates:
+The local `model-adapters.js` registry implements:
 
 ```text
-refrigerator-cohort/
-├── README.md
-├── workspace.json
-├── incoming-sessions/
-├── verified/
-└── review/
+validate(model, parameters)
+run(model, parameters)
+summarize(model, result)
+describeChart(model, result)
+draw(model, result, chart, description)
 ```
 
-The evidence directories begin empty. The generated README includes shell-safe commands for the complete path through handoff verification.
-
-At any time, verify the strongest completed stage and print the next valid action without writing:
-
-```bash
-python3 software/product_alpha/evaluation/workspace_status.py \
-  --workspace /private/path/refrigerator-cohort
-```
-
-Recognized stages are:
+The current adapters are:
 
 ```text
-prepared
-→ collecting
-→ ready-to-assemble
-→ intake-verified
-→ review-ready-for-decision
-→ decision-verified
-→ handoff-verified
+thermal-cabinet-v1
+queue-delay-fluid-v1
 ```
 
-The status command verifies every artifact required by the current stage and rejects partial or out-of-order intake, review, decision, or handoff artifacts.
+Route-specific calculations are not embedded in the generic learner shell.
 
-Do not treat the workspace, empty directories, intake manifest, review packet, decision record, receipt, handoff candidate, or workspace manifest as learner evidence. Do not place participant names, contact details, school details, account identifiers, or other identifying information in the workspace.
+## Run refrigerator
 
-## Collection and non-writing preflight
-
-After each facilitator-reviewed recorder export is placed in `incoming-sessions/`, validate all current files without sealing the cohort:
+Refrigerator remains the default route.
 
 ```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py check \
-  --workspace /private/path/refrigerator-cohort
+python3 software/product_alpha/run_pilot.py --route refrigerator --open
 ```
 
-Preflight accepts individual `.jsonl` or `.json` exports containing one session object each. It validates the session contract, route, exact build ID, privacy boundaries, source file types, anonymous labels, route order, score ranges, duplicate IDs, and personal-data fields. It predicts the exact combined JSONL and source-record hashes, reports the valid session count and evidence status, and writes nothing. It is safe to repeat after every new session.
-
-## Immutable cohort intake
-
-After collection is deliberately closed and at least five valid sessions are present, create the immutable intake:
+Equivalent default command:
 
 ```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py \
-  --workspace /private/path/refrigerator-cohort
+python3 software/product_alpha/run_pilot.py --open
 ```
 
-Normal assembly refuses fewer than five sessions before writing. When recruitment or execution intentionally stops early, close the incomplete cohort explicitly:
+The route uses reviewed canonical sources for the refrigerator system, feedback instability, room-cooling investigation, and passive-cooler redesign challenge.
+
+## Run distributed information
 
 ```bash
-python3 software/product_alpha/evaluation/assemble_workspace.py \
-  --workspace /private/path/refrigerator-cohort \
-  --allow-incomplete
+python3 software/product_alpha/run_pilot.py --route distributed-information --open
 ```
 
-The override records deliberate early closure; it does not make the evidence complete or planning-review eligible.
+The route uses reviewed canonical sources for web-service requests, retry-storm queue collapse, queue delay near capacity, and resilient school information-service design.
 
-Assembly revalidates every source, sorts sessions by anonymous ID, and exclusively writes:
+Its model is synthetic and local. It reasons about arrival rate, service capacity, retry fraction, utilization, stable mean delay under stated assumptions, backlog growth, finite queue capacity, and estimated rejected work. It does not measure or predict a real service.
+
+## Route-bound packaging
+
+Every build writes one route payload and injects the same route identity into the packaged learner HTML.
+
+The learner loads:
 
 ```text
-verified/anonymous-sessions.jsonl
-verified/intake-manifest.json
+data/${routeId}.json
 ```
 
-The intake manifest records every raw-source SHA-256, the source-record-set SHA-256, and the exact combined JSONL SHA-256. Raw files are not renamed, moved, or modified. Existing verified outputs are never overwritten.
+and fails closed if the payload route ID does not match the packaged marker.
 
-## Workspace-bound review
-
-Verify that the intake and raw sources remain unchanged:
-
-```bash
-python3 software/product_alpha/evaluation/review_workspace.py check \
-  --workspace /private/path/refrigerator-cohort
-```
-
-The command independently checks the repository-external workspace, privacy boundaries, exact route and build, every incoming source hash, intake-manifest hash, combined JSONL hash, session count, summary contract, and evidence status.
-
-Create the immutable private review packet:
-
-```bash
-python3 software/product_alpha/evaluation/review_workspace.py \
-  --workspace /private/path/refrigerator-cohort
-```
-
-It writes:
+The deterministic package includes:
 
 ```text
-review/refrigerator-review.json
-review/refrigerator-review.md
+index.html
+model-adapters.js
+facilitator.html
+pilot-lab.html
+evaluation/rubric.json
+evaluation/session-template.json
+data/<route-id>.json
+build-manifest.json
 ```
 
-The packet contains the verified de-identified aggregate and decision options. It excludes raw session records, facilitator notes, and facilitator-authored custom confusion-tag text; refuses repository output and overwrite; and leaves the product decision pending for a human.
+The manifest and Pilot build identity bind the exact packaged bytes.
 
-`verify_cohort.py` and `prepare_review.py` remain lower-level tools. The workspace-bound command is authoritative because it proves that the review still matches the immutable intake and unchanged raw exports.
-
-## Sealed human decision
-
-Do not edit the review packet. Verify readiness first:
+## Validate both routes
 
 ```bash
-python3 software/product_alpha/evaluation/record_decision.py check \
-  --workspace /private/path/refrigerator-cohort
-```
-
-After reviewing the aggregate together with the separate private facilitator notes, record exactly one human action:
-
-```bash
-python3 software/product_alpha/evaluation/record_decision.py \
-  --workspace /private/path/refrigerator-cohort \
-  --action <allowed-primary-action> \
-  --reviewer "<role-or-initials>" \
-  --review-date YYYY-MM-DD \
-  --rationale "<de-identified rationale>" \
-  --next-checkpoint "<next checkpoint>"
-```
-
-Allowed actions are:
-
-- `revise-current-route`;
-- `repeat-current-route-pilot`;
-- `hold-current-route`;
-- `advance-to-next-product-planning-review`.
-
-The fourth action is rejected unless the cohort reached `ready-for-human-review`. Recording writes an exclusive artifact trio:
-
-```text
-review/refrigerator-review-decision.json
-review/refrigerator-review-decision.md
-review/refrigerator-review-decision-receipt.json
-```
-
-The receipt seals the decision JSON and Markdown hashes together with the review, intake, combined-cohort, and source-record bindings. Recording never edits the review packet, overwrites a decision artifact, or modifies the repository.
-
-Verify the completed decision and every earlier evidence binding without writing:
-
-```bash
-python3 software/product_alpha/evaluation/record_decision.py verify \
-  --workspace /private/path/refrigerator-cohort
-```
-
-The receipt provides local tamper evidence. It is not a digital signature, trusted timestamp, external notarization, or proof of authorship.
-
-Keep participant identities out of reviewer, rationale, and checkpoint text. A role label or initials are sufficient. A recorded planning-review action starts a separate planning review only; it does not authorize a second route, public release, SaaS expansion, a learning-effectiveness claim, or product-market fit.
-
-## De-identified repository handoff
-
-After decision verification, check a repository-external handoff candidate without writing:
-
-```bash
-python3 software/product_alpha/evaluation/prepare_handoff.py check \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-```
-
-Create the candidate pair:
-
-```bash
-python3 software/product_alpha/evaluation/prepare_handoff.py \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-```
-
-Verify it against the unchanged decision and evidence chain:
-
-```bash
-python3 software/product_alpha/evaluation/prepare_handoff.py verify \
-  --workspace /private/path/refrigerator-cohort \
-  --output-prefix /private/path/refrigerator-cohort/handoff/refrigerator-product-change
-```
-
-The handoff JSON and Markdown contain only an allowlisted de-identified aggregate, the verified human action, revision signals, and evidence hashes. They exclude raw sessions, anonymous session identifiers, facilitator notes, custom confusion-tag text, reviewer identity, review date, private rationale, checkpoint text, and local workspace paths.
-
-Handoff outputs must remain outside the repository and are non-overwriting. They do not authorize or perform a repository change. A human must inspect the candidate and create a separate normal pull request.
-
-## Pilot Lab
-
-`pilot-lab.html` runs entirely in the current browser tab and can:
-
-- read one or many local JSONL files;
-- add batches without silently discarding earlier files;
-- explicitly replace or clear the in-memory file set;
-- validate records against the Product Alpha session contract and launcher build;
-- reject mixed-build cohorts, malformed records, personal-data fields, duplicate labels, and repeated files;
-- calculate completion, duration, rubric averages, confusion counts, and voluntary continuation;
-- mark cohorts below five valid sessions as incomplete;
-- surface documented revision triggers;
-- export aggregate Markdown and JSON;
-- export combined validated JSONL for private local use.
-
-Refreshing clears Pilot Lab state. Aggregate exports omit facilitator notes. A validated JSONL export still contains private raw anonymous records. The command-line workspace chain is the authoritative evidence path.
-
-## Validation
-
-```bash
-python3 software/product_alpha/build.py check
-python3 software/product_alpha/run_pilot.py check
-python3 software/product_alpha/run_pilot.py smoke
+python3 software/product_alpha/build.py check --route refrigerator
+python3 software/product_alpha/build.py check --route distributed-information
+python3 software/product_alpha/run_pilot.py check --route refrigerator
+python3 software/product_alpha/run_pilot.py check --route distributed-information
 node --test software/tests/test_product_alpha*.mjs
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-CI covers deterministic output, canonical extraction, route completeness, exact-revision Atlas references, browser-state boundaries, recorder capture locking, Pilot Lab batch handling, loopback-only serving, workspace/build binding, intake preflight and assembly, source hashing, tamper rejection, review de-identification, sealed decision creation and verification, handoff privacy and rollback, stage reporting, repository-output refusal, and clean-repository behavior.
+The loopback launcher binds only to `127.0.0.1`, rejects untrusted Host headers, uses no-store and restrictive response headers, verifies the route payload and manifest, and requires the local adapter asset.
 
-## Internal multi-perspective review
+## Product authorities
 
-The active product authority is the deterministic eight-perspective review:
-
-- `reports/product-alpha-0-1-multi-perspective-review.json`
-- `reports/product-alpha-0-1-multi-perspective-review.md`
-
-Run the read-only validator:
+Validate the internal eight-perspective Product Alpha review:
 
 ```bash
 python3 software/product_alpha/evaluation/validate_internal_review.py check
 ```
 
-The current decision is `advance-to-next-product-planning-review`. Product Alpha 0.1 is the stable refrigerator baseline; the next task is selecting and implementing a second route to test architectural reuse.
+Validate the second-route selection and implemented contract:
 
-Internal review supports claims about product coherence, scientific boundaries, accessibility contracts, privacy, security, deterministic operation, provenance, and maintainability. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, or public production readiness.
+```bash
+python3 software/product_alpha/evaluation/validate_route_selection.py check
+```
+
+The implemented contract is:
+
+```text
+software/product_alpha/route-contracts/distributed-information.json
+status: implemented-local-alpha
+```
+
+## Current evidence-record limitation
+
+Learner packaging and launch are route-aware. The optional facilitator and evidence-record chain still contains a refrigerator-specific session-template route ID.
+
+Until that is corrected, do not treat distributed-information recorder exports as route-integrity-complete evidence. The next product milestone is:
+
+```text
+make-facilitator-and-evidence-records-route-aware
+```
+
+This limitation does not block local learner-route development or inspection. It prevents optional evidence from being mislabeled.
 
 ## Optional field observation
 
-[`PILOT.md`](PILOT.md) documents an optional local observation workflow. It has no minimum cohort requirement and does not authorize or block roadmap progress. Any records remain private, repository-external, and non-authoritative unless a future decision explicitly adopts them.
+Field observation is optional research, not a roadmap gate or release prerequisite.
 
-## Boundaries
+[`PILOT.md`](PILOT.md) documents the repository-external workspace, recorder, Pilot Lab, aggregation, review, decision, and handoff tools. Those tools retain privacy, non-overwrite, hash-binding, and no-repository-mutation boundaries.
 
-- no account or cloud dependency;
-- no analytics;
-- no external network request;
-- no automatic repository mutation;
-- no live Atlas call;
-- no inherited Atlas or Principia status;
-- learner notes remain only in the current browser tab;
-- recorder and Pilot Lab state remain only in the current browser tab;
-- raw pilot records remain local, anonymous, private, and facilitator-controlled;
-- private workspaces, review packets, decisions, receipts, and handoff candidates remain outside the repository;
-- launchers and smoke validation bind only to `127.0.0.1` and store no session data;
-- preparation creates no placeholder evidence;
-- incomplete intake requires explicit authorization and stays incomplete;
-- review, decision, and handoff verification reject changed earlier evidence;
-- the thermal model supports reasoning and is not repair or safety guidance;
-- aggregate evidence remains descriptive and every product action remains human-supplied.
+They must not collect identifying information, and they must not be used for distributed-information evidence until route identity is bound through the full record chain.
+
+## Safety and privacy boundaries
+
+- Keep the distributed-information route synthetic and offline.
+- Do not connect model execution to a real service, account, school system, network, or device.
+- Use fictional content and no personal information.
+- Keep learner notes and recorder state local.
+- Do not add accounts, analytics, browser persistence, automatic upload, or live Atlas calls.
+- Do not treat a simplified model as proof about a real system.
+
+## Claim boundary
+
+The current package may support claims about:
+
+- two buildable and loopback-runnable learner routes;
+- reusable model-adapter architecture;
+- deterministic route-bound packaging;
+- local-first privacy and security contracts;
+- tested prediction, diagnosis, accessibility, and failure-recovery behavior.
+
+It does not establish:
+
+- empirical learning effectiveness;
+- comprehension, retention, transfer, or engagement outcomes;
+- performance or security of a real distributed service;
+- product-market fit;
+- public production readiness.
+
+These are claim boundaries, not a requirement to run a real learner cohort before continuing repository development.
