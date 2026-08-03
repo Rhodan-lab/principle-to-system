@@ -97,7 +97,7 @@
       "status": "pass",
       "summary": "The product is local-first, has no accounts or analytics, avoids browser persistence, binds only to loopback, and fails closed on untrusted host or asset conditions.",
       "evidence": [
-        "software/product_alpha/LOOPBACK_SECURITY.md",
+        "software/product_alpha/SECURITY.md",
         "software/product_alpha/run_pilot.py",
         "software/tests/test_product_alpha_pilot_smoke.py"
       ],
