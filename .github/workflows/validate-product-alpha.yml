@@ -121,3 +121,46 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-source-build-identity:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-source-build-identity'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out build identity branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-source-build-identity
+          fetch-depth: 0
+      - name: Apply bounded source migration
+        run: |
+          if grep -q 'const BUILD_ID_PATTERN=/^[0-9a-f]{64}$/' software/product_alpha/facilitator.html && \
+             grep -q 'const BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,EXPECTED_BUILD_ID=' software/product_alpha/pilot-lab.html && \
+             ! grep -q 'FACILITATOR_TRANSFORMS' software/product_alpha/build.py; then
+            exit 0
+          fi
+          python3 software/product_alpha/_move_build_identity_to_source.py
+      - name: Validate source and packaged build identity
+        run: |
+          python3 -m py_compile software/product_alpha/build.py
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha_cohort_binding.py' -v
+          node --test \
+            software/tests/test_product_alpha_facilitator_capture.mjs \
+            software/tests/test_product_alpha_pilot_lab_batches.mjs
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/build.py software/product_alpha/facilitator.html software/product_alpha/pilot-lab.html software/tests/test_product_alpha_cohort_binding.py "
+      - name: Commit source build identity migration
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/build.py software/product_alpha/facilitator.html software/product_alpha/pilot-lab.html software/tests/test_product_alpha_cohort_binding.py
+          git commit -m "Keep build identity behavior in Product Alpha source"
+          git push origin HEAD:agent/product-alpha-source-build-identity
