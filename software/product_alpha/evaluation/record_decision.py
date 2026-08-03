@@ -71,7 +71,8 @@ def _regular_bytes(path: Path, label: str) -> bytes:
 
 
 def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
-    prefix = review_prefix.expanduser().resolve(strict=False)
+    expanded = review_prefix.expanduser()
+    prefix = expanded.parent.resolve(strict=False) / expanded.name
     json_path = Path(f"{prefix}-decision.json")
     markdown_path = Path(f"{prefix}-decision.md")
     receipt_path = Path(f"{prefix}-decision-receipt.json")
@@ -79,6 +80,13 @@ def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
         if _is_within(path, REPO_ROOT):
             raise ValueError("decision records must be written outside the repository")
     return json_path, markdown_path, receipt_path
+
+
+def _decision_output_state(paths: Sequence[Path]) -> bool:
+    states = [prepare_review.path_present(path) for path in paths]
+    if any(states) and not all(states):
+        raise ValueError("decision artifact trio is incomplete")
+    return all(states)
 
 
 def _read_canonical_object(raw: bytes, label: str) -> dict[str, object]:
@@ -152,6 +160,8 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
             raise ValueError(f"optional review field {key!r} is invalid")
 
     decision_json, decision_markdown, decision_receipt = _decision_paths(review_prefix)
+    decision_paths = (decision_json, decision_markdown, decision_receipt)
+    decision_outputs_complete = _decision_output_state(decision_paths)
     return {
         **verification,
         "decision": "optional-advisory-ready",
@@ -167,10 +177,8 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
         "decision_json": str(decision_json),
         "decision_markdown": str(decision_markdown),
         "decision_receipt": str(decision_receipt),
-        "decision_outputs_exist": any(
-            path.exists()
-            for path in (decision_json, decision_markdown, decision_receipt)
-        ),
+        "decision_outputs_exist": decision_outputs_complete,
+        "decision_outputs_complete": decision_outputs_complete,
     }
 
 
@@ -359,7 +367,7 @@ def write_decision_outputs(
 ) -> tuple[Path, Path, Path, str, str]:
     json_path, markdown_path, receipt_path = _decision_paths(review_prefix)
     for path in (json_path, markdown_path, receipt_path):
-        if path.exists():
+        if prepare_review.path_present(path):
             raise FileExistsError(f"refusing to overwrite existing decision output: {path}")
     json_bytes = prepare_review.canonical_json(record)
     markdown_bytes = render_markdown(record).encode("utf-8")
@@ -493,10 +501,8 @@ def verify_workspace_decision(workspace: Path) -> dict[str, object]:
     markdown_path = Path(str(readiness["decision_markdown"]))
     receipt_path = Path(str(readiness["decision_receipt"]))
 
-    exists = [path.exists() for path in (json_path, markdown_path, receipt_path)]
-    if any(exists) and not all(exists):
-        raise ValueError("decision artifact trio is incomplete")
-    if not all(exists):
+    decision_paths = (json_path, markdown_path, receipt_path)
+    if not _decision_output_state(decision_paths):
         raise ValueError("decision artifacts do not exist")
 
     json_bytes = _regular_bytes(json_path, "decision record JSON")
