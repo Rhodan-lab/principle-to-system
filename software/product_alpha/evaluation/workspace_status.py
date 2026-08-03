@@ -6,8 +6,14 @@ from __future__ import annotations
 import argparse
 import json
 import shlex
+import sys
 from pathlib import Path
 from typing import Any, Sequence
+
+PRODUCT_ALPHA_ROOT = Path(__file__).resolve().parents[1]
+if str(PRODUCT_ALPHA_ROOT) not in sys.path:
+    sys.path.insert(0, str(PRODUCT_ALPHA_ROOT))
+import route_identity
 
 import assemble_workspace
 import prepare_handoff
@@ -142,6 +148,8 @@ def inspect_workspace(
     paths = manifest.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("workspace.json paths must be an object")
+    route_id = route_identity.validate_evidence_route_id(manifest.get("route_id"))
+    route_slug = route_identity.software_route_id(route_id)
     review_prefix = assemble_workspace._member(
         root,
         paths.get("review_output_prefix"),
@@ -150,7 +158,7 @@ def inspect_workspace(
     review_json = review_prefix.with_suffix(".json")
     review_markdown = review_prefix.with_suffix(".md")
     decision_paths = _decision_paths(review_prefix)
-    handoff_prefix = root / "handoff" / "refrigerator-product-change"
+    handoff_prefix = root / "handoff" / f"{route_slug}-product-change"
     handoff_paths = prepare_handoff._output_paths(
         handoff_prefix,
         repo_root=repo_root,
