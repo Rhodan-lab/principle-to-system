@@ -78,7 +78,12 @@ def _path_present(path: Path) -> bool:
 def _member(workspace: Path, relative: object, label: str) -> Path:
     if not isinstance(relative, str) or not relative.strip():
         raise ValueError(f"workspace manifest {label} path must be non-empty text")
-    candidate = (workspace / relative).resolve(strict=False)
+    relative_path = Path(relative)
+    if relative_path.is_absolute():
+        raise ValueError(f"workspace manifest {label} path must be relative")
+
+    unresolved = workspace / relative_path
+    candidate = unresolved.parent.resolve(strict=False) / unresolved.name
     try:
         candidate.relative_to(workspace)
     except ValueError as exc:
@@ -160,8 +165,8 @@ def _build_plan(
         raise ValueError("workspace must be outside the repository")
 
     manifest, incoming, combined, intake = _load_workspace(root)
-    if not incoming.is_dir():
-        raise ValueError("incoming session directory is missing")
+    if incoming.is_symlink() or not incoming.is_dir():
+        raise ValueError("incoming session directory must be a regular directory")
 
     entries = sorted(incoming.iterdir(), key=lambda path: path.name)
     if not entries:
