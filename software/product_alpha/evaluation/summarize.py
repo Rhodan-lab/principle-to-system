@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from collections import Counter
@@ -27,6 +28,18 @@ SCORE_KEYS = [
     "evidence_boundary",
     "redesign_tradeoff",
 ]
+SESSION_KEYS = {
+    "pilot_build_id",
+    "session_id",
+    "route_id",
+    "started",
+    "completed_steps",
+    "duration_minutes",
+    "scores",
+    "confusion_tags",
+    "voluntary_continue",
+    "facilitator_notes",
+}
 REVISION_SCORE_KEYS = (
     "mechanism_explanation",
     "failure_diagnosis",
@@ -43,6 +56,19 @@ PII_KEYS = {
     "school",
     "username",
 }
+
+
+def _object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, child in pairs:
+        if key in value:
+            raise ValueError(f"duplicate JSON key {key!r}")
+        value[key] = child
+    return value
+
+
+def _reject_nonfinite_constant(value: str) -> Any:
+    raise ValueError(f"unsupported non-finite number {value!r}")
 
 
 def _walk_keys(value: Any) -> Iterable[str]:
@@ -64,6 +90,17 @@ def validate_session(
     if found_pii:
         raise ValueError(
             f"line {line_number}: personal-data fields are not allowed: {', '.join(found_pii)}"
+        )
+
+    unknown_fields = sorted(set(session).difference(SESSION_KEYS))
+    if unknown_fields:
+        raise ValueError(
+            f"line {line_number}: unsupported session fields: {', '.join(unknown_fields)}"
+        )
+    missing_fields = sorted(SESSION_KEYS.difference(session))
+    if missing_fields:
+        raise ValueError(
+            f"line {line_number}: missing session fields: {', '.join(missing_fields)}"
         )
 
     build_id = session.get("pilot_build_id")
@@ -106,6 +143,8 @@ def validate_session(
     duration = session.get("duration_minutes")
     if not isinstance(duration, (int, float)) or isinstance(duration, bool):
         raise ValueError(f"line {line_number}: duration_minutes must be numeric")
+    if not math.isfinite(float(duration)):
+        raise ValueError(f"line {line_number}: duration_minutes must be finite")
     if duration < 0 or duration > 180:
         raise ValueError(
             f"line {line_number}: duration_minutes must be between 0 and 180"
@@ -157,11 +196,17 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
         if not raw_line.strip():
             continue
         try:
-            value = json.loads(raw_line)
+            value = json.loads(
+                raw_line,
+                object_pairs_hook=_object_without_duplicates,
+                parse_constant=_reject_nonfinite_constant,
+            )
         except json.JSONDecodeError as exc:
             raise ValueError(
                 f"line {line_number}: invalid JSON: {exc.msg}"
             ) from exc
+        except ValueError as exc:
+            raise ValueError(f"line {line_number}: invalid JSON: {exc}") from exc
         if not isinstance(value, dict):
             raise ValueError(f"line {line_number}: each session must be a JSON object")
         session = validate_session(value, line_number, cohort_route_id)
