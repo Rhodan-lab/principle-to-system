@@ -277,8 +277,8 @@ def render_markdown(candidate: dict[str, object]) -> str:
             lines.append(f"- `{signal['code']}` — {signal['message']}")
     else:
         lines.append(
-            "- No automatic revision trigger was detected. The human action remains "
-            "the decision authority."
+            "- No automatic revision trigger was detected. The internal "
+            "multi-perspective review remains the product decision authority."
         )
 
     lines.extend(
