@@ -306,8 +306,13 @@ def check_handoff(
     *,
     repo_root: Path = REPO_ROOT,
 ) -> dict[str, object]:
-    candidate = build_handoff_candidate(workspace)
     json_path, markdown_path = _output_paths(output_prefix, repo_root=repo_root)
+    output_states = (json_path.exists(), markdown_path.exists())
+    if any(output_states) and not all(output_states):
+        raise ValueError("handoff output pair is incomplete")
+
+    candidate = build_handoff_candidate(workspace)
+    outputs_complete = all(output_states)
     return {
         "contract": CONTRACT,
         "decision": "repository-handoff-candidate-ready",
@@ -318,7 +323,8 @@ def check_handoff(
         "primary_action": candidate["primary_action"],
         "output_json": str(json_path),
         "output_markdown": str(markdown_path),
-        "outputs_exist": json_path.exists() or markdown_path.exists(),
+        "outputs_exist": outputs_complete,
+        "outputs_complete": outputs_complete,
         "candidate_sha256": prepare_review.sha256(
             prepare_review.canonical_json(candidate)
         ),
