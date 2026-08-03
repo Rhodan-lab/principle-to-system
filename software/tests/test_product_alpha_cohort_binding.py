@@ -18,22 +18,27 @@ SPEC.loader.exec_module(build_module)
 
 class ProductAlphaCohortBindingTests(unittest.TestCase):
     def test_source_and_packaged_tools_bind_build_identity(self) -> None:
-        source_pilot_lab = (
-            ROOT / "software" / "product_alpha" / "pilot-lab.html"
-        ).read_text(encoding="utf-8")
+        source_root = ROOT / "software" / "product_alpha"
+        source_facilitator = (source_root / "facilitator.html").read_text(encoding="utf-8")
+        source_pilot_lab = (source_root / "pilot-lab.html").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             build_module.build(ROOT, output)
             facilitator = (output / "facilitator.html").read_text(encoding="utf-8")
             pilot_lab = (output / "pilot-lab.html").read_text(encoding="utf-8")
 
-        self.assertIn("pilot_build_id:pilotBuildId", facilitator)
-        self.assertIn('new URLSearchParams(location.search).get("build_id")', facilitator)
-        self.assertIn("Pilot build ID is missing or invalid", facilitator)
+        for asset in (source_facilitator, facilitator):
+            self.assertIn("pilot_build_id:pilotBuildId", asset)
+            self.assertIn("new URLSearchParams(location.search)", asset)
+            self.assertIn('get("build_id")', asset)
+            self.assertIn("Pilot build ID is missing or invalid", asset)
+
+        for asset in (source_pilot_lab, pilot_lab):
+            self.assertIn("EXPECTED_BUILD_ID", asset)
+            self.assertIn("pilot_build_id does not match the cohort build", asset)
+            self.assertIn("principia-product-alpha-pilot-summary/0.3", asset)
 
         self.assertIn("EXPECTED_BUILD_ID", pilot_lab)
-        self.assertIn("pilot_build_id does not match the cohort build", pilot_lab)
-        self.assertIn("principia-product-alpha-pilot-summary/0.3", pilot_lab)
         self.assertIn(",q=s=>document.querySelector(s);", source_pilot_lab)
         self.assertNotIn(",c=s=>document.querySelector(s);", source_pilot_lab)
         self.assertIn(",q=s=>document.querySelector(s);", pilot_lab)
