@@ -359,14 +359,18 @@ def write_handoff(
     for path in temporary_paths:
         if prepare_review.path_present(path):
             raise FileExistsError(f"temporary handoff output already exists: {path}")
+
+    published: list[Path] = []
     try:
         temporary_paths[0].write_bytes(json_bytes)
         temporary_paths[1].write_bytes(markdown_bytes)
-        os.replace(temporary_paths[0], json_path)
-        os.replace(temporary_paths[1], markdown_path)
+        prepare_review.publish_exclusive(temporary_paths[0], json_path)
+        published.append(json_path)
+        prepare_review.publish_exclusive(temporary_paths[1], markdown_path)
+        published.append(markdown_path)
     except Exception:
-        json_path.unlink(missing_ok=True)
-        markdown_path.unlink(missing_ok=True)
+        for path in reversed(published):
+            path.unlink(missing_ok=True)
         raise
     finally:
         for path in temporary_paths:
