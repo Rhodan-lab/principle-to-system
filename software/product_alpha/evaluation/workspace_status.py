@@ -17,6 +17,7 @@ import route_identity
 
 import assemble_workspace
 import prepare_handoff
+import prepare_review
 import record_decision
 import review_workspace
 
@@ -71,7 +72,7 @@ def _launch_command(workspace: Path) -> str:
 
 
 def _paired_state(paths: Sequence[Path], label: str) -> bool:
-    states = [path.exists() for path in paths]
+    states = [prepare_review.path_present(path) for path in paths]
     if any(states) and not all(states):
         raise ValueError(f"{label} is incomplete")
     return all(states)
@@ -85,7 +86,8 @@ def _verified_cohort_complete(report: dict[str, object], label: str) -> bool:
 
 
 def _decision_paths(review_prefix: Path) -> tuple[Path, Path, Path]:
-    prefix = review_prefix.expanduser().resolve(strict=False)
+    expanded = review_prefix.expanduser()
+    prefix = expanded.parent.resolve(strict=False) / expanded.name
     return (
         Path(f"{prefix}-decision.json"),
         Path(f"{prefix}-decision.md"),
@@ -102,15 +104,15 @@ def _artifact_state(
     handoff_paths: Sequence[Path],
 ) -> dict[str, bool]:
     return {
-        "combined_jsonl": combined.exists(),
-        "intake_manifest": intake.exists(),
-        "review_json": review_json.exists(),
-        "review_markdown": review_markdown.exists(),
-        "decision_json": decision_paths[0].exists(),
-        "decision_markdown": decision_paths[1].exists(),
-        "decision_receipt": decision_paths[2].exists(),
-        "handoff_json": handoff_paths[0].exists(),
-        "handoff_markdown": handoff_paths[1].exists(),
+        "combined_jsonl": prepare_review.path_present(combined),
+        "intake_manifest": prepare_review.path_present(intake),
+        "review_json": prepare_review.path_present(review_json),
+        "review_markdown": prepare_review.path_present(review_markdown),
+        "decision_json": prepare_review.path_present(decision_paths[0]),
+        "decision_markdown": prepare_review.path_present(decision_paths[1]),
+        "decision_receipt": prepare_review.path_present(decision_paths[2]),
+        "handoff_json": prepare_review.path_present(handoff_paths[0]),
+        "handoff_markdown": prepare_review.path_present(handoff_paths[1]),
     }
 
 
@@ -150,8 +152,8 @@ def inspect_workspace(
         raise ValueError("workspace must be outside the repository")
 
     manifest, incoming, combined, intake = assemble_workspace._load_workspace(root)
-    if not incoming.is_dir():
-        raise ValueError("incoming session directory is missing")
+    if incoming.is_symlink() or not incoming.is_dir():
+        raise ValueError("incoming session directory must be a regular directory")
     paths = manifest.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("workspace.json paths must be an object")

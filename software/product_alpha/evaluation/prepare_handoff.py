@@ -51,7 +51,8 @@ def _output_paths(
     *,
     repo_root: Path = REPO_ROOT,
 ) -> tuple[Path, Path]:
-    prefix = output_prefix.expanduser().resolve(strict=False)
+    expanded = output_prefix.expanduser()
+    prefix = expanded.parent.resolve(strict=False) / expanded.name
     json_path = prefix.with_suffix(".json")
     markdown_path = prefix.with_suffix(".md")
     repository = repo_root.resolve(strict=False)
@@ -307,7 +308,10 @@ def check_handoff(
     repo_root: Path = REPO_ROOT,
 ) -> dict[str, object]:
     json_path, markdown_path = _output_paths(output_prefix, repo_root=repo_root)
-    output_states = (json_path.exists(), markdown_path.exists())
+    output_states = (
+        prepare_review.path_present(json_path),
+        prepare_review.path_present(markdown_path),
+    )
     if any(output_states) and not all(output_states):
         raise ValueError("handoff output pair is incomplete")
 
@@ -342,7 +346,7 @@ def write_handoff(
     candidate = build_handoff_candidate(workspace)
     json_path, markdown_path = _output_paths(output_prefix, repo_root=repo_root)
     for path in (json_path, markdown_path):
-        if path.exists():
+        if prepare_review.path_present(path):
             raise FileExistsError(f"refusing to overwrite existing handoff output: {path}")
 
     json_bytes = prepare_review.canonical_json(candidate)
@@ -353,7 +357,7 @@ def write_handoff(
         markdown_path.with_name(f".{markdown_path.name}.tmp-{os.getpid()}"),
     )
     for path in temporary_paths:
-        if path.exists():
+        if prepare_review.path_present(path):
             raise FileExistsError(f"temporary handoff output already exists: {path}")
     try:
         temporary_paths[0].write_bytes(json_bytes)
@@ -392,7 +396,10 @@ def verify_handoff(
 ) -> dict[str, object]:
     expected = build_handoff_candidate(workspace)
     json_path, markdown_path = _output_paths(output_prefix, repo_root=repo_root)
-    exists = (json_path.exists(), markdown_path.exists())
+    exists = (
+        prepare_review.path_present(json_path),
+        prepare_review.path_present(markdown_path),
+    )
     if any(exists) and not all(exists):
         raise ValueError("handoff output pair is incomplete")
     if not all(exists):
