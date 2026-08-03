@@ -78,7 +78,18 @@ def _path_present(path: Path) -> bool:
 def _member(workspace: Path, relative: object, label: str) -> Path:
     if not isinstance(relative, str) or not relative.strip():
         raise ValueError(f"workspace manifest {label} path must be non-empty text")
-    relative_path = Path(relative)
+    path_text = relative.strip()
+    if "\\" in path_text:
+        raise ValueError(
+            f"workspace manifest {label} path must use normalized relative components"
+        )
+    components = path_text.split("/")
+    if any(component in {"", ".", ".."} for component in components):
+        raise ValueError(
+            f"workspace manifest {label} path must use normalized relative components"
+        )
+
+    relative_path = Path(path_text)
     if relative_path.is_absolute():
         raise ValueError(f"workspace manifest {label} path must be relative")
 
