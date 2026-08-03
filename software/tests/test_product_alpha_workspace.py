@@ -54,6 +54,17 @@ class ProductAlphaWorkspaceTests(unittest.TestCase):
             self.assertIn("verified/anonymous-sessions.jsonl", readme)
             self.assertIn("do not commit", readme.lower())
             self.assertIn("Do not treat an empty directory", readme)
+            self.assertIn("review-ready-for-advisory", readme)
+            self.assertIn("advisory-verified", readme)
+            self.assertIn("advisory-handoff-verified", readme)
+            self.assertIn("optional observation review packet", readme)
+            self.assertIn(
+                "historical filenames retain `decision` for compatibility",
+                readme,
+            )
+            self.assertNotIn("review-ready-for-decision", readme)
+            self.assertNotIn("decision-verified", readme)
+            self.assertNotIn("handoff-verified stages", readme)
             self.assertFalse((workspace / "verified" / "anonymous-sessions.jsonl").exists())
 
     def test_rejects_invalid_build_id_without_creating_workspace(self) -> None:
