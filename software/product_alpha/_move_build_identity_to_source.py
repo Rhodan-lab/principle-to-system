@@ -15,7 +15,7 @@ facilitator = Path("software/product_alpha/facilitator.html")
 replace_once(
     facilitator,
     'const q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null;',
-    'const BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null,pilotBuildId=new URLSearchParams(location.search).get("build_id")||"";',
+    'const BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null,query=typeof URLSearchParams==="function"&&typeof location==="object"?new URLSearchParams(location.search):null,pilotBuildId=query?.get("build_id")||"";',
     "facilitator build-id state",
 )
 replace_once(
@@ -41,7 +41,7 @@ pilot_lab = Path("software/product_alpha/pilot-lab.html")
 replace_once(
     pilot_lab,
     '"use strict";\nconst ROUTE_ID=',
-    '"use strict";\nconst BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,EXPECTED_BUILD_ID=new URLSearchParams(location.search).get("build_id")||"";\nconst ROUTE_ID=',
+    '"use strict";\nconst BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,query=typeof URLSearchParams==="function"&&typeof location==="object"?new URLSearchParams(location.search):null,EXPECTED_BUILD_ID=query?.get("build_id")||"";\nconst ROUTE_ID=',
     "Pilot Lab build-id state",
 )
 replace_once(
@@ -120,7 +120,7 @@ replace_once(
 replace_once(
     tests,
     '''        self.assertIn("pilot_build_id:pilotBuildId", facilitator)\n        self.assertIn('new URLSearchParams(location.search).get("build_id")', facilitator)\n        self.assertIn("Pilot build ID is missing or invalid", facilitator)\n\n        self.assertIn("EXPECTED_BUILD_ID", pilot_lab)\n''',
-    '''        for asset in (source_facilitator, facilitator):\n            self.assertIn("pilot_build_id:pilotBuildId", asset)\n            self.assertIn('new URLSearchParams(location.search).get("build_id")', asset)\n            self.assertIn("Pilot build ID is missing or invalid", asset)\n\n        for asset in (source_pilot_lab, pilot_lab):\n            self.assertIn("EXPECTED_BUILD_ID", asset)\n            self.assertIn("pilot_build_id does not match the cohort build", asset)\n            self.assertIn("principia-product-alpha-pilot-summary/0.3", asset)\n\n        self.assertIn("EXPECTED_BUILD_ID", pilot_lab)\n''',
+    '''        for asset in (source_facilitator, facilitator):\n            self.assertIn("pilot_build_id:pilotBuildId", asset)\n            self.assertIn("new URLSearchParams(location.search)", asset)\n            self.assertIn('get("build_id")', asset)\n            self.assertIn("Pilot build ID is missing or invalid", asset)\n\n        for asset in (source_pilot_lab, pilot_lab):\n            self.assertIn("EXPECTED_BUILD_ID", asset)\n            self.assertIn("pilot_build_id does not match the cohort build", asset)\n            self.assertIn("principia-product-alpha-pilot-summary/0.3", asset)\n\n        self.assertIn("EXPECTED_BUILD_ID", pilot_lab)\n''',
     "source and package build identity assertions",
 )
 replace_once(
