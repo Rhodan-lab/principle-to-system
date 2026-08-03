@@ -80,7 +80,7 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(
             first["contract"],
-            "principia-product-alpha-pilot-review-packet/0.1",
+            "principia-product-alpha-pilot-review-packet/0.2",
         )
         self.assertEqual(
             first["evidence_binding"]["input_sha256"],
@@ -100,8 +100,11 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             first["evidence_binding"]["packet_summary_sha256"],
             expected_packet_hash,
         )
-        self.assertTrue(first["review"]["planning_review_eligible"])
-        self.assertEqual(first["review"]["status"], "human-review-required")
+        self.assertFalse(first["review"]["planning_review_eligible"])
+        self.assertEqual(first["review"]["status"], "optional-advisory-review")
+        self.assertTrue(first["review"]["advisory_only"])
+        self.assertFalse(first["review"]["roadmap_gate"])
+        self.assertFalse(first["review"]["decision_authority"])
         serialized = json.dumps(first, sort_keys=True)
         self.assertNotIn("private note", serialized)
         self.assertNotIn("facilitator_notes", first["aggregate_summary"])
@@ -152,8 +155,8 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
         self.assertEqual(summary["minimum_cohort_size"], 0)
         self.assertTrue(summary["cohort_complete"])
         self.assertFalse(any(signal["code"] == "cohort-incomplete" for signal in summary["revision_signals"]))
-        self.assertTrue(packet["review"]["planning_review_eligible"])
-        self.assertEqual(packet["review"]["status"], "human-review-required")
+        self.assertFalse(packet["review"]["planning_review_eligible"])
+        self.assertEqual(packet["review"]["status"], "optional-advisory-review")
 
     def test_expected_build_mismatch_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -169,10 +172,12 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             packet = review_packet.build_review_packet(input_path, BUILD_ID)
             markdown = review_packet.render_markdown(packet)
 
-        self.assertIn("# Product Alpha Pilot Human Review", markdown)
+        self.assertIn("# Product Alpha Optional Observation Review", markdown)
+        self.assertIn("record-observation-context", markdown)
         self.assertIn("revise-current-route", markdown)
-        self.assertIn("advance-to-next-product-planning-review", markdown)
-        self.assertIn("does not automatically modify the repository", markdown)
+        self.assertNotIn("advance-to-next-product-planning-review", markdown)
+        self.assertIn("cannot authorize or block roadmap work", markdown)
+        self.assertIn("internal multi-perspective review remains the product decision authority", markdown)
         self.assertNotIn("private note", markdown)
         self.assertNotIn("facilitator_notes", markdown)
 
@@ -235,8 +240,8 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             packet = json.loads(json_path.read_text(encoding="utf-8"))
             markdown_exists = markdown_path.is_file()
 
-        self.assertIn("Product Alpha human-review packet created.", result.stdout)
-        self.assertIn("Decision: human-review-required", result.stdout)
+        self.assertIn("Product Alpha optional-advisory packet created.", result.stdout)
+        self.assertIn("Decision: optional-advisory-review", result.stdout)
         self.assertEqual(packet["pilot_build_id"], BUILD_ID)
         self.assertTrue(markdown_exists)
 

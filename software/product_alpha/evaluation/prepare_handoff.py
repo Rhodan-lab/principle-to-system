@@ -89,9 +89,20 @@ def _review_packet(readiness: dict[str, object]) -> dict[str, Any]:
     raw = _regular_bytes(review_path, "review packet JSON")
     packet = _canonical_object(raw, "review packet JSON")
     summary = packet.get("aggregate_summary")
+    review = packet.get("review")
     boundaries = packet.get("boundaries")
     if not isinstance(summary, dict) or set(summary) != SAFE_SUMMARY_KEYS:
         raise ValueError("review packet aggregate summary fields are not handoff-safe")
+    if not isinstance(review, dict):
+        raise ValueError("review packet review must be an object")
+    for key, expected in (
+        ("planning_review_eligible", False),
+        ("advisory_only", True),
+        ("roadmap_gate", False),
+        ("decision_authority", False),
+    ):
+        if review.get(key) is not expected:
+            raise ValueError(f"review packet advisory field {key!r} is invalid")
     if not isinstance(boundaries, dict):
         raise ValueError("review packet boundaries must be an object")
     required_false = (
@@ -131,6 +142,9 @@ def build_handoff_candidate(workspace: Path) -> dict[str, object]:
         "planning_review_action_selected": decision[
             "planning_review_action_selected"
         ],
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "aggregate_summary": copy.deepcopy(summary),
         "evidence_binding": {
             "decision_record_sha256": decision["decision_record_sha256"],
@@ -146,6 +160,9 @@ def build_handoff_candidate(workspace: Path) -> dict[str, object]:
         },
         "boundaries": {
             "human_decision_verified": True,
+            "advisory_only": True,
+            "roadmap_gate": False,
+            "decision_authority": False,
             "raw_session_records_included": False,
             "session_identifiers_included": False,
             "facilitator_notes_included": False,
@@ -196,8 +213,8 @@ def render_markdown(candidate: dict[str, object]) -> str:
         f"- Pilot build ID: `{candidate['pilot_build_id']}`",
         f"- Route: `{candidate['route_id']}`",
         f"- Evidence status: **{candidate['evidence_status']}**",
-        f"- Valid sessions: {candidate['sessions']}",
-        f"- Verified human action: `{candidate['primary_action']}`",
+        f"- Valid observations: {candidate['sessions']}",
+        f"- Verified advisory action: `{candidate['primary_action']}`",
         (
             "- Planning-review action selected: **"
             f"{str(candidate['planning_review_action_selected']).lower()}**"
@@ -207,9 +224,9 @@ def render_markdown(candidate: dict[str, object]) -> str:
         f"- Intake manifest SHA-256: `{binding['intake_manifest_sha256']}`",
         f"- Source-record set SHA-256: `{binding['source_records_sha256']}`",
         "",
-        "> This candidate is de-identified output for a separate human-reviewed "
-        "repository change. It is not an authorization, publication action, or proof "
-        "of learning effectiveness.",
+        "> This candidate is de-identified advisory context for the internal "
+        "multi-perspective review. It is not roadmap authority, a repository-change "
+        "authorization, a publication action, or proof of learning effectiveness.",
         "",
         "## Aggregate evidence",
         "",

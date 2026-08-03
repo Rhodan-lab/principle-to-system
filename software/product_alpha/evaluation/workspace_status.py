@@ -248,7 +248,7 @@ def inspect_workspace(
             raise ValueError("repository handoff exists before the human decision")
         return {
             **report,
-            "stage": "review-ready-for-decision",
+            "stage": "review-ready-for-advisory",
             "sessions": readiness["sessions"],
             "cohort_complete": readiness["evidence_status"]
             == "ready-for-human-review",
@@ -256,7 +256,7 @@ def inspect_workspace(
             "planning_review_eligible": readiness["planning_review_eligible"],
             "review_json_sha256": readiness["review_json_sha256"],
             "review_markdown_sha256": readiness["review_markdown_sha256"],
-            "next_action": "record-human-decision",
+            "next_action": "record-optional-advisory",
             "next_command": None,
             "next_command_template": _workspace_command(
                 "record_decision.py",
@@ -281,17 +281,12 @@ def inspect_workspace(
 
     decision = record_decision.verify_workspace_decision(root)
     action = str(decision["primary_action"])
-    follow_up = {
-        "revise-current-route": "prepare-bounded-route-revision",
-        "repeat-current-route-pilot": "prepare-new-private-cohort",
-        "hold-current-route": "hold-until-recorded-checkpoint",
-        "advance-to-next-product-planning-review": "prepare-separate-planning-review",
-    }.get(action, "review-recorded-human-action")
+    follow_up = "return-to-internal-multi-perspective-review"
 
     if not handoff_complete:
         return {
             **report,
-            "stage": "decision-verified",
+            "stage": "advisory-verified",
             "sessions": decision["sessions"],
             "cohort_complete": decision["evidence_status"]
             == "ready-for-human-review",
@@ -305,7 +300,7 @@ def inspect_workspace(
             "decision_receipt_sha256": decision["decision_receipt_sha256"],
             "post_handoff_action": follow_up,
             "handoff_output_prefix": str(handoff_prefix),
-            "next_action": "prepare-deidentified-repository-handoff",
+            "next_action": "prepare-deidentified-advisory-handoff",
             "next_command": _handoff_command(root, handoff_prefix, "prepare"),
             "validation_command": _handoff_command(root, handoff_prefix, "check"),
         }
@@ -317,7 +312,7 @@ def inspect_workspace(
     )
     return {
         **report,
-        "stage": "handoff-verified",
+        "stage": "advisory-handoff-verified",
         "sessions": handoff["sessions"],
         "cohort_complete": handoff["evidence_status"]
         == "ready-for-human-review",

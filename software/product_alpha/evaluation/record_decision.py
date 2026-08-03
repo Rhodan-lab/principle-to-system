@@ -141,8 +141,15 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
     if not isinstance(review, dict):
         raise ValueError("review packet review section must be an object")
     planning_eligible = review.get("planning_review_eligible")
-    if not isinstance(planning_eligible, bool):
-        raise ValueError("review packet planning_review_eligible must be boolean")
+    if planning_eligible is not False:
+        raise ValueError("optional review must not be planning-review eligible")
+    for key, expected in (
+        ("advisory_only", True),
+        ("roadmap_gate", False),
+        ("decision_authority", False),
+    ):
+        if review.get(key) is not expected:
+            raise ValueError(f"optional review field {key!r} is invalid")
 
     decision_json, decision_markdown, decision_receipt = _decision_paths(review_prefix)
     return {
@@ -154,6 +161,9 @@ def validate_review_ready(workspace: Path) -> dict[str, object]:
         "review_json_sha256": _sha256(packet_raw),
         "review_markdown_sha256": _sha256(markdown_raw),
         "planning_review_eligible": planning_eligible,
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "decision_json": str(decision_json),
         "decision_markdown": str(decision_markdown),
         "decision_receipt": str(decision_receipt),
@@ -174,11 +184,7 @@ def _build_decision_record(
 ) -> dict[str, object]:
     if action not in prepare_review.ALLOWED_PRIMARY_ACTIONS:
         raise ValueError(f"unsupported primary action: {action!r}")
-    planning_action_selected = action == "advance-to-next-product-planning-review"
-    if planning_action_selected and readiness["planning_review_eligible"] is not True:
-        raise ValueError(
-            "advance-to-next-product-planning-review requires ready-for-human-review evidence"
-        )
+    planning_action_selected = False
 
     return {
         "contract": CONTRACT,
@@ -188,6 +194,10 @@ def _build_decision_record(
         "route_id": readiness["route_id"],
         "evidence_status": readiness["evidence_status"],
         "sessions": readiness["sessions"],
+        "observation_mode": "optional-descriptive",
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "review_packet_binding": {
             "contract": readiness["review_packet_contract"],
             "json_sha256": readiness["review_json_sha256"],
@@ -201,6 +211,9 @@ def _build_decision_record(
         "human_decision": {
             "status": "recorded",
             "primary_action": action,
+            "advisory_only": True,
+            "roadmap_gate": False,
+            "decision_authority": False,
             "reviewer": _single_line(reviewer, "reviewer", 120),
             "review_date": _review_date(review_date),
             "rationale": _long_text(rationale, "rationale", 20, 2000),
@@ -214,6 +227,9 @@ def _build_decision_record(
         },
         "boundaries": {
             "human_supplied_decision": True,
+            "advisory_only": True,
+            "roadmap_gate": False,
+            "decision_authority": False,
             "automatic_product_decision": False,
             "automatic_repository_mutation": False,
             "second_route_authorized": False,
@@ -257,7 +273,7 @@ def render_markdown(record: dict[str, object]) -> str:
         raise ValueError("decision record sections are invalid")
     return "\n".join(
         [
-            "# Product Alpha Human Decision Record",
+            "# Product Alpha Optional Observation Advisory Record",
             "",
             f"- Contract: `{record['contract']}`",
             f"- Pilot build ID: `{record['pilot_build_id']}`",
@@ -269,7 +285,7 @@ def render_markdown(record: dict[str, object]) -> str:
             f"- Intake manifest SHA-256: `{binding['intake_manifest_sha256']}`",
             f"- Source-record set SHA-256: `{binding['source_records_sha256']}`",
             "",
-            "## Human decision",
+            "## Human advisory interpretation",
             "",
             f"- Primary action: `{decision['primary_action']}`",
             f"- Reviewer: {decision['reviewer']}",
@@ -289,9 +305,10 @@ def render_markdown(record: dict[str, object]) -> str:
             "",
             "## Decision boundary",
             "",
-            "This record captures a human product action only. It does not automatically "
-            "modify the repository, create a planning review, authorize a second route or "
-            "public release, prove learning effectiveness, or establish product-market fit.",
+            "This record captures an optional advisory interpretation only. It cannot "
+            "authorize or block roadmap work, create a planning review, modify the repository, "
+            "authorize a second route or public release, prove learning effectiveness, or "
+            "establish product-market fit. Internal multi-perspective review remains authoritative.",
             "",
         ]
     )
@@ -316,6 +333,9 @@ def _build_receipt(
         "pilot_build_id": readiness["pilot_build_id"],
         "route_id": readiness["route_id"],
         "primary_action": decision["primary_action"],
+        "advisory_only": True,
+        "roadmap_gate": False,
+        "decision_authority": False,
         "decision_json": str(json_path),
         "decision_markdown": str(markdown_path),
         "decision_receipt": str(receipt_path),
@@ -426,6 +446,9 @@ def _decision_fields(record: dict[str, object]) -> tuple[str, str, str, str, str
     expected_keys = {
         "status",
         "primary_action",
+        "advisory_only",
+        "roadmap_gate",
+        "decision_authority",
         "reviewer",
         "review_date",
         "rationale",
@@ -436,6 +459,13 @@ def _decision_fields(record: dict[str, object]) -> tuple[str, str, str, str, str
         raise ValueError("decision record human_decision fields are invalid")
     if human.get("status") != "recorded":
         raise ValueError("decision record human_decision status must be 'recorded'")
+    for key, expected in (
+        ("advisory_only", True),
+        ("roadmap_gate", False),
+        ("decision_authority", False),
+    ):
+        if human.get(key) is not expected:
+            raise ValueError(f"decision record advisory field {key!r} is invalid")
     planning = human.get("planning_review_action_selected")
     if not isinstance(planning, bool):
         raise ValueError(

@@ -61,6 +61,8 @@ class ProductAlphaStateAuthorityTests(unittest.TestCase):
         self.assertIn("optional research capability", lowered)
         self.assertIn("not a roadmap gate", lowered)
         self.assertIn("no minimum participant count", lowered)
+        self.assertIn("advisory-only", lowered)
+        self.assertIn("cannot select `advance-to-next-product-planning-review`", lowered)
         self.assertTrue(
             "does not authorize" in lowered or "do not authorize" in lowered
         )

@@ -13,13 +13,13 @@ from typing import Any, Sequence
 
 import verify_cohort
 
-CONTRACT = "principia-product-alpha-pilot-review-packet/0.1"
+CONTRACT = "principia-product-alpha-pilot-review-packet/0.2"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 ALLOWED_PRIMARY_ACTIONS = (
+    "record-observation-context",
     "revise-current-route",
     "repeat-current-route-pilot",
     "hold-current-route",
-    "advance-to-next-product-planning-review",
 )
 KNOWN_CONFUSION_TAGS = frozenset(
     {
@@ -133,9 +133,11 @@ def build_review_packet(
         },
         "aggregate_summary": packet_summary,
         "review": {
-            "status": "human-review-required",
-            "planning_review_eligible": packet_summary["evidence_status"]
-            == "ready-for-human-review",
+            "status": "optional-advisory-review",
+            "planning_review_eligible": False,
+            "advisory_only": True,
+            "roadmap_gate": False,
+            "decision_authority": False,
             "allowed_primary_actions": list(ALLOWED_PRIMARY_ACTIONS),
             "primary_action": None,
             "rationale": None,
@@ -149,6 +151,9 @@ def build_review_packet(
             "facilitator_notes_included": False,
             "custom_confusion_tag_text_included": False,
             "custom_confusion_tag_occurrences_redacted": custom_occurrences,
+            "advisory_only": True,
+            "roadmap_gate": False,
+            "decision_authority": False,
             "automatic_product_decision": False,
             "automatic_repository_mutation": False,
             "second_route_authorized": False,
@@ -165,16 +170,13 @@ def render_markdown(packet: dict[str, Any]) -> str:
     review = packet["review"]
     boundaries = packet["boundaries"]
     lines = [
-        "# Product Alpha Pilot Human Review",
+        "# Product Alpha Optional Observation Review",
         "",
         f"- Packet contract: `{packet['contract']}`",
         f"- Pilot build ID: `{packet['pilot_build_id']}`",
         f"- Route: `{packet['route_id']}`",
         f"- Evidence status: **{summary['evidence_status']}**",
-        (
-            f"- Valid sessions: {summary['sessions']} / minimum "
-            f"{summary['minimum_cohort_size']}"
-        ),
+        f"- Valid observations: {summary['sessions']} (no minimum count)",
         f"- Planning review eligible: **{str(review['planning_review_eligible']).lower()}**",
         f"- Exact private input SHA-256: `{evidence['input_sha256']}`",
         f"- Verified private summary SHA-256: `{evidence['verified_summary_sha256']}`",
@@ -184,9 +186,9 @@ def render_markdown(packet: dict[str, Any]) -> str:
             f"{boundaries['custom_confusion_tag_occurrences_redacted']}"
         ),
         "",
-        "> The hashes bind this worksheet to one verified local cohort. Raw session "
-        "records, facilitator notes, and facilitator-authored custom tag text are not "
-        "included and must remain private.",
+        "> The hashes bind this advisory worksheet to one verified local observation set. "
+        "Raw session records, facilitator notes, and facilitator-authored custom tag text "
+        "are not included and must remain private. This worksheet has no roadmap authority.",
         "",
         "## Aggregate evidence",
         "",
@@ -233,21 +235,21 @@ def render_markdown(packet: dict[str, Any]) -> str:
             lines.append(f"- `{signal['code']}` — {signal['message']}")
     else:
         lines.append(
-            "- No automatic revision trigger was detected. Human review is still required."
+            "- No automatic product signal was detected. Optional advisory review may still add context."
         )
 
     lines.extend(
         [
             "",
-            "## Human decision",
+            "## Advisory interpretation",
             "",
-            "Select exactly one primary action after reviewing the aggregate and the "
-            "private facilitator notes:",
+            "Select exactly one advisory interpretation after reviewing the aggregate and "
+            "the private facilitator notes. It cannot authorize or block roadmap work:",
             "",
+            "- [ ] `record-observation-context`",
             "- [ ] `revise-current-route`",
             "- [ ] `repeat-current-route-pilot`",
             "- [ ] `hold-current-route`",
-            "- [ ] `advance-to-next-product-planning-review`",
             "",
             "Reviewer:",
             "",
@@ -259,10 +261,10 @@ def render_markdown(packet: dict[str, Any]) -> str:
             "",
             "## Decision boundary",
             "",
-            "Completing this worksheet does not automatically modify the repository, "
-            "authorize a second route, establish release readiness, prove learning "
-            "effectiveness, or establish product-market fit. Any product change requires "
-            "a separate reviewed repository change.",
+            "Completing this worksheet records advisory context only. It cannot authorize "
+            "or block roadmap work, modify the repository, authorize a second route, establish "
+            "release readiness, prove learning effectiveness, or establish product-market fit. "
+            "The internal multi-perspective review remains the product decision authority.",
             "",
         ]
     )
@@ -334,12 +336,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
 
-    print("Product Alpha human-review packet created.")
+    print("Product Alpha optional-advisory packet created.")
     print(f"Pilot build ID: {packet['pilot_build_id']}")
     print(f"Packet SHA-256: {packet_sha256}")
     print(f"JSON: {json_path}")
     print(f"Markdown: {markdown_path}")
-    print("Decision: human-review-required")
+    print("Decision: optional-advisory-review")
     return 0
 
 

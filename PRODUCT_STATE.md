@@ -254,7 +254,7 @@ Do not create another abstract readiness layer merely to continue activity. Do n
 
 ## Optional field-evaluation capability
 
-Recorder, Pilot Lab, repository-external workspace, aggregation, review, decision, receipt, and handoff tools remain optional research capability. They are not required for roadmap progress. The runtime has no participant-count threshold: any non-empty valid observation set may be summarized or assembled, and compatibility status fields never authorize or block the roadmap.
+Recorder, Pilot Lab, repository-external workspace, aggregation, review, decision, receipt, and handoff tools remain optional research capability. They are not required for roadmap progress. The runtime has no participant-count threshold: any non-empty valid observation set may be summarized or assembled. Every downstream artifact is advisory-only, cannot select `advance-to-next-product-planning-review`, and must return to the internal multi-perspective review; compatibility status fields never authorize or block the roadmap.
 
 Both routes may use this local evidence tooling without route mislabeling. A refrigerator workspace and a distributed-information workspace remain separate cohorts and cannot be combined.
 

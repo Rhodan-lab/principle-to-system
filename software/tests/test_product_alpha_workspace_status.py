@@ -153,9 +153,9 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             review(workspace)
             report = workspace_status.inspect_workspace(workspace)
 
-            self.assertEqual(report["stage"], "review-ready-for-decision")
-            self.assertTrue(report["planning_review_eligible"])
-            self.assertEqual(report["next_action"], "record-human-decision")
+            self.assertEqual(report["stage"], "review-ready-for-advisory")
+            self.assertFalse(report["planning_review_eligible"])
+            self.assertEqual(report["next_action"], "record-optional-advisory")
             self.assertIsNone(report["next_command"])
             self.assertIn("<allowed-primary-action>", str(report["next_command_template"]))
 
@@ -165,15 +165,15 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             decide(workspace)
             report = workspace_status.inspect_workspace(workspace)
 
-            self.assertEqual(report["stage"], "decision-verified")
+            self.assertEqual(report["stage"], "advisory-verified")
             self.assertEqual(report["primary_action"], "revise-current-route")
             self.assertEqual(
                 report["next_action"],
-                "prepare-deidentified-repository-handoff",
+                "prepare-deidentified-advisory-handoff",
             )
             self.assertEqual(
                 report["post_handoff_action"],
-                "prepare-bounded-route-revision",
+                "return-to-internal-multi-perspective-review",
             )
             self.assertRegex(str(report["decision_receipt_sha256"]), r"^[0-9a-f]{64}$")
             self.assertIn("prepare_handoff.py prepare", str(report["next_command"]))
@@ -186,9 +186,9 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             handoff(workspace)
             report = workspace_status.inspect_workspace(workspace)
 
-            self.assertEqual(report["stage"], "handoff-verified")
+            self.assertEqual(report["stage"], "advisory-handoff-verified")
             self.assertEqual(report["primary_action"], "revise-current-route")
-            self.assertEqual(report["next_action"], "prepare-bounded-route-revision")
+            self.assertEqual(report["next_action"], "return-to-internal-multi-perspective-review")
             self.assertRegex(str(report["handoff_candidate_sha256"]), r"^[0-9a-f]{64}$")
             self.assertIn("prepare_handoff.py verify", str(report["validation_command"]))
             self.assertTrue(report["artifacts"]["handoff_json"])
@@ -258,7 +258,7 @@ class ProductAlphaWorkspaceStatusTests(unittest.TestCase):
             )
             report = json.loads(completed.stdout)
 
-            self.assertEqual(report["stage"], "handoff-verified")
+            self.assertEqual(report["stage"], "advisory-handoff-verified")
             self.assertFalse(report["writes_performed"])
             self.assertEqual(snapshot(workspace), before)
 
