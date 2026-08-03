@@ -28,7 +28,7 @@ class ProductAlphaMultiRouteTests(unittest.TestCase):
         self.assertIn('<script src="model-adapters.js"></script>', html)
         self.assertIn("route.model.activity_title", html)
         self.assertIn("route.model.parameters", html)
-        self.assertIn("route.model.prediction.choices", html)
+        self.assertIn("config.prediction.choices", html)
         self.assertIn("modelAdapter().validate", html)
         self.assertIn("data/${routeId}.json", html)
         self.assertNotIn("data/refrigerator.json", html)
