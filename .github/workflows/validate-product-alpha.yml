@@ -121,3 +121,43 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-recorder-route-filenames:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-recorder-route-filenames'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out recorder filename branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-recorder-route-filenames
+          fetch-depth: 0
+      - name: Apply bounded recorder filename update
+        run: |
+          if grep -q 'recorderExportName' software/product_alpha/facilitator.html; then
+            exit 0
+          fi
+          python3 software/product_alpha/_apply_recorder_route_filename.py
+      - name: Validate route-specific recorder filenames
+        run: |
+          node --test \
+            software/tests/test_product_alpha_facilitator_capture.mjs \
+            software/tests/test_product_alpha_recorder_route_filename.mjs \
+            software/tests/test_product_alpha_visible_route_identity.mjs
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/facilitator.html "
+      - name: Commit recorder filename update
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/facilitator.html
+          git commit -m "Include the packaged route in recorder filenames"
+          git push origin HEAD:agent/product-alpha-recorder-route-filenames
