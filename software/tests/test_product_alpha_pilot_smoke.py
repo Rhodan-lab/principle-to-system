@@ -82,7 +82,7 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
             build_id = launcher.pilot_build_identity(output)
             pilot_lab = output / "pilot-lab.html"
             data = pilot_lab.read_bytes()
-            marker = b"EXPECTED_BUILD_ID=new URLSearchParams"
+            marker = b'EXPECTED_BUILD_ID=query?.get("build_id")'
             self.assertIn(marker, data)
             pilot_lab.write_bytes(data.replace(marker, b"BROKEN_BUILD_BINDING", 1))
             with self.assertRaisesRegex(ValueError, "missing its packaged marker"):

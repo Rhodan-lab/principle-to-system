@@ -22,68 +22,6 @@ EVALUATION_ASSETS = (
     "evaluation/rubric.json",
     "evaluation/session-template.json",
 )
-FACILITATOR_TRANSFORMS = (
-    (
-        b'const q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null;',
-        b'const BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,q=s=>document.querySelector(s);let rubric=null,template=null,lastRecord=null,pilotBuildId=new URLSearchParams(location.search).get("build_id")||"";',
-        "facilitator build-id state",
-    ),
-    (
-        b'return{session_id:q("#sessionId").value.trim(),',
-        b'return{pilot_build_id:pilotBuildId,session_id:q("#sessionId").value.trim(),',
-        "facilitator session build-id field",
-    ),
-    (
-        b'function validate(value){const errors=[];if(!/^anonymous-[A-Za-z0-9-]+$/.test(value.session_id))',
-        b'function validate(value){const errors=[];if(!BUILD_ID_PATTERN.test(value.pilot_build_id))errors.push("Pilot build ID is missing or invalid. Open the recorder from run_pilot.py.");if(!/^anonymous-[A-Za-z0-9-]+$/.test(value.session_id))',
-        "facilitator build-id validation",
-    ),
-    (
-        b'q("#sessionId").value=anonymousId();[q("#sessionId")',
-        b'q("#sessionId").value=anonymousId();if(!BUILD_ID_PATTERN.test(pilotBuildId))setStatus("Pilot build ID is missing. Open this recorder from the launcher URL.","error");[q("#sessionId")',
-        "facilitator missing-build warning",
-    ),
-)
-
-PILOT_LAB_TRANSFORMS = (
-    (
-        b'"use strict";\nconst ROUTE_ID=',
-        b'"use strict";\nconst BUILD_ID_PATTERN=/^[0-9a-f]{64}$/,EXPECTED_BUILD_ID=new URLSearchParams(location.search).get("build_id")||"";\nconst ROUTE_ID=',
-        "Pilot Lab build-id state",
-    ),
-    (
-        b'if(found.length)fail(`${label}: personal-data fields are not allowed: ${found.join(", ")}.`);if(session.route_id!==ROUTE_ID)fail(',
-        b'if(found.length)fail(`${label}: personal-data fields are not allowed: ${found.join(", ")}.`);if(!BUILD_ID_PATTERN.test(session.pilot_build_id))fail(`${label}: pilot_build_id must be a 64-character lowercase SHA-256.`);if(EXPECTED_BUILD_ID&&session.pilot_build_id!==EXPECTED_BUILD_ID)fail(`${label}: pilot_build_id does not match the launcher build.`);if(session.route_id!==ROUTE_ID)fail(',
-        "Pilot Lab build-id validation",
-    ),
-    (
-        b'state.duplicates=0;const seen=new Set;for(const file of state.files)',
-        b'state.duplicates=0;const seen=new Set;let cohortBuildId=EXPECTED_BUILD_ID||null;for(const file of state.files)',
-        "Pilot Lab cohort build state",
-    ),
-    (
-        b'session=validateSession(parsed,label);if(seen.has(session.session_id))',
-        b'session=validateSession(parsed,label);if(cohortBuildId&&session.pilot_build_id!==cohortBuildId)fail(`${label}: pilot_build_id does not match the cohort build.`);cohortBuildId=session.pilot_build_id;if(seen.has(session.session_id))',
-        "Pilot Lab mixed-build rejection",
-    ),
-    (
-        b'const summary={contract:"principia-product-alpha-pilot-summary/0.2",route_id:ROUTE_ID,',
-        b'const summary={contract:"principia-product-alpha-pilot-summary/0.3",pilot_build_id:sessions[0].pilot_build_id,route_id:ROUTE_ID,',
-        "Pilot Lab summary build identity",
-    ),
-    (
-        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Started</th>',
-        b'box.innerHTML=`<table><caption>Cohort aggregate metrics</caption><tbody><tr><th scope="row">Build ID</th><td><code>${s.pilot_build_id.slice(0,12)}...</code></td></tr><tr><th scope="row">Started</th>',
-        "Pilot Lab build-id display",
-    ),
-    (
-        b'"- Evidence status: **"+s.evidence_status+"**","- Route: `"+s.route_id+"`",',
-        b'"- Evidence status: **"+s.evidence_status+"**","- Pilot build ID: `"+s.pilot_build_id+"`","- Route: `"+s.route_id+"`",',
-        "Pilot Lab Markdown build identity",
-    ),
-)
-
-
 @dataclass(frozen=True)
 class SourceDocument:
     path: str
@@ -273,18 +211,8 @@ def build_route(root: Path, route: str) -> dict[str, Any]:
     }
 
 
-def _replace_once(data: bytes, old: bytes, new: bytes, label: str) -> bytes:
-    old_count = data.count(old)
-    new_count = data.count(new)
-    if old_count == 1 and new_count == 0:
-        return data.replace(old, new, 1)
-    if old_count == 0 and new_count == 1:
-        return data
-    raise ValueError(f"{label} must contain exactly one canonical state")
-
-
 def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_ROUTE) -> bytes:
-    """Apply bounded route packaging transforms and reject ambiguous asset states."""
+    """Apply route packaging and reject ambiguous asset states."""
     evidence_route = route_identity.evidence_route_id(route)
     if relative_path == "evaluation/rubric.json":
         rubric = json.loads(data.decode("utf-8"))
@@ -307,8 +235,6 @@ def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_R
         template["route_id"] = evidence_route
         return json.dumps(template, indent=2, ensure_ascii=False).encode("utf-8") + b"\n"
     if relative_path == "facilitator.html":
-        for old, new, label in FACILITATOR_TRANSFORMS:
-            data = _replace_once(data, old, new, label)
         return data
     if relative_path != "pilot-lab.html":
         return data
@@ -322,8 +248,6 @@ def prepare_static_asset(relative_path: str, data: bytes, route: str = DEFAULT_R
             f'const ROUTE_ID="{evidence_route}"'.encode("utf-8"),
             1,
         )
-    for old, new, label in PILOT_LAB_TRANSFORMS:
-        data = _replace_once(data, old, new, label)
     return data
 
 

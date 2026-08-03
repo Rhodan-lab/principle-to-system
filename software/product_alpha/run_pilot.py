@@ -73,7 +73,7 @@ SMOKE_TARGETS = (
     (
         "pilot_lab",
         "/pilot-lab.html?build_id={build_id}",
-        b"EXPECTED_BUILD_ID=new URLSearchParams",
+        b'EXPECTED_BUILD_ID=query?.get("build_id")',
     ),
     (
         "route",
