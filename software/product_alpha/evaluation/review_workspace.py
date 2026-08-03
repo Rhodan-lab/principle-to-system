@@ -47,6 +47,19 @@ def _validate_hash(value: object, label: str) -> str:
     return value
 
 
+def _validate_intake_authority_boundary(intake: dict[str, Any]) -> None:
+    """Reject any intake that claims roadmap or product-decision authority."""
+    if intake.get("human_review_required") is not True:
+        raise ValueError("intake manifest must declare human_review_required=true")
+    if intake.get("observation_mode") != "optional-descriptive":
+        raise ValueError(
+            "intake manifest observation_mode must be 'optional-descriptive'"
+        )
+    for key in ("roadmap_gate", "decision_authority"):
+        if intake.get(key) is not False:
+            raise ValueError(f"intake manifest must declare {key}=false")
+
+
 def _source_records(
     incoming: Path,
     expected_build_id: str,
@@ -171,8 +184,7 @@ def verify_workspace_intake(
         raise ValueError("intake manifest combined_jsonl path does not match workspace")
     if intake.get("raw_source_files_modified") is not False:
         raise ValueError("intake manifest must declare raw_source_files_modified=false")
-    if intake.get("human_review_required") is not True:
-        raise ValueError("intake manifest must declare human_review_required=true")
+    _validate_intake_authority_boundary(intake)
 
     if combined.is_symlink() or not combined.is_file():
         raise ValueError("combined cohort must be a regular file")
@@ -228,6 +240,9 @@ def verify_workspace_intake(
         "source_record_count": len(expected_sources),
         "raw_sources_verified": True,
         "human_review_required": True,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
     }
 
 
