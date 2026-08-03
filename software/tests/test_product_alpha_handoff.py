@@ -86,6 +86,10 @@ class ProductAlphaHandoffTests(unittest.TestCase):
             self.assertEqual(first["primary_action"], "revise-current-route")
             self.assertEqual(first["sessions"], 5)
             self.assertEqual(first["evidence_status"], "ready-for-human-review")
+            self.assertTrue(first["advisory_only"])
+            self.assertFalse(first["roadmap_gate"])
+            self.assertFalse(first["decision_authority"])
+            self.assertFalse(first["planning_review_action_selected"])
             self.assertNotIn(PRIVATE_REVIEWER, raw)
             self.assertNotIn(PRIVATE_RATIONALE, raw)
             self.assertNotIn(PRIVATE_CHECKPOINT, raw)
@@ -100,6 +104,8 @@ class ProductAlphaHandoffTests(unittest.TestCase):
             self.assertFalse(boundaries["repository_change_authorized"])
             self.assertFalse(boundaries["reviewer_identity_included"])
             self.assertFalse(boundaries["human_rationale_included"])
+            self.assertTrue(boundaries["advisory_only"])
+            self.assertFalse(boundaries["decision_authority"])
 
     def test_check_is_read_only_and_reports_candidate_hash(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

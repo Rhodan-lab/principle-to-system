@@ -98,9 +98,12 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             self.assertFalse(record["boundaries"]["automatic_repository_mutation"])
             self.assertFalse(record["boundaries"]["second_route_authorized"])
             self.assertIn(
-                "This record captures a human product action only.",
+                "optional advisory interpretation only",
                 decision_markdown.read_text(encoding="utf-8"),
             )
+            self.assertTrue(record["advisory_only"])
+            self.assertFalse(record["roadmap_gate"])
+            self.assertFalse(record["decision_authority"])
             self.assertEqual(
                 report["decision_record_sha256"],
                 hashlib.sha256(decision_json.read_bytes()).hexdigest(),
@@ -214,23 +217,34 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "artifact trio is incomplete"):
                 record_decision.verify_workspace_decision(workspace)
 
-    def test_optional_small_set_does_not_block_recording_a_planning_action(self) -> None:
+    def test_optional_observation_rejects_planning_advance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = reviewed_workspace(Path(directory), count=2)
+            with self.assertRaisesRegex(ValueError, "unsupported primary action"):
+                record_decision.record_workspace_decision(
+                    workspace,
+                    "advance-to-next-product-planning-review",
+                    "facilitator-reviewer",
+                    "2026-08-02",
+                    "Optional observations cannot authorize a planning review action.",
+                    "Return to the internal multi-perspective review.",
+                )
 
+    def test_optional_observation_records_advisory_context(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = reviewed_workspace(Path(directory), count=1)
             report = record_decision.record_workspace_decision(
                 workspace,
-                "advance-to-next-product-planning-review",
+                "record-observation-context",
                 "facilitator-reviewer",
                 "2026-08-02",
-                "Optional observations were reviewed without treating their count as a gate.",
-                "Use the internal multi-perspective authority for the actual roadmap decision.",
+                "The optional observation adds context without becoming roadmap authority.",
+                "Return to the internal multi-perspective review.",
             )
-
             decision = json.loads(Path(str(report["decision_json"])).read_text(encoding="utf-8"))
-            self.assertTrue(decision["human_decision"]["planning_review_action_selected"])
-            self.assertFalse(decision["boundaries"]["automatic_repository_mutation"])
-            self.assertFalse(decision["boundaries"]["second_route_authorized"])
+            self.assertFalse(decision["human_decision"]["planning_review_action_selected"])
+            self.assertTrue(decision["human_decision"]["advisory_only"])
+            self.assertFalse(decision["human_decision"]["decision_authority"])
 
     def test_rejects_modified_review_markdown(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -298,7 +312,9 @@ class ProductAlphaHumanDecisionTests(unittest.TestCase):
             report = json.loads(completed.stdout)
 
             self.assertEqual(report["decision"], "human-decision-ready")
-            self.assertTrue(report["planning_review_eligible"])
+            self.assertFalse(report["planning_review_eligible"])
+            self.assertTrue(report["advisory_only"])
+            self.assertFalse(report["decision_authority"])
             self.assertFalse(report["decision_outputs_exist"])
             self.assertFalse(
                 (workspace / "review" / "refrigerator-review-decision.json").exists()
