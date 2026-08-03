@@ -121,3 +121,72 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-advisory-only-observation:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/make-optional-observation-advisory-only'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out advisory-only branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/make-optional-observation-advisory-only
+          fetch-depth: 0
+      - name: Apply bounded advisory-only migration
+        run: |
+          if grep -q 'optional-advisory-review' software/product_alpha/evaluation/prepare_review.py && \
+             grep -q 'test_optional_observation_rejects_planning_advance' software/tests/test_product_alpha_human_decision.py; then
+            exit 0
+          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("software/product_alpha/_make_optional_observation_advisory_only.py")
+          text = path.read_text(encoding="utf-8")
+          old = 'if path != product_state and "advance-to-next-product-planning-review" in text:'
+          new = 'if path in (review, record, handoff, status, workspace) and "advance-to-next-product-planning-review" in text:'
+          if text.count(old) != 1:
+              raise SystemExit(f"transformer scan guard: expected one anchor, found {text.count(old)}")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          PY
+          python3 software/product_alpha/_make_optional_observation_advisory_only.py
+      - name: Validate advisory-only authority boundary
+        env:
+          PYTHONWARNINGS: error::SyntaxWarning
+        run: |
+          python3 -m py_compile \
+            software/product_alpha/evaluation/prepare_review.py \
+            software/product_alpha/evaluation/record_decision.py \
+            software/product_alpha/evaluation/prepare_handoff.py \
+            software/product_alpha/evaluation/workspace_status.py \
+            software/product_alpha/evaluation/prepare_workspace.py
+          node --test software/tests/test_product_alpha*.mjs
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
+          python3 software/product_alpha/build.py check --route refrigerator
+          python3 software/product_alpha/build.py check --route distributed-information
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "PRODUCT_STATE.md software/product_alpha/PILOT.md software/product_alpha/evaluation/prepare_handoff.py software/product_alpha/evaluation/prepare_review.py software/product_alpha/evaluation/prepare_workspace.py software/product_alpha/evaluation/record_decision.py software/product_alpha/evaluation/workspace_status.py software/tests/test_product_alpha_handoff.py software/tests/test_product_alpha_human_decision.py software/tests/test_product_alpha_review_packet.py software/tests/test_product_alpha_state_authority.py software/tests/test_product_alpha_workspace_status.py "
+      - name: Commit advisory-only observation boundary
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            PRODUCT_STATE.md \
+            software/product_alpha/PILOT.md \
+            software/product_alpha/evaluation/prepare_review.py \
+            software/product_alpha/evaluation/record_decision.py \
+            software/product_alpha/evaluation/prepare_handoff.py \
+            software/product_alpha/evaluation/workspace_status.py \
+            software/product_alpha/evaluation/prepare_workspace.py \
+            software/tests/test_product_alpha_review_packet.py \
+            software/tests/test_product_alpha_human_decision.py \
+            software/tests/test_product_alpha_handoff.py \
+            software/tests/test_product_alpha_workspace_status.py \
+            software/tests/test_product_alpha_state_authority.py
+          git commit -m "Make optional observation artifacts advisory only"
+          git push origin HEAD:agent/make-optional-observation-advisory-only
