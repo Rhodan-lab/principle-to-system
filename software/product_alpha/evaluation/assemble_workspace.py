@@ -104,6 +104,24 @@ def _member(workspace: Path, relative: object, label: str) -> Path:
     return candidate
 
 
+def _validate_workspace_path_layout(
+    incoming: Path,
+    combined: Path,
+    intake: Path,
+    review_prefix: Path,
+) -> None:
+    review_json = review_prefix.with_suffix(".json")
+    review_markdown = review_prefix.with_suffix(".md")
+    artifacts = (combined, intake, review_json, review_markdown)
+    if len(set(artifacts)) != len(artifacts):
+        raise ValueError("workspace manifest artifact paths must be distinct")
+    for artifact in artifacts:
+        if _is_within(artifact, incoming):
+            raise ValueError(
+                "workspace manifest artifact paths must be outside incoming_sessions"
+            )
+
+
 def _load_workspace(
     workspace: Path,
 ) -> tuple[dict[str, Any], Path, Path, Path]:
@@ -159,6 +177,17 @@ def _load_workspace(
         workspace,
         paths.get("intake_manifest", "verified/intake-manifest.json"),
         "intake_manifest",
+    )
+    review_prefix = _member(
+        workspace,
+        paths.get("review_output_prefix"),
+        "review_output_prefix",
+    )
+    _validate_workspace_path_layout(
+        incoming,
+        combined,
+        intake,
+        review_prefix,
     )
     return manifest, incoming, combined, intake
 
