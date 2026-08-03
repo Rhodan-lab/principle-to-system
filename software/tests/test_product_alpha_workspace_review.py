@@ -137,6 +137,31 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
                 review_workspace.verify_workspace_intake(workspace)
             self.assertEqual(list((workspace / "review").iterdir()), [])
 
+    def test_rejects_raw_route_drift_even_when_intake_hash_is_updated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = assembled_workspace(Path(directory), count=1)
+            source = workspace / "incoming-sessions" / "session-001.jsonl"
+            value = json.loads(source.read_text(encoding="utf-8"))
+            value["route_id"] = "distributed-information-v1"
+            source.write_text(
+                json.dumps(value, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+
+            intake_path = workspace / "verified" / "intake-manifest.json"
+            intake = json.loads(intake_path.read_text(encoding="utf-8"))
+            intake["source_records"][0]["sha256"] = hashlib.sha256(
+                source.read_bytes()
+            ).hexdigest()
+            intake_path.write_text(
+                json.dumps(intake, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "does not match expected route"):
+                review_workspace.verify_workspace_intake(workspace)
+            self.assertEqual(list((workspace / "review").iterdir()), [])
+
     def test_rejects_relaxed_intake_review_boundary(self) -> None:
         cases = (
             ("human_review_required", False, "human_review_required=true"),
