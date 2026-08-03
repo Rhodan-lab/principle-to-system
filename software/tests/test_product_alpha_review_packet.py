@@ -231,20 +231,20 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
             prefix = root / "private" / "review"
             json_path = prefix.with_suffix(".json")
             markdown_path = prefix.with_suffix(".md")
-            real_replace = review_packet.os.replace
-            replace_calls = 0
+            real_publish = review_packet.publish_exclusive
+            publish_calls = 0
 
-            def fail_second_replace(source: object, target: object) -> None:
-                nonlocal replace_calls
-                replace_calls += 1
-                if replace_calls == 2:
+            def fail_second_publish(staged: Path, destination: Path) -> None:
+                nonlocal publish_calls
+                publish_calls += 1
+                if publish_calls == 2:
                     raise OSError("simulated second review publish failure")
-                real_replace(source, target)
+                real_publish(staged, destination)
 
             with mock.patch.object(
-                review_packet.os,
-                "replace",
-                side_effect=fail_second_replace,
+                review_packet,
+                "publish_exclusive",
+                side_effect=fail_second_publish,
             ):
                 with self.assertRaisesRegex(
                     OSError,
@@ -253,6 +253,36 @@ class ProductAlphaReviewPacketTests(unittest.TestCase):
                     review_packet.write_review_outputs(prefix, packet)
 
             self.assertFalse(json_path.exists())
+            self.assertFalse(markdown_path.exists())
+            self.assertEqual(list(json_path.parent.glob(".*.tmp-*")), [])
+
+    def test_write_outputs_preserve_competing_destination(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "sessions.jsonl"
+            write_sessions(input_path)
+            packet = review_packet.build_review_packet(input_path, BUILD_ID)
+            prefix = root / "private" / "review"
+            json_path = prefix.with_suffix(".json")
+            markdown_path = prefix.with_suffix(".md")
+            real_publish = review_packet.publish_exclusive
+
+            def publish_after_competitor(staged: Path, destination: Path) -> None:
+                destination.write_text("competing review output\n", encoding="utf-8")
+                real_publish(staged, destination)
+
+            with mock.patch.object(
+                review_packet,
+                "publish_exclusive",
+                side_effect=publish_after_competitor,
+            ):
+                with self.assertRaises(FileExistsError):
+                    review_packet.write_review_outputs(prefix, packet)
+
+            self.assertEqual(
+                json_path.read_text(encoding="utf-8"),
+                "competing review output\n",
+            )
             self.assertFalse(markdown_path.exists())
             self.assertEqual(list(json_path.parent.glob(".*.tmp-*")), [])
 
