@@ -143,7 +143,7 @@ python3 software/product_alpha/evaluation/review_workspace.py \\
   --workspace {workspace_arg}
 ```
 
-The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/refrigerator-review.json` and `review/refrigerator-review.md`. It refuses changed evidence and never overwrites an existing review packet.
+The workspace review command verifies this manifest, the exact build and route, every raw source hash, the intake manifest hash, the combined JSONL hash, session count, summary contract, and evidence status before writing `review/{route_slug}-review.json` and `review/{route_slug}-review.md`. It refuses changed evidence and never overwrites an existing review packet.
 
 6. Check that the unchanged review packet is ready for a separate human decision record:
 
@@ -164,7 +164,7 @@ python3 software/product_alpha/evaluation/record_decision.py \\
   --next-checkpoint "<next checkpoint>"
 ```
 
-Allowed primary actions are `revise-current-route`, `repeat-current-route-pilot`, `hold-current-route`, and `advance-to-next-product-planning-review`. The last action is rejected unless the cohort reached `ready-for-human-review` status. The command verifies the untouched review JSON/Markdown pair and the complete workspace evidence chain before writing `review/refrigerator-review-decision.json`, `review/refrigerator-review-decision.md`, and `review/refrigerator-review-decision-receipt.json`. The receipt seals both decision-file hashes together with the review, intake, combined-cohort, and source-record bindings. It never edits the review packet, never overwrites a decision artifact, and never modifies the repository.
+Allowed primary actions are `revise-current-route`, `repeat-current-route-pilot`, `hold-current-route`, and `advance-to-next-product-planning-review`. The last action is rejected unless the cohort reached `ready-for-human-review` status. The command verifies the untouched review JSON/Markdown pair and the complete workspace evidence chain before writing `review/{route_slug}-review-decision.json`, `review/{route_slug}-review-decision.md`, and `review/{route_slug}-review-decision-receipt.json`. The receipt seals both decision-file hashes together with the review, intake, combined-cohort, and source-record bindings. It never edits the review packet, never overwrites a decision artifact, and never modifies the repository.
 
 8. Verify the finished decision artifact trio against the unchanged workspace evidence:
 
