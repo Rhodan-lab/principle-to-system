@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,6 +12,7 @@ BUILD_PATH = REPO_ROOT / "software" / "product_alpha" / "build.py"
 SPEC = importlib.util.spec_from_file_location("product_alpha_build_route_rubric", BUILD_PATH)
 assert SPEC and SPEC.loader
 build_module = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = build_module
 SPEC.loader.exec_module(build_module)
 
 
