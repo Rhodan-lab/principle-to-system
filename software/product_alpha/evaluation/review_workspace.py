@@ -64,13 +64,14 @@ def _source_records(
     incoming: Path,
     expected_build_id: str,
     expected_route_id: str,
-) -> list[dict[str, str]]:
+) -> tuple[list[dict[str, str]], bytes]:
     if not incoming.is_dir():
         raise ValueError("incoming session directory is missing")
     entries = sorted(incoming.iterdir(), key=lambda path: path.name)
     if not entries:
         raise ValueError("incoming session directory contains no exports")
 
+    sessions: list[dict[str, Any]] = []
     records: list[dict[str, str]] = []
     seen_ids: set[str] = set()
     for path in entries:
@@ -104,13 +105,21 @@ def _source_records(
         if session_id in seen_ids:
             raise ValueError(f"{path.name}: duplicate session_id {session_id!r}")
         seen_ids.add(session_id)
+        sessions.append(session)
         records.append(
             {
                 "session_id": session_id,
                 "sha256": _sha256(raw),
             }
         )
-    return sorted(records, key=lambda item: item["session_id"])
+
+    sessions.sort(key=lambda item: item["session_id"])
+    records.sort(key=lambda item: item["session_id"])
+    combined_bytes = "".join(
+        json.dumps(session, sort_keys=True, separators=(",", ":")) + "\n"
+        for session in sessions
+    ).encode("utf-8")
+    return records, combined_bytes
 
 
 def _intake_source_records(value: object) -> list[dict[str, str]]:
@@ -203,13 +212,15 @@ def verify_workspace_intake(
         raise ValueError("combined cohort SHA-256 does not match intake manifest")
 
     expected_sources = _intake_source_records(intake.get("source_records"))
-    actual_sources = _source_records(
+    actual_sources, reconstructed_combined_bytes = _source_records(
         incoming,
         str(manifest["pilot_build_id"]),
         str(manifest["route_id"]),
     )
     if actual_sources != expected_sources:
         raise ValueError("raw incoming exports do not match intake manifest hashes")
+    if reconstructed_combined_bytes != actual_combined_bytes:
+        raise ValueError("combined cohort does not match current raw exports")
 
     sessions = intake.get("sessions")
     if not isinstance(sessions, int) or isinstance(sessions, bool) or sessions < 1:
