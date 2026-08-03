@@ -20,6 +20,11 @@ import route_identity
 ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
 MIN_COHORT_SIZE = 0  # compatibility sentinel: optional observation has no minimum
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+SESSION_ID_PATTERN = re.compile(r"^anonymous-[A-Za-z0-9-]+$")
+MAX_SESSION_ID_LENGTH = 120
+MAX_CONFUSION_TAGS = 32
+MAX_CONFUSION_TAG_LENGTH = 80
+MAX_FACILITATOR_NOTES_LENGTH = 1200
 STEPS = ["observe", "map", "model", "diagnose", "redesign"]
 SCORE_KEYS = [
     "mechanism_explanation",
@@ -71,6 +76,14 @@ def _reject_nonfinite_constant(value: str) -> Any:
     raise ValueError(f"unsupported non-finite number {value!r}")
 
 
+def _contains_unsupported_control(value: str, *, allow_multiline: bool) -> bool:
+    allowed = "\n\t" if allow_multiline else ""
+    return any(
+        (ord(character) < 32 and character not in allowed) or ord(character) == 127
+        for character in value
+    )
+
+
 def _walk_keys(value: Any) -> Iterable[str]:
     if isinstance(value, dict):
         for key, child in value.items():
@@ -119,9 +132,13 @@ def validate_session(
         )
 
     session_id = session.get("session_id")
-    if not isinstance(session_id, str) or not session_id.startswith("anonymous-"):
+    if (
+        not isinstance(session_id, str)
+        or len(session_id) > MAX_SESSION_ID_LENGTH
+        or not SESSION_ID_PATTERN.fullmatch(session_id)
+    ):
         raise ValueError(
-            f"line {line_number}: session_id must begin with 'anonymous-'"
+            f"line {line_number}: session_id must be an anonymous label containing only letters, numbers, and hyphens"
         )
 
     started = session.get("started")
@@ -165,12 +182,35 @@ def validate_session(
             raise ValueError(f"line {line_number}: score {key!r} must be 0, 1, or 2")
 
     confusion_tags = session.get("confusion_tags")
-    if not isinstance(confusion_tags, list) or not all(
-        isinstance(tag, str) and tag.strip() for tag in confusion_tags
-    ):
+    if not isinstance(confusion_tags, list):
+        raise ValueError(f"line {line_number}: confusion_tags must be a string list")
+    if len(confusion_tags) > MAX_CONFUSION_TAGS:
         raise ValueError(
-            f"line {line_number}: confusion_tags must be non-empty strings"
+            f"line {line_number}: confusion_tags must contain at most {MAX_CONFUSION_TAGS} entries"
         )
+    seen_tags: set[str] = set()
+    for tag in confusion_tags:
+        if not isinstance(tag, str) or not tag:
+            raise ValueError(
+                f"line {line_number}: confusion_tags must be non-empty strings"
+            )
+        if tag != tag.strip():
+            raise ValueError(
+                f"line {line_number}: confusion_tags must not have surrounding whitespace"
+            )
+        if len(tag) > MAX_CONFUSION_TAG_LENGTH:
+            raise ValueError(
+                f"line {line_number}: confusion tag must be at most {MAX_CONFUSION_TAG_LENGTH} characters"
+            )
+        if _contains_unsupported_control(tag, allow_multiline=False):
+            raise ValueError(
+                f"line {line_number}: confusion tag contains unsupported control characters"
+            )
+        if tag in seen_tags:
+            raise ValueError(
+                f"line {line_number}: duplicate confusion tag {tag!r} is not allowed"
+            )
+        seen_tags.add(tag)
 
     voluntary_continue = session.get("voluntary_continue")
     if voluntary_continue is not None and not isinstance(voluntary_continue, bool):
@@ -181,6 +221,14 @@ def validate_session(
     notes = session.get("facilitator_notes")
     if not isinstance(notes, str):
         raise ValueError(f"line {line_number}: facilitator_notes must be text")
+    if len(notes) > MAX_FACILITATOR_NOTES_LENGTH:
+        raise ValueError(
+            f"line {line_number}: facilitator_notes must be at most {MAX_FACILITATOR_NOTES_LENGTH} characters"
+        )
+    if _contains_unsupported_control(notes, allow_multiline=True):
+        raise ValueError(
+            f"line {line_number}: facilitator_notes contains unsupported control characters"
+        )
 
     return session
 

@@ -119,7 +119,7 @@ class ProductAlphaEvaluationTests(unittest.TestCase):
 
     def test_session_id_must_be_anonymous(self):
         value = session("learner-001", MODULE.STEPS)
-        with self.assertRaisesRegex(ValueError, "must begin with 'anonymous-'"):
+        with self.assertRaisesRegex(ValueError, "anonymous label"):
             MODULE.validate_session(value, 1)
 
     def test_completed_steps_must_be_ordered_prefix(self):
