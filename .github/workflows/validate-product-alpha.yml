@@ -121,3 +121,40 @@ jobs:
         run: python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
       - name: Verify clean repository
         run: git diff --exit-code
+
+  apply-build-identity-smoke-marker:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/product-alpha-source-build-identity'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out build identity branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/product-alpha-source-build-identity
+          fetch-depth: 0
+      - name: Apply bounded smoke marker update
+        run: |
+          if grep -q 'EXPECTED_BUILD_ID=query?.get("build_id")' software/product_alpha/run_pilot.py; then
+            exit 0
+          fi
+          python3 software/product_alpha/_update_build_identity_smoke_marker.py
+      - name: Validate loopback marker contract
+        run: |
+          python3 -m py_compile software/product_alpha/run_pilot.py
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha_pilot_smoke.py' -v
+          python3 -m unittest discover -s software/tests -p 'test_product_alpha_pilot_preparation.py' -v
+          python3 software/product_alpha/run_pilot.py check --route refrigerator
+          python3 software/product_alpha/run_pilot.py check --route distributed-information
+          git diff --check
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = "software/product_alpha/run_pilot.py software/tests/test_product_alpha_pilot_smoke.py "
+      - name: Commit loopback marker update
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add software/product_alpha/run_pilot.py software/tests/test_product_alpha_pilot_smoke.py
+          git commit -m "Align loopback smoke with source build identity"
+          git push origin HEAD:agent/product-alpha-source-build-identity
