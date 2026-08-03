@@ -1,6 +1,6 @@
 # Principia Product Alpha 0.1
 
-This package is the first learner-facing product slice built from the existing Principia material foundation. It replaces phase-count growth with a concrete refrigerator journey and a private, verifiable pilot workflow that can run locally without accounts, analytics, cloud storage, or external runtime calls.
+This package is the first learner-facing product slice built from the existing Principia material foundation. It replaces phase-count growth with a concrete refrigerator journey, deterministic internal review, and optional local field-evaluation tools that require no accounts, analytics, cloud storage, or external runtime calls.
 
 ## Alpha route
 
@@ -14,9 +14,11 @@ The first route asks a learner to understand a domestic refrigerator through fiv
 
 Canonical Principia Markdown remains authoritative. The build extracts required sections from the existing system dossier, failure pattern, investigation, and design challenge. The route configuration contains interaction structure, prompts, a bounded model, and pinned Atlas references; it does not duplicate the canonical learning corpus.
 
-## Supported pilot path
+## Optional field-evaluation path
 
-Prepare a new private destination outside the repository before the first participant session:
+This path is retained for optional external observation or future research. It is not required for route planning, implementation, or repository progress.
+
+Prepare a new private destination outside the repository before any optional observation session:
 
 ```bash
 python3 software/product_alpha/prepare_pilot.py \
@@ -278,9 +280,26 @@ python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 
 CI covers deterministic output, canonical extraction, route completeness, exact-revision Atlas references, browser-state boundaries, recorder capture locking, Pilot Lab batch handling, loopback-only serving, workspace/build binding, intake preflight and assembly, source hashing, tamper rejection, review de-identification, sealed decision creation and verification, handoff privacy and rollback, stage reporting, repository-output refusal, and clean-repository behavior.
 
-## Learner pilot
+## Internal multi-perspective review
 
-Use [`PILOT.md`](PILOT.md) with 5–8 real learners who did not author or review the route. The protocol defines the session procedure, 0–2 rubric, anonymous records, confusion tags, evidence-based revision thresholds, private review, sealed decision, and de-identified handoff.
+The active product authority is the deterministic eight-perspective review:
+
+- `reports/product-alpha-0-1-multi-perspective-review.json`
+- `reports/product-alpha-0-1-multi-perspective-review.md`
+
+Run the read-only validator:
+
+```bash
+python3 software/product_alpha/evaluation/validate_internal_review.py check
+```
+
+The current decision is `advance-to-next-product-planning-review`. Product Alpha 0.1 is the stable refrigerator baseline; the next task is selecting and implementing a second route to test architectural reuse.
+
+Internal review supports claims about product coherence, scientific boundaries, accessibility contracts, privacy, security, deterministic operation, provenance, and maintainability. It does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, or public production readiness.
+
+## Optional field observation
+
+[`PILOT.md`](PILOT.md) documents an optional local observation workflow. It has no minimum cohort requirement and does not authorize or block roadmap progress. Any records remain private, repository-external, and non-authoritative unless a future decision explicitly adopts them.
 
 ## Boundaries
 
