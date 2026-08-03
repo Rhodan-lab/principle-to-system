@@ -232,11 +232,53 @@ def _build_plan(
     )
 
 
-def _output_state(plan: WorkspaceIntakePlan) -> dict[str, bool]:
+def _intake_report(plan: WorkspaceIntakePlan) -> dict[str, object]:
     return {
+        "contract": CONTRACT,
+        "decision": "workspace-intake-assembled",
+        "pilot_build_id": plan.manifest["pilot_build_id"],
+        "route_id": plan.manifest["route_id"],
+        "workspace": str(plan.root),
+        "sessions": len(plan.sessions),
+        "minimum_cohort_size": pilot_summary.MIN_COHORT_SIZE,
+        "cohort_complete": bool(plan.summary["cohort_complete"]),
+        "evidence_status": plan.summary["evidence_status"],
+        "summary_contract": plan.summary["contract"],
+        "combined_jsonl": str(plan.combined),
+        "combined_sha256": plan.combined_sha256,
+        "source_records_sha256": plan.source_records_sha256,
+        "source_records": list(plan.source_records),
+        "incomplete_assembly_authorized": False,
+        "observation_mode": "optional-descriptive",
+        "roadmap_gate": False,
+        "decision_authority": False,
+        "raw_source_files_modified": False,
+        "human_review_required": True,
+    }
+
+
+def _verified_output_state(plan: WorkspaceIntakePlan) -> dict[str, bool]:
+    states = {
         "combined_jsonl": plan.combined.exists(),
         "intake_manifest": plan.intake.exists(),
     }
+    if any(states.values()) and not all(states.values()):
+        raise ValueError("verified intake output pair is incomplete")
+    if not all(states.values()):
+        return states
+
+    if plan.combined.is_symlink() or not plan.combined.is_file():
+        raise ValueError("existing combined cohort must be a regular file")
+    if plan.combined.read_bytes() != plan.combined_bytes:
+        raise ValueError("existing combined cohort does not match current raw exports")
+
+    existing_intake = _read_json_object(
+        plan.intake,
+        "existing intake manifest",
+    )
+    if existing_intake != _intake_report(plan):
+        raise ValueError("existing intake manifest does not match current intake prediction")
+    return states
 
 
 def preflight_workspace(
@@ -247,6 +289,7 @@ def preflight_workspace(
     """Validate all incoming exports and predict immutable intake bytes without writing."""
     plan = _build_plan(workspace, repo_root=repo_root)
     complete = bool(plan.summary["cohort_complete"])
+    output_state = _verified_output_state(plan)
     return {
         "contract": PREFLIGHT_CONTRACT,
         "decision": "workspace-intake-preflight-passed",
@@ -263,10 +306,9 @@ def preflight_workspace(
         "predicted_combined_sha256": plan.combined_sha256,
         "source_records_sha256": plan.source_records_sha256,
         "source_records": list(plan.source_records),
-        "verified_outputs_exist": _output_state(plan),
-        "ready_for_default_assembly": complete
-        and not plan.combined.exists()
-        and not plan.intake.exists(),
+        "verified_outputs_exist": output_state,
+        "verified_outputs_match_prediction": all(output_state.values()),
+        "ready_for_default_assembly": complete and not any(output_state.values()),
         "incomplete_assembly_requires_override": not complete,
         "writes_performed": False,
         "raw_source_files_modified": False,
@@ -291,30 +333,7 @@ def assemble_workspace(
     if plan.intake.exists():
         raise FileExistsError(f"intake manifest already exists: {plan.intake}")
 
-    complete = bool(plan.summary["cohort_complete"])
-
-    report: dict[str, object] = {
-        "contract": CONTRACT,
-        "decision": "workspace-intake-assembled",
-        "pilot_build_id": plan.manifest["pilot_build_id"],
-        "route_id": plan.manifest["route_id"],
-        "workspace": str(plan.root),
-        "sessions": len(plan.sessions),
-        "minimum_cohort_size": pilot_summary.MIN_COHORT_SIZE,
-        "cohort_complete": complete,
-        "evidence_status": plan.summary["evidence_status"],
-        "summary_contract": plan.summary["contract"],
-        "combined_jsonl": str(plan.combined),
-        "combined_sha256": plan.combined_sha256,
-        "source_records_sha256": plan.source_records_sha256,
-        "source_records": list(plan.source_records),
-        "incomplete_assembly_authorized": False,
-        "observation_mode": "optional-descriptive",
-        "roadmap_gate": False,
-        "decision_authority": False,
-        "raw_source_files_modified": False,
-        "human_review_required": True,
-    }
+    report = _intake_report(plan)
     intake_text = json.dumps(report, indent=2, sort_keys=True) + "\n"
 
     plan.combined.parent.mkdir(parents=True, exist_ok=True)
