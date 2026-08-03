@@ -56,6 +56,17 @@ class ProductAlphaDistributedEvidenceChainTests(unittest.TestCase):
                 manifest["paths"]["review_output_prefix"],
                 "review/distributed-information-review",
             )
+            workspace_readme = (workspace / "README.md").read_text(encoding="utf-8")
+            for marker in (
+                "review/distributed-information-review.json",
+                "review/distributed-information-review.md",
+                "review/distributed-information-review-decision.json",
+                "review/distributed-information-review-decision.md",
+                "review/distributed-information-review-decision-receipt.json",
+                "handoff/distributed-information-product-change",
+            ):
+                self.assertIn(marker, workspace_readme)
+            self.assertNotIn("review/refrigerator-review", workspace_readme)
 
             for index in range(1, 6):
                 path = (
