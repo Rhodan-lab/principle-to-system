@@ -63,15 +63,27 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             workspace = assembled_workspace(Path(directory))
 
             verification = review_workspace.verify_workspace_intake(workspace)
+            intake = json.loads(
+                (workspace / "verified" / "intake-manifest.json").read_text(
+                    encoding="utf-8"
+                )
+            )
             self.assertEqual(
                 verification["contract"],
                 "principia-product-alpha-workspace-review/0.1",
             )
             self.assertEqual(verification["decision"], "workspace-intake-verified")
             self.assertEqual(verification["sessions"], 5)
+            self.assertEqual(verification["minimum_cohort_size"], 0)
+            self.assertTrue(verification["cohort_complete"])
+            self.assertFalse(verification["incomplete_assembly_authorized"])
             self.assertEqual(verification["evidence_status"], "ready-for-human-review")
             self.assertTrue(verification["raw_sources_verified"])
             self.assertEqual(verification["source_record_count"], 5)
+            self.assertEqual(
+                verification["source_records_sha256"],
+                intake["source_records_sha256"],
+            )
             self.assertEqual(
                 verification["observation_mode"],
                 "optional-descriptive",
@@ -153,6 +165,9 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             intake["source_records"][0]["sha256"] = hashlib.sha256(
                 source.read_bytes()
             ).hexdigest()
+            intake["source_records_sha256"] = hashlib.sha256(
+                assemble_workspace._canonical_json(intake["source_records"])
+            ).hexdigest()
             intake_path.write_text(
                 json.dumps(intake, indent=2, sort_keys=True) + "\n",
                 encoding="utf-8",
@@ -180,6 +195,9 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             intake = json.loads(intake_path.read_text(encoding="utf-8"))
             intake["source_records"][0]["sha256"] = hashlib.sha256(
                 source.read_bytes()
+            ).hexdigest()
+            intake["source_records_sha256"] = hashlib.sha256(
+                assemble_workspace._canonical_json(intake["source_records"])
             ).hexdigest()
             intake_path.write_text(
                 json.dumps(intake, indent=2, sort_keys=True) + "\n",
@@ -217,6 +235,45 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
                         review_workspace.verify_workspace_intake(workspace)
                     self.assertEqual(list((workspace / "review").iterdir()), [])
 
+    def test_rejects_inconsistent_intake_manifest_invariants(self) -> None:
+        cases = (
+            (
+                "source_records_sha256",
+                "0" * 64,
+                "source_records_sha256 does not match source_records",
+            ),
+            (
+                "minimum_cohort_size",
+                5,
+                "minimum_cohort_size does not match verified summary",
+            ),
+            (
+                "cohort_complete",
+                False,
+                "cohort_complete does not match verified summary",
+            ),
+            (
+                "incomplete_assembly_authorized",
+                True,
+                "incomplete_assembly_authorized=false",
+            ),
+        )
+        for field, replacement, message in cases:
+            with self.subTest(field=field):
+                with tempfile.TemporaryDirectory() as directory:
+                    workspace = assembled_workspace(Path(directory), count=1)
+                    intake_path = workspace / "verified" / "intake-manifest.json"
+                    intake = json.loads(intake_path.read_text(encoding="utf-8"))
+                    intake[field] = replacement
+                    intake_path.write_text(
+                        json.dumps(intake, indent=2, sort_keys=True) + "\n",
+                        encoding="utf-8",
+                    )
+
+                    with self.assertRaisesRegex(ValueError, message):
+                        review_workspace.verify_workspace_intake(workspace)
+                    self.assertEqual(list((workspace / "review").iterdir()), [])
+
     def test_cli_check_reports_verified_chain_without_writing_review(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = assembled_workspace(Path(directory), count=1)
@@ -236,6 +293,9 @@ class ProductAlphaWorkspaceReviewTests(unittest.TestCase):
             report = json.loads(completed.stdout)
             self.assertEqual(report["decision"], "workspace-intake-verified")
             self.assertEqual(report["sessions"], 1)
+            self.assertEqual(report["minimum_cohort_size"], 0)
+            self.assertTrue(report["cohort_complete"])
+            self.assertFalse(report["incomplete_assembly_authorized"])
             self.assertTrue(report["raw_sources_verified"])
             self.assertEqual(report["observation_mode"], "optional-descriptive")
             self.assertFalse(report["roadmap_gate"])

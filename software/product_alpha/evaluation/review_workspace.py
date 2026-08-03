@@ -60,6 +60,25 @@ def _validate_intake_authority_boundary(intake: dict[str, Any]) -> None:
             raise ValueError(f"intake manifest must declare {key}=false")
 
 
+def _validate_intake_summary_invariants(
+    intake: dict[str, Any],
+    summary: dict[str, Any],
+) -> None:
+    """Require persisted compatibility fields to match the verified summary."""
+    if intake.get("minimum_cohort_size") != summary["minimum_cohort_size"]:
+        raise ValueError(
+            "intake manifest minimum_cohort_size does not match verified summary"
+        )
+    if intake.get("cohort_complete") is not summary["cohort_complete"]:
+        raise ValueError(
+            "intake manifest cohort_complete does not match verified summary"
+        )
+    if intake.get("incomplete_assembly_authorized") is not False:
+        raise ValueError(
+            "intake manifest must declare incomplete_assembly_authorized=false"
+        )
+
+
 def _source_records(
     incoming: Path,
     expected_build_id: str,
@@ -212,6 +231,18 @@ def verify_workspace_intake(
         raise ValueError("combined cohort SHA-256 does not match intake manifest")
 
     expected_sources = _intake_source_records(intake.get("source_records"))
+    actual_source_records_sha256 = _sha256(
+        prepare_review.canonical_json(expected_sources)
+    )
+    expected_source_records_sha256 = _validate_hash(
+        intake.get("source_records_sha256"),
+        "intake manifest source_records_sha256",
+    )
+    if actual_source_records_sha256 != expected_source_records_sha256:
+        raise ValueError(
+            "intake manifest source_records_sha256 does not match source_records"
+        )
+
     actual_sources, reconstructed_combined_bytes = _source_records(
         incoming,
         str(manifest["pilot_build_id"]),
@@ -237,6 +268,7 @@ def verify_workspace_intake(
         raise ValueError("verified summary contract does not match intake manifest")
     if summary["evidence_status"] != intake.get("evidence_status"):
         raise ValueError("verified evidence status does not match intake manifest")
+    _validate_intake_summary_invariants(intake, summary)
 
     return {
         "contract": CONTRACT,
@@ -250,13 +282,14 @@ def verify_workspace_intake(
         "intake_manifest": str(intake_path),
         "review_output_prefix": str(review_prefix),
         "sessions": sessions,
+        "minimum_cohort_size": summary["minimum_cohort_size"],
+        "cohort_complete": summary["cohort_complete"],
+        "incomplete_assembly_authorized": False,
         "evidence_status": summary["evidence_status"],
         "summary_contract": summary["contract"],
         "combined_sha256": actual_combined_sha256,
         "intake_manifest_sha256": _sha256(intake_bytes),
-        "source_records_sha256": _sha256(
-            prepare_review.canonical_json(expected_sources)
-        ),
+        "source_records_sha256": actual_source_records_sha256,
         "source_record_count": len(expected_sources),
         "raw_sources_verified": True,
         "human_review_required": True,
