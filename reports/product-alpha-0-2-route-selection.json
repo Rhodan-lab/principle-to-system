@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "contract": "principia-product-alpha-route-selection/0.1",
+  "decision_date": "2026-08-03",
+  "baseline_route": "refrigerator",
+  "authority": "internal-multi-criteria-route-selection",
+  "criteria": [
+    {
+      "id": "architectural-contrast",
+      "weight": 0.2,
+      "description": "Tests whether the product shell generalizes beyond the thermal-control domain."
+    },
+    {
+      "id": "deterministic-model-fit",
+      "weight": 0.2,
+      "description": "Supports a bounded, dependency-free model with clear inputs, outputs, assumptions, and failure conditions."
+    },
+    {
+      "id": "safe-offline-execution",
+      "weight": 0.15,
+      "description": "Can be explored entirely with synthetic or canonical data without physical intervention or live-system traffic."
+    },
+    {
+      "id": "canonical-completeness",
+      "weight": 0.15,
+      "description": "Has a reviewed system dossier, failure pattern, investigation, and design challenge."
+    },
+    {
+      "id": "diagnostic-clarity",
+      "weight": 0.1,
+      "description": "Contains a strong mechanism-level distinction between normal operation, degradation, and amplified failure."
+    },
+    {
+      "id": "redesign-richness",
+      "weight": 0.1,
+      "description": "Supports meaningful redesign choices with visible trade-offs rather than one correct component swap."
+    },
+    {
+      "id": "accessibility-privacy-fit",
+      "weight": 0.05,
+      "description": "Naturally supports accessibility, low-bandwidth, privacy, and degraded-mode reasoning."
+    },
+    {
+      "id": "atlas-expansion-pressure",
+      "weight": 0.05,
+      "description": "Higher scores mean the route can begin without speculative Atlas expansion."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "resilient-energy",
+      "title": "Solar, Storage, Protection, and Resilient Service",
+      "scores": {
+        "architectural-contrast": 4,
+        "deterministic-model-fit": 4,
+        "safe-offline-execution": 2,
+        "canonical-completeness": 5,
+        "diagnostic-clarity": 4,
+        "redesign-richness": 5,
+        "accessibility-privacy-fit": 4,
+        "atlas-expansion-pressure": 3
+      },
+      "weighted_score": 3.9,
+      "artifacts": [
+        "system-dossiers/solar-battery-microgrid.md",
+        "failure-atlas/protection-coordination.md",
+        "investigations/solar-shading.md",
+        "design-challenges/resilient-charging-hub.md"
+      ],
+      "judgment": "Strong system depth and redesign value, but protection, islanding, batteries, and electrical safety make it a poor first test of the reusable learner shell."
+    },
+    {
+      "id": "water-infrastructure",
+      "title": "Water Treatment, Distribution, Measurement, and Storage",
+      "scores": {
+        "architectural-contrast": 4,
+        "deterministic-model-fit": 4,
+        "safe-offline-execution": 3,
+        "canonical-completeness": 5,
+        "diagnostic-clarity": 4,
+        "redesign-richness": 4,
+        "accessibility-privacy-fit": 4,
+        "atlas-expansion-pressure": 3
+      },
+      "weighted_score": 3.95,
+      "artifacts": [
+        "system-dossiers/drinking-water-network.md",
+        "failure-atlas/sensor-drift-hidden-degradation.md",
+        "investigations/filter-loading.md",
+        "design-challenges/nonpotable-rainwater-buffer.md"
+      ],
+      "judgment": "Excellent cross-domain systems reasoning, but public-health boundaries and the separation between treatment behavior and potable-safety claims add avoidable first-expansion complexity."
+    },
+    {
+      "id": "distributed-information",
+      "title": "Distributed Web Service, Queueing, and Recovery",
+      "scores": {
+        "architectural-contrast": 5,
+        "deterministic-model-fit": 5,
+        "safe-offline-execution": 5,
+        "canonical-completeness": 5,
+        "diagnostic-clarity": 5,
+        "redesign-richness": 5,
+        "accessibility-privacy-fit": 5,
+        "atlas-expansion-pressure": 4
+      },
+      "weighted_score": 4.95,
+      "artifacts": [
+        "system-dossiers/web-service-request.md",
+        "failure-atlas/retry-storm-queue-collapse.md",
+        "investigations/queue-delay-near-capacity.md",
+        "design-challenges/resilient-school-information-service.md"
+      ],
+      "judgment": "Best first generalization test: maximally different from refrigerator, fully synthetic and offline, quantitatively bounded, diagnostically strong, and rich in performance, accessibility, privacy, reliability, and governance trade-offs."
+    }
+  ],
+  "decision": {
+    "selected_route": "distributed-information",
+    "action": "implement-distributed-information-model-adapter-and-route",
+    "rationale": "Distributed information has the highest weighted score and tests the greatest architectural distance from the refrigerator route without introducing physical, electrical, or public-health execution risk. Its queueing model supports prediction-before-model interaction, its retry-storm failure supports mechanism-level diagnosis, and its school information service challenge supports redesign across performance, accessibility, privacy, resilience, and operational complexity.",
+    "next_deliverables": [
+      "implement a route-driven model adapter interface",
+      "remove thermal labels and controls from the generic learner shell",
+      "add a buildable distributed-information route configuration",
+      "preserve refrigerator output and deterministic behavior",
+      "run both routes through focused JavaScript and Python regression coverage"
+    ],
+    "deferred": [
+      "resilient-energy route implementation",
+      "water-infrastructure route implementation",
+      "Atlas expansion without a concrete exact-revision evidence gap",
+      "accounts, analytics, cloud storage, or public deployment"
+    ]
+  },
+  "claim_boundary": {
+    "may_claim": [
+      "a deterministic internal route-selection decision",
+      "selection of distributed-information for implementation",
+      "a machine-readable implementation contract",
+      "authorization to refactor the learner shell for multiple model adapters"
+    ],
+    "does_not_establish": [
+      "a runnable second route",
+      "real web-service performance",
+      "security of any live system",
+      "empirical learning effectiveness",
+      "product-market fit",
+      "public production readiness"
+    ]
+  }
+}
