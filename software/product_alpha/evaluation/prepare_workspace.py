@@ -40,6 +40,11 @@ def _is_within(path: Path, root: Path) -> bool:
     return True
 
 
+def _path_present(path: Path) -> bool:
+    """Return whether a destination name is occupied, including by a broken symlink."""
+    return path.is_symlink() or path.exists()
+
+
 def _manifest(build_id: str, route_id: str) -> dict[str, object]:
     validated_route = route_identity.validate_evidence_route_id(route_id)
     route_slug = route_identity.software_route_id(validated_route)
@@ -210,12 +215,13 @@ def prepare_workspace(
 ) -> dict[str, object]:
     """Create one empty private workspace and return its manifest."""
     expected_build_id = validate_build_id(build_id)
-    destination = workspace.expanduser().resolve(strict=False)
+    expanded = workspace.expanduser()
+    destination = expanded.parent.resolve(strict=False) / expanded.name
     repository = repo_root.resolve(strict=False)
 
     if _is_within(destination, repository):
         raise ValueError("workspace must be outside the repository")
-    if destination.exists():
+    if _path_present(destination):
         raise FileExistsError(f"workspace already exists: {destination}")
 
     manifest = _manifest(expected_build_id, route_id)
@@ -232,7 +238,9 @@ def prepare_workspace(
             encoding="utf-8",
         )
     except Exception:
-        if destination.exists():
+        if destination.is_symlink():
+            destination.unlink()
+        elif destination.exists():
             shutil.rmtree(destination)
         raise
     return manifest
