@@ -2,7 +2,7 @@
 
 **Principia** is an open, evidence-aware learning system for understanding how scientific principles become mechanisms, models, technologies, failures, investigations, and redesigns.
 
-> **Current program:** **Product Alpha 0.1 — evidence integrity recovery.** The active milestone is completion of a verifiable real learner pilot of the refrigerator route, not another numbered governance phase. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) for the current decision state. The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
+> **Current program:** **Product Alpha 0.2 — second-route planning and reusable route architecture.** Product Alpha 0.1 passed the deterministic internal multi-perspective review; external participant observation is optional research rather than a roadmap gate. See [`PRODUCT_STATE.md`](PRODUCT_STATE.md) and [`reports/product-alpha-0-1-multi-perspective-review.md`](reports/product-alpha-0-1-multi-perspective-review.md). The detailed Phase 0–50 ledger remains in [`PROJECT_STATE.md`](PROJECT_STATE.md) as validated project history.
 
 ## What Principia does
 
@@ -62,11 +62,19 @@ python3 software/product_alpha/run_pilot.py check
 python3 -m unittest discover -s software/tests -p 'test_product_alpha*.py' -v
 ```
 
-### Next evidence gate
+### Current internal decision gate
 
-Run or verify the documented 5–8 learner pilot before adding another route or production infrastructure. Evaluate route completion, mechanism explanation, model reasoning, failure diagnosis, evidence-boundary understanding, redesign trade-offs, recurring confusion, and voluntary continuation.
+Product Alpha 0.1 has passed an eight-perspective internal review covering product strategy, pedagogy, scientific integrity, UX and accessibility, privacy and security, operational reliability, evidence and provenance, and maintainability and governance.
 
-The pilot protocol is [`software/product_alpha/PILOT.md`](software/product_alpha/PILOT.md). The current evidence review is [`reports/product-alpha-0-1-pilot-summary.md`](reports/product-alpha-0-1-pilot-summary.md); unavailable cohort values remain **not reportable** until derived from real anonymous records.
+Validate the decision authority without writing:
+
+```bash
+python3 software/product_alpha/evaluation/validate_internal_review.py check
+```
+
+The current action is `advance-to-next-product-planning-review`: keep refrigerator stable, select a second system route, and use it to prove reusable architecture. Optional field-observation tooling remains available but is not required for roadmap progress.
+
+The review does not establish empirical learning effectiveness, retention, transfer, engagement outcomes, product-market fit, or public production readiness.
 
 ## Principia and Atlas
 
@@ -101,7 +109,7 @@ The retained Phase 12 release-candidate record is [`release/phase-12-release-can
 
 Historical compatibility record: The Phase 12 validator passes on draft PR #14; the release decision remains Hold; the retained candidate identifier is `principia-material-foundation-rc1`. These phrases describe the archived Phase 12 record and do not supersede the current Product Alpha evidence gate.
 
-Live Atlas integration remains disabled. Product Alpha is pilot-ready as software, not a public learning-effectiveness claim and not a production SaaS release.
+Live Atlas integration remains disabled. Product Alpha is internally validated as a local alpha and authorized for second-route planning, not a public learning-effectiveness claim or production SaaS release.
 
 ### Principia & Atlas compatibility
 
