@@ -21,6 +21,7 @@ from typing import Sequence
 
 LOOPBACK_HOST = "127.0.0.1"
 DEFAULT_PORT = 8000
+DEFAULT_ROUTE = "refrigerator"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = REPO_ROOT / "software" / "product_alpha" / "build.py"
 DEFAULT_OUTPUT = REPO_ROOT / "software" / "product_alpha" / "dist"
@@ -28,6 +29,7 @@ BUILD_MANIFEST = "build-manifest.json"
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 REQUIRED_OUTPUTS = (
     "index.html",
+    "model-adapters.js",
     "facilitator.html",
     "pilot-lab.html",
     "evaluation/rubric.json",
@@ -75,7 +77,7 @@ SMOKE_TARGETS = (
     ),
     (
         "route",
-        "/data/refrigerator.json",
+        "/data/{route_id}.json",
         b'"contract":"principia-product-alpha-route/0.1"',
     ),
     (
@@ -146,8 +148,10 @@ def pilot_urls(port: int, build_id: str | None = None) -> dict[str, str]:
     }
 
 
-def run_builder(command: str, output: Path = DEFAULT_OUTPUT) -> None:
+def run_builder(command: str, output: Path = DEFAULT_OUTPUT, route: str = DEFAULT_ROUTE) -> None:
     args = [sys.executable, str(BUILD_SCRIPT), command, "--root", str(REPO_ROOT)]
+    if route != DEFAULT_ROUTE:
+        args.extend(["--route", route])
     if command == "build":
         args.extend(["--output", str(output)])
     subprocess.run(args, check=True)
@@ -233,7 +237,7 @@ def _verify_smoke_headers(target_id: str, headers: dict[str, str]) -> None:
             )
 
 
-def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
+def smoke_served_output(output: Path, build_id: str, route: str = DEFAULT_ROUTE) -> dict[str, object]:
     """Serve and verify the exact packaged pilot without retaining any state."""
     verify_output(output)
     expected_build_id = validate_build_id(build_id)
@@ -255,7 +259,7 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
     foreign_host_methods_rejected: list[str] = []
     try:
         for target_id, path_template, marker in SMOKE_TARGETS:
-            path = path_template.format(build_id=expected_build_id)
+            path = path_template.format(build_id=expected_build_id, route_id=route)
             status, headers, body = _fetch_smoke_target(actual_port, path)
             if status != 200:
                 raise ValueError(
@@ -326,8 +330,8 @@ def smoke_served_output(output: Path, build_id: str) -> dict[str, object]:
     }
 
 
-def serve(output: Path, port: int, open_browser: bool, quiet: bool) -> None:
-    run_builder("build", output)
+def serve(output: Path, port: int, open_browser: bool, quiet: bool, route: str = DEFAULT_ROUTE) -> None:
+    run_builder("build", output, route)
     verify_output(output)
     build_id = pilot_build_identity(output)
     try:
@@ -386,6 +390,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="open the learner, recorder, and Pilot Lab in local browser tabs",
     )
     parser.add_argument("--quiet", action="store_true", help="suppress HTTP request logs")
+    parser.add_argument("--route", default=DEFAULT_ROUTE, choices=("refrigerator", "distributed-information"), help="learner route to package and serve")
     return parser.parse_args(argv)
 
 
@@ -397,15 +402,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit(str(exc)) from exc
     output = args.output.resolve()
     if args.command in {"check", "smoke"}:
-        run_builder("check", output)
+        run_builder("check", output, args.route)
         with tempfile.TemporaryDirectory() as directory:
             check_output = Path(directory)
-            run_builder("build", check_output)
+            run_builder("build", check_output, args.route)
             verify_output(check_output)
             build_id = pilot_build_identity(check_output)
             urls = pilot_urls(0, build_id)
             if args.command == "smoke":
-                report = smoke_served_output(check_output, build_id)
+                report = smoke_served_output(check_output, build_id, args.route)
         if args.command == "check":
             print(
                 "Product Alpha pilot launcher check passed: "
@@ -425,7 +430,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"session_data_stored={str(report['session_data_stored']).lower()}"
             )
         return 0
-    serve(output, args.port, args.open_browser, args.quiet)
+    serve(output, args.port, args.open_browser, args.quiet, args.route)
     return 0
 
 
