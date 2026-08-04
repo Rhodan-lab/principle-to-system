@@ -16,6 +16,11 @@ CONTRACT = "principia-product-alpha-workspace-intake/0.1"
 PREFLIGHT_CONTRACT = "principia-product-alpha-workspace-intake-preflight/0.1"
 WORKSPACE_CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
 ALLOWED_SOURCE_SUFFIXES = {".json", ".jsonl"}
+MAX_INCOMING_ENTRIES = pilot_summary.MAX_SESSION_RECORDS
+MAX_SOURCE_FILE_BYTES = pilot_summary.MAX_INPUT_BYTES
+MAX_TOTAL_SOURCE_BYTES = pilot_summary.MAX_INPUT_BYTES
+MAX_JSON_OBJECT_BYTES = pilot_summary.MAX_INPUT_BYTES
+MAX_COMBINED_BYTES = pilot_summary.MAX_INPUT_BYTES
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -47,6 +52,14 @@ def _canonical_json(value: Any) -> bytes:
     ).encode("utf-8")
 
 
+def _read_bounded_bytes(path: Path, label: str, limit: int) -> bytes:
+    with path.open("rb") as stream:
+        raw = stream.read(limit + 1)
+    if len(raw) > limit:
+        raise ValueError(f"{label}: exceeds the {limit}-byte limit")
+    return raw
+
+
 def _decode_strict_json(raw: bytes, label: str) -> Any:
     try:
         text = raw.decode("utf-8")
@@ -67,7 +80,8 @@ def _decode_strict_json(raw: bytes, label: str) -> Any:
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"{label}: must be a regular file")
-    value = _decode_strict_json(path.read_bytes(), label)
+    raw = _read_bounded_bytes(path, label, MAX_JSON_OBJECT_BYTES)
+    value = _decode_strict_json(raw, label)
     if not isinstance(value, dict):
         raise ValueError(f"{label}: must contain one JSON object")
     return value
@@ -203,6 +217,21 @@ def _load_workspace(
     return manifest, incoming, combined, intake
 
 
+def _incoming_entries(incoming: Path) -> list[Path]:
+    entries: list[Path] = []
+    for count, path in enumerate(incoming.iterdir(), 1):
+        if count > MAX_INCOMING_ENTRIES:
+            raise ValueError(
+                "incoming session directory contains more than "
+                f"{MAX_INCOMING_ENTRIES} entries"
+            )
+        entries.append(path)
+    entries.sort(key=lambda path: path.name)
+    if not entries:
+        raise ValueError("incoming session directory contains no exports")
+    return entries
+
+
 def _build_plan(
     workspace: Path,
     *,
@@ -219,13 +248,11 @@ def _build_plan(
     if incoming.is_symlink() or not incoming.is_dir():
         raise ValueError("incoming session directory must be a regular directory")
 
-    entries = sorted(incoming.iterdir(), key=lambda path: path.name)
-    if not entries:
-        raise ValueError("incoming session directory contains no exports")
-
+    entries = _incoming_entries(incoming)
     sessions: list[dict[str, Any]] = []
     source_records: list[dict[str, str]] = []
     seen_ids: set[str] = set()
+    total_source_bytes = 0
 
     for path in entries:
         if path.is_symlink() or not path.is_file():
@@ -233,7 +260,13 @@ def _build_plan(
         if path.suffix.lower() not in ALLOWED_SOURCE_SUFFIXES:
             raise ValueError(f"unsupported incoming file type: {path.name}")
 
-        raw = path.read_bytes()
+        raw = _read_bounded_bytes(path, path.name, MAX_SOURCE_FILE_BYTES)
+        total_source_bytes += len(raw)
+        if total_source_bytes > MAX_TOTAL_SOURCE_BYTES:
+            raise ValueError(
+                "incoming session exports exceed the "
+                f"{MAX_TOTAL_SOURCE_BYTES}-byte total limit"
+            )
         value = _decode_strict_json(raw, path.name)
         if not isinstance(value, dict):
             raise ValueError(
@@ -273,6 +306,10 @@ def _build_plan(
         json.dumps(session, sort_keys=True, separators=(",", ":")) + "\n"
         for session in sessions
     ).encode("utf-8")
+    if len(combined_bytes) > MAX_COMBINED_BYTES:
+        raise ValueError(
+            f"canonical combined cohort exceeds the {MAX_COMBINED_BYTES}-byte limit"
+        )
     summary = pilot_summary.summarize(sessions)
 
     return WorkspaceIntakePlan(
@@ -325,7 +362,12 @@ def _verified_output_state(plan: WorkspaceIntakePlan) -> dict[str, bool]:
 
     if plan.combined.is_symlink() or not plan.combined.is_file():
         raise ValueError("existing combined cohort must be a regular file")
-    if plan.combined.read_bytes() != plan.combined_bytes:
+    existing_combined = _read_bounded_bytes(
+        plan.combined,
+        "existing combined cohort",
+        MAX_COMBINED_BYTES,
+    )
+    if existing_combined != plan.combined_bytes:
         raise ValueError("existing combined cohort does not match current raw exports")
 
     existing_intake = _read_json_object(
