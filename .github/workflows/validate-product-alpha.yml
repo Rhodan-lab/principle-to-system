@@ -23,6 +23,7 @@ on:
       - "design-challenges/resilient-school-information-service.md"
       - ".github/workflows/validate-product-alpha.yml"
       - ".github/workflows/validate-principia-atlas-orchestration.yml"
+      - ".github/workflows/publish-principia-atlas-release.yml"
   push:
     paths:
       - "PRODUCT_STATE.md"
@@ -45,6 +46,7 @@ on:
       - "design-challenges/resilient-school-information-service.md"
       - ".github/workflows/validate-product-alpha.yml"
       - ".github/workflows/validate-principia-atlas-orchestration.yml"
+      - ".github/workflows/publish-principia-atlas-release.yml"
 
 permissions:
   contents: read
@@ -71,6 +73,10 @@ jobs:
             software/product_alpha/launch_workspace.py \
             software/principia_atlas/suite.py \
             software/principia_atlas/orchestrate.py \
+            software/principia_atlas/release.py \
+            software/principia_atlas/release_runtime.py \
+            software/principia_atlas/promotion_policy.py \
+            software/principia_atlas/promotion.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
