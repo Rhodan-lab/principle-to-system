@@ -14,7 +14,7 @@ The loopback runtime adds deterministic navigation chrome to HTML responses so e
 
 ## One-command workflow
 
-Keep the Principia and Atlas repositories as sibling checkouts, or pass the Atlas path explicitly. From the Principia repository, build, verify, smoke-test, and launch the complete product with:
+Keep the Principia and Atlas repositories as sibling checkouts, or pass the Atlas path explicitly. Product output must remain outside both source repositories. From the Principia repository, build, verify, smoke-test, and launch the complete product with:
 
 ```bash
 python3 software/principia_atlas/orchestrate.py run \
@@ -27,16 +27,16 @@ python3 software/principia_atlas/orchestrate.py run \
 The orchestrator performs all of the following before the server starts:
 
 1. verifies both checkout roots and records their exact Git commits;
-2. rejects tracked source changes unless `--allow-dirty` is explicitly supplied;
-3. runs the official Atlas product-input deterministic check;
-4. runs the Principia Product Alpha deterministic check;
-5. builds and verifies the official Atlas eight-file package;
-6. builds the selected Principia route;
-7. assembles, verifies, and loopback-smoke-tests the combined bundle;
-8. publishes the new bundle atomically only after every check passes;
-9. writes a sealed build receipt beside the output.
+2. rejects tracked changes and untracked files unless `--allow-dirty` is explicitly supplied;
+3. records a SHA-256 digest of each checkout's Git status in the source receipt;
+4. runs the official Atlas product-input deterministic check;
+5. runs the Principia Product Alpha deterministic check;
+6. builds and verifies the official Atlas eight-file package;
+7. builds the selected Principia route;
+8. assembles, verifies, and loopback-smoke-tests the combined bundle;
+9. publishes the bundle and sealed receipt as one rollback-capable transaction.
 
-A failed replacement leaves the last successfully published product untouched. An output-specific lock rejects overlapping builds.
+A failed source build, smoke, receipt write, or receipt verification leaves the last complete product-and-receipt pair untouched. An output-specific lock rejects overlapping builds. An incomplete pre-existing pair is rejected rather than overwritten ambiguously.
 
 ## Commands
 
@@ -70,7 +70,7 @@ The build receipt is written to:
 /tmp/principia-atlas.build-receipt.json
 ```
 
-It binds the combined bundle ID to the Principia commit, Atlas commit, Principia build ID, Atlas shell/report digests, exact Atlas workspace revision, and preserved authority boundaries.
+Receipt contract `principia-atlas-orchestration-receipt/0.2` binds the combined bundle ID to the Principia commit, Atlas commit, clean/dirty status digest, Principia build ID, Atlas shell/report digests, exact Atlas workspace revision, and preserved authority boundaries. Verification remains compatible with receipt contract `0.1` for already built products.
 
 For release or CI use, exact source revisions can be enforced:
 
@@ -82,6 +82,8 @@ python3 software/principia_atlas/orchestrate.py build \
   --route distributed-information \
   --output /tmp/principia-atlas
 ```
+
+`--allow-dirty` is development-only. A dirty build records `clean: false` and the status digest in its receipt; it is not equivalent to a clean release build.
 
 ## Lower-level package API
 
@@ -104,6 +106,8 @@ status_inheritance: prohibited
 principia_snapshot: exact-manifest-verified
 atlas_snapshot: exact-build-report-verified
 source_commits: sealed-in-build-receipt
+source_status: tracked-and-untracked-bound
+publication: bundle-and-receipt-rollback-transaction
 live_cross_repository_dependency: false
 external_network_required: false
 canonical_mutation: false
