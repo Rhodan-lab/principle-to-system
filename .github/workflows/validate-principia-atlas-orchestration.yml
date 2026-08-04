@@ -9,7 +9,8 @@ permissions:
 
 env:
   ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
-  RELEASE_VERSION: 0.1.0-ci
+  RELEASE_VERSION: 0.1.0-alpha.1
+  PROMOTION_TAG: principia-atlas-v0.1.0-alpha.1
 
 jobs:
   validate:
@@ -41,15 +42,18 @@ jobs:
       - name: Isolate Atlas from the Principia worktree
         run: mv atlas "$RUNNER_TEMP/atlas"
 
-      - name: Compile orchestration and release layers
+      - name: Compile orchestration, release, and promotion layers
         run: |
           python3 -m py_compile software/principia_atlas/suite.py
           python3 -m py_compile software/principia_atlas/orchestrate.py
           python3 -m py_compile software/principia_atlas/release.py
           python3 -m py_compile software/principia_atlas/release_runtime.py
+          python3 -m py_compile software/principia_atlas/promotion_policy.py
+          python3 -m py_compile software/principia_atlas/promotion.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_bundle.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_orchestration.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_release.py
+          python3 -m py_compile software/tests/test_product_alpha_principia_atlas_promotion.py
 
       - name: Run orchestration regressions
         run: |
@@ -63,6 +67,13 @@ jobs:
           python3 -m unittest discover \
             -s software/tests \
             -p 'test_product_alpha_principia_atlas_release.py' \
+            -v
+
+      - name: Run promotion regressions
+        run: |
+          python3 -m unittest discover \
+            -s software/tests \
+            -p 'test_product_alpha_principia_atlas_promotion.py' \
             -v
 
       - name: Verify deterministic end-to-end assembly
@@ -135,6 +146,21 @@ jobs:
             "$RUNNER_TEMP/release-extracted/principia-atlas-$RELEASE_VERSION/launcher.py" \
             verify
 
+      - name: Prepare and verify promotion candidate
+        run: |
+          mkdir -p "$RUNNER_TEMP/promotion-history" "$RUNNER_TEMP/promotion"
+          : > "$RUNNER_TEMP/expected-release-tags.txt"
+          python3 software/principia_atlas/promotion.py prepare \
+            --archive "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            --tag "$PROMOTION_TAG" \
+            --history-dir "$RUNNER_TEMP/promotion-history" \
+            --expected-tags "$RUNNER_TEMP/expected-release-tags.txt" \
+            --output-dir "$RUNNER_TEMP/promotion"
+          python3 software/principia_atlas/promotion.py verify \
+            --archive "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            --promotion "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
+            --index "$RUNNER_TEMP/promotion/principia-atlas-release-index.json"
+
       - name: Verify source checkout immutability
         run: |
           test -z "$(git status --porcelain=v1 --untracked-files=all)"
@@ -149,5 +175,8 @@ jobs:
             ${{ runner.temp }}/principia-atlas-product.build-receipt.json
             ${{ runner.temp }}/principia-atlas-${{ env.RELEASE_VERSION }}.zip
             ${{ runner.temp }}/principia-atlas-${{ env.RELEASE_VERSION }}.zip.sha256
+            ${{ runner.temp }}/promotion/principia-atlas-promotion.json
+            ${{ runner.temp }}/promotion/principia-atlas-release-index.json
+            ${{ runner.temp }}/promotion/RELEASE-NOTES.md
           if-no-files-found: error
           retention-days: 14
