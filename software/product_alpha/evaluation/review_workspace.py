@@ -80,8 +80,8 @@ def _validate_intake_authority_boundary(intake: dict[str, Any]) -> None:
 
 
 def _validate_intake_summary_invariants(
-    intake: dict[str, Any],
-    summary: dict[str, Any],
+    intake: dict[str,Any],
+    summary: dict[str,Any],
 ) -> None:
     """Require persisted compatibility fields to match the verified summary."""
     if intake.get("minimum_cohort_size") != summary["minimum_cohort_size"]:
@@ -122,7 +122,7 @@ def _source_records(
         raise ValueError("incoming session directory is missing")
     entries = _incoming_entries(incoming)
 
-    sessions: list[dict[str, Any]] = []
+    sessions: list[dict[str,Any]] = []
     records: list[dict[str, str]] = []
     seen_ids: set[str] = set()
     total_source_bytes = 0
@@ -355,11 +355,11 @@ def verify_workspace_intake(
     }
 
 
-def prepare_workspace_review(workspace: Path) -> dict[str, object]:
-    """Verify the workspace intake and write its bound private review packet."""
-    verification = verify_workspace_intake(workspace)
+def build_bound_review_packet(
+    verification: dict[str, object],
+) -> dict[str, Any]:
+    """Rebuild a review packet and bind it to the exact verified workspace snapshot."""
     combined = Path(str(verification["combined_jsonl"]))
-    output_prefix = Path(str(verification["review_output_prefix"]))
     packet = prepare_review.build_review_packet(
         combined,
         str(verification["pilot_build_id"]),
@@ -367,6 +367,10 @@ def prepare_workspace_review(workspace: Path) -> dict[str, object]:
     evidence = packet.get("evidence_binding")
     if not isinstance(evidence, dict):
         raise ValueError("review packet evidence_binding must be an object")
+    if evidence.get("input_sha256") != verification["combined_sha256"]:
+        raise ValueError(
+            "review packet input SHA-256 does not match verified combined cohort"
+        )
     evidence.update(
         {
             "workspace_contract": verification["workspace_contract"],
@@ -377,6 +381,14 @@ def prepare_workspace_review(workspace: Path) -> dict[str, object]:
             "raw_sources_verified": True,
         }
     )
+    return packet
+
+
+def prepare_workspace_review(workspace: Path) -> dict[str, object]:
+    """Verify the workspace intake and write its bound private review packet."""
+    verification = verify_workspace_intake(workspace)
+    output_prefix = Path(str(verification["review_output_prefix"]))
+    packet = build_bound_review_packet(verification)
     json_path, markdown_path, packet_sha256 = prepare_review.write_review_outputs(
         output_prefix,
         packet,
