@@ -67,8 +67,9 @@ function claims(now = 1_800_000_000, tenant = 'school-demo') {
   return { iss: 'https://identity.example.test', aud: 'principia-atlas-hosted', sub: 'learner-1', tenant_id: tenant, roles: ['learner'], iat: now, exp: now + 180, jti: 'assertion_identifier_1234' };
 }
 
-test('strict JSON rejects duplicate keys', () => {
+test('strict JSON rejects duplicate keys and malformed UTF-8', () => {
   assert.throws(() => parseStrictJson('{"a":1,"a":2}', 'fixture'), /duplicate key/);
+  assert.throws(() => parseStrictJson(Buffer.from([0xff]), 'fixture'), /valid UTF-8/);
 });
 
 test('catalog and tenant seals detect tamper', () => {
@@ -110,6 +111,14 @@ test('catalog is filtered only by session tenant entitlements', () => {
   assert.deepEqual(beta.releases.map((item) => item.version), ['0.1.0-beta.1']);
 });
 
+test('server rejects an unavailable tenant version pin', () => {
+  const unsigned = config();
+  delete unsigned.config_id;
+  unsigned.tenants['school-demo'].pinned_versions = ['0.1.0-alpha.9'];
+  const invalid = sealTenantConfig(unsigned);
+  assert.throws(() => createControlPlaneServer({ catalog: catalog(), config: invalid, identitySecret, sessionSecret }), /unavailable release/);
+});
+
 test('HTTP control plane exchanges assertion and returns tenant catalog', async () => {
   const now = 1_800_000_000;
   const server = createControlPlaneServer({ catalog: catalog(), config: config(), identitySecret, sessionSecret, now: () => now });
@@ -134,6 +143,7 @@ test('HTTP control plane exchanges assertion and returns tenant catalog', async 
     assert.equal(body.tenant.id, 'school-demo');
     assert.deepEqual(body.releases.map((item) => item.version), ['0.1.0-alpha.1']);
     assert.equal(Object.hasOwn(body, 'tenants'), false);
+    assert.equal(Object.hasOwn(body.releases[0], 'artifact_path'), false);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
