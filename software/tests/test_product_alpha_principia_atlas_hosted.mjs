@@ -126,6 +126,8 @@ test('HTTP control plane exchanges assertion and returns tenant catalog', async 
     const cookie = exchange.headers.get('set-cookie');
     assert.match(cookie, /HttpOnly/);
     assert.match(cookie, /SameSite=Lax/);
+    const replay = await fetch(`${base}/api/auth/exchange`, { method: 'POST', headers: { Authorization: `Bearer ${assertion}`, Origin: base } });
+    assert.equal(replay.status, 401);
     const authenticated = await fetch(`${base}/api/catalog`, { headers: { Cookie: cookie.split(';')[0] } });
     assert.equal(authenticated.status, 200);
     const body = await authenticated.json();
