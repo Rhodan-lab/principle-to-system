@@ -62,7 +62,11 @@ jobs:
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_orchestration.py
 
       - name: Run orchestration regressions
-        run: python3 software/tests/test_product_alpha_principia_atlas_orchestration.py -v
+        run: |
+          python3 -m unittest discover \
+            -s software/tests \
+            -p 'test_product_alpha_principia_atlas_orchestration.py' \
+            -v
 
       - name: Verify deterministic end-to-end assembly
         run: |
