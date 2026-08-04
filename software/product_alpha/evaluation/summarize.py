@@ -255,9 +255,19 @@ def validate_session(
     return session
 
 
-def load_sessions(path: Path) -> list[dict[str, Any]]:
+def read_session_input(path: Path) -> bytes:
+    """Read one bounded Product Alpha JSONL input snapshot."""
     with path.open("rb") as stream:
         raw = stream.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        raise ValueError(
+            f"input exceeds the {MAX_INPUT_BYTES}-byte Product Alpha session limit"
+        )
+    return raw
+
+
+def load_sessions_bytes(raw: bytes) -> list[dict[str, Any]]:
+    """Decode and validate one bounded Product Alpha JSONL byte snapshot."""
     if len(raw) > MAX_INPUT_BYTES:
         raise ValueError(
             f"input exceeds the {MAX_INPUT_BYTES}-byte Product Alpha session limit"
@@ -313,6 +323,10 @@ def load_sessions(path: Path) -> list[dict[str, Any]]:
     if not sessions:
         raise ValueError("input contains no pilot sessions")
     return sessions
+
+
+def load_sessions(path: Path) -> list[dict[str, Any]]:
+    return load_sessions_bytes(read_session_input(path))
 
 
 def revision_signals(summary: dict[str, Any]) -> list[dict[str, str]]:
