@@ -35,7 +35,7 @@ class PrincipiaAtlasHostedStoreTests(unittest.TestCase):
                 "build_id": "p" * 64,
             },
         }
-        self.receipt = {"receipt_id": "r" * 64}
+        self.receipt = {"receipt_id": "4" * 64}
         self.version = "0.1.0-alpha.1"
         self.archives = self.root / "archives"
         self.archives.mkdir()
@@ -143,17 +143,21 @@ class PrincipiaAtlasHostedStoreTests(unittest.TestCase):
         self.assertIn("principia/app.js", entry["files"])
 
     def test_store_file_tamper_and_extra_file_are_rejected(self) -> None:
-        store = self.root / "store"
-        manifest = self._build(store)
+        tampered = self.root / "tampered-store"
+        manifest = self._build(tampered)
         entry = manifest["releases"][self.version]
-        asset = store / entry["object_root"] / "index.html"
+        asset = tampered / entry["object_root"] / "index.html"
         asset.write_text("tampered\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "does not match"):
-            hosted_store.verify_store(store, self.catalog)
-        self._build(store)
-        (store / "unexpected.txt").write_text("extra\n", encoding="utf-8")
+            hosted_store.verify_store(tampered, self.catalog)
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            self._build(tampered)
+
+        extra = self.root / "extra-store"
+        self._build(extra)
+        (extra / "unexpected.txt").write_text("extra\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "file set"):
-            hosted_store.verify_store(store, self.catalog)
+            hosted_store.verify_store(extra, self.catalog)
 
     def test_store_symlink_is_rejected(self) -> None:
         store = self.root / "store"
