@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import prepare_review
+import private_artifact
 import record_decision
 
 CONTRACT = "principia-product-alpha-repository-handoff/0.1"
@@ -66,9 +67,7 @@ def _output_paths(
 
 
 def _regular_bytes(path: Path, label: str) -> bytes:
-    if path.is_symlink() or not path.is_file():
-        raise ValueError(f"{label} must be a regular file")
-    return path.read_bytes()
+    return private_artifact.read_regular_bytes(path, label)
 
 
 def _canonical_object(raw: bytes, label: str) -> dict[str, Any]:
