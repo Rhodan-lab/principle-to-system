@@ -75,7 +75,7 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "content-security-policy"):
                     launcher.smoke_served_output(output, build_id)
 
-    def test_smoke_rejects_missing_packaged_marker(self) -> None:
+    def test_smoke_rejects_mutated_packaged_marker_by_hash(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             launcher.run_builder("build", output)
@@ -85,7 +85,7 @@ class ProductAlphaPilotSmokeTests(unittest.TestCase):
             marker = b'EXPECTED_BUILD_ID=query?.get("build_id")'
             self.assertIn(marker, data)
             pilot_lab.write_bytes(data.replace(marker, b"BROKEN_BUILD_BINDING", 1))
-            with self.assertRaisesRegex(ValueError, "missing its packaged marker"):
+            with self.assertRaisesRegex(ValueError, "SHA-256 does not match"):
                 launcher.smoke_served_output(output, build_id)
 
     def test_smoke_rejects_invalid_expected_build_id(self) -> None:
