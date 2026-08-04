@@ -1,6 +1,6 @@
 name: Publish Principia Atlas Release
 
-on:
+"on":
   push:
     tags:
       - "principia-atlas-v*"
