@@ -26,6 +26,8 @@ REQUIRED_STATIC_FILES = (
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 MAX_MANIFEST_BYTES = 1024 * 1024
 MAX_ASSET_BYTES = 16 * 1024 * 1024
+MAX_PACKAGE_FILES = 64
+MAX_PACKAGE_BYTES = 64 * 1024 * 1024
 
 
 def _object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -109,6 +111,10 @@ def _declared_files(manifest: dict[str, Any]) -> dict[str, str]:
     files = manifest.get("files")
     if not isinstance(files, list) or manifest.get("file_count") != len(files):
         raise ValueError("Product Alpha build manifest file_count is inconsistent")
+    if len(files) > MAX_PACKAGE_FILES:
+        raise ValueError(
+            f"Product Alpha build manifest exceeds the {MAX_PACKAGE_FILES}-file package limit"
+        )
 
     declared: dict[str, str] = {}
     for entry in files:
@@ -149,8 +155,13 @@ def _actual_files(output: Path) -> set[str]:
     return actual
 
 
-def verify_build_package(output: Path) -> tuple[dict[str, Any], bytes]:
-    """Verify the exact package file set and every manifest-bound asset hash."""
+def load_verified_package(
+    output: Path,
+) -> tuple[dict[str, Any], bytes, dict[str, bytes]]:
+    """Load one exact verified package snapshot for immutable local serving."""
+    if output.is_symlink() or not output.is_dir():
+        raise ValueError("Product Alpha build output must be a regular directory")
+
     manifest_path = output / BUILD_MANIFEST
     try:
         raw = _read_regular_bytes(
@@ -203,6 +214,8 @@ def verify_build_package(output: Path) -> tuple[dict[str, Any], bytes]:
             + "; ".join(details)
         )
 
+    package = {BUILD_MANIFEST: raw}
+    total_bytes = len(raw)
     for relative, expected_digest in declared.items():
         data = _read_regular_bytes(
             output.joinpath(*PurePosixPath(relative).parts),
@@ -214,6 +227,18 @@ def verify_build_package(output: Path) -> tuple[dict[str, Any], bytes]:
             raise ValueError(
                 f"Product Alpha build asset SHA-256 does not match manifest: {relative}"
             )
+        total_bytes += len(data)
+        if total_bytes > MAX_PACKAGE_BYTES:
+            raise ValueError(
+                f"Product Alpha build exceeds the {MAX_PACKAGE_BYTES}-byte package limit"
+            )
+        package[relative] = data
+    return manifest, raw, package
+
+
+def verify_build_package(output: Path) -> tuple[dict[str, Any], bytes]:
+    """Verify the exact package file set and every manifest-bound asset hash."""
+    manifest, raw, _ = load_verified_package(output)
     return manifest, raw
 
 
