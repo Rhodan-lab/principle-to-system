@@ -56,11 +56,13 @@ jobs:
           python3 -m py_compile software/principia_atlas/promotion_policy.py
           python3 -m py_compile software/principia_atlas/promotion.py
           python3 -m py_compile software/principia_atlas/hosted_catalog.py
+          python3 -m py_compile software/principia_atlas/hosted_store.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_bundle.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_orchestration.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_release.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_promotion.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_hosted_catalog.py
+          python3 -m py_compile software/tests/test_product_alpha_principia_atlas_hosted_store.py
           for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
 
       - name: Run orchestration regressions
@@ -84,12 +86,18 @@ jobs:
             -p 'test_product_alpha_principia_atlas_promotion.py' \
             -v
 
-      - name: Run hosted control-plane regressions
+      - name: Run hosted control-plane and store regressions
         run: |
-          node --test software/tests/test_product_alpha_principia_atlas_hosted.mjs
+          node --test \
+            software/tests/test_product_alpha_principia_atlas_hosted.mjs \
+            software/tests/test_product_alpha_principia_atlas_hosted_serving.mjs
           python3 -m unittest discover \
             -s software/tests \
             -p 'test_product_alpha_principia_atlas_hosted_catalog.py' \
+            -v
+          python3 -m unittest discover \
+            -s software/tests \
+            -p 'test_product_alpha_principia_atlas_hosted_store.py' \
             -v
 
       - name: Verify deterministic end-to-end assembly
@@ -181,10 +189,15 @@ jobs:
         run: |
           mkdir -p \
             "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG" \
-            "$RUNNER_TEMP/hosted"
+            "$RUNNER_TEMP/hosted" \
+            "$RUNNER_TEMP/hosted-archives"
           cp \
             "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
             "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG/principia-atlas-promotion.json"
+          cp \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip.sha256" \
+            "$RUNNER_TEMP/hosted-archives/"
           python3 software/principia_atlas/hosted_catalog.py build \
             --promotions "$RUNNER_TEMP/hosted-promotion-history" \
             --output "$RUNNER_TEMP/hosted/catalog.json"
@@ -195,6 +208,78 @@ jobs:
             --output "$RUNNER_TEMP/hosted/tenants.json"
           node software/principia_atlas/hosted/config.mjs verify \
             --input "$RUNNER_TEMP/hosted/tenants.json"
+          python3 software/principia_atlas/hosted_store.py check \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json" \
+            --archives "$RUNNER_TEMP/hosted-archives"
+          python3 software/principia_atlas/hosted_store.py build \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json" \
+            --archives "$RUNNER_TEMP/hosted-archives" \
+            --output "$RUNNER_TEMP/hosted/store"
+          python3 software/principia_atlas/hosted_store.py verify \
+            --store "$RUNNER_TEMP/hosted/store" \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json"
+
+      - name: Smoke authenticated actual hosted release
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { readFile } from 'node:fs/promises';
+          import {
+            createControlPlaneServer,
+            loadHostedStore,
+            parseStrictJson,
+            signIdentityAssertion,
+            verifyTenantCatalogCompatibility,
+          } from './software/principia_atlas/hosted/index.mjs';
+
+          const root = process.env.RUNNER_TEMP;
+          const catalog = parseStrictJson(await readFile(`${root}/hosted/catalog.json`), 'catalog');
+          const config = parseStrictJson(await readFile(`${root}/hosted/tenants.json`), 'tenants');
+          const verified = verifyTenantCatalogCompatibility(catalog, config);
+          const store = await loadHostedStore(`${root}/hosted/store`, verified.catalog);
+          const now = 1_800_000_000;
+          const identitySecret = 'ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz';
+          const sessionSecret = 'ci-session-secret-0123456789-abcdefghijklmnopqrstuvwxyz';
+          const server = createControlPlaneServer({
+            catalog: verified.catalog,
+            config: verified.config,
+            store,
+            identitySecret,
+            sessionSecret,
+            now: () => now,
+          });
+          await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+          try {
+            const address = server.address();
+            const base = `http://127.0.0.1:${address.port}`;
+            const assertion = signIdentityAssertion({
+              iss: verified.config.identity.issuer,
+              aud: verified.config.identity.audience,
+              sub: 'ci-learner',
+              tenant_id: 'local-preview',
+              roles: ['learner'],
+              iat: now,
+              exp: now + 180,
+              jti: 'ci_assertion_identifier_1234',
+            }, identitySecret, verified.config);
+            const exchange = await fetch(`${base}/api/auth/exchange`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${assertion}`, Origin: base },
+            });
+            assert.equal(exchange.status, 200);
+            const cookie = exchange.headers.get('set-cookie').split(';')[0];
+            const release = await fetch(`${base}/app/${process.env.RELEASE_VERSION}/`, {
+              headers: { Cookie: cookie },
+            });
+            assert.equal(release.status, 200);
+            assert.match(release.headers.get('content-type'), /^text\/html/);
+            assert.match(await release.text(), /Principia & Atlas/);
+            const missing = await fetch(`${base}/app/9.9.9/`, { headers: { Cookie: cookie } });
+            assert.equal(missing.status, 404);
+          } finally {
+            await new Promise((resolve) => server.close(resolve));
+          }
+          JS
 
       - name: Verify source checkout immutability
         run: |
@@ -215,5 +300,6 @@ jobs:
             ${{ runner.temp }}/promotion/RELEASE-NOTES.md
             ${{ runner.temp }}/hosted/catalog.json
             ${{ runner.temp }}/hosted/tenants.json
+            ${{ runner.temp }}/hosted/store/
           if-no-files-found: error
           retention-days: 14
