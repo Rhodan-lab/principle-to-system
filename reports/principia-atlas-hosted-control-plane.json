@@ -1,0 +1,51 @@
+{
+  "authentication": {
+    "development_minting_default": "disabled",
+    "identity_adapter": "external-short-lived-assertion",
+    "identity_assertion_replay": "single-use-per-process",
+    "password_database": false,
+    "session": "signed-http-only-samesite-cookie"
+  },
+  "authority_boundaries": {
+    "atlas_knowledge_status": "unchanged",
+    "principia_learning": "unchanged",
+    "status_inheritance": "prohibited",
+    "tenant_source": "verified-session-only"
+  },
+  "catalog": {
+    "source": "verified-promotion-descriptors",
+    "tenant_filters": [
+      "release-channel",
+      "route-id",
+      "exact-version-pin"
+    ]
+  },
+  "contracts": [
+    "principia-atlas-hosted-catalog/0.1",
+    "principia-atlas-hosted-tenants/0.1",
+    "principia-atlas-identity-assertion/0.1",
+    "principia-atlas-hosted-session/0.1",
+    "principia-atlas-hosted-view/0.1"
+  ],
+  "network": {
+    "default_host": "127.0.0.1",
+    "non_loopback_requires_explicit_opt_in": true,
+    "non_loopback_requires_secure_cookie": true,
+    "tls_termination": "external-reviewed-edge"
+  },
+  "non_goals": {
+    "billing": false,
+    "learner_data_persistence": false,
+    "organization_administration": false,
+    "public_release_serving": false,
+    "self_registration": false
+  },
+  "runtime": {
+    "catalog_verification": "python",
+    "hosted_control_plane": "nodejs",
+    "multi_instance_coordination": false,
+    "persistence": false
+  },
+  "schema": "principia-atlas-hosted-control-plane-boundary/0.1",
+  "status": "implemented-foundation-not-production-saas"
+}
