@@ -37,6 +37,9 @@ jobs:
       - name: Install pinned Atlas dependencies
         run: python3 -m pip install -r atlas/tools/foundation-validator/requirements.txt
 
+      - name: Isolate Atlas from the Principia worktree
+        run: mv atlas "$RUNNER_TEMP/atlas"
+
       - name: Compile orchestration layer
         run: |
           python3 -m py_compile software/principia_atlas/suite.py
@@ -54,14 +57,14 @@ jobs:
       - name: Verify deterministic end-to-end assembly
         run: |
           python3 software/principia_atlas/orchestrate.py check \
-            --atlas-repo atlas \
+            --atlas-repo "$RUNNER_TEMP/atlas" \
             --route distributed-information \
             --expected-atlas-commit "$ATLAS_COMMIT"
 
       - name: Build one consumable product
         run: |
           python3 software/principia_atlas/orchestrate.py build \
-            --atlas-repo atlas \
+            --atlas-repo "$RUNNER_TEMP/atlas" \
             --route distributed-information \
             --expected-atlas-commit "$ATLAS_COMMIT" \
             --output "$RUNNER_TEMP/principia-atlas-product"
@@ -71,6 +74,7 @@ jobs:
           python3 software/principia_atlas/orchestrate.py verify \
             --output "$RUNNER_TEMP/principia-atlas-product"
           python3 - <<'PY'
+          import hashlib
           import json
           import os
           import subprocess
@@ -85,10 +89,14 @@ jobs:
           principia_commit = subprocess.check_output(
               ["git", "rev-parse", "HEAD"], text=True
           ).strip()
+          clean_status = hashlib.sha256(b"").hexdigest()
+          assert receipt["contract"] == "principia-atlas-orchestration-receipt/0.2"
           assert receipt["sources"]["principia"]["commit"] == principia_commit
           assert receipt["sources"]["principia"]["clean"] is True
+          assert receipt["sources"]["principia"]["status_sha256"] == clean_status
           assert receipt["sources"]["atlas"]["commit"] == os.environ["ATLAS_COMMIT"]
           assert receipt["sources"]["atlas"]["clean"] is True
+          assert receipt["sources"]["atlas"]["status_sha256"] == clean_status
           assert receipt["boundaries"]["authorities_separate"] is True
           assert receipt["boundaries"]["status_inheritance"] == "prohibited"
           print("orchestration-receipt=" + receipt["receipt_id"])
@@ -96,8 +104,8 @@ jobs:
 
       - name: Verify source checkout immutability
         run: |
-          git diff --exit-code
-          git -C atlas diff --exit-code
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/atlas" status --porcelain=v1 --untracked-files=all)"
 
       - name: Upload unified product artifact
         uses: actions/upload-artifact@v4
