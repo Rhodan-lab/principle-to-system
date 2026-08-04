@@ -77,6 +77,7 @@ jobs:
             software/principia_atlas/release_runtime.py \
             software/principia_atlas/promotion_policy.py \
             software/principia_atlas/promotion.py \
+            software/principia_atlas/hosted_catalog.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
@@ -98,6 +99,7 @@ jobs:
           python3 -m json.tool software/product_alpha/route-contracts/distributed-information.json >/dev/null
           python3 -m json.tool software/product_alpha/routes/refrigerator.json >/dev/null
           python3 -m json.tool software/product_alpha/routes/distributed-information.json >/dev/null
+          python3 -m json.tool software/principia_atlas/hosted/example-tenants.unsigned.json >/dev/null
       - name: Validate product authorities
         run: |
           python3 software/product_alpha/evaluation/validate_internal_review.py check
@@ -119,6 +121,7 @@ jobs:
           node --check software/product_alpha/model-adapters.js
           node --check /tmp/principia-index.js
           node --check /tmp/principia-pilot-lab.js
+          for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
       - name: Run Product Alpha JavaScript tests
         run: node --test software/tests/test_product_alpha*.mjs
       - name: Verify deterministic builds
