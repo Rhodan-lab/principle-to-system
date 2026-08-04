@@ -9,6 +9,7 @@ permissions:
 
 env:
   ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
+  RELEASE_VERSION: 0.1.0-ci
 
 jobs:
   validate:
@@ -40,12 +41,15 @@ jobs:
       - name: Isolate Atlas from the Principia worktree
         run: mv atlas "$RUNNER_TEMP/atlas"
 
-      - name: Compile orchestration layer
+      - name: Compile orchestration and release layers
         run: |
           python3 -m py_compile software/principia_atlas/suite.py
           python3 -m py_compile software/principia_atlas/orchestrate.py
+          python3 -m py_compile software/principia_atlas/release.py
+          python3 -m py_compile software/principia_atlas/release_runtime.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_bundle.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_orchestration.py
+          python3 -m py_compile software/tests/test_product_alpha_principia_atlas_release.py
 
       - name: Run orchestration regressions
         run: |
@@ -54,20 +58,31 @@ jobs:
             -p 'test_product_alpha_principia_atlas_orchestration.py' \
             -v
 
+      - name: Run release regressions
+        run: |
+          python3 -m unittest discover \
+            -s software/tests \
+            -p 'test_product_alpha_principia_atlas_release.py' \
+            -v
+
       - name: Verify deterministic end-to-end assembly
         run: |
           python3 software/principia_atlas/orchestrate.py check \
             --atlas-repo "$RUNNER_TEMP/atlas" \
             --route distributed-information \
+            --expected-principia-commit "$(git rev-parse HEAD)" \
             --expected-atlas-commit "$ATLAS_COMMIT"
 
-      - name: Build one consumable product
+      - name: Build one versioned release
         run: |
-          python3 software/principia_atlas/orchestrate.py build \
+          python3 software/principia_atlas/release.py build \
             --atlas-repo "$RUNNER_TEMP/atlas" \
             --route distributed-information \
+            --version "$RELEASE_VERSION" \
+            --expected-principia-commit "$(git rev-parse HEAD)" \
             --expected-atlas-commit "$ATLAS_COMMIT" \
-            --output "$RUNNER_TEMP/principia-atlas-product"
+            --product-output "$RUNNER_TEMP/principia-atlas-product" \
+            --output "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip"
 
       - name: Verify product and source receipt
         run: |
@@ -102,17 +117,37 @@ jobs:
           print("orchestration-receipt=" + receipt["receipt_id"])
           PY
 
+      - name: Verify deterministic release archive
+        run: |
+          python3 software/principia_atlas/release.py check \
+            --product "$RUNNER_TEMP/principia-atlas-product" \
+            --version "$RELEASE_VERSION"
+
+      - name: Verify release archive and standalone runtime
+        run: |
+          python3 software/principia_atlas/release.py verify \
+            --output "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip"
+          mkdir "$RUNNER_TEMP/release-extracted"
+          python3 -m zipfile -e \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            "$RUNNER_TEMP/release-extracted"
+          python3 \
+            "$RUNNER_TEMP/release-extracted/principia-atlas-$RELEASE_VERSION/launcher.py" \
+            verify
+
       - name: Verify source checkout immutability
         run: |
           test -z "$(git status --porcelain=v1 --untracked-files=all)"
           test -z "$(git -C "$RUNNER_TEMP/atlas" status --porcelain=v1 --untracked-files=all)"
 
-      - name: Upload unified product artifact
+      - name: Upload versioned release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: principia-atlas-product-${{ github.sha }}
+          name: principia-atlas-release-${{ github.sha }}
           path: |
             ${{ runner.temp }}/principia-atlas-product/
             ${{ runner.temp }}/principia-atlas-product.build-receipt.json
+            ${{ runner.temp }}/principia-atlas-${{ env.RELEASE_VERSION }}.zip
+            ${{ runner.temp }}/principia-atlas-${{ env.RELEASE_VERSION }}.zip.sha256
           if-no-files-found: error
           retention-days: 14
