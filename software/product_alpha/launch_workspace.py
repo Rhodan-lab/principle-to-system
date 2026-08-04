@@ -124,8 +124,14 @@ def launch(
     """Serve the exact workspace-bound build on loopback until interrupted."""
     run_pilot.validate_port(port)
     report = prepare_workspace_launch(workspace, output)
+    build_id = str(report["pilot_build_id"])
     try:
-        server = run_pilot.create_server(output.expanduser().resolve(), port, quiet=quiet)
+        server = run_pilot.create_server(
+            output.expanduser().resolve(),
+            port,
+            build_id,
+            quiet=quiet,
+        )
     except OSError as exc:
         raise OSError(
             f"could not bind local pilot server to {run_pilot.LOOPBACK_HOST}:{port}: {exc}"
@@ -137,7 +143,6 @@ def launch(
         server.server_close()
         raise ValueError(f"workspace pilot server escaped loopback: {actual_host}")
 
-    build_id = str(report["pilot_build_id"])
     urls = run_pilot.pilot_urls(actual_port, build_id)
     print("Principia Product Alpha workspace pilot is ready.")
     print(f"Workspace:            {report['workspace']}")
