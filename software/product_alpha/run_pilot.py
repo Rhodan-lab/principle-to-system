@@ -32,6 +32,9 @@ BUILD_SCRIPT = REPO_ROOT / "software" / "product_alpha" / "build.py"
 DEFAULT_OUTPUT = REPO_ROOT / "software" / "product_alpha" / "dist"
 BUILD_MANIFEST = package_integrity.BUILD_MANIFEST
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+SUPPORTED_ROUTES = ("refrigerator", "distributed-information")
+if SUPPORTED_ROUTES != package_integrity.SUPPORTED_ROUTES:
+    raise RuntimeError("launcher routes do not match package integrity authority")
 REQUIRED_OUTPUTS = (*package_integrity.REQUIRED_STATIC_FILES, BUILD_MANIFEST)
 CONTENT_SECURITY_POLICY = (
     "default-src 'self'; "
@@ -376,7 +379,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--route",
         default=DEFAULT_ROUTE,
-        choices=package_integrity.SUPPORTED_ROUTES,
+        choices=SUPPORTED_ROUTES,
         help="learner route to package and serve",
     )
     return parser.parse_args(argv)
