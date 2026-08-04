@@ -64,6 +64,7 @@ jobs:
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_hosted_catalog.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_hosted_store.py
           for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
+          node --check software/tests/test_product_alpha_principia_atlas_hosted_state.mjs
 
       - name: Run orchestration regressions
         run: |
@@ -86,10 +87,11 @@ jobs:
             -p 'test_product_alpha_principia_atlas_promotion.py' \
             -v
 
-      - name: Run hosted control-plane and store regressions
+      - name: Run hosted control-plane, state, and store regressions
         run: |
           node --test \
             software/tests/test_product_alpha_principia_atlas_hosted.mjs \
+            software/tests/test_product_alpha_principia_atlas_hosted_state.mjs \
             software/tests/test_product_alpha_principia_atlas_hosted_serving.mjs
           python3 -m unittest discover \
             -s software/tests \
@@ -219,7 +221,7 @@ jobs:
             --store "$RUNNER_TEMP/hosted/store" \
             --catalog "$RUNNER_TEMP/hosted/catalog.json"
 
-      - name: Smoke authenticated actual hosted release
+      - name: Smoke authenticated actual hosted release with durable state
         run: |
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
@@ -227,6 +229,7 @@ jobs:
           import {
             createControlPlaneServer,
             loadHostedStore,
+            openSqliteAuthState,
             parseStrictJson,
             signIdentityAssertion,
             verifyTenantCatalogCompatibility,
@@ -237,6 +240,7 @@ jobs:
           const config = parseStrictJson(await readFile(`${root}/hosted/tenants.json`), 'tenants');
           const verified = verifyTenantCatalogCompatibility(catalog, config);
           const store = await loadHostedStore(`${root}/hosted/store`, verified.catalog);
+          const authState = openSqliteAuthState(`${root}/hosted/auth-state.sqlite`);
           const expected = store.releases.get(process.env.RELEASE_VERSION)?.files.get('index.html');
           assert.ok(expected);
           const now = 1_800_000_000;
@@ -246,6 +250,7 @@ jobs:
             catalog: verified.catalog,
             config: verified.config,
             store,
+            authState,
             identitySecret,
             sessionSecret,
             now: () => now,
@@ -270,6 +275,9 @@ jobs:
             });
             assert.equal(exchange.status, 200);
             const cookie = exchange.headers.get('set-cookie').split(';')[0];
+            const ready = await fetch(`${base}/readyz`);
+            assert.equal(ready.status, 200);
+            assert.equal((await ready.json()).auth_state.kind, 'sqlite');
             const releaseResponse = await fetch(`${base}/app/${process.env.RELEASE_VERSION}/`, {
               headers: { Cookie: cookie },
             });
@@ -281,8 +289,34 @@ jobs:
             assert.equal(missing.status, 404);
           } finally {
             await new Promise((resolve) => server.close(resolve));
+            authState.close();
           }
           JS
+          node software/principia_atlas/hosted/auth_state_cli.mjs stats \
+            --state "$RUNNER_TEMP/hosted/auth-state.sqlite" \
+            --now 1800000001 \
+            > "$RUNNER_TEMP/hosted/auth-state-stats.json"
+          node software/principia_atlas/hosted/auth_state_cli.mjs revoke-subject \
+            --state "$RUNNER_TEMP/hosted/auth-state.sqlite" \
+            --tenant local-preview \
+            --subject ci-learner \
+            --now 1800000002 \
+            > "$RUNNER_TEMP/hosted/auth-state-revocation.json"
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { readFile } from 'node:fs/promises';
+          const root = process.env.RUNNER_TEMP;
+          const stats = JSON.parse(await readFile(`${root}/hosted/auth-state-stats.json`, 'utf8'));
+          const revoked = JSON.parse(await readFile(`${root}/hosted/auth-state-revocation.json`, 'utf8'));
+          assert.equal(stats.result.active_sessions, 1);
+          assert.equal(revoked.revoked_sessions, 1);
+          JS
+          rm -f \
+            "$RUNNER_TEMP/hosted/auth-state.sqlite" \
+            "$RUNNER_TEMP/hosted/auth-state.sqlite-shm" \
+            "$RUNNER_TEMP/hosted/auth-state.sqlite-wal" \
+            "$RUNNER_TEMP/hosted/auth-state-stats.json" \
+            "$RUNNER_TEMP/hosted/auth-state-revocation.json"
 
       - name: Verify source checkout immutability
         run: |

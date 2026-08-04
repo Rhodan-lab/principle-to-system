@@ -1,12 +1,13 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { verifyTenantConfig } from './catalog.mjs';
 import { canonicalJson, fail, parseStrictJson } from './strict_json.mjs';
 
 export const IDENTITY_CONTRACT = 'principia-atlas-identity-assertion/0.1';
-export const SESSION_CONTRACT = 'principia-atlas-hosted-session/0.1';
+export const SESSION_CONTRACT = 'principia-atlas-hosted-session/0.2';
 const SUBJECT = /^[A-Za-z0-9._:@+-]{1,200}$/;
 const TENANT_ID = /^[a-z][a-z0-9-]{1,62}$/;
 const ROLE = /^[a-z][a-z0-9_-]{0,31}$/;
+const SESSION_ID = /^[A-Za-z0-9_-]{24,128}$/;
 const TOKEN_HEADER = Object.freeze({ alg: 'HS256', typ: 'PAJ' });
 
 function requireSecret(secret, label) {
@@ -53,8 +54,15 @@ function validatePrincipal(payload, config, label) {
   if (typeof payload.jti !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(payload.jti)) fail(`${label} identifier is invalid`);
 }
 
+function createSessionIdentifier(factory) {
+  const sid = factory ? factory() : randomBytes(24).toString('base64url');
+  if (typeof sid !== 'string' || !SESSION_ID.test(sid)) fail('session identifier is invalid');
+  return sid;
+}
+
 export function signIdentityAssertion(claims, secret, configInput) {
-  const config = verifyTenantConfig(configInput); const key = requireSecret(secret, 'identity secret');
+  const config = verifyTenantConfig(configInput);
+  const key = requireSecret(secret, 'identity secret');
   validatePrincipal(claims, config, 'identity assertion');
   if (claims.iss !== config.identity.issuer || claims.aud !== config.identity.audience) fail('identity assertion issuer or audience is invalid');
   if (!Number.isInteger(claims.iat) || !Number.isInteger(claims.exp) || claims.exp <= claims.iat || claims.exp - claims.iat > config.identity.max_assertion_ttl_seconds) fail('identity assertion TTL is invalid');
@@ -62,19 +70,36 @@ export function signIdentityAssertion(claims, secret, configInput) {
   return signToken(payload, key);
 }
 
-export function exchangeIdentityAssertion(token, identitySecret, sessionSecret, configInput, nowSeconds = Math.floor(Date.now() / 1000)) {
+export function exchangeIdentityAssertion(token, identitySecret, sessionSecret, configInput, nowSeconds = Math.floor(Date.now() / 1000), sessionIdFactory = null) {
   const config = verifyTenantConfig(configInput);
-  const identityKey = requireSecret(identitySecret, 'identity secret'); const sessionKey = requireSecret(sessionSecret, 'session secret');
+  const identityKey = requireSecret(identitySecret, 'identity secret');
+  const sessionKey = requireSecret(sessionSecret, 'session secret');
   const assertion = verifyToken(token, identityKey, IDENTITY_CONTRACT, nowSeconds);
   validatePrincipal(assertion, config, 'identity assertion');
   if (assertion.iss !== config.identity.issuer || assertion.aud !== config.identity.audience || assertion.exp - assertion.iat > config.identity.max_assertion_ttl_seconds) fail('identity assertion boundary is invalid');
-  const session = { contract: SESSION_CONTRACT, sub: assertion.sub, tenant_id: assertion.tenant_id, roles: [...assertion.roles], iat: nowSeconds, exp: nowSeconds + config.session.ttl_seconds, jti: assertion.jti };
-  return { token: signToken(session, sessionKey), session };
+  const session = {
+    contract: SESSION_CONTRACT,
+    sub: assertion.sub,
+    tenant_id: assertion.tenant_id,
+    roles: [...assertion.roles],
+    iat: nowSeconds,
+    exp: nowSeconds + config.session.ttl_seconds,
+    jti: assertion.jti,
+    sid: createSessionIdentifier(sessionIdFactory),
+  };
+  return {
+    token: signToken(session, sessionKey),
+    session,
+    assertion: Object.freeze({ jti: assertion.jti, exp: assertion.exp }),
+  };
 }
 
 export function verifySession(token, sessionSecret, configInput, nowSeconds = Math.floor(Date.now() / 1000)) {
-  const config = verifyTenantConfig(configInput); const key = requireSecret(sessionSecret, 'session secret');
-  const session = verifyToken(token, key, SESSION_CONTRACT, nowSeconds); validatePrincipal(session, config, 'session');
+  const config = verifyTenantConfig(configInput);
+  const key = requireSecret(sessionSecret, 'session secret');
+  const session = verifyToken(token, key, SESSION_CONTRACT, nowSeconds);
+  validatePrincipal(session, config, 'session');
+  if (typeof session.sid !== 'string' || !SESSION_ID.test(session.sid)) fail('session identifier is invalid');
   if (session.exp - session.iat !== config.session.ttl_seconds) fail('session TTL is invalid');
   return session;
 }

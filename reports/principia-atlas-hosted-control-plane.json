@@ -2,9 +2,19 @@
   "authentication": {
     "development_minting_default": "disabled",
     "identity_adapter": "external-short-lived-assertion",
-    "identity_assertion_replay": "single-use-per-process",
+    "identity_assertion_replay": "durable-single-use-shared-state",
     "password_database": false,
-    "session": "signed-http-only-samesite-cookie"
+    "session": "signed-http-only-samesite-cookie-with-registered-revocable-sid"
+  },
+  "auth_state": {
+    "backend": "sqlite",
+    "contract": "principia-atlas-hosted-auth-state/0.1",
+    "coordination_scope": "processes-sharing-one-durable-filesystem-location",
+    "rate_limit": "shared-window-counters",
+    "replay": "atomic-assertion-claim",
+    "session_registration": "atomic-with-assertion-claim",
+    "session_revocation": "durable-global-for-shared-state",
+    "storage_mode": "wal-full-synchronous-strict-tables"
   },
   "authority_boundaries": {
     "atlas_knowledge_status": "unchanged",
@@ -25,13 +35,16 @@
     "principia-atlas-hosted-catalog/0.1",
     "principia-atlas-hosted-tenants/0.1",
     "principia-atlas-hosted-store/0.1",
+    "principia-atlas-hosted-auth-state/0.1",
+    "principia-atlas-hosted-auth-state-command/0.1",
     "principia-atlas-identity-assertion/0.1",
-    "principia-atlas-hosted-session/0.1",
+    "principia-atlas-hosted-session/0.2",
     "principia-atlas-hosted-view/0.1",
-    "principia-atlas-hosted-health/0.2"
+    "principia-atlas-hosted-health/0.3"
   ],
   "network": {
     "default_host": "127.0.0.1",
+    "non_loopback_requires_durable_auth_state": true,
     "non_loopback_requires_explicit_opt_in": true,
     "non_loopback_requires_secure_cookie": true,
     "tls_termination": "external-reviewed-edge"
@@ -39,13 +52,14 @@
   "non_goals": {
     "anonymous_release_serving": false,
     "billing": false,
+    "distributed_database": false,
     "learner_data_persistence": false,
     "organization_administration": false,
     "self_registration": false
   },
   "release_serving": {
     "archive_parser": "python-build-time-only",
-    "authorization": "verified-session-and-tenant-entitlement-per-request",
+    "authorization": "verified-session-registered-session-and-tenant-entitlement-per-request",
     "cache": "private-no-store",
     "content_loading": "verified-memory-resident-at-startup",
     "filesystem_reads_during_request": false,
@@ -58,10 +72,12 @@
   "runtime": {
     "catalog_verification": "python-and-nodejs",
     "hosted_control_plane": "nodejs",
-    "multi_instance_coordination": false,
-    "persistence": false,
+    "liveness": "/healthz",
+    "multi_instance_coordination": "sqlite-shared-state",
+    "persistence": "authentication-coordination-only",
+    "readiness": "/readyz",
     "store_materialization": "python"
   },
-  "schema": "principia-atlas-hosted-control-plane-boundary/0.2",
-  "status": "implemented-authenticated-read-only-runtime-not-production-saas"
+  "schema": "principia-atlas-hosted-control-plane-boundary/0.3",
+  "status": "implemented-durable-authenticated-read-only-runtime-not-production-saas"
 }
