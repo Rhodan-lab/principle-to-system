@@ -8,7 +8,9 @@ on:
       - "experiences/phase-11b-inventory.json"
       - "reports/product-alpha-0-*.md"
       - "reports/product-alpha-0-*.json"
+      - "reports/principia-atlas-*.md"
       - "software/product_alpha/**"
+      - "software/principia_atlas/**"
       - "software/tests/test_product_alpha*.py"
       - "software/tests/test_product_alpha*.mjs"
       - "system-dossiers/refrigerator.md"
@@ -27,7 +29,9 @@ on:
       - "experiences/phase-11b-inventory.json"
       - "reports/product-alpha-0-*.md"
       - "reports/product-alpha-0-*.json"
+      - "reports/principia-atlas-*.md"
       - "software/product_alpha/**"
+      - "software/principia_atlas/**"
       - "software/tests/test_product_alpha*.py"
       - "software/tests/test_product_alpha*.mjs"
       - "system-dossiers/refrigerator.md"
@@ -63,6 +67,7 @@ jobs:
             software/product_alpha/run_pilot.py \
             software/product_alpha/prepare_pilot.py \
             software/product_alpha/launch_workspace.py \
+            software/principia_atlas/suite.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
