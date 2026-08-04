@@ -237,6 +237,8 @@ jobs:
           const config = parseStrictJson(await readFile(`${root}/hosted/tenants.json`), 'tenants');
           const verified = verifyTenantCatalogCompatibility(catalog, config);
           const store = await loadHostedStore(`${root}/hosted/store`, verified.catalog);
+          const expected = store.releases.get(process.env.RELEASE_VERSION)?.files.get('index.html');
+          assert.ok(expected);
           const now = 1_800_000_000;
           const identitySecret = 'ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz';
           const sessionSecret = 'ci-session-secret-0123456789-abcdefghijklmnopqrstuvwxyz';
@@ -268,12 +270,13 @@ jobs:
             });
             assert.equal(exchange.status, 200);
             const cookie = exchange.headers.get('set-cookie').split(';')[0];
-            const release = await fetch(`${base}/app/${process.env.RELEASE_VERSION}/`, {
+            const releaseResponse = await fetch(`${base}/app/${process.env.RELEASE_VERSION}/`, {
               headers: { Cookie: cookie },
             });
-            assert.equal(release.status, 200);
-            assert.match(release.headers.get('content-type'), /^text\/html/);
-            assert.match(await release.text(), /Principia & Atlas/);
+            assert.equal(releaseResponse.status, 200);
+            assert.match(releaseResponse.headers.get('content-type'), /^text\/html/);
+            assert.equal(releaseResponse.headers.get('etag'), `"sha256-${expected.sha256}"`);
+            assert.deepEqual(Buffer.from(await releaseResponse.arrayBuffer()), expected.raw);
             const missing = await fetch(`${base}/app/9.9.9/`, { headers: { Cookie: cookie } });
             assert.equal(missing.status, 404);
           } finally {
