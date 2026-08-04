@@ -6,6 +6,9 @@ export const PRODUCT = 'Principia & Atlas';
 const SHA = /^[0-9a-f]{64}$/;
 const VERSION = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(alpha|beta)\.(0|[1-9][0-9]*))?$/;
 const TENANT_ID = /^[a-z][a-z0-9-]{1,62}$/;
+const PYTHON_FLOOR = /^>=\d+\.\d+$/;
+const ENTRYPOINT_KEYS = ['verify', 'run', 'linux_macos', 'macos_double_click', 'windows'];
+const BOUNDARY_KEYS = ['authorities_separate', 'status_inheritance', 'live_cross_repository_dependency', 'canonical_mutation'];
 
 function versionInfo(version) {
   const match = VERSION.exec(version);
@@ -38,6 +41,17 @@ function validateSource(value) {
   if (typeof value.commit !== 'string' || !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(value.commit)) fail('catalog source commit is invalid');
 }
 
+function validateCompatibility(value, routeId) {
+  exactKeys(value, ['release_contract', 'route_id', 'entrypoints', 'runtime', 'boundaries'], 'catalog compatibility');
+  if (value.route_id !== routeId || value.release_contract !== 'principia-atlas-release/0.1') fail('catalog compatibility identity is invalid');
+  exactKeys(value.entrypoints, ENTRYPOINT_KEYS, 'catalog entrypoints');
+  for (const key of ENTRYPOINT_KEYS) if (typeof value.entrypoints[key] !== 'string' || !value.entrypoints[key]) fail('catalog entrypoint is invalid');
+  exactKeys(value.runtime, ['host', 'external_network_required', 'python'], 'catalog runtime');
+  if (value.runtime.host !== '127.0.0.1' || value.runtime.external_network_required !== false || typeof value.runtime.python !== 'string' || !PYTHON_FLOOR.test(value.runtime.python)) fail('catalog runtime boundary is invalid');
+  exactKeys(value.boundaries, BOUNDARY_KEYS, 'catalog authority boundaries');
+  if (value.boundaries.authorities_separate !== true || value.boundaries.status_inheritance !== 'prohibited' || value.boundaries.live_cross_repository_dependency !== false || value.boundaries.canonical_mutation !== false) fail('catalog authority boundary is invalid');
+}
+
 export function verifyCatalog(input) {
   const value = typeof input === 'string' || Buffer.isBuffer(input) ? parseStrictJson(input, 'hosted catalog') : structuredClone(input);
   exactKeys(value, ['contract', 'product', 'release_count', 'releases', 'channels', 'catalog_id'], 'hosted catalog');
@@ -62,12 +76,7 @@ export function verifyCatalog(input) {
     validateArchive(entry.release.archive);
     exactKeys(entry.sources, ['principia', 'atlas'], 'catalog sources');
     validateSource(entry.sources.principia); validateSource(entry.sources.atlas);
-    exactKeys(entry.compatibility, ['release_contract', 'route_id', 'entrypoints', 'runtime', 'boundaries'], 'catalog compatibility');
-    if (entry.compatibility.route_id !== entry.release.route_id) fail('catalog route identities are inconsistent');
-    if (entry.compatibility.release_contract !== 'principia-atlas-release/0.1') fail('catalog release contract is unsupported');
-    if (!entry.compatibility.runtime || entry.compatibility.runtime.host !== '127.0.0.1' || entry.compatibility.runtime.external_network_required !== false) fail('catalog runtime boundary is invalid');
-    const boundary = entry.compatibility.boundaries;
-    if (!boundary || boundary.authorities_separate !== true || boundary.status_inheritance !== 'prohibited' || boundary.live_cross_repository_dependency !== false || boundary.canonical_mutation !== false) fail('catalog authority boundary is invalid');
+    validateCompatibility(entry.compatibility, entry.release.route_id);
     grouped[entry.channel].push(version);
   }
   for (const channel of Object.keys(grouped)) {
@@ -97,7 +106,9 @@ export function verifyTenantConfig(input) {
   const unsigned = structuredClone(value); delete unsigned.config_id;
   if (!SHA.test(value.config_id) || sha256Hex(canonicalJson(unsigned)) !== value.config_id) fail('tenant config seal is invalid');
   exactKeys(value.identity, ['issuer', 'audience', 'max_assertion_ttl_seconds'], 'identity config');
-  if (typeof value.identity.issuer !== 'string' || !value.identity.issuer || typeof value.identity.audience !== 'string' || !value.identity.audience) fail('identity config is invalid');
+  let issuer;
+  try { issuer = new URL(value.identity.issuer); } catch { fail('identity issuer is invalid'); }
+  if (issuer.protocol !== 'https:' || typeof value.identity.audience !== 'string' || !value.identity.audience) fail('identity config is invalid');
   if (!Number.isInteger(value.identity.max_assertion_ttl_seconds) || value.identity.max_assertion_ttl_seconds < 30 || value.identity.max_assertion_ttl_seconds > 900) fail('identity assertion TTL is invalid');
   exactKeys(value.session, ['cookie_name', 'ttl_seconds', 'secure'], 'session config');
   if (typeof value.session.cookie_name !== 'string' || !/^[A-Za-z_][A-Za-z0-9_]{0,63}$/.test(value.session.cookie_name)) fail('session cookie name is invalid');
@@ -114,6 +125,18 @@ export function verifyTenantConfig(input) {
   return value;
 }
 
+export function verifyTenantCatalogCompatibility(catalogInput, configInput) {
+  const catalog = verifyCatalog(catalogInput); const config = verifyTenantConfig(configInput);
+  for (const [tenantId, tenant] of Object.entries(config.tenants)) {
+    for (const version of tenant.pinned_versions) {
+      const entry = catalog.releases[version];
+      if (!entry) fail(`tenant ${tenantId} pins an unavailable release`);
+      if (!tenant.allowed_channels.includes(entry.channel) || !tenant.allowed_routes.includes(entry.release.route_id)) fail(`tenant ${tenantId} pins a release outside its entitlement`);
+    }
+  }
+  return { catalog, config };
+}
+
 export function catalogForSession(session, catalogInput, configInput) {
   const catalog = verifyCatalog(catalogInput); const config = verifyTenantConfig(configInput);
   const tenant = config.tenants[session.tenant_id];
@@ -122,10 +145,7 @@ export function catalogForSession(session, catalogInput, configInput) {
   const releases = [];
   for (const [version, entry] of Object.entries(catalog.releases)) {
     if (!tenant.allowed_channels.includes(entry.channel) || !tenant.allowed_routes.includes(entry.release.route_id) || (pinned.size > 0 && !pinned.has(version))) continue;
-    releases.push({
-      version, tag: entry.tag, channel: entry.channel, route_id: entry.release.route_id,
-      release_id: entry.release.release_id, archive: structuredClone(entry.release.archive),
-    });
+    releases.push({ version, tag: entry.tag, channel: entry.channel, route_id: entry.release.route_id, release_id: entry.release.release_id, archive: structuredClone(entry.release.archive) });
   }
   releases.sort((a, b) => compareVersions(b.version, a.version));
   const channels = {};
