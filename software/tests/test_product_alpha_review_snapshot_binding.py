@@ -75,11 +75,11 @@ class ProductAlphaReviewSnapshotBindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "sessions.jsonl"
             path.write_bytes(raw)
-            real_read = summarize.read_session_input
+            real_read = verify_cohort.read_cohort_input
 
             with mock.patch.object(
-                summarize,
-                "read_session_input",
+                verify_cohort,
+                "read_cohort_input",
                 wraps=real_read,
             ) as bounded_read:
                 summary = verify_cohort.verify_cohort(path, BUILD_ID)
