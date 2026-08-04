@@ -14,15 +14,15 @@ import tempfile
 import threading
 import time
 import webbrowser
-from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Sequence
 
 try:
-    from software.product_alpha import package_integrity
+    from software.product_alpha import package_integrity, snapshot_server
 except ModuleNotFoundError:
     import package_integrity
+    import snapshot_server
 
 LOOPBACK_HOST = "127.0.0.1"
 DEFAULT_PORT = 8000
@@ -170,14 +170,20 @@ def pilot_build_identity(output: Path) -> str:
     return validate_build_id(package_integrity.pilot_build_identity(output))
 
 
-def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTPServer:
+def create_server(
+    output: Path,
+    port: int,
+    build_id: str,
+    quiet: bool = False,
+) -> ThreadingHTTPServer:
     validate_port(port)
-
-    class Handler(PilotRequestHandler):
-        quiet_logs = quiet
-
-    return ThreadingHTTPServer(
-        (LOOPBACK_HOST, port), partial(Handler, directory=str(output))
+    return snapshot_server.create_snapshot_server(
+        output,
+        port,
+        validate_build_id(build_id),
+        host=LOOPBACK_HOST,
+        handler_base=PilotRequestHandler,
+        quiet=quiet,
     )
 
 
@@ -227,7 +233,7 @@ def smoke_served_output(output: Path, build_id: str, route: str = DEFAULT_ROUTE)
         raise ValueError(
             "verified build package does not match the expected Pilot build ID"
         )
-    server = create_server(output, 0, quiet=True)
+    server = create_server(output, 0, expected_build_id, quiet=True)
     actual_host = str(server.server_address[0])
     actual_port = int(server.server_address[1])
     if actual_host != LOOPBACK_HOST:
@@ -321,8 +327,8 @@ def serve(output: Path, port: int, open_browser: bool, quiet: bool, route: str =
     verify_output(output)
     build_id = pilot_build_identity(output)
     try:
-        server = create_server(output, port, quiet=quiet)
-    except OSError as exc:
+        server = create_server(output, port, build_id, quiet=quiet)
+    except (OSError, ValueError) as exc:
         raise SystemExit(
             f"Could not bind the local pilot server to {LOOPBACK_HOST}:{port}: {exc}"
         ) from exc
