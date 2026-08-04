@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
+const UTF8 = new TextDecoder('utf-8', { fatal: true });
 
 export function fail(message) {
   throw new Error(message);
@@ -30,8 +31,19 @@ export function canonicalJson(value) {
 }
 
 export function parseStrictJson(raw, label = 'JSON') {
-  const text = Buffer.isBuffer(raw) ? raw.toString('utf8') : String(raw);
-  if (Buffer.byteLength(text) > MAX_JSON_BYTES) fail(`${label} exceeds resource limit`);
+  let text;
+  try {
+    if (Buffer.isBuffer(raw) || raw instanceof Uint8Array) {
+      if (raw.byteLength > MAX_JSON_BYTES) fail(`${label} exceeds resource limit`);
+      text = UTF8.decode(raw);
+    } else {
+      text = String(raw);
+      if (Buffer.byteLength(text, 'utf8') > MAX_JSON_BYTES) fail(`${label} exceeds resource limit`);
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('resource limit')) throw error;
+    fail(`${label} is not valid UTF-8`);
+  }
   let index = 0;
   const whitespace = () => { while (/\s/.test(text[index] ?? '')) index += 1; };
   const parseString = () => {
