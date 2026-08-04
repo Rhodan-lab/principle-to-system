@@ -1,0 +1,30 @@
+{
+  "authority_boundaries": {
+    "atlas_knowledge_status": "unchanged",
+    "principia_learning": "unchanged",
+    "status_inheritance": "prohibited"
+  },
+  "channels": {
+    "alpha": "MAJOR.MINOR.PATCH-alpha.N",
+    "beta": "MAJOR.MINOR.PATCH-beta.N",
+    "stable": "MAJOR.MINOR.PATCH"
+  },
+  "contracts": [
+    "principia-atlas-promotion/0.1",
+    "principia-atlas-release-index/0.1"
+  ],
+  "publication": {
+    "existing_tag_release_overwrite": false,
+    "history_source": "immutable Git tags plus promotion assets",
+    "trigger": "principia-atlas-v*"
+  },
+  "schema": "principia-atlas-release-promotion-boundary/0.1",
+  "upgrade_policy": {
+    "major_may_change_route": true,
+    "non_major_entrypoints_must_match": true,
+    "non_major_python_floor_may_increase": false,
+    "non_major_route_must_match": true,
+    "authority_boundaries_must_match": true,
+    "loopback_host_must_match": true
+  }
+}
