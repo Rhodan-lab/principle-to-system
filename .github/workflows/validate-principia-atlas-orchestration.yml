@@ -1,28 +1,11 @@
 name: Validate Principia Atlas Orchestration
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "software/principia_atlas/**"
-      - "software/product_alpha/**"
-      - "software/tests/test_product_alpha_principia_atlas_*.py"
-      - ".github/workflows/validate-principia-atlas-orchestration.yml"
-  push:
-    branches: [main]
-    paths:
-      - "software/principia_atlas/**"
-      - "software/product_alpha/**"
-      - "software/tests/test_product_alpha_principia_atlas_*.py"
-      - ".github/workflows/validate-principia-atlas-orchestration.yml"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: principia-atlas-orchestration-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
