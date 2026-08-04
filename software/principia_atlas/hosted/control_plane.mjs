@@ -1,5 +1,5 @@
 import { createServer as createHttpServer } from 'node:http';
-import { catalogForSession, verifyCatalog, verifyTenantConfig } from './catalog.mjs';
+import { catalogForSession, verifyTenantCatalogCompatibility } from './catalog.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { exchangeIdentityAssertion, SESSION_CONTRACT, verifySession } from './tokens.mjs';
 
@@ -44,7 +44,8 @@ function shellHtml() {
 }
 
 export function createControlPlaneServer({ catalog: catalogInput, config: configInput, identitySecret, sessionSecret, now = () => Math.floor(Date.now() / 1000), exchangeLimit = 10 }) {
-  const catalog = verifyCatalog(catalogInput); const config = verifyTenantConfig(configInput);
+  const verified = verifyTenantCatalogCompatibility(catalogInput, configInput);
+  const catalog = verified.catalog; const config = verified.config;
   const identityRaw = Buffer.from(String(identitySecret ?? ''), 'utf8');
   const sessionRaw = Buffer.from(String(sessionSecret ?? ''), 'utf8');
   if (identityRaw.length < 32 || sessionRaw.length < 32) throw new Error('identity and session secrets must be at least 32 bytes');
