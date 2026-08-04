@@ -45,8 +45,5 @@ test("download handler uses the route-specific filename helper", () => {
     /link\.download=recorderExportName\(value\.route_id,value\.session_id\)/,
   );
   assert.doesNotMatch(html, /link\.download=`\$\{value\.session_id\}\.jsonl`/);
-  assert.match(
-    html,
-    /The downloaded filename includes the bound route and anonymous session label\./,
-  );
+  assert.match(html, /filename includes the bound route and anonymous session label/i);
 });
