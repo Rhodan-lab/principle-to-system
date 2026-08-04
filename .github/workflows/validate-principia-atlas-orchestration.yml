@@ -29,6 +29,11 @@ jobs:
           path: atlas
           persist-credentials: false
 
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       - name: Configure Python
         uses: actions/setup-python@v5
         with:
@@ -42,7 +47,7 @@ jobs:
       - name: Isolate Atlas from the Principia worktree
         run: mv atlas "$RUNNER_TEMP/atlas"
 
-      - name: Compile orchestration, release, and promotion layers
+      - name: Compile orchestration, release, promotion, and hosted layers
         run: |
           python3 -m py_compile software/principia_atlas/suite.py
           python3 -m py_compile software/principia_atlas/orchestrate.py
@@ -50,10 +55,13 @@ jobs:
           python3 -m py_compile software/principia_atlas/release_runtime.py
           python3 -m py_compile software/principia_atlas/promotion_policy.py
           python3 -m py_compile software/principia_atlas/promotion.py
+          python3 -m py_compile software/principia_atlas/hosted_catalog.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_bundle.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_orchestration.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_release.py
           python3 -m py_compile software/tests/test_product_alpha_principia_atlas_promotion.py
+          python3 -m py_compile software/tests/test_product_alpha_principia_atlas_hosted_catalog.py
+          for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
 
       - name: Run orchestration regressions
         run: |
@@ -74,6 +82,14 @@ jobs:
           python3 -m unittest discover \
             -s software/tests \
             -p 'test_product_alpha_principia_atlas_promotion.py' \
+            -v
+
+      - name: Run hosted control-plane regressions
+        run: |
+          node --test software/tests/test_product_alpha_principia_atlas_hosted.mjs
+          python3 -m unittest discover \
+            -s software/tests \
+            -p 'test_product_alpha_principia_atlas_hosted_catalog.py' \
             -v
 
       - name: Verify deterministic end-to-end assembly
@@ -161,6 +177,25 @@ jobs:
             --promotion "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
             --index "$RUNNER_TEMP/promotion/principia-atlas-release-index.json"
 
+      - name: Build and verify hosted deployment inputs
+        run: |
+          mkdir -p \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG" \
+            "$RUNNER_TEMP/hosted"
+          cp \
+            "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG/principia-atlas-promotion.json"
+          python3 software/principia_atlas/hosted_catalog.py build \
+            --promotions "$RUNNER_TEMP/hosted-promotion-history" \
+            --output "$RUNNER_TEMP/hosted/catalog.json"
+          python3 software/principia_atlas/hosted_catalog.py verify \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json"
+          node software/principia_atlas/hosted/config.mjs seal \
+            --input software/principia_atlas/hosted/example-tenants.unsigned.json \
+            --output "$RUNNER_TEMP/hosted/tenants.json"
+          node software/principia_atlas/hosted/config.mjs verify \
+            --input "$RUNNER_TEMP/hosted/tenants.json"
+
       - name: Verify source checkout immutability
         run: |
           test -z "$(git status --porcelain=v1 --untracked-files=all)"
@@ -178,5 +213,7 @@ jobs:
             ${{ runner.temp }}/promotion/principia-atlas-promotion.json
             ${{ runner.temp }}/promotion/principia-atlas-release-index.json
             ${{ runner.temp }}/promotion/RELEASE-NOTES.md
+            ${{ runner.temp }}/hosted/catalog.json
+            ${{ runner.temp }}/hosted/tenants.json
           if-no-files-found: error
           retention-days: 14

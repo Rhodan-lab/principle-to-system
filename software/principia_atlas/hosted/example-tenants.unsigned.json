@@ -1,0 +1,22 @@
+{
+  "contract": "principia-atlas-hosted-tenants/0.1",
+  "product": "Principia & Atlas",
+  "identity": {
+    "issuer": "https://identity.example.invalid",
+    "audience": "principia-atlas-hosted",
+    "max_assertion_ttl_seconds": 300
+  },
+  "session": {
+    "cookie_name": "principia_atlas_session",
+    "ttl_seconds": 3600,
+    "secure": false
+  },
+  "tenants": {
+    "local-preview": {
+      "display_name": "Local preview",
+      "allowed_channels": ["alpha"],
+      "allowed_routes": ["distributed-information"],
+      "pinned_versions": []
+    }
+  }
+}
