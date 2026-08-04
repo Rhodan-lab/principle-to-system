@@ -15,6 +15,11 @@ import verify_cohort
 
 CONTRACT = "principia-product-alpha-workspace-review/0.1"
 INTAKE_CONTRACT = "principia-product-alpha-workspace-intake/0.1"
+MAX_INCOMING_ENTRIES = assemble_workspace.MAX_INCOMING_ENTRIES
+MAX_SOURCE_FILE_BYTES = assemble_workspace.MAX_SOURCE_FILE_BYTES
+MAX_TOTAL_SOURCE_BYTES = assemble_workspace.MAX_TOTAL_SOURCE_BYTES
+MAX_JSON_OBJECT_BYTES = assemble_workspace.MAX_JSON_OBJECT_BYTES
+MAX_COMBINED_BYTES = assemble_workspace.MAX_COMBINED_BYTES
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -22,16 +27,30 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _read_bounded_bytes(path: Path, label: str, limit: int) -> bytes:
+    with path.open("rb") as stream:
+        raw = stream.read(limit + 1)
+    if len(raw) > limit:
+        raise ValueError(f"{label} exceeds the {limit}-byte limit")
+    return raw
+
+
 def _read_json_object(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"{label} must be a regular file")
-    raw = path.read_bytes()
+    raw = _read_bounded_bytes(path, label, MAX_JSON_OBJECT_BYTES)
     try:
-        value = json.loads(raw.decode("utf-8"))
+        value = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=verify_cohort.pilot_summary._object_without_duplicates,
+            parse_constant=verify_cohort.pilot_summary._reject_nonfinite_constant,
+        )
     except UnicodeDecodeError as exc:
         raise ValueError(f"{label} must be UTF-8") from exc
     except json.JSONDecodeError as exc:
         raise ValueError(f"{label} is invalid JSON: {exc.msg}") from exc
+    except ValueError as exc:
+        raise ValueError(f"{label} is invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
         raise ValueError(f"{label} must contain one JSON object")
     return value, raw
@@ -79,32 +98,58 @@ def _validate_intake_summary_invariants(
         )
 
 
+def _incoming_entries(incoming: Path) -> list[Path]:
+    entries: list[Path] = []
+    for count, path in enumerate(incoming.iterdir(), 1):
+        if count > MAX_INCOMING_ENTRIES:
+            raise ValueError(
+                "incoming session directory contains more than "
+                f"{MAX_INCOMING_ENTRIES} entries"
+            )
+        entries.append(path)
+    entries.sort(key=lambda path: path.name)
+    if not entries:
+        raise ValueError("incoming session directory contains no exports")
+    return entries
+
+
 def _source_records(
     incoming: Path,
     expected_build_id: str,
     expected_route_id: str,
 ) -> tuple[list[dict[str, str]], bytes]:
-    if not incoming.is_dir():
+    if incoming.is_symlink() or not incoming.is_dir():
         raise ValueError("incoming session directory is missing")
-    entries = sorted(incoming.iterdir(), key=lambda path: path.name)
-    if not entries:
-        raise ValueError("incoming session directory contains no exports")
+    entries = _incoming_entries(incoming)
 
     sessions: list[dict[str, Any]] = []
     records: list[dict[str, str]] = []
     seen_ids: set[str] = set()
+    total_source_bytes = 0
     for path in entries:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"unexpected incoming entry: {path.name}")
         if path.suffix.lower() not in assemble_workspace.ALLOWED_SOURCE_SUFFIXES:
             raise ValueError(f"unsupported incoming file type: {path.name}")
-        raw = path.read_bytes()
+        raw = _read_bounded_bytes(path, path.name, MAX_SOURCE_FILE_BYTES)
+        total_source_bytes += len(raw)
+        if total_source_bytes > MAX_TOTAL_SOURCE_BYTES:
+            raise ValueError(
+                "incoming session exports exceed the "
+                f"{MAX_TOTAL_SOURCE_BYTES}-byte total limit"
+            )
         try:
-            value = json.loads(raw.decode("utf-8"))
+            value = json.loads(
+                raw.decode("utf-8"),
+                object_pairs_hook=verify_cohort.pilot_summary._object_without_duplicates,
+                parse_constant=verify_cohort.pilot_summary._reject_nonfinite_constant,
+            )
         except UnicodeDecodeError as exc:
             raise ValueError(f"{path.name}: file must be UTF-8") from exc
         except json.JSONDecodeError as exc:
             raise ValueError(f"{path.name}: invalid JSON: {exc.msg}") from exc
+        except ValueError as exc:
+            raise ValueError(f"{path.name}: invalid JSON: {exc}") from exc
         if not isinstance(value, dict):
             raise ValueError(f"{path.name}: session export must contain one JSON object")
         try:
@@ -138,6 +183,10 @@ def _source_records(
         json.dumps(session, sort_keys=True, separators=(",", ":")) + "\n"
         for session in sessions
     ).encode("utf-8")
+    if len(combined_bytes) > MAX_COMBINED_BYTES:
+        raise ValueError(
+            f"canonical combined cohort exceeds the {MAX_COMBINED_BYTES}-byte limit"
+        )
     return records, combined_bytes
 
 
@@ -221,7 +270,11 @@ def verify_workspace_intake(
 
     if combined.is_symlink() or not combined.is_file():
         raise ValueError("combined cohort must be a regular file")
-    actual_combined_bytes = combined.read_bytes()
+    actual_combined_bytes = _read_bounded_bytes(
+        combined,
+        "combined cohort",
+        MAX_COMBINED_BYTES,
+    )
     expected_combined_sha256 = _validate_hash(
         intake.get("combined_sha256"),
         "intake manifest combined_sha256",
@@ -259,7 +312,10 @@ def verify_workspace_intake(
     if sessions != len(expected_sources):
         raise ValueError("intake manifest sessions does not match source record count")
 
-    summary = verify_cohort.verify_cohort(combined, manifest["pilot_build_id"])
+    summary = verify_cohort.verify_cohort_bytes(
+        actual_combined_bytes,
+        str(manifest["pilot_build_id"]),
+    )
     if summary["sessions"] != sessions:
         raise ValueError("verified cohort session count does not match intake manifest")
     if summary["route_id"] != manifest["route_id"]:
