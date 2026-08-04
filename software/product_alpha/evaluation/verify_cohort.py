@@ -20,13 +20,13 @@ def validate_expected_build_id(value: str) -> str:
     return value
 
 
-def verify_cohort(
-    input_path: Path,
+def verify_cohort_bytes(
+    raw_input: bytes,
     expected_build_id: str,
 ) -> dict[str, object]:
-    """Load, summarize, and bind one cohort to the recorded launcher build."""
+    """Summarize and bind one exact cohort byte snapshot to a launcher build."""
     expected = validate_expected_build_id(expected_build_id)
-    summary = pilot_summary.summarize(pilot_summary.load_sessions(input_path))
+    summary = pilot_summary.summarize(pilot_summary.load_sessions_bytes(raw_input))
     actual = summary["pilot_build_id"]
     if actual != expected:
         raise ValueError(
@@ -34,6 +34,15 @@ def verify_cohort(
             f"expected {expected}, found {actual}"
         )
     return summary
+
+
+def verify_cohort(
+    input_path: Path,
+    expected_build_id: str,
+) -> dict[str, object]:
+    """Load one bounded snapshot and bind it to the recorded launcher build."""
+    raw_input = pilot_summary.read_session_input(input_path)
+    return verify_cohort_bytes(raw_input, expected_build_id)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

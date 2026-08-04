@@ -122,8 +122,11 @@ def build_review_packet(
     expected_build_id: str,
 ) -> dict[str, Any]:
     """Verify one cohort and return a deterministic de-identified review packet."""
-    raw_input = input_path.read_bytes()
-    verified_summary = verify_cohort.verify_cohort(input_path, expected_build_id)
+    raw_input = verify_cohort.pilot_summary.read_session_input(input_path)
+    verified_summary = verify_cohort.verify_cohort_bytes(
+        raw_input,
+        expected_build_id,
+    )
     packet_summary, custom_occurrences = deidentify_summary(verified_summary)
     verified_summary_bytes = canonical_json(verified_summary)
     packet_summary_bytes = canonical_json(packet_summary)
