@@ -38,8 +38,8 @@ on:
       - "software/tests/test_product_alpha*.mjs"
       - "system-dossiers/refrigerator.md"
       - "failure-atlas/feedback-instability.md"
-      - "investigations/room-cooling.md"
-      - "design-challenges/passive-cooler.md"
+      - "investigations/queue-delay-near-capacity.md"
+      - "design-challenges/resilient-school-information-service.md"
       - "system-dossiers/web-service-request.md"
       - "failure-atlas/retry-storm-queue-collapse.md"
       - "investigations/queue-delay-near-capacity.md"
@@ -78,6 +78,7 @@ jobs:
             software/principia_atlas/promotion_policy.py \
             software/principia_atlas/promotion.py \
             software/principia_atlas/hosted_catalog.py \
+            software/principia_atlas/hosted_store.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
