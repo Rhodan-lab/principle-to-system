@@ -18,6 +18,38 @@ sys.modules[SPEC.name] = launcher
 SPEC.loader.exec_module(launcher)
 
 
+def write_valid_package(output: Path, route: str = "refrigerator") -> bytes:
+    payloads = {
+        path: f"launcher package asset: {path}\n".encode("utf-8")
+        for path in launcher.package_integrity.REQUIRED_STATIC_FILES
+    }
+    payloads[f"data/{route}.json"] = b'{}\n'
+    entries: list[dict[str, str]] = []
+    for relative, payload in payloads.items():
+        path = output.joinpath(*relative.split("/"))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payload)
+        entries.append(
+            {
+                "path": relative,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            }
+        )
+    entries.sort(key=lambda item: item["path"])
+    manifest = {
+        "contract": launcher.package_integrity.BUILD_CONTRACT,
+        "route_id": route,
+        "file_count": len(entries),
+        "files": entries,
+        "deterministic": True,
+    }
+    raw = (
+        json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    (output / launcher.BUILD_MANIFEST).write_bytes(raw)
+    return raw
+
+
 class ProductAlphaLauncherTests(unittest.TestCase):
     def test_urls_are_loopback_only(self) -> None:
         self.assertEqual(
@@ -88,19 +120,9 @@ class ProductAlphaLauncherTests(unittest.TestCase):
         self.assertIn("build-manifest.json", launcher.REQUIRED_OUTPUTS)
 
     def test_pilot_build_identity_hashes_exact_valid_manifest_bytes(self) -> None:
-        manifest = {
-            "contract": "principia-product-alpha-build/0.1",
-            "route_id": "refrigerator",
-            "file_count": 1,
-            "files": [{"path": "index.html", "sha256": "0" * 64}],
-            "deterministic": True,
-        }
-        raw = (
-            json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n"
-        ).encode("utf-8")
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
-            (output / launcher.BUILD_MANIFEST).write_bytes(raw)
+            raw = write_valid_package(output)
             self.assertEqual(
                 launcher.pilot_build_identity(output),
                 hashlib.sha256(raw).hexdigest(),
@@ -141,6 +163,19 @@ class ProductAlphaLauncherTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "file_count is inconsistent"):
                 launcher.pilot_build_identity(output)
+
+    def test_smoke_rejects_mutated_package_before_server_creation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_valid_package(output)
+            build_id = hashlib.sha256(raw).hexdigest()
+            (output / "index.html").write_bytes(b"mutated after identity\n")
+
+            with mock.patch.object(launcher, "create_server") as create_server:
+                with self.assertRaisesRegex(ValueError, "SHA-256 does not match"):
+                    launcher.smoke_served_output(output, build_id)
+
+            create_server.assert_not_called()
 
     def test_launcher_source_has_no_external_or_persistent_data_path(self) -> None:
         source = MODULE_PATH.read_text(encoding="utf-8")
