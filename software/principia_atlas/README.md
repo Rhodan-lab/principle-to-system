@@ -161,6 +161,72 @@ launcher.py run  direct cross-platform loopback launcher
 
 The standalone runtime verifies all extracted payload files before binding to `127.0.0.1`. It does not use accounts, cloud persistence, or an external network.
 
+## Promotion channels and GitHub Releases
+
+`promotion.py` turns a verified archive into an immutable promotion descriptor, cumulative release index, and deterministic release notes. Promoted versions use one strict channel mapping:
+
+```text
+0.1.0-alpha.1  -> alpha
+0.1.0-beta.1   -> beta
+0.1.0          -> stable
+```
+
+Other prerelease labels, SemVer build metadata, dirty source receipts, and tags that do not exactly match `principia-atlas-v<version>` are rejected.
+
+Prepare a promotion candidate locally:
+
+```bash
+mkdir -p /tmp/promotion-history /tmp/promotion
+: > /tmp/expected-release-tags.txt
+python3 software/principia_atlas/promotion.py prepare \
+  --archive /tmp/principia-atlas-0.1.0-alpha.1.zip \
+  --tag principia-atlas-v0.1.0-alpha.1 \
+  --history-dir /tmp/promotion-history \
+  --expected-tags /tmp/expected-release-tags.txt \
+  --output-dir /tmp/promotion
+```
+
+The output contains:
+
+```text
+principia-atlas-promotion.json
+principia-atlas-release-index.json
+RELEASE-NOTES.md
+```
+
+Promotion contract `principia-atlas-promotion/0.1` binds the tag, channel, release ID, bundle ID, receipt ID, archive digest, exact source commits, compatibility snapshot, predecessor, channel predecessor, and upgrade result. Index contract `principia-atlas-release-index/0.1` records every immutable version and the latest `alpha`, `beta`, and `stable` pointers.
+
+Promotion history must match the complete set of existing `principia-atlas-v*` Git tags. A version must advance the global SemVer history; a deleted or missing promotion asset, replayed version, duplicate tag, or backward channel pointer blocks publication.
+
+For a non-major upgrade, the release contract, route identity, required launch entrypoints, loopback host, authority boundaries, and Python minimum must remain compatible. A major version may change the route or launch contract, but it still cannot weaken authority separation or the loopback boundary.
+
+Verify generated promotion assets:
+
+```bash
+python3 software/principia_atlas/promotion.py verify \
+  --archive /tmp/principia-atlas-0.1.0-alpha.1.zip \
+  --promotion /tmp/promotion/principia-atlas-promotion.json \
+  --index /tmp/promotion/principia-atlas-release-index.json
+```
+
+Compare a new archive with a previous promoted version:
+
+```bash
+python3 software/principia_atlas/promotion.py upgrade \
+  --from-promotion previous/principia-atlas-promotion.json \
+  --to-archive /tmp/principia-atlas-0.1.0-beta.1.zip \
+  --tag principia-atlas-v0.1.0-beta.1
+```
+
+The `Publish Principia Atlas Release` workflow runs only for tags named `principia-atlas-v*`. It verifies that the tagged commit belongs to `main`, rebuilds the release from exact Principia and pinned Atlas revisions, downloads all previous promotion descriptors, reconciles them with immutable Git tags, and creates a GitHub Release only after every promotion and upgrade gate passes. Alpha and beta releases are marked prerelease; stable releases become the latest release.
+
+Publishing begins by pushing the exact version tag after the commit is already on `main`:
+
+```bash
+git tag principia-atlas-v0.1.0-alpha.1
+git push origin principia-atlas-v0.1.0-alpha.1
+```
+
 ## Lower-level package API
 
 `orchestrate.py` is the product entry point. `suite.py` remains available for inspecting or assembling already-built source packages:
@@ -187,10 +253,13 @@ source_status: tracked-and-untracked-bound
 product_publication: bundle-and-receipt-rollback-transaction
 release_publication: archive-and-checksum-rollback-transaction
 release_manifest: sealed-path-size-digest-inventory
+promotion_manifest: sealed-release-source-upgrade-identity
+release_index: cumulative-immutable-version-history
+channels: alpha-beta-stable-monotonic
 live_cross_repository_dependency: false
 external_network_required: false
 canonical_mutation: false
 repository_mutation: false
 ```
 
-The bundle and release are product integration layers. They do not grant Atlas authority over pedagogy, grant Principia authority over knowledge status, or create a release decision.
+The bundle, release, and promotion layers do not grant Atlas authority over pedagogy, grant Principia authority over knowledge status, or create a product-status decision outside their explicit contracts.
