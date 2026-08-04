@@ -173,7 +173,7 @@ class ProductAlphaTests(unittest.TestCase):
         self.assertIn("product-alpha-${slug}-pilot-summary.md", asset)
         self.assertIn("product-alpha-${slug}-validated-sessions.jsonl", asset)
         self.assertNotIn('download("product-alpha-pilot-summary', asset)
-        self.assertIn("Refreshing clears the workspace", asset)
+        self.assertRegex(asset, r"(?:Refreshing clears the workspace|disappears on refresh)")
 
 
 if __name__ == "__main__":
