@@ -152,6 +152,19 @@ test("recorder exposes the immutable capture boundary without persistence", () =
   assert.doesNotMatch(html, /localStorage|sessionStorage|sendBeacon|XMLHttpRequest/);
 });
 
+test("operational checklist keeps capture controls visible and state-bound", () => {
+  assert.match(html, /class="skip-link" href="#recorder"/);
+  assert.equal((html.match(/class="section-number"/g) || []).length, 6);
+  assert.match(html, /<details class="card preview">/);
+  assert.match(html, /id="download"[^>]*type="submit"[^>]*>Validate and download JSONL<\/button>/);
+  assert.match(html, /id="download"[^>]*disabled/);
+  assert.match(html, /id="copy"[^>]*disabled/);
+  assert.match(html, /id="reset"[^>]*disabled/);
+  assert.match(html, /q\("#download"\)\.disabled=view\.locked/);
+  assert.match(html, /q\("#copy"\)\.disabled=view\.locked/);
+  assert.match(html, /\[q\("#download"\),q\("#copy"\),q\("#reset"\)\]\.forEach\(node=>node\.disabled=view\.disabled\)/);
+});
+
 test("validation directs facilitators to the field that needs correction", () => {
   const valid = {
     session_id: "anonymous-a1",
@@ -205,7 +218,7 @@ test("validation errors are announced, marked, and focused", () => {
 });
 
 test("clipboard failure restores the download fallback", () => {
-  assert.match(html, /id="download" type="submit">Validate and download JSONL<\/button>/);
+  assert.match(html, /id="download"[^>]*type="submit"[^>]*>Validate and download JSONL<\/button>/);
   const source = html.match(
     /async function copyRecord\(\)\{([\s\S]*?)\}\nfunction resetForm/,
   );
