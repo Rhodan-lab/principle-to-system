@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import json
+import os
+import stat
 from pathlib import Path
 from typing import Sequence
 
@@ -37,10 +40,40 @@ def verify_cohort_bytes(
 
 
 def read_cohort_input(input_path: Path) -> bytes:
-    """Read one bounded cohort snapshot from a regular, non-symlink file."""
-    if input_path.is_symlink() or not input_path.is_file():
+    """Open and read one bounded regular-file cohort snapshot without following links."""
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_BINARY", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    nofollow = getattr(os, "O_NOFOLLOW", 0)
+    if nofollow:
+        flags |= nofollow
+    elif input_path.is_symlink():
         raise ValueError("cohort input must be a regular file")
-    return pilot_summary.read_session_input(input_path)
+
+    try:
+        descriptor = os.open(input_path, flags)
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:
+            raise ValueError("cohort input must be a regular file") from exc
+        raise
+
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise ValueError("cohort input must be a regular file")
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            raw = stream.read(pilot_summary.MAX_INPUT_BYTES + 1)
+    finally:
+        os.close(descriptor)
+
+    if len(raw) > pilot_summary.MAX_INPUT_BYTES:
+        raise ValueError(
+            "input exceeds the "
+            f"{pilot_summary.MAX_INPUT_BYTES}-byte Product Alpha session limit"
+        )
+    return raw
 
 
 def verify_cohort(
