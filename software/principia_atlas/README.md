@@ -1,6 +1,6 @@
 # Principia & Atlas product bundle
 
-This directory turns the existing cross-repository compatibility work into one navigable local product without merging authority or adding a live dependency.
+This directory turns the cross-repository compatibility work into one navigable local product without merging authority or adding a live runtime dependency.
 
 ## Product shape
 
@@ -10,54 +10,89 @@ The bundle contains three layers:
 - one exact verified Principia Product Alpha package under `principia/`;
 - one exact verified Atlas research workspace shell under `atlas/`.
 
-The loopback runtime adds deterministic navigation chrome to HTML responses so every surface can return to the suite or move between Learn and Research. The stored source snapshots are not rewritten.
+The loopback runtime adds deterministic navigation chrome to HTML responses so every surface can return to the suite or move between Learn and Research. Stored source snapshots are not rewritten.
 
-## Build inputs
+## One-command workflow
 
-Build the two source packages first.
-
-Principia:
+Keep the Principia and Atlas repositories as sibling checkouts, or pass the Atlas path explicitly. From the Principia repository, build, verify, smoke-test, and launch the complete product with:
 
 ```bash
-python3 software/product_alpha/build.py build \
+python3 software/principia_atlas/orchestrate.py run \
+  --atlas-repo ../Atlas \
   --route distributed-information \
-  --output /tmp/principia-package
+  --output /tmp/principia-atlas \
+  --open
 ```
 
-Atlas, from the Atlas repository:
+The orchestrator performs all of the following before the server starts:
+
+1. verifies both checkout roots and records their exact Git commits;
+2. rejects tracked source changes unless `--allow-dirty` is explicitly supplied;
+3. runs the official Atlas product-input deterministic check;
+4. runs the Principia Product Alpha deterministic check;
+5. builds and verifies the official Atlas eight-file package;
+6. builds the selected Principia route;
+7. assembles, verifies, and loopback-smoke-tests the combined bundle;
+8. publishes the new bundle atomically only after every check passes;
+9. writes a sealed build receipt beside the output.
+
+A failed replacement leaves the last successfully published product untouched. An output-specific lock rejects overlapping builds.
+
+## Commands
+
+Build without starting the server:
 
 ```bash
-rm -rf /tmp/atlas-workspace
-mkdir -p /tmp/atlas-workspace
-cp apps/workspace-shell/index.html /tmp/atlas-workspace/index.html
-cp apps/workspace-shell/styles.css /tmp/atlas-workspace/styles.css
-cp apps/workspace-shell/app.js /tmp/atlas-workspace/app.js
-cp apps/workspace-shell/README.md /tmp/atlas-workspace/README.md
-python -m tools.phase4_workspace.build_shell \
-  --output-dir /tmp/atlas-workspace \
-  --report-output /tmp/atlas-workspace-report.json
+python3 software/principia_atlas/orchestrate.py build \
+  --atlas-repo ../Atlas \
+  --route distributed-information \
+  --output /tmp/principia-atlas
 ```
 
-Assemble the suite from the Principia repository:
+Run the complete deterministic assembly twice without publishing:
+
+```bash
+python3 software/principia_atlas/orchestrate.py check \
+  --atlas-repo ../Atlas \
+  --route distributed-information
+```
+
+Verify an already published product and its source receipt:
+
+```bash
+python3 software/principia_atlas/orchestrate.py verify \
+  --output /tmp/principia-atlas
+```
+
+The build receipt is written to:
+
+```text
+/tmp/principia-atlas.build-receipt.json
+```
+
+It binds the combined bundle ID to the Principia commit, Atlas commit, Principia build ID, Atlas shell/report digests, exact Atlas workspace revision, and preserved authority boundaries.
+
+For release or CI use, exact source revisions can be enforced:
+
+```bash
+python3 software/principia_atlas/orchestrate.py build \
+  --atlas-repo ../Atlas \
+  --expected-principia-commit <full-principia-commit> \
+  --expected-atlas-commit <full-atlas-commit> \
+  --route distributed-information \
+  --output /tmp/principia-atlas
+```
+
+## Lower-level package API
+
+`orchestrate.py` is the product entry point. `suite.py` remains available for inspecting or assembling already-built source packages:
 
 ```bash
 python3 software/principia_atlas/suite.py build \
   --principia /tmp/principia-package \
-  --atlas /tmp/atlas-workspace \
-  --atlas-report /tmp/atlas-workspace-report.json \
+  --atlas /tmp/atlas-product-input \
+  --atlas-report /tmp/atlas-product-input/workspace-shell-build-report.json \
   --output /tmp/principia-atlas
-```
-
-Verify and serve it:
-
-```bash
-python3 software/principia_atlas/suite.py verify \
-  --bundle /tmp/principia-atlas
-python3 software/principia_atlas/suite.py check \
-  --bundle /tmp/principia-atlas
-python3 software/principia_atlas/suite.py serve \
-  --bundle /tmp/principia-atlas \
-  --open
 ```
 
 ## Preserved boundaries
@@ -68,6 +103,7 @@ authorities_separate: true
 status_inheritance: prohibited
 principia_snapshot: exact-manifest-verified
 atlas_snapshot: exact-build-report-verified
+source_commits: sealed-in-build-receipt
 live_cross_repository_dependency: false
 external_network_required: false
 canonical_mutation: false
