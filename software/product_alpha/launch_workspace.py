@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import json
+import os
+import stat
 import subprocess
 import webbrowser
 from pathlib import Path
@@ -16,6 +19,7 @@ import route_identity
 CONTRACT = "principia-product-alpha-workspace-launch/0.1"
 WORKSPACE_CONTRACT = "principia-product-alpha-pilot-workspace/0.1"
 ROUTE_ID = route_identity.DEFAULT_EVIDENCE_ROUTE
+MAX_WORKSPACE_MANIFEST_BYTES = 1024 * 1024
 REQUIRED_PRIVACY_BOUNDARIES = {
     "participant_names_allowed": False,
     "raw_sessions_committed_to_repository": False,
@@ -31,6 +35,72 @@ def _is_within(path: Path, root: Path) -> bool:
     return True
 
 
+def _object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key!r}")
+        result[key] = value
+    return result
+
+
+def _reject_nonfinite_constant(value: str) -> None:
+    raise ValueError(f"non-finite JSON constant is not allowed: {value}")
+
+
+def _read_workspace_manifest(path: Path) -> dict[str, Any]:
+    """Read one bounded workspace manifest snapshot without following symlinks."""
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_BINARY", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    nofollow = getattr(os, "O_NOFOLLOW", 0)
+    if nofollow:
+        flags |= nofollow
+    elif path.is_symlink():
+        raise ValueError("workspace.json must be a regular file")
+
+    try:
+        descriptor = os.open(path, flags)
+    except FileNotFoundError as exc:
+        raise ValueError("workspace.json must be a regular file") from exc
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:
+            raise ValueError("workspace.json must be a regular file") from exc
+        raise
+
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise ValueError("workspace.json must be a regular file")
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            raw = stream.read(MAX_WORKSPACE_MANIFEST_BYTES + 1)
+    finally:
+        os.close(descriptor)
+
+    if len(raw) > MAX_WORKSPACE_MANIFEST_BYTES:
+        raise ValueError(
+            "workspace.json exceeds the "
+            f"{MAX_WORKSPACE_MANIFEST_BYTES}-byte Product Alpha workspace limit"
+        )
+    try:
+        manifest = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=_object_without_duplicates,
+            parse_constant=_reject_nonfinite_constant,
+        )
+    except UnicodeDecodeError as exc:
+        raise ValueError("workspace.json must be UTF-8") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"workspace.json is invalid JSON: {exc.msg}") from exc
+    except ValueError as exc:
+        raise ValueError(f"workspace.json is invalid JSON: {exc}") from exc
+    if not isinstance(manifest, dict):
+        raise ValueError("workspace.json must contain one JSON object")
+    return manifest
+
+
 def load_workspace_binding(
     workspace: Path,
     *,
@@ -44,15 +114,7 @@ def load_workspace_binding(
     if _is_within(root, repository):
         raise ValueError("workspace must be outside the repository")
 
-    manifest_path = root / "workspace.json"
-    if manifest_path.is_symlink() or not manifest_path.is_file():
-        raise ValueError("workspace.json must be a regular file")
-    try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"workspace.json is invalid JSON: {exc.msg}") from exc
-    if not isinstance(manifest, dict):
-        raise ValueError("workspace.json must contain one JSON object")
+    manifest = _read_workspace_manifest(root / "workspace.json")
     if manifest.get("contract") != WORKSPACE_CONTRACT:
         raise ValueError(
             f"workspace.json contract must be {WORKSPACE_CONTRACT!r}"
