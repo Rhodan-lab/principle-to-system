@@ -57,6 +57,22 @@ class ProductAlphaBuildPackageIntegrityTests(unittest.TestCase):
 
         self.assertEqual(build_id, hashlib.sha256(raw).hexdigest())
 
+    def test_loader_returns_the_verified_package_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_package(output)
+            expected_index = (output / "index.html").read_bytes()
+
+            manifest, manifest_raw, package = package_integrity.load_verified_package(
+                output
+            )
+            (output / "index.html").write_bytes(b"changed after snapshot\n")
+
+        self.assertEqual(manifest["route_id"], "refrigerator")
+        self.assertEqual(manifest_raw, raw)
+        self.assertEqual(package[package_integrity.BUILD_MANIFEST], raw)
+        self.assertEqual(package["index.html"], expected_index)
+
     def test_rejects_mutated_declared_asset(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -165,6 +181,33 @@ class ProductAlphaBuildPackageIntegrityTests(unittest.TestCase):
             ):
                 with self.assertRaisesRegex(ValueError, "build package limit"):
                     package_integrity.pilot_build_identity(output)
+
+    def test_rejects_manifest_over_file_count_limit(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_package(output)
+            declared_count = len(json.loads(raw)["files"])
+
+            with mock.patch.object(
+                package_integrity,
+                "MAX_PACKAGE_FILES",
+                declared_count - 1,
+            ):
+                with self.assertRaisesRegex(ValueError, "file package limit"):
+                    package_integrity.load_verified_package(output)
+
+    def test_rejects_snapshot_over_total_byte_limit(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_package(output)
+
+            with mock.patch.object(
+                package_integrity,
+                "MAX_PACKAGE_BYTES",
+                len(raw),
+            ):
+                with self.assertRaisesRegex(ValueError, "byte package limit"):
+                    package_integrity.load_verified_package(output)
 
 
 if __name__ == "__main__":
