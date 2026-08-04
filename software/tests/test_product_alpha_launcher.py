@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -48,6 +49,16 @@ def write_valid_package(output: Path, route: str = "refrigerator") -> bytes:
     ).encode("utf-8")
     (output / launcher.BUILD_MANIFEST).write_bytes(raw)
     return raw
+
+
+def start_server(server: object) -> threading.Thread:
+    thread = threading.Thread(
+        target=server.serve_forever,
+        kwargs={"poll_interval": 0.01},
+        daemon=True,
+    )
+    thread.start()
+    return thread
 
 
 class ProductAlphaLauncherTests(unittest.TestCase):
@@ -106,12 +117,83 @@ class ProductAlphaLauncherTests(unittest.TestCase):
 
     def test_server_binds_only_to_loopback(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            server = launcher.create_server(Path(directory), 0, quiet=True)
+            output = Path(directory)
+            raw = write_valid_package(output)
+            build_id = hashlib.sha256(raw).hexdigest()
+            server = launcher.create_server(output, 0, build_id, quiet=True)
             try:
                 self.assertEqual(server.server_address[0], launcher.LOOPBACK_HOST)
                 self.assertGreater(int(server.server_address[1]), 0)
             finally:
                 server.server_close()
+
+    def test_server_serves_verified_snapshot_after_filesystem_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_valid_package(output)
+            build_id = hashlib.sha256(raw).hexdigest()
+            original = (output / "index.html").read_bytes()
+            server = launcher.create_server(output, 0, build_id, quiet=True)
+            (output / "index.html").write_bytes(b"mutated after snapshot\n")
+            (output / "facilitator.html").unlink()
+            thread = start_server(server)
+            try:
+                port = int(server.server_address[1])
+                status, _, body = launcher._fetch_smoke_target(port, "/")
+                facilitator_status, _, facilitator_body = launcher._fetch_smoke_target(
+                    port,
+                    "/facilitator.html?build_id=" + build_id,
+                )
+            finally:
+                server.shutdown()
+                thread.join(timeout=5)
+                server.server_close()
+
+        self.assertEqual(status, 200)
+        self.assertEqual(body, original)
+        self.assertEqual(facilitator_status, 200)
+        self.assertEqual(
+            facilitator_body,
+            b"launcher package asset: facilitator.html\n",
+        )
+
+    def test_server_rejects_undeclared_and_directory_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            raw = write_valid_package(output)
+            build_id = hashlib.sha256(raw).hexdigest()
+            server = launcher.create_server(output, 0, build_id, quiet=True)
+            thread = start_server(server)
+            try:
+                port = int(server.server_address[1])
+                undeclared_status, _, _ = launcher._fetch_smoke_target(
+                    port,
+                    "/private-notes.txt",
+                )
+                directory_status, _, _ = launcher._fetch_smoke_target(port, "/data/")
+            finally:
+                server.shutdown()
+                thread.join(timeout=5)
+                server.server_close()
+
+        self.assertEqual(undeclared_status, 404)
+        self.assertEqual(directory_status, 404)
+
+    def test_server_rejects_build_id_mismatch_before_socket_creation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            write_valid_package(output)
+            with mock.patch.object(
+                launcher.snapshot_server,
+                "ThreadingHTTPServer",
+            ) as server_class:
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "does not match the expected Pilot build ID",
+                ):
+                    launcher.create_server(output, 0, "a" * 64, quiet=True)
+
+            server_class.assert_not_called()
 
     def test_launcher_requires_pilot_lab_and_build_manifest_assets(self) -> None:
         self.assertIn("pilot-lab.html", launcher.REQUIRED_OUTPUTS)
