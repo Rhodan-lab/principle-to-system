@@ -26,7 +26,8 @@ except ModuleNotFoundError:
     from software.principia_atlas import suite
     from software.product_alpha import build as principia_build
 
-CONTRACT = "principia-atlas-orchestration-receipt/0.1"
+CONTRACT = "principia-atlas-orchestration-receipt/0.2"
+LEGACY_CONTRACT = "principia-atlas-orchestration-receipt/0.1"
 PRODUCT = "Principia & Atlas"
 PRINCIPIA_REPOSITORY = "Rhodan-lab/principle-to-system"
 ATLAS_REPOSITORY = "Rhodan-lab/Atlas"
@@ -38,7 +39,7 @@ GIT_OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 
 PRINCIPIA_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ATLAS_REPO = PRINCIPIA_ROOT.parent / "Atlas"
-DEFAULT_OUTPUT = PRINCIPIA_ROOT / "software" / "principia_atlas" / "dist"
+DEFAULT_OUTPUT = PRINCIPIA_ROOT.parent / "principia-atlas-product"
 
 
 def canonical_json(value: object) -> bytes:
@@ -117,25 +118,30 @@ def git_state(
         raise ValueError(f"{repository} HEAD is not a full Git object ID")
     if expected_commit is not None and commit != expected_commit:
         raise ValueError(f"{repository} checkout is {commit}, expected {expected_commit}")
-    dirty = bool(
-        _run(
-            [
-                "git",
-                "-C",
-                str(root),
-                "status",
-                "--porcelain",
-                "--untracked-files=no",
-            ],
-            cwd=root,
-            capture=True,
-        )
+    status = _run(
+        [
+            "git",
+            "-C",
+            str(root),
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all",
+        ],
+        cwd=root,
+        capture=True,
     )
+    dirty = bool(status)
     if dirty and not allow_dirty:
         raise ValueError(
-            f"{repository} checkout has tracked changes; use --allow-dirty only for development"
+            f"{repository} checkout has source changes (tracked changes or untracked files); "
+            "use --allow-dirty only for development"
         )
-    return {"repository": repository, "commit": commit, "clean": not dirty}
+    return {
+        "repository": repository,
+        "commit": commit,
+        "clean": not dirty,
+        "status_sha256": sha256(status.encode("utf-8")),
+    }
 
 
 def _source_roots(principia_root: Path, atlas_repo: Path) -> tuple[Path, Path]:
@@ -155,13 +161,17 @@ def _source_roots(principia_root: Path, atlas_repo: Path) -> tuple[Path, Path]:
     return principia, atlas
 
 
+def _contains(root: Path, path: Path) -> bool:
+    return path == root or root in path.parents
+
+
 def _validate_output(output: Path, roots: Sequence[Path]) -> Path:
     target = _absolute(output)
     if not target.name:
         raise ValueError("product output must have a final path component")
     for root in roots:
-        if target == root or target in root.parents:
-            raise ValueError("product output must not replace a source checkout")
+        if _contains(root, target) or _contains(target, root):
+            raise ValueError("product output must remain outside source checkouts")
     if target.is_symlink():
         raise ValueError("product output must not be a symlink")
     if target.exists() and not target.is_dir():
@@ -290,7 +300,8 @@ def verify_receipt(output: Path, path: Path | None = None) -> dict[str, object]:
     target = path or receipt_path(output)
     raw = suite.read_regular(target, "orchestration receipt", MAX_RECEIPT_BYTES)
     receipt = suite.decode(raw, "orchestration receipt")
-    if receipt.get("contract") != CONTRACT or receipt.get("product") != PRODUCT:
+    contract = receipt.get("contract")
+    if contract not in {CONTRACT, LEGACY_CONTRACT} or receipt.get("product") != PRODUCT:
         raise ValueError("orchestration receipt contract is invalid")
     receipt_id = receipt.get("receipt_id")
     unsigned = dict(receipt)
@@ -337,10 +348,22 @@ def verify_receipt(output: Path, path: Path | None = None) -> dict[str, object]:
             or not GIT_OBJECT_ID.fullmatch(state["commit"])
         ):
             raise ValueError("orchestration receipt source identity is invalid")
+        if contract == CONTRACT:
+            status_digest = state.get("status_sha256")
+            if not isinstance(status_digest, str) or not suite.SHA.fullmatch(status_digest):
+                raise ValueError("orchestration receipt source status is invalid")
     return receipt
 
 
+def _remove_path(path: Path) -> None:
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+    elif path.is_dir():
+        shutil.rmtree(path)
+
+
 def _publish_tree(stage: Path, output: Path) -> None:
+    """Publish a directory with rollback; retained for lower-level callers."""
     if not stage.is_dir() or stage.is_symlink():
         raise ValueError("staged product must be a regular directory")
     if output.is_symlink():
@@ -360,6 +383,49 @@ def _publish_tree(stage: Path, output: Path) -> None:
     else:
         if backup.exists():
             shutil.rmtree(backup, ignore_errors=True)
+
+
+def _publish_product(stage: Path, output: Path, receipt_raw: bytes) -> None:
+    """Publish the bundle and its sidecar receipt as one rollback-capable transaction."""
+    if not stage.is_dir() or stage.is_symlink():
+        raise ValueError("staged product must be a regular directory")
+    receipt = receipt_path(output)
+    if output.is_symlink() or receipt.is_symlink():
+        raise ValueError("product output and receipt must not be symlinks")
+    output_exists = output.exists()
+    receipt_exists = receipt.exists()
+    if output_exists != receipt_exists:
+        raise ValueError("existing product and receipt must be a complete pair")
+    if output_exists and not output.is_dir():
+        raise ValueError("product output must be a directory")
+    if receipt_exists and not receipt.is_file():
+        raise ValueError("product receipt must be a regular file")
+
+    token = uuid.uuid4().hex
+    output_backup = output.parent / f".{output.name}.backup-{token}"
+    receipt_backup = receipt.parent / f".{receipt.name}.backup-{token}"
+    if output_exists:
+        output.replace(output_backup)
+        try:
+            receipt.replace(receipt_backup)
+        except BaseException:
+            output_backup.replace(output)
+            raise
+
+    try:
+        stage.replace(output)
+        _atomic_write(receipt, receipt_raw)
+        verify_receipt(output)
+    except BaseException:
+        _remove_path(output)
+        _remove_path(receipt)
+        if output_exists:
+            output_backup.replace(output)
+            receipt_backup.replace(receipt)
+        raise
+    else:
+        _remove_path(output_backup)
+        _remove_path(receipt_backup)
 
 
 @contextmanager
@@ -428,9 +494,7 @@ def build_product(
             )
             _same_sources(before, after)
             receipt = make_receipt(manifest, before[0], before[1])
-            _publish_tree(staged_bundle, target)
-        _atomic_write(receipt_path(target), canonical_json(receipt))
-        verify_receipt(target)
+            _publish_product(staged_bundle, target, canonical_json(receipt))
     return manifest, receipt
 
 
@@ -460,9 +524,7 @@ def check_integration(
                 principia, atlas, route, work
             )
             bundle = work / "bundle"
-            suite.build_bundle(
-                principia_package, atlas_package, atlas_report, bundle
-            )
+            suite.build_bundle(principia_package, atlas_package, atlas_report, bundle)
             manifest, snapshot = suite.verify_bundle(bundle)
             suite.smoke(bundle)
             products.append((manifest, snapshot))

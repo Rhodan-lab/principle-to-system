@@ -36,11 +36,13 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
             "repository": orchestrate.PRINCIPIA_REPOSITORY,
             "commit": "1" * 40,
             "clean": True,
+            "status_sha256": orchestrate.sha256(b""),
         }
         self.atlas_state = {
             "repository": orchestrate.ATLAS_REPOSITORY,
             "commit": "2" * 40,
             "clean": True,
+            "status_sha256": orchestrate.sha256(b""),
         }
         self.manifest = {
             "bundle_id": "b" * 64,
@@ -57,6 +59,14 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
+
+    def _write_old_pair(self) -> tuple[Path, Path]:
+        self.output.mkdir()
+        product = self.output / "index.html"
+        product.write_text("old product\n", encoding="utf-8")
+        receipt = orchestrate.receipt_path(self.output)
+        receipt.write_text("old receipt\n", encoding="utf-8")
+        return product, receipt
 
     def _fake_source_packages(
         self,
@@ -117,35 +127,40 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
             ),
         )
 
-    def test_build_atomically_replaces_previous_product_and_writes_receipt(self) -> None:
-        self.output.mkdir()
-        (self.output / "index.html").write_text("old product\n", encoding="utf-8")
+    def _run_fake_build(self) -> tuple[dict[str, object], dict[str, object]]:
         patches = self._build_patches()
         with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5]:
-            manifest, receipt = orchestrate.build_product(
+            return orchestrate.build_product(
                 principia_root=self.principia,
                 atlas_repo=self.atlas,
                 route="distributed-information",
                 output=self.output,
             )
+
+    def test_build_atomically_replaces_previous_product_and_writes_receipt(self) -> None:
+        self._write_old_pair()
+        manifest, receipt = self._run_fake_build()
         self.assertEqual(manifest, self.manifest)
+        self.assertEqual(receipt["contract"], orchestrate.CONTRACT)
         self.assertEqual(receipt["bundle_id"], self.manifest["bundle_id"])
         self.assertEqual(
             (self.output / "index.html").read_text(encoding="utf-8"),
             "new product\n",
         )
         receipt_file = orchestrate.receipt_path(self.output)
-        self.assertTrue(receipt_file.is_file())
         stored = json.loads(receipt_file.read_text(encoding="utf-8"))
         self.assertEqual(stored["receipt_id"], receipt["receipt_id"])
+        self.assertEqual(
+            stored["sources"]["principia"]["status_sha256"],
+            orchestrate.sha256(b""),
+        )
         self.assertFalse((self.root / ".published-product.build.lock").exists())
 
     def test_failed_smoke_preserves_previous_product(self) -> None:
         self.output.mkdir()
         old = self.output / "index.html"
         old.write_text("old product\n", encoding="utf-8")
-        patches = self._build_patches()
-        patches = list(patches)
+        patches = list(self._build_patches())
         patches[-1] = mock.patch.object(
             orchestrate.suite,
             "smoke",
@@ -162,6 +177,51 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
         self.assertEqual(old.read_text(encoding="utf-8"), "old product\n")
         self.assertFalse(orchestrate.receipt_path(self.output).exists())
         self.assertFalse((self.root / ".published-product.build.lock").exists())
+
+    def test_receipt_write_failure_restores_previous_pair(self) -> None:
+        product, receipt = self._write_old_pair()
+        patches = self._build_patches()
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], mock.patch.object(
+            orchestrate,
+            "_atomic_write",
+            side_effect=OSError("receipt disk failure"),
+        ):
+            with self.assertRaisesRegex(OSError, "receipt disk failure"):
+                orchestrate.build_product(
+                    principia_root=self.principia,
+                    atlas_repo=self.atlas,
+                    route="distributed-information",
+                    output=self.output,
+                )
+        self.assertEqual(product.read_text(encoding="utf-8"), "old product\n")
+        self.assertEqual(receipt.read_text(encoding="utf-8"), "old receipt\n")
+
+    def test_receipt_verification_failure_restores_previous_pair(self) -> None:
+        product, receipt = self._write_old_pair()
+        patches = self._build_patches()
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], mock.patch.object(
+            orchestrate,
+            "verify_receipt",
+            side_effect=ValueError("receipt verification failed"),
+        ):
+            with self.assertRaisesRegex(ValueError, "receipt verification failed"):
+                orchestrate.build_product(
+                    principia_root=self.principia,
+                    atlas_repo=self.atlas,
+                    route="distributed-information",
+                    output=self.output,
+                )
+        self.assertEqual(product.read_text(encoding="utf-8"), "old product\n")
+        self.assertEqual(receipt.read_text(encoding="utf-8"), "old receipt\n")
+
+    def test_incomplete_existing_pair_is_rejected(self) -> None:
+        self.output.mkdir()
+        stage = self.root / "stage"
+        stage.mkdir()
+        with self.assertRaisesRegex(ValueError, "complete pair"):
+            orchestrate._publish_product(stage, self.output, b"{}\n")
+        self.assertTrue(self.output.is_dir())
+        self.assertTrue(stage.is_dir())
 
     def test_receipt_tamper_is_rejected(self) -> None:
         receipt = orchestrate.make_receipt(
@@ -218,7 +278,7 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
         self.assertEqual(calls[0][0:2], ("build", "--output"))
         self.assertEqual(calls[1][0:2], ("verify", "--package"))
 
-    def test_git_state_rejects_dirty_checkout(self) -> None:
+    def test_git_state_rejects_tracked_checkout_change(self) -> None:
         with mock.patch.object(
             orchestrate,
             "_run",
@@ -231,23 +291,52 @@ class PrincipiaAtlasOrchestrationTests(unittest.TestCase):
                     allow_dirty=False,
                 )
 
+    def test_git_state_rejects_untracked_checkout_file(self) -> None:
+        with mock.patch.object(
+            orchestrate,
+            "_run",
+            side_effect=[str(self.atlas), "4" * 40, "?? content/new-source.json"],
+        ):
+            with self.assertRaisesRegex(ValueError, "untracked files"):
+                orchestrate.git_state(
+                    self.atlas,
+                    orchestrate.ATLAS_REPOSITORY,
+                    allow_dirty=False,
+                )
+
+    def test_git_state_binds_clean_status_digest(self) -> None:
+        with mock.patch.object(
+            orchestrate,
+            "_run",
+            side_effect=[str(self.principia), "5" * 40, ""],
+        ):
+            state = orchestrate.git_state(
+                self.principia,
+                orchestrate.PRINCIPIA_REPOSITORY,
+                allow_dirty=False,
+            )
+        self.assertTrue(state["clean"])
+        self.assertEqual(state["status_sha256"], orchestrate.sha256(b""))
+
     def test_git_state_enforces_expected_commit(self) -> None:
         with mock.patch.object(
             orchestrate,
             "_run",
-            side_effect=[str(self.atlas), "4" * 40],
+            side_effect=[str(self.atlas), "6" * 40],
         ):
             with self.assertRaisesRegex(ValueError, "expected"):
                 orchestrate.git_state(
                     self.atlas,
                     orchestrate.ATLAS_REPOSITORY,
                     allow_dirty=False,
-                    expected_commit="5" * 40,
+                    expected_commit="7" * 40,
                 )
 
-    def test_output_must_not_replace_a_source_checkout(self) -> None:
-        with self.assertRaisesRegex(ValueError, "source checkout"):
-            orchestrate._validate_output(self.root, (self.principia, self.atlas))
+    def test_output_must_not_contain_or_replace_source_checkout(self) -> None:
+        for unsafe in (self.root, self.principia / "dist"):
+            with self.subTest(unsafe=unsafe):
+                with self.assertRaisesRegex(ValueError, "outside source"):
+                    orchestrate._validate_output(unsafe, (self.principia, self.atlas))
 
 
 if __name__ == "__main__":
