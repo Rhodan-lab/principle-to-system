@@ -45,8 +45,12 @@ function shellHtml() {
 
 export function createControlPlaneServer({ catalog: catalogInput, config: configInput, identitySecret, sessionSecret, now = () => Math.floor(Date.now() / 1000), exchangeLimit = 10 }) {
   const catalog = verifyCatalog(catalogInput); const config = verifyTenantConfig(configInput);
-  if (String(identitySecret ?? '').length < 32 || String(sessionSecret ?? '').length < 32) throw new Error('identity and session secrets must be at least 32 bytes');
+  const identityRaw = Buffer.from(String(identitySecret ?? ''), 'utf8');
+  const sessionRaw = Buffer.from(String(sessionSecret ?? ''), 'utf8');
+  if (identityRaw.length < 32 || sessionRaw.length < 32) throw new Error('identity and session secrets must be at least 32 bytes');
+  if (identityRaw.equals(sessionRaw)) throw new Error('identity and session secrets must be distinct');
   const attempts = new Map();
+  const usedAssertions = new Map();
   return createHttpServer((request, response) => {
     const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
     const getSession = () => {
@@ -58,13 +62,19 @@ export function createControlPlaneServer({ catalog: catalogInput, config: config
     if (request.method === 'GET' && url.pathname === '/') return sendHtml(response, 200, shellHtml());
     if (request.method === 'POST' && url.pathname === '/api/auth/exchange') {
       if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' });
-      const address = request.socket.remoteAddress ?? 'unknown'; const minute = Math.floor(now() / 60); const key = `${address}:${minute}`;
-      const count = (attempts.get(key) ?? 0) + 1; attempts.set(key, count);
+      const address = request.socket.remoteAddress ?? 'unknown'; const minute = Math.floor(now() / 60);
+      const previous = attempts.get(address);
+      const count = previous?.minute === minute ? previous.count + 1 : 1;
+      attempts.set(address, { minute, count });
       if (count > exchangeLimit) return sendJson(response, 429, { error: 'rate_limited' });
       const match = /^Bearer ([A-Za-z0-9_.-]+)$/.exec(request.headers.authorization ?? '');
       if (!match) return sendJson(response, 401, { error: 'identity_assertion_required' });
       try {
-        const exchanged = exchangeIdentityAssertion(match[1], identitySecret, sessionSecret, config, now());
+        const current = now();
+        for (const [jti, expiry] of usedAssertions) if (expiry <= current) usedAssertions.delete(jti);
+        const exchanged = exchangeIdentityAssertion(match[1], identitySecret, sessionSecret, config, current);
+        if ((usedAssertions.get(exchanged.session.jti) ?? 0) > current) throw new Error('identity assertion replayed');
+        usedAssertions.set(exchanged.session.jti, exchanged.session.exp);
         const attributes = [`${config.session.cookie_name}=${exchanged.token}`, 'Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${config.session.ttl_seconds}`];
         if (config.session.secure) attributes.push('Secure');
         response.setHeader('Set-Cookie', attributes.join('; '));
