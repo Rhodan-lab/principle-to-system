@@ -1,3 +1,16 @@
+---
+title: "Product Alpha Loopback Security Boundary"
+slug: product-alpha-loopback-security-boundary
+domain: experience
+status: reviewed
+artifact_revision: 1
+release_status: draft
+prerequisites: []
+connections: [product-alpha-local-runtime, principia-atlas-product-bundle]
+last_reviewed: 2026-08-04
+content_license: CC-BY-4.0
+---
+
 # Product Alpha loopback security boundary
 
 Product Alpha pilot evidence must be collected only through the supported launchers. A bare static server is useful for inspection, but it does not enforce this boundary and must not collect pilot records.

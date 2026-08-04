@@ -36,8 +36,10 @@ on:
       - main
     paths-ignore:
       - 'software/product_alpha/**'
+      - 'software/principia_atlas/**'
       - 'software/tests/test_product_alpha*.py'
       - 'software/tests/test_product_alpha*.mjs'
+      - 'reports/principia-atlas-unified-product-bundle.md'
       - '.github/workflows/validate-product-alpha.yml'
   workflow_dispatch:
 
