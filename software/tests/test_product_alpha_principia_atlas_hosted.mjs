@@ -4,7 +4,7 @@ import {
   CATALOG_CONTRACT, TENANT_CONTRACT, PRODUCT, canonicalJson, sha256Hex,
   parseStrictJson, verifyCatalog, sealTenantConfig, verifyTenantConfig,
   signIdentityAssertion, exchangeIdentityAssertion, verifySession,
-  catalogForSession, createControlPlaneServer,
+  catalogForSession, createControlPlaneServer, createMemoryAuthState,
 } from '../principia_atlas/hosted/index.mjs';
 import { validateNetworkBoundary } from '../principia_atlas/hosted/server.mjs';
 
@@ -91,6 +91,7 @@ test('identity exchange creates tenant-bound short session', () => {
   assert.equal(session.tenant_id, 'school-demo');
   assert.equal(session.sub, 'learner-1');
   assert.equal(session.exp, now + 1 + 3600);
+  assert.match(session.sid, /^[A-Za-z0-9_-]{24,128}$/);
   const tampered = `${exchanged.token.slice(0, -1)}x`;
   assert.throws(() => verifySession(tampered, sessionSecret, config(), now + 2), /signature/);
 });
@@ -167,11 +168,14 @@ test('exchange enforces same-origin and rate limit', async () => {
   }
 });
 
-test('network boundary requires explicit opt-in and secure cookies', () => {
+test('network boundary requires explicit opt-in, secure cookies, and durable state', () => {
   const secure = config(); secure.session.secure = true; delete secure.config_id;
   const sealed = sealTenantConfig(secure);
-  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: false }, sealed), /allow-network/);
-  assert.doesNotThrow(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: true }, sealed));
-  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: true }, config()), /secure session/);
+  const memory = createMemoryAuthState();
+  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: false }, sealed, memory), /allow-network/);
+  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: true }, config(), memory), /secure session/);
+  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: true }, sealed, memory), /durable multi-instance/);
+  assert.throws(() => validateNetworkBoundary({ host: '0.0.0.0', allowNetwork: true }, sealed), /auth state backend/);
   assert.doesNotThrow(() => validateNetworkBoundary({ host: '127.0.0.1', allowNetwork: false }, config()));
+  memory.close();
 });
