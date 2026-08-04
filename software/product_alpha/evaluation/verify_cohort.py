@@ -36,12 +36,19 @@ def verify_cohort_bytes(
     return summary
 
 
+def read_cohort_input(input_path: Path) -> bytes:
+    """Read one bounded cohort snapshot from a regular, non-symlink file."""
+    if input_path.is_symlink() or not input_path.is_file():
+        raise ValueError("cohort input must be a regular file")
+    return pilot_summary.read_session_input(input_path)
+
+
 def verify_cohort(
     input_path: Path,
     expected_build_id: str,
 ) -> dict[str, object]:
     """Load one bounded snapshot and bind it to the recorded launcher build."""
-    raw_input = pilot_summary.read_session_input(input_path)
+    raw_input = read_cohort_input(input_path)
     return verify_cohort_bytes(raw_input, expected_build_id)
 
 
