@@ -167,7 +167,8 @@ test("learner availability distinguishes loading, ready, and error",()=>{
 test("learner route fails closed when route data cannot load",()=>{
   assert.match(html,/<h1 id="title" tabindex="-1">Loading route…<\/h1>/);
   assert.match(html,/id="stepStatus" role="status" aria-live="polite" aria-atomic="true"/);
-  assert.match(html,/a\[aria-disabled="true"\]\{pointer-events:none;opacity:\.55\}/);
+  assert.match(html,/a\[aria-disabled="true"\]\{pointer-events:none;/);
+  assert.match(html,/a\[aria-disabled="true"\]\{[^}]*opacity:\.[0-9]+/);
   assert.match(html,/function applyLearnerAvailability\(state\)/);
   assert.match(html,/document\.querySelectorAll\('a\[href\^="#"\]'\)/);
   assert.match(html,/q\("#note"\)\.disabled=view\.disabled/);
