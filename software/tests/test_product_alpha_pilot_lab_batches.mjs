@@ -153,6 +153,17 @@ test("empty workspaces do not arm destructive clear", () => {
   assert.equal(state.clearArmed, false);
 });
 
+test("evidence workspace separates ingest triage and export", () => {
+  assert.match(html, /<span class="zone-number">1<\/span>[\s\S]*?<p class="eyebrow">Ingest files<\/p>/);
+  assert.match(html, /<span class="zone-number">2<\/span>[\s\S]*?<p class="eyebrow">Triage records<\/p>/);
+  assert.match(html, /<span class="zone-number">3<\/span>[\s\S]*?<p class="eyebrow">Export evidence<\/p>/);
+  assert.match(html, /<details class="manage"><summary>Workspace management<\/summary>/);
+  assert.match(html, /<details class="card preview"><summary>Aggregate Markdown preview<\/summary>/);
+  assert.match(html, /No roadmap authority/);
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(html, /@media\(forced-colors:active\)/);
+});
+
 test("interface exposes keyboard file pickers and live status", () => {
   assert.match(html, /id="chooseFiles" type="button">Add session files/);
   assert.match(html, /id="files"[^>]+multiple hidden/);
@@ -181,7 +192,6 @@ test("clear control is announced and visually changes when armed", () => {
   assert.match(html, /q\("#chooseFiles"\)\.focus\(\)/);
 });
 
-
 test("replacement confirmation is explicit and cancellable", () => {
   assert.match(html, /Confirm replace with \${pending} file/);
   assert.match(html, /current workspace remains loaded until confirmation/);
@@ -190,7 +200,6 @@ test("replacement confirmation is explicit and cancellable", () => {
   assert.match(html, /cancel\.hidden=!pending/);
   assert.match(html, /Pending replacement cancelled\. Press Clear workspace again/);
 });
-
 
 test("dynamic tables expose captions and header relationships", () => {
   assert.match(html, /<caption>Loaded anonymous sessions<\/caption>/);
