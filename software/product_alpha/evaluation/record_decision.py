@@ -7,6 +7,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Sequence
 
@@ -365,10 +366,11 @@ def write_decision_outputs(
     readiness: dict[str, object],
     record: dict[str, object],
 ) -> tuple[Path, Path, Path, str, str]:
-    json_path, markdown_path, receipt_path = _decision_paths(review_prefix)
-    for path in (json_path, markdown_path, receipt_path):
+    final_paths = _decision_paths(review_prefix)
+    for path in final_paths:
         if prepare_review.path_present(path):
             raise FileExistsError(f"refusing to overwrite existing decision output: {path}")
+    json_path, markdown_path, receipt_path = final_paths
     json_bytes = prepare_review.canonical_json(record)
     markdown_bytes = render_markdown(record).encode("utf-8")
     receipt = _build_receipt(
@@ -381,19 +383,28 @@ def write_decision_outputs(
         markdown_bytes,
     )
     receipt_bytes = prepare_review.canonical_json(receipt)
+    payloads = (json_bytes, markdown_bytes, receipt_bytes)
     json_path.parent.mkdir(parents=True, exist_ok=True)
-    with json_path.open("xb") as stream:
-        stream.write(json_bytes)
+    temporary_paths = tuple(
+        path.with_name(f".{path.name}.tmp-{os.getpid()}") for path in final_paths
+    )
+    created_temporary: list[Path] = []
+    published: list[Path] = []
     try:
-        with markdown_path.open("xb") as stream:
-            stream.write(markdown_bytes)
-        with receipt_path.open("xb") as stream:
-            stream.write(receipt_bytes)
+        for temporary, payload in zip(temporary_paths, payloads, strict=True):
+            with temporary.open("xb") as stream:
+                created_temporary.append(temporary)
+                stream.write(payload)
+        for temporary, destination in zip(temporary_paths, final_paths, strict=True):
+            prepare_review.publish_exclusive(temporary, destination)
+            published.append(destination)
     except Exception:
-        json_path.unlink(missing_ok=True)
-        markdown_path.unlink(missing_ok=True)
-        receipt_path.unlink(missing_ok=True)
+        for path in reversed(published):
+            path.unlink(missing_ok=True)
         raise
+    finally:
+        for path in reversed(created_temporary):
+            path.unlink(missing_ok=True)
     return (
         json_path,
         markdown_path,
