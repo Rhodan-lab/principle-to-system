@@ -125,7 +125,6 @@ export function catalogForSession(session, catalogInput, configInput) {
     releases.push({
       version, tag: entry.tag, channel: entry.channel, route_id: entry.release.route_id,
       release_id: entry.release.release_id, archive: structuredClone(entry.release.archive),
-      artifact_path: `/releases/${encodeURIComponent(version)}/${encodeURIComponent(entry.release.archive.name)}`,
     });
   }
   releases.sort((a, b) => compareVersions(b.version, a.version));
