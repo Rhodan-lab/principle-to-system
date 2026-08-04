@@ -19,23 +19,20 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Sequence
 
+try:
+    from software.product_alpha import package_integrity
+except ModuleNotFoundError:
+    import package_integrity
+
 LOOPBACK_HOST = "127.0.0.1"
 DEFAULT_PORT = 8000
 DEFAULT_ROUTE = "refrigerator"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = REPO_ROOT / "software" / "product_alpha" / "build.py"
 DEFAULT_OUTPUT = REPO_ROOT / "software" / "product_alpha" / "dist"
-BUILD_MANIFEST = "build-manifest.json"
+BUILD_MANIFEST = package_integrity.BUILD_MANIFEST
 BUILD_ID_PATTERN = re.compile(r"^[0-9a-f]{64}$")
-REQUIRED_OUTPUTS = (
-    "index.html",
-    "model-adapters.js",
-    "facilitator.html",
-    "pilot-lab.html",
-    "evaluation/rubric.json",
-    "evaluation/session-template.json",
-    BUILD_MANIFEST,
-)
+REQUIRED_OUTPUTS = (*package_integrity.REQUIRED_STATIC_FILES, BUILD_MANIFEST)
 CONTENT_SECURITY_POLICY = (
     "default-src 'self'; "
     "base-uri 'none'; "
@@ -166,27 +163,8 @@ def verify_output(output: Path) -> None:
 
 
 def pilot_build_identity(output: Path) -> str:
-    """Return the SHA-256 identity of a valid deterministic build manifest."""
-    manifest_path = output / BUILD_MANIFEST
-    if not manifest_path.is_file():
-        raise FileNotFoundError(f"Product Alpha build is missing {BUILD_MANIFEST}")
-    raw = manifest_path.read_bytes()
-    try:
-        manifest = json.loads(raw.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise ValueError("Product Alpha build manifest is not valid UTF-8 JSON") from exc
-    if not isinstance(manifest, dict):
-        raise ValueError("Product Alpha build manifest must be a JSON object")
-    if manifest.get("contract") != "principia-product-alpha-build/0.1":
-        raise ValueError("Product Alpha build manifest contract is invalid")
-    if manifest.get("deterministic") is not True:
-        raise ValueError("Product Alpha build manifest must declare deterministic=true")
-    files = manifest.get("files")
-    if not isinstance(files, list) or manifest.get("file_count") != len(files):
-        raise ValueError("Product Alpha build manifest file_count is inconsistent")
-    if not isinstance(manifest.get("route_id"), str) or not manifest["route_id"]:
-        raise ValueError("Product Alpha build manifest route_id is invalid")
-    return validate_build_id(hashlib.sha256(raw).hexdigest())
+    """Return the manifest identity after verifying every packaged asset."""
+    return validate_build_id(package_integrity.pilot_build_identity(output))
 
 
 def create_server(output: Path, port: int, quiet: bool = False) -> ThreadingHTTPServer:
@@ -241,6 +219,11 @@ def smoke_served_output(output: Path, build_id: str, route: str = DEFAULT_ROUTE)
     """Serve and verify the exact packaged pilot without retaining any state."""
     verify_output(output)
     expected_build_id = validate_build_id(build_id)
+    actual_build_id = pilot_build_identity(output)
+    if actual_build_id != expected_build_id:
+        raise ValueError(
+            "verified build package does not match the expected Pilot build ID"
+        )
     server = create_server(output, 0, quiet=True)
     actual_host = str(server.server_address[0])
     actual_port = int(server.server_address[1])
@@ -390,7 +373,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="open the learner, recorder, and Pilot Lab in local browser tabs",
     )
     parser.add_argument("--quiet", action="store_true", help="suppress HTTP request logs")
-    parser.add_argument("--route", default=DEFAULT_ROUTE, choices=("refrigerator", "distributed-information"), help="learner route to package and serve")
+    parser.add_argument(
+        "--route",
+        default=DEFAULT_ROUTE,
+        choices=package_integrity.SUPPORTED_ROUTES,
+        help="learner route to package and serve",
+    )
     return parser.parse_args(argv)
 
 
