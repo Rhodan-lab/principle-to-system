@@ -4,6 +4,7 @@ import { isIP } from 'node:net';
 import { resolve } from 'node:path';
 import { createControlPlaneServer } from './control_plane.mjs';
 import { verifyTenantCatalogCompatibility } from './catalog.mjs';
+import { loadHostedStore } from './store.mjs';
 import { parseStrictJson } from './strict_json.mjs';
 
 function parseArgs(argv) {
@@ -11,13 +12,13 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--allow-network') output.allowNetwork = true;
-    else if (['--catalog', '--tenants', '--host', '--port'].includes(item)) {
+    else if (['--catalog', '--tenants', '--store', '--host', '--port'].includes(item)) {
       const value = argv[++index];
       if (!value) throw new Error(`${item} requires a value`);
       output[item.slice(2)] = value;
     } else throw new Error(`unknown argument: ${item}`);
   }
-  if (!output.catalog || !output.tenants) throw new Error('--catalog and --tenants are required');
+  if (!output.catalog || !output.tenants || !output.store) throw new Error('--catalog, --tenants, and --store are required');
   output.port = Number(output.port);
   if (!Number.isInteger(output.port) || output.port < 0 || output.port > 65535) throw new Error('--port is invalid');
   return output;
@@ -45,11 +46,12 @@ export async function main(argv = process.argv.slice(2)) {
     await loadJson(args.tenants, 'tenant config'),
   );
   validateNetworkBoundary(args, verified.config);
+  const store = await loadHostedStore(args.store, verified.catalog);
   const identitySecret = process.env.PRINCIPIA_ATLAS_IDENTITY_SECRET;
   const sessionSecret = process.env.PRINCIPIA_ATLAS_SESSION_SECRET;
   if (!identitySecret || !sessionSecret) throw new Error('identity and session secrets are required');
   if (identitySecret === sessionSecret) throw new Error('identity and session secrets must be distinct');
-  const server = createControlPlaneServer({ catalog: verified.catalog, config: verified.config, identitySecret, sessionSecret });
+  const server = createControlPlaneServer({ catalog: verified.catalog, config: verified.config, store, identitySecret, sessionSecret });
   await new Promise((resolveListen, reject) => {
     server.once('error', reject);
     server.listen(args.port, args.host, resolveListen);
@@ -57,10 +59,12 @@ export async function main(argv = process.argv.slice(2)) {
   const address = server.address();
   const actualPort = typeof address === 'object' && address ? address.port : args.port;
   console.log(`Principia & Atlas hosted control plane: http://${args.host}:${actualPort}/`);
+  console.log(`Hosted store: ${store.manifest.store_id}`);
   console.log('Persistence: disabled');
-  console.log('Release serving: disabled (catalog-only foundation)');
+  console.log('Release serving: authenticated immutable content store');
   const stop = () => server.close(() => process.exit(0));
-  process.once('SIGINT', stop); process.once('SIGTERM', stop);
+  process.once('SIGINT', stop);
+  process.once('SIGTERM', stop);
   return server;
 }
 

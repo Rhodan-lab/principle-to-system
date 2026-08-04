@@ -78,6 +78,7 @@ jobs:
             software/principia_atlas/promotion_policy.py \
             software/principia_atlas/promotion.py \
             software/principia_atlas/hosted_catalog.py \
+            software/principia_atlas/hosted_store.py \
             software/product_alpha/evaluation/summarize.py \
             software/product_alpha/evaluation/prepare_workspace.py \
             software/product_alpha/evaluation/assemble_workspace.py \
