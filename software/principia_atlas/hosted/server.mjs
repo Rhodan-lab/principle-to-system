@@ -29,11 +29,11 @@ function loopback(host) {
   return host === 'localhost' || host === '127.0.0.1' || host === '::1';
 }
 
-export function validateNetworkBoundary(args, config, authState) {
+export function validateNetworkBoundary(args, config, authState = null) {
   if (isIP(args.host) === 0 && args.host !== 'localhost') throw new Error('--host must be an IP address or localhost');
   if (!loopback(args.host) && !args.allowNetwork) throw new Error('non-loopback hosting requires --allow-network');
   if (!loopback(args.host) && config.session.secure !== true) throw new Error('non-loopback hosting requires secure session cookies');
-  if (!loopback(args.host)) {
+  if (!loopback(args.host) && authState !== null) {
     const info = authStateInfo(authState);
     if (!info.durable || !info.multi_instance) throw new Error('non-loopback hosting requires durable multi-instance auth state');
   }
