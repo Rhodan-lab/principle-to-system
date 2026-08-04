@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { isIP } from 'node:net';
 import { resolve } from 'node:path';
 import { createControlPlaneServer } from './control_plane.mjs';
-import { verifyCatalog, verifyTenantConfig } from './catalog.mjs';
+import { verifyTenantCatalogCompatibility } from './catalog.mjs';
 import { parseStrictJson } from './strict_json.mjs';
 
 function parseArgs(argv) {
@@ -40,14 +40,16 @@ async function loadJson(path, label) {
 
 export async function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
-  const catalog = verifyCatalog(await loadJson(args.catalog, 'hosted catalog'));
-  const config = verifyTenantConfig(await loadJson(args.tenants, 'tenant config'));
-  validateNetworkBoundary(args, config);
+  const verified = verifyTenantCatalogCompatibility(
+    await loadJson(args.catalog, 'hosted catalog'),
+    await loadJson(args.tenants, 'tenant config'),
+  );
+  validateNetworkBoundary(args, verified.config);
   const identitySecret = process.env.PRINCIPIA_ATLAS_IDENTITY_SECRET;
   const sessionSecret = process.env.PRINCIPIA_ATLAS_SESSION_SECRET;
   if (!identitySecret || !sessionSecret) throw new Error('identity and session secrets are required');
   if (identitySecret === sessionSecret) throw new Error('identity and session secrets must be distinct');
-  const server = createControlPlaneServer({ catalog, config, identitySecret, sessionSecret });
+  const server = createControlPlaneServer({ catalog: verified.catalog, config: verified.config, identitySecret, sessionSecret });
   await new Promise((resolveListen, reject) => {
     server.once('error', reject);
     server.listen(args.port, args.host, resolveListen);
