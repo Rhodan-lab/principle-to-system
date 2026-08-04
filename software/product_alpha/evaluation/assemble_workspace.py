@@ -47,16 +47,27 @@ def _canonical_json(value: Any) -> bytes:
     ).encode("utf-8")
 
 
+def _decode_strict_json(raw: bytes, label: str) -> Any:
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label}: must be UTF-8") from exc
+    try:
+        return json.loads(
+            text,
+            object_pairs_hook=pilot_summary._object_without_duplicates,
+            parse_constant=pilot_summary._reject_nonfinite_constant,
+        )
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{label}: invalid JSON: {exc.msg}") from exc
+    except ValueError as exc:
+        raise ValueError(f"{label}: invalid JSON: {exc}") from exc
+
+
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"{label}: must be a regular file")
-    raw = path.read_bytes()
-    try:
-        value = json.loads(raw.decode("utf-8"))
-    except UnicodeDecodeError as exc:
-        raise ValueError(f"{label}: must be UTF-8") from exc
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"{label}: invalid JSON: {exc.msg}") from exc
+    value = _decode_strict_json(path.read_bytes(), label)
     if not isinstance(value, dict):
         raise ValueError(f"{label}: must contain one JSON object")
     return value
@@ -223,12 +234,7 @@ def _build_plan(
             raise ValueError(f"unsupported incoming file type: {path.name}")
 
         raw = path.read_bytes()
-        try:
-            value = json.loads(raw.decode("utf-8"))
-        except UnicodeDecodeError as exc:
-            raise ValueError(f"{path.name}: file must be UTF-8") from exc
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"{path.name}: invalid JSON: {exc.msg}") from exc
+        value = _decode_strict_json(raw, path.name)
         if not isinstance(value, dict):
             raise ValueError(
                 f"{path.name}: session export must contain one JSON object"
