@@ -11,8 +11,10 @@ pod="principia-atlas-browser-pod"
 idp="principia-atlas-browser-idp"
 hosted="principia-atlas-browser-hosted"
 edge="principia-atlas-browser-edge"
+gateway="principia-atlas-browser-gateway"
 issuer_host="identity.example.test"
-containers=("$edge" "$hosted" "$idp" "$pod")
+external_host="learn.example.test"
+containers=("$gateway" "$edge" "$hosted" "$idp" "$pod")
 
 show_diagnostics() {
   echo '--- browser sidecar smoke diagnostics ---' >&2
@@ -37,11 +39,13 @@ cleanup() {
 trap cleanup EXIT
 
 wait_https() {
-  local url=$1
+  local host=$1
+  local port=$2
+  local url=$3
   for attempt in $(seq 1 40); do
     if curl --fail --silent \
       --noproxy '*' \
-      --resolve "$issuer_host:19443:127.0.0.1" \
+      --resolve "$host:$port:127.0.0.1" \
       --cacert "$root/public/ca.crt" \
       "$url" >/dev/null; then
       return 0
@@ -79,7 +83,7 @@ docker network create "$network" >/dev/null
 docker run -d --name "$pod" \
   --network "$network" \
   --network-alias "$issuer_host" \
-  -p 18083:8081 \
+  -p 18443:18443 \
   -p 19443:19443 \
   --entrypoint sleep \
   "$image" infinity
@@ -99,12 +103,12 @@ docker run -d --name "$idp" \
   --client-id principia-atlas-browser \
   --client-secret-file /run/secrets/browser-client \
   --audience principia-atlas-external \
-  --redirect-uri http://127.0.0.1:18083/auth/callback \
+  --redirect-uri "https://$external_host:18443/auth/callback" \
   --tls-key /run/idp/tls.key \
-  --tls-cert /mock/tls.crt \
+  --tls-cert /mock/idp.crt \
   --signing-key /run/idp/signing.key \
   --jwks /mock/jwks.json
-wait_https "https://$issuer_host:19443/healthz"
+wait_https "$issuer_host" 19443 "https://$issuer_host:19443/healthz"
 
 docker run -d --name "$hosted" \
   --network "container:$pod" \
@@ -151,18 +155,26 @@ docker run -d --name "$edge" \
   --port 8081 \
   --allow-network \
   --shutdown-timeout-ms 20000
+wait_loopback "$edge" http://127.0.0.1:8081/edge/healthz
 
-for attempt in $(seq 1 40); do
-  if curl --fail --silent --noproxy '*' http://127.0.0.1:18083/edge/healthz >/dev/null; then break; fi
-  if [[ "$attempt" = 40 ]]; then
-    echo 'browser edge did not become ready' >&2
-    exit 1
-  fi
-  sleep 1
-done
+docker run -d --name "$gateway" \
+  --network "container:$pod" \
+  "${common_security[@]}" \
+  --mount type=bind,src="$root/public",dst=/mock,readonly \
+  --mount type=bind,src="$root/gateway-secrets",dst=/run/gateway,readonly \
+  --entrypoint node \
+  "$image" \
+  /opt/principia-atlas/hosted/deployment/mock_tls_gateway.mjs \
+  --host 0.0.0.0 \
+  --port 18443 \
+  --upstream-origin http://127.0.0.1:8081 \
+  --tls-key /run/gateway/tls.key \
+  --tls-cert /mock/gateway.crt
+wait_https "$external_host" 18443 "https://$external_host:18443/edge/healthz"
 
 node software/principia_atlas/hosted/deployment/browser_smoke_client.mjs \
-  --origin http://127.0.0.1:18083 \
+  --origin "https://$external_host:18443" \
+  --origin-address 127.0.0.1 \
   --issuer "https://$issuer_host:19443" \
   --issuer-address 127.0.0.1 \
   --ca "$root/public/ca.crt" \
