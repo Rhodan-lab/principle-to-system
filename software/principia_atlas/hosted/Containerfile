@@ -20,4 +20,4 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:8080/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 
 ENTRYPOINT ["node", "/opt/principia-atlas/hosted/server.mjs"]
-CMD ["--catalog", "/config/catalog.json", "--tenants", "/config/tenants.json", "--store", "/store", "--state", "/var/lib/principia-atlas/auth-state.sqlite", "--identity-secret-file", "/run/secrets/identity", "--session-secret-file", "/run/secrets/session", "--metrics-token-file", "/run/secrets/metrics", "--audit-log", "/var/log/principia-atlas/audit.ndjson", "--host", "0.0.0.0", "--port", "8080", "--allow-network"]
+CMD ["--catalog", "/config/catalog.json", "--tenants", "/config/tenants.json", "--store", "/store", "--state", "/var/lib/principia-atlas/auth-state.sqlite", "--identity-secret-file", "/run/secrets/identity", "--session-secret-file", "/run/secrets/session", "--metrics-token-file", "/run/secrets/metrics", "--audit-log", "/var/log/principia-atlas/audit.ndjson", "--host", "127.0.0.1", "--port", "8080"]
