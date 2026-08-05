@@ -18,13 +18,15 @@ const FLAGS = new Set([
   '--subject',
   '--issuer',
   '--external-subject',
+  '--event-id',
+  '--receipt-ttl-seconds',
   '--now',
 ]);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
   if (!COMMANDS.has(command)) throw new Error('command must be stats, prune, revoke-session, revoke-subject, or revoke-oidc-subject');
-  const output = { command, now: Math.floor(Date.now() / 1000) };
+  const output = { command, now: Math.floor(Date.now() / 1000), receiptTtlSeconds: 30 * 24 * 60 * 60 };
   const seen = new Set();
   for (let index = 0; index < rest.length; index += 1) {
     const item = rest[index];
@@ -36,11 +38,13 @@ function parseArgs(argv) {
   }
   if (!output.state) throw new Error('--state is required');
   output.now = Number(output.now);
+  output.receiptTtlSeconds = Number(output['receipt-ttl-seconds'] ?? output.receiptTtlSeconds);
   if (!Number.isSafeInteger(output.now) || output.now < 0) throw new Error('--now is invalid');
+  if (!Number.isSafeInteger(output.receiptTtlSeconds) || output.receiptTtlSeconds < 60 || output.receiptTtlSeconds > 365 * 24 * 60 * 60) throw new Error('--receipt-ttl-seconds is invalid');
   if (command === 'revoke-session' && !output.sid) throw new Error('--sid is required');
   if (command === 'revoke-subject' && (!output.tenant || !output.subject)) throw new Error('--tenant and --subject are required');
-  if (command === 'revoke-oidc-subject' && (!output.tenant || !output.issuer || !output['external-subject'])) {
-    throw new Error('--tenant, --issuer, and --external-subject are required');
+  if (command === 'revoke-oidc-subject' && (!output.tenant || !output.issuer || !output['external-subject'] || !output['event-id'])) {
+    throw new Error('--tenant, --issuer, --external-subject, and --event-id are required');
   }
   return output;
 }
@@ -57,14 +61,20 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
       result = { contract: COMMAND_CONTRACT, command: args.command, result: state.stats(args.now) };
     } else if (args.command === 'revoke-session') {
       result = { contract: COMMAND_CONTRACT, command: args.command, revoked: state.revokeSession(args.sid, args.now) };
+    } else if (args.command === 'revoke-oidc-subject') {
+      const receipt = state.revokeSubjectOnce(
+        args['event-id'],
+        args.tenant,
+        canonicalOidcSubject(args.issuer, args['external-subject']),
+        args.now,
+        args.now + args.receiptTtlSeconds,
+      );
+      result = { contract: COMMAND_CONTRACT, command: args.command, ...receipt };
     } else {
-      const subject = args.command === 'revoke-oidc-subject'
-        ? canonicalOidcSubject(args.issuer, args['external-subject'])
-        : args.subject;
       result = {
         contract: COMMAND_CONTRACT,
         command: args.command,
-        revoked_sessions: state.revokeSubject(args.tenant, subject, args.now),
+        revoked_sessions: state.revokeSubject(args.tenant, args.subject, args.now),
       };
     }
     write(canonicalJson(result));
