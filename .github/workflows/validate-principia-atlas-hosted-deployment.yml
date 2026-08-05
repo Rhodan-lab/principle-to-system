@@ -60,6 +60,15 @@ jobs:
         run: |
           for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
           bash -n software/principia_atlas/hosted/deployment/smoke.sh
+          python3 - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          path = Path('software/principia_atlas/hosted/deployment/kubernetes.example.yaml')
+          documents = list(yaml.safe_load_all(path.read_text(encoding='utf-8')))
+          assert len(documents) == 5
+          assert all(isinstance(document, dict) for document in documents)
+          PY
           node --check software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
           node --test software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
 
