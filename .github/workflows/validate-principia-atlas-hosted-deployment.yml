@@ -109,9 +109,18 @@ jobs:
         run: |
           set -euo pipefail
           export SOURCE_DATE_EPOCH=0
+          cleanup_builder() {
+            docker buildx rm --force principia-repro >/dev/null 2>&1 || true
+          }
+          trap cleanup_builder EXIT
           docker buildx version
+          docker buildx create \
+            --name principia-repro \
+            --driver docker-container \
+            --use
+          docker buildx inspect --bootstrap
           for candidate in first second; do
-            docker buildx build --no-cache \
+            docker buildx build --builder principia-repro --no-cache \
               --provenance=false \
               --sbom=false \
               --build-arg SOURCE_DATE_EPOCH=0 \
@@ -123,7 +132,7 @@ jobs:
           sha256sum "$RUNNER_TEMP/hosted/image-first.oci.tar" \
             | sed 's#image-first\.oci\.tar#principia-atlas-hosted.oci.tar#' \
             > "$RUNNER_TEMP/hosted/image-oci.sha256"
-          docker buildx build --no-cache \
+          docker buildx build --builder principia-repro --no-cache \
             --provenance=false \
             --sbom=false \
             --build-arg SOURCE_DATE_EPOCH=0 \
