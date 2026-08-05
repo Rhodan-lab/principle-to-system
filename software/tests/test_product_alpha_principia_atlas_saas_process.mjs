@@ -101,9 +101,21 @@ test('SaaS process migrates before listen and aggregates readiness', { skip: !da
     assert.equal(health.status, 200);
     assert.equal((await health.json()).status, 'ok');
 
+    const hiddenHealth = await fetch(`http://127.0.0.1:${runtimePort}/saas/healthz`, {
+      headers: { Origin: 'http://public.example.test' },
+    });
+    assert.equal(hiddenHealth.status, 404);
+    assert.deepEqual(await hiddenHealth.json(), { error: 'not_found' });
+
     const ready = await fetch(`http://127.0.0.1:${runtimePort}/saas/readyz`);
     assert.equal(ready.status, 200);
     assert.equal((await ready.json()).status, 'ready');
+
+    const hiddenReady = await fetch(`http://127.0.0.1:${runtimePort}/saas/readyz`, {
+      headers: { Origin: 'http://public.example.test' },
+    });
+    assert.equal(hiddenReady.status, 404);
+    assert.deepEqual(await hiddenReady.json(), { error: 'not_found' });
 
     coreReady = false;
     const unavailable = await fetch(`http://127.0.0.1:${runtimePort}/saas/readyz`);
