@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { canonicalOidcSubject } from './oidc_subject.mjs';
-import { readOidcRevocationRequest } from './revocation_request.mjs';
+import {
+  readOidcRevocationRequest,
+  readOidcRevocationRequestWithKeyring,
+} from './revocation_request.mjs';
 import { readOidcRevocationRequestWithSignedKeyring } from './revocation_keyring.mjs';
 import { revokeSubjectOnceWithTrustState } from './revocation_operator.mjs';
 import { canonicalJson } from './strict_json.mjs';
@@ -66,9 +69,6 @@ function parseArgs(argv) {
     if (!output['request-file']) throw new Error('--request-file is required');
     const trustSources = Number(Boolean(output['request-key-file'])) + Number(Boolean(output['request-keyring-file']));
     if (trustSources !== 1) throw new Error('exactly one of --request-key-file or --request-keyring-file is required');
-    if (output['request-keyring-file'] && !output['keyring-root-key-file']) {
-      throw new Error('--keyring-root-key-file is required with --request-keyring-file');
-    }
     if (output['request-key-file'] && output['keyring-root-key-file']) {
       throw new Error('--keyring-root-key-file is only valid with --request-keyring-file');
     }
@@ -85,12 +85,18 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
   const args = parseArgs(argv);
   const request = args.command === 'revoke-oidc-request'
     ? (args['request-keyring-file']
-      ? readOidcRevocationRequestWithSignedKeyring(
-        args['request-file'],
-        args['request-keyring-file'],
-        args['keyring-root-key-file'],
-        args.now,
-      )
+      ? (args['keyring-root-key-file']
+        ? readOidcRevocationRequestWithSignedKeyring(
+          args['request-file'],
+          args['request-keyring-file'],
+          args['keyring-root-key-file'],
+          args.now,
+        )
+        : readOidcRevocationRequestWithKeyring(
+          args['request-file'],
+          args['request-keyring-file'],
+          args.now,
+        ))
       : readOidcRevocationRequest(args['request-file'], args['request-key-file'], args.now))
     : null;
 
