@@ -1,3 +1,10 @@
+---
+title: OIDC revocation signing-key rotation
+slug: oidc-revocation-signing-key-rotation
+status: reviewed
+last_reviewed: 2026-08-05
+content_license: CC-BY-4.0
+---
 # OIDC revocation signing-key rotation
 
 This runbook rotates the Ed25519 keys used to authorize hosted OIDC subject-revocation requests. It preserves the separation between the controlled signer and the networkless state operator.
