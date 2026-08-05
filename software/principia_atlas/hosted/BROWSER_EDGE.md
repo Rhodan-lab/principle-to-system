@@ -105,6 +105,25 @@ The edge health endpoint is:
 
 It exposes only the edge contract, sealed configuration ID, and a generic loopback-upstream status. It does not expose endpoints, secrets, tokens, subjects, tenants, or release identities.
 
+## Kubernetes sidecar deployment
+
+`deployment/kubernetes.example.yaml` is the canonical deployment example. Each pod runs the hosted control plane and browser edge as separate containers from the same verified image:
+
+```text
+external HTTPS gateway
+  -> principia-atlas-browser-edge Service :8081
+      -> browser-edge container :8081
+          -> hosted container 127.0.0.1:8080
+```
+
+The hosted container has no Kubernetes container port, no Service target, no NetworkPolicy ingress allowance, and no `--allow-network` flag. It enables the production OIDC verifier with the sealed policy and bounded remote JWKS provider. Only the browser edge binds to the pod network.
+
+All replicas must share the same sealed browser configuration and browser-flow secret. The encrypted flow cookie contains the bounded callback state, so the authorization request and callback may reach different replicas without sticky sessions.
+
+The example NetworkPolicy permits DNS and a documentation-only identity-provider CIDR on TCP 443. Replace that CIDR with reviewed provider addresses or an exact-host egress proxy. The placeholder is intentionally non-routable and must never be broadened to unrestricted internet egress.
+
+Operational details, required ConfigMap keys, Secret keys, probes, rolling restarts, and backup boundaries are documented in `deployment/README.md`.
+
 ## Non-goals
 
 This edge does not add self-registration, passwords, account recovery, refresh-token storage, browser token storage, learner-event persistence, organization administration, billing, identity-provider discovery, dynamic client registration, logout propagation to the identity provider, TLS termination, or a complete production SaaS claim.
