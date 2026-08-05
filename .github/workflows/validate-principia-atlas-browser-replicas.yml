@@ -62,6 +62,7 @@ jobs:
           node --check software/principia_atlas/hosted/deployment/mock_tls_gateway.mjs
           node --check software/principia_atlas/hosted/deployment/browser_smoke_client.mjs
           bash -n software/principia_atlas/hosted/deployment/browser_replica_smoke.sh
+          bash -n software/principia_atlas/hosted/deployment/revocation_anti_rollback_smoke.sh
 
       - name: Build release and hosted store
         run: |
@@ -204,6 +205,9 @@ jobs:
 
       - name: Run cross-replica browser smoke
         run: bash software/principia_atlas/hosted/deployment/browser_replica_smoke.sh
+
+      - name: Run signed revocation anti-rollback smoke
+        run: bash software/principia_atlas/hosted/deployment/revocation_anti_rollback_smoke.sh
 
       - name: Preserve sanitized result and remove secrets
         if: always()
