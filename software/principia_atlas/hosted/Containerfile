@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.title="Principia & Atlas hosted control plane" \
 ENV NODE_ENV=production
 
 WORKDIR /opt/principia-atlas
-COPY --chown=10001:10001 --chmod=0444 software/principia_atlas/hosted/ ./hosted/
+COPY --chown=0:0 software/principia_atlas/hosted/ ./hosted/
 
 VOLUME ["/config", "/store", "/var/lib/principia-atlas", "/var/log/principia-atlas", "/run/secrets"]
 USER 10001:10001
