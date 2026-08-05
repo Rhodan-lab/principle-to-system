@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { canonicalOidcSubject } from './oidc.mjs';
+import { canonicalOidcSubject } from './oidc_subject.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { openSqliteAuthState } from './state.mjs';
 
