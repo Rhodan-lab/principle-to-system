@@ -227,23 +227,47 @@ test "$operator_session_before" = 200
 
 operator_revoke_container="principia-atlas-replica-operator-revoke"
 operator_event_id="browser-smoke-disable-event-0001"
+operator_request_file="$root/operator-revocation-request.json"
+python3 - <<'PYJSON'
+import json
+import os
+import time
+from pathlib import Path
+root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+now = int(time.time())
+request = {
+    'contract': 'principia-atlas-hosted-oidc-revocation-request/0.1',
+    'tenant_id': 'local-preview',
+    'issuer': 'https://identity.example.test:19443',
+    'external_subject': 'browser-smoke-learner',
+    'event_id': 'browser-smoke-disable-event-0001',
+    'issued_at': now - 5,
+    'expires_at': now + 300,
+    'receipt_ttl_seconds': 3600,
+}
+path = root / 'operator-revocation-request.json'
+path.write_text(json.dumps(request, sort_keys=True, separators=(',', ':')) + '\n')
+path.chmod(0o600)
+PYJSON
 operator_revoke=(
   docker run --rm --name "$operator_revoke_container"
   --network none
   "${common_security[@]}"
   --mount type=bind,src="$root/replica-state",dst=/state
+  --mount type=bind,src="$operator_request_file",dst=/run/revocation-request.json,readonly
   --entrypoint node
   "$image"
-  /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-oidc-subject
+  /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-oidc-request
   --state /state/auth-state.sqlite
-  --tenant local-preview
-  --issuer "https://$issuer_host:19443"
-  --external-subject browser-smoke-learner
-  --event-id "$operator_event_id"
-  --receipt-ttl-seconds 3600
+  --request-file /run/revocation-request.json
 )
+operator_revoke_argv=$(printf '%q ' "${operator_revoke[@]}")
+[[ "$operator_revoke_argv" != *browser-smoke-learner* ]]
+[[ "$operator_revoke_argv" != *identity.example.test* ]]
 "${operator_revoke[@]}" > "$root/operator-revoke.json"
 "${operator_revoke[@]}" > "$root/operator-revoke-replay.json"
+! grep -Fq 'browser-smoke-learner' "$root/operator-revoke.json" "$root/operator-revoke-replay.json"
+! grep -Fq 'identity.example.test' "$root/operator-revoke.json" "$root/operator-revoke-replay.json"
 
 python3 - <<'PYJSON'
 import json
@@ -252,7 +276,7 @@ root = Path(__import__('os').environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
 revoke = json.loads((root / 'operator-revoke.json').read_text())
 replay = json.loads((root / 'operator-revoke-replay.json').read_text())
 assert revoke['contract'] == 'principia-atlas-hosted-auth-state-command/0.1'
-assert revoke['command'] == 'revoke-oidc-subject'
+assert revoke['command'] == 'revoke-oidc-request'
 assert revoke['event_id'] == 'browser-smoke-disable-event-0001'
 assert revoke['replayed'] is False
 assert revoke['revoked_sessions'] == 1
@@ -279,7 +303,7 @@ result_path = root / 'replica-result.json'
 result = json.loads(result_path.read_text())
 receipt = json.loads((root / 'operator-revoke.json').read_text())
 result['operator_revocation'] = {
-    'command': 'revoke-oidc-subject',
+    'command': 'revoke-oidc-request',
     'event_id': receipt['event_id'],
     'replayed': True,
     'revoked_sessions': receipt['revoked_sessions'],
