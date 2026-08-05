@@ -201,9 +201,9 @@ jobs:
           openssl req -newkey rsa:2048 -sha256 -nodes \
             -keyout "$root/idp-secrets/tls.key" \
             -out "$root/tls.csr" \
-            -subj '/CN=127.0.0.1'
+            -subj '/CN=identity.example.test'
           cat > "$root/tls.ext" <<'EOF'
-          subjectAltName=IP:127.0.0.1,DNS:localhost
+          subjectAltName=DNS:identity.example.test
           basicConstraints=critical,CA:FALSE
           keyUsage=critical,digitalSignature,keyEncipherment
           extendedKeyUsage=serverAuth
@@ -230,16 +230,16 @@ jobs:
           await writeFile(`${base}/config/tenants.json`, canonicalJson(sealTenantConfig(tenant)));
 
           const oidc = JSON.parse(await readFile('software/principia_atlas/hosted/example-oidc-policy.unsigned.json', 'utf8'));
-          oidc.issuer = 'https://127.0.0.1:19443';
+          oidc.issuer = 'https://identity.example.test:19443';
           oidc.audience = 'principia-atlas-external';
-          oidc.jwks.uri = 'https://127.0.0.1:19443/jwks';
+          oidc.jwks.uri = 'https://identity.example.test:19443/jwks';
           await writeFile(`${base}/oidc-policy.unsigned.json`, canonicalJson(oidc));
 
           const browser = JSON.parse(await readFile('software/principia_atlas/hosted/example-browser-oidc.unsigned.json', 'utf8'));
-          browser.issuer = 'https://127.0.0.1:19443';
+          browser.issuer = 'https://identity.example.test:19443';
           browser.public_origin = 'http://127.0.0.1:18083';
-          browser.authorization_endpoint = 'https://127.0.0.1:19443/authorize';
-          browser.token_endpoint = 'https://127.0.0.1:19443/token';
+          browser.authorization_endpoint = 'https://identity.example.test:19443/authorize';
+          browser.token_endpoint = 'https://identity.example.test:19443/token';
           browser.client_id = 'principia-atlas-browser';
           browser.client_auth_method = 'client_secret_post';
           browser.cookie = { name: 'pa_oidc_flow', secure: false, same_site: 'Lax' };
