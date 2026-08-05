@@ -242,7 +242,7 @@ request = {
     'external_subject': 'browser-smoke-learner',
     'event_id': 'browser-smoke-disable-event-0001',
     'issued_at': now - 5,
-    'expires_at': now + 300,
+    'expires_at': now + 295,
     'receipt_ttl_seconds': 3600,
 }
 path = root / 'operator-revocation-request.json'
