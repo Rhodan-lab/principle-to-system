@@ -157,7 +157,7 @@ export function createMetricsRegistry({ startedAtMs = Date.now() } = {}) {
         }
       };
       metric('http_requests', 'HTTP responses by status class.', ['2xx', '3xx', '4xx', '5xx', 'other']);
-      metric('auth_exchanges', 'Identity assertion exchange outcomes.', ['success', 'invalid', 'rate_limited', 'revoked']);
+      metric('auth_exchanges', 'Authentication exchange outcomes.', ['success', 'invalid', 'rate_limited', 'revoked']);
       metric('response_bytes', 'HTTP response bytes.', ['']);
       metric('release_responses', 'Hosted release responses.', ['']);
       metric('release_bytes', 'Hosted release response bytes.', ['']);
