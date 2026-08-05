@@ -36,7 +36,7 @@ trap cleanup EXIT
 wait_https() {
   local url=$1
   for attempt in $(seq 1 40); do
-    if curl --fail --silent --cacert "$root/mock/tls.crt" "$url" >/dev/null; then return 0; fi
+    if curl --fail --silent --cacert "$root/public/ca.crt" "$url" >/dev/null; then return 0; fi
     sleep 1
   done
   echo "HTTPS dependency did not become ready: $url" >&2
@@ -74,7 +74,8 @@ docker run -d --name "$pod" \
 docker run -d --name "$idp" \
   --network "container:$pod" \
   "${common_security[@]}" \
-  --mount type=bind,src="$root/mock",dst=/mock,readonly \
+  --mount type=bind,src="$root/public",dst=/mock,readonly \
+  --mount type=bind,src="$root/idp-secrets",dst=/run/idp,readonly \
   --mount type=bind,src="$root/secrets",dst=/run/secrets,readonly \
   --entrypoint node \
   "$image" \
@@ -86,22 +87,22 @@ docker run -d --name "$idp" \
   --client-secret-file /run/secrets/browser-client \
   --audience principia-atlas-external \
   --redirect-uri http://127.0.0.1:18083/auth/callback \
-  --tls-key /mock/tls.key \
+  --tls-key /run/idp/tls.key \
   --tls-cert /mock/tls.crt \
-  --signing-key /mock/signing.key \
+  --signing-key /run/idp/signing.key \
   --jwks /mock/jwks.json
 wait_https https://127.0.0.1:19443/healthz
 
 docker run -d --name "$hosted" \
   --network "container:$pod" \
   "${common_security[@]}" \
-  --env NODE_EXTRA_CA_CERTS=/mock/tls.crt \
+  --env NODE_EXTRA_CA_CERTS=/mock/ca.crt \
   --mount type=bind,src="$root/config",dst=/config,readonly \
   --mount type=bind,src="$RUNNER_TEMP/hosted/store",dst=/store,readonly \
   --mount type=bind,src="$root/state",dst=/state \
   --mount type=bind,src="$root/audit",dst=/audit \
   --mount type=bind,src="$root/secrets",dst=/run/secrets,readonly \
-  --mount type=bind,src="$root/mock",dst=/mock,readonly \
+  --mount type=bind,src="$root/public",dst=/mock,readonly \
   "$image" \
   --catalog /config/catalog.json \
   --tenants /config/tenants.json \
@@ -122,10 +123,10 @@ wait_loopback "$hosted" http://127.0.0.1:8080/readyz
 docker run -d --name "$edge" \
   --network "container:$pod" \
   "${common_security[@]}" \
-  --env NODE_EXTRA_CA_CERTS=/mock/tls.crt \
+  --env NODE_EXTRA_CA_CERTS=/mock/ca.crt \
   --mount type=bind,src="$root/config",dst=/config,readonly \
   --mount type=bind,src="$root/secrets",dst=/run/secrets,readonly \
-  --mount type=bind,src="$root/mock",dst=/mock,readonly \
+  --mount type=bind,src="$root/public",dst=/mock,readonly \
   --entrypoint node \
   "$image" \
   /opt/principia-atlas/hosted/browser_edge_cli.mjs serve \
@@ -150,7 +151,7 @@ done
 node software/principia_atlas/hosted/deployment/browser_smoke_client.mjs \
   --origin http://127.0.0.1:18083 \
   --issuer https://127.0.0.1:19443 \
-  --ca "$root/mock/tls.crt" \
+  --ca "$root/public/ca.crt" \
   --version "$RELEASE_VERSION" \
   > "$root/result.json"
 
