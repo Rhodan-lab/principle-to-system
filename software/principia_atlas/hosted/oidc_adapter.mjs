@@ -13,6 +13,11 @@ const KID = /^[A-Za-z0-9._:-]{1,128}$/;
 const BASE64URL = /^[A-Za-z0-9_-]+$/;
 const SUBJECT_PREFIX = /^[A-Za-z0-9._:@+-]{1,40}$/;
 const MAX_TOKEN_BYTES = 16 * 1024;
+const CONFIG_FIELDS = [
+  'contract', 'issuer', 'audience', 'algorithms', 'max_token_ttl_seconds',
+  'clock_skew_seconds', 'subject_claim', 'subject_prefix', 'tenant_claim',
+  'roles_claim', 'tenants', 'roles',
+];
 
 function integer(value, label, minimum, maximum) {
   if (!Number.isSafeInteger(value) || value < minimum || value > maximum) fail(`${label} is invalid`);
@@ -44,18 +49,8 @@ function mapping(value, sourcePattern, targetPattern, label) {
   return output;
 }
 
-export function sealOidcAdapterConfig(unsignedInput) {
-  const unsigned = { ...unsignedInput };
-  delete unsigned.config_id;
-  return verifyOidcAdapterConfig({ ...unsigned, config_id: sha256Hex(canonicalJson(unsigned)) });
-}
-
-export function verifyOidcAdapterConfig(input) {
-  exactKeys(input, [
-    'contract', 'issuer', 'audience', 'algorithms', 'max_token_ttl_seconds',
-    'clock_skew_seconds', 'subject_claim', 'subject_prefix', 'tenant_claim',
-    'roles_claim', 'tenants', 'roles', 'config_id',
-  ], 'OIDC adapter config');
+function normalizeOidcAdapterUnsigned(input) {
+  exactKeys(input, CONFIG_FIELDS, 'OIDC adapter unsigned config');
   if (input.contract !== OIDC_ADAPTER_CONTRACT) fail('OIDC adapter config contract is invalid');
   if (typeof input.issuer !== 'string' || !/^https:\/\/[A-Za-z0-9.-]+(?::\d+)?(?:\/[^\s]*)?$/.test(input.issuer) || input.issuer.endsWith('/')) fail('OIDC issuer is invalid');
   if (typeof input.audience !== 'string' || input.audience.length === 0 || input.audience.length > 256 || /[\u0000-\u001f\u007f]/.test(input.audience)) fail('OIDC audience is invalid');
@@ -67,9 +62,7 @@ export function verifyOidcAdapterConfig(input) {
   string(input.tenant_claim, CLAIM, 'OIDC tenant claim');
   string(input.roles_claim, CLAIM, 'OIDC roles claim');
   if (new Set([input.subject_claim, input.tenant_claim, input.roles_claim]).size !== 3) fail('OIDC claim names must be distinct');
-  const tenants = mapping(input.tenants, EXTERNAL_VALUE, INTERNAL_TENANT, 'OIDC tenant mapping');
-  const roles = mapping(input.roles, EXTERNAL_VALUE, INTERNAL_ROLE, 'OIDC role mapping');
-  const unsigned = {
+  return {
     contract: input.contract,
     issuer: input.issuer,
     audience: input.audience,
@@ -80,9 +73,21 @@ export function verifyOidcAdapterConfig(input) {
     subject_prefix: input.subject_prefix,
     tenant_claim: input.tenant_claim,
     roles_claim: input.roles_claim,
-    tenants,
-    roles,
+    tenants: mapping(input.tenants, EXTERNAL_VALUE, INTERNAL_TENANT, 'OIDC tenant mapping'),
+    roles: mapping(input.roles, EXTERNAL_VALUE, INTERNAL_ROLE, 'OIDC role mapping'),
   };
+}
+
+export function sealOidcAdapterConfig(unsignedInput) {
+  const candidate = { ...unsignedInput };
+  delete candidate.config_id;
+  const normalized = normalizeOidcAdapterUnsigned(candidate);
+  return verifyOidcAdapterConfig({ ...normalized, config_id: sha256Hex(canonicalJson(normalized)) });
+}
+
+export function verifyOidcAdapterConfig(input) {
+  exactKeys(input, [...CONFIG_FIELDS, 'config_id'], 'OIDC adapter config');
+  const unsigned = normalizeOidcAdapterUnsigned(Object.fromEntries(CONFIG_FIELDS.map((field) => [field, input[field]])));
   if (!/^[0-9a-f]{64}$/.test(input.config_id ?? '') || input.config_id !== sha256Hex(canonicalJson(unsigned))) fail('OIDC adapter config seal is invalid');
   return Object.freeze({ ...unsigned, config_id: input.config_id });
 }
