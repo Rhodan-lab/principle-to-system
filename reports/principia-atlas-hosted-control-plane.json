@@ -1,7 +1,7 @@
 {
   "authentication": {
     "development_minting_default": "disabled",
-    "identity_adapter": "external-short-lived-assertion",
+    "identity_adapter": "sealed-policy-oidc-or-external-short-lived-assertion",
     "identity_assertion_replay": "durable-single-use-shared-state",
     "password_database": false,
     "secret_loading": "bounded-regular-files-only",
@@ -21,9 +21,11 @@
   },
   "authority_boundaries": {
     "atlas_knowledge_status": "unchanged",
+    "identity_provider": "external-identity-evidence-only",
     "principia_learning": "unchanged",
     "release_mutation": false,
     "status_inheritance": "prohibited",
+    "tenant_mapping_authority": "sealed-local-policy",
     "tenant_source": "verified-session-only"
   },
   "catalog": {
@@ -43,17 +45,20 @@
     "principia-atlas-hosted-auth-recovery/0.1",
     "principia-atlas-hosted-audit-event/0.1",
     "principia-atlas-hosted-metrics/0.1",
+    "principia-atlas-hosted-oidc-policy/0.1",
+    "principia-atlas-hosted-oidc-principal/0.1",
+    "principia-atlas-hosted-oidc-verifier/0.1",
     "principia-atlas-identity-assertion/0.1",
     "principia-atlas-hosted-session/0.2",
     "principia-atlas-hosted-view/0.1",
-    "principia-atlas-hosted-health/0.3"
+    "principia-atlas-hosted-health/0.4"
   ],
   "deployment": {
     "application_files": "root-owned-read-only",
     "container_user": "10001:10001",
     "image_base": "digest-pinned-node-24.18.0-bookworm-slim",
     "image_reproducibility": "byte-identical-oci-export-with-source-date-epoch",
-    "network_egress": "denied-by-example-policy",
+    "network_egress": "denied-by-default-example-policy; reviewed-exception-required-for-remote-jwks",
     "root_filesystem": "read-only",
     "rolling_shutdown": "sigterm-drain-bounded-force-close",
     "writable_mounts": [
@@ -67,24 +72,44 @@
     "non_loopback_requires_durable_auth_state": true,
     "non_loopback_requires_explicit_opt_in": true,
     "non_loopback_requires_secure_cookie": true,
+    "oidc_remote_jwks_requires_explicit_opt_in": true,
     "tls_termination": "external-reviewed-edge"
   },
   "non_goals": {
     "anonymous_release_serving": false,
     "automated_backup_scheduler": false,
     "billing": false,
+    "browser_oauth_redirect_and_pkce_flow": false,
     "distributed_database": false,
+    "identity_provider_refresh_token_storage": false,
     "learner_data_persistence": false,
     "multi_region_failover": false,
     "organization_administration": false,
-    "production_identity_provider_adapter": false,
     "self_registration": false
   },
   "observability": {
     "audit": "canonical-bounded-json-lines-with-sensitive-field-rejection",
     "metrics": "protected-aggregate-prometheus-without-identity-labels",
     "metrics_endpoint": "/metrics",
+    "oidc_sensitive_values": "external-token-raw-subject-and-key-material-excluded",
     "request_identity": "x-request-id"
+  },
+  "oidc": {
+    "algorithms": [
+      "RS256",
+      "ES256"
+    ],
+    "claim_mapping": "explicit-sealed-tenant-and-role-maps",
+    "endpoint": "/api/auth/oidc",
+    "external_subject": "pairwise-sha256-derived-internal-subject",
+    "jwks_modes": [
+      "static-read-only-file",
+      "explicit-remote-https-with-bounded-cache-and-one-rotation-refresh"
+    ],
+    "replay_identity": "sha256-of-complete-verified-external-token",
+    "runtime_default": "disabled",
+    "token_transport_cli": "stdin-only",
+    "verification": "strict-jose-jwt-jwks-issuer-audience-azp-time-required-claims"
   },
   "release_serving": {
     "archive_parser": "python-build-time-only",
@@ -104,9 +129,9 @@
     "liveness": "/healthz",
     "multi_instance_coordination": "sqlite-shared-state",
     "persistence": "authentication-coordination-and-audit-only",
-    "readiness": "/readyz",
+    "readiness": "/readyz-with-auth-state-and-configured-oidc-provider",
     "store_materialization": "python"
   },
-  "schema": "principia-atlas-hosted-control-plane-boundary/0.4",
-  "status": "implemented-deployment-recovery-authenticated-read-only-runtime-not-production-saas"
+  "schema": "principia-atlas-hosted-control-plane-boundary/0.5",
+  "status": "implemented-production-oidc-deployment-recovery-authenticated-read-only-runtime-not-production-saas"
 }

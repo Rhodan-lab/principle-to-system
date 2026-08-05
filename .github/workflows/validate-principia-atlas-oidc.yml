@@ -1,0 +1,56 @@
+name: Validate Principia Atlas OIDC
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_oidc*.mjs"
+      - ".github/workflows/validate-principia-atlas-oidc.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_oidc*.mjs"
+      - ".github/workflows/validate-principia-atlas-oidc.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Verify OIDC syntax and unsigned policy JSON
+        run: |
+          node --check software/principia_atlas/hosted/oidc.mjs
+          node --check software/principia_atlas/hosted/oidc_cli.mjs
+          node --check software/principia_atlas/hosted/control_plane.mjs
+          node --check software/principia_atlas/hosted/server.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_oidc_cli.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_oidc_runtime.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_oidc_security.mjs
+          python3 -m json.tool software/principia_atlas/hosted/example-oidc-policy.unsigned.json >/dev/null
+
+      - name: Run production OIDC regressions
+        run: |
+          node --test \
+            software/tests/test_product_alpha_principia_atlas_oidc_cli.mjs \
+            software/tests/test_product_alpha_principia_atlas_oidc_runtime.mjs \
+            software/tests/test_product_alpha_principia_atlas_oidc_security.mjs
+
+      - name: Verify repository immutability
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"

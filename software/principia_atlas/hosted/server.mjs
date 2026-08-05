@@ -5,6 +5,12 @@ import { resolve } from 'node:path';
 import { verifyTenantCatalogCompatibility } from './catalog.mjs';
 import { createControlPlaneServer } from './control_plane.mjs';
 import { createAuditLogger, createMetricsRegistry } from './observability.mjs';
+import {
+  createFileOidcJwksProvider,
+  createOidcVerifier,
+  createRemoteOidcJwksProvider,
+  verifyOidcTenantCompatibility,
+} from './oidc.mjs';
 import { readSecretFile } from './secrets.mjs';
 import { authStateInfo, openSqliteAuthState } from './state.mjs';
 import { loadHostedStore } from './store.mjs';
@@ -15,16 +21,19 @@ function parseArgs(argv) {
     host: '127.0.0.1',
     port: 8080,
     allowNetwork: false,
+    oidcRemoteJwks: false,
     instanceId: process.env.HOSTNAME || 'local',
     shutdownTimeoutMs: 10000,
   };
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--allow-network') output.allowNetwork = true;
+    else if (item === '--oidc-remote-jwks') output.oidcRemoteJwks = true;
     else if ([
       '--catalog', '--tenants', '--store', '--state', '--host', '--port',
       '--identity-secret-file', '--session-secret-file', '--metrics-token-file',
       '--audit-log', '--instance-id', '--shutdown-timeout-ms',
+      '--oidc-policy', '--oidc-jwks-file',
     ].includes(item)) {
       const value = argv[++index];
       if (!value) throw new Error(`${item} requires a value`);
@@ -34,6 +43,10 @@ function parseArgs(argv) {
   }
   if (!output.catalog || !output.tenants || !output.store || !output.state || !output.identitySecretFile || !output.sessionSecretFile) {
     throw new Error('--catalog, --tenants, --store, --state, --identity-secret-file, and --session-secret-file are required');
+  }
+  const oidcProviderCount = Number(Boolean(output.oidcJwksFile)) + Number(output.oidcRemoteJwks);
+  if ((output.oidcPolicy && oidcProviderCount !== 1) || (!output.oidcPolicy && oidcProviderCount !== 0)) {
+    throw new Error('OIDC requires --oidc-policy and exactly one of --oidc-jwks-file or --oidc-remote-jwks');
   }
   output.port = Number(output.port);
   output.shutdownTimeoutMs = Number(output.shutdownTimeoutMs);
@@ -59,6 +72,17 @@ export function validateNetworkBoundary(args, config, authState = null) {
 async function loadJson(path, label) {
   const raw = await readFile(resolve(path));
   return parseStrictJson(raw, label);
+}
+
+async function createConfiguredOidcVerifier(args, config) {
+  if (!args.oidcPolicy) return null;
+  const compatible = verifyOidcTenantCompatibility(await loadJson(args.oidcPolicy, 'OIDC policy'), config);
+  const provider = args.oidcJwksFile
+    ? await createFileOidcJwksProvider(args.oidcJwksFile, compatible.policy)
+    : createRemoteOidcJwksProvider(compatible.policy);
+  const verifier = createOidcVerifier({ policy: compatible.policy, provider });
+  await verifier.initialize();
+  return verifier;
 }
 
 function transientSqliteStartup(error) {
@@ -128,7 +152,9 @@ export async function main(argv = process.argv.slice(2)) {
   const metrics = createMetricsRegistry();
   let authState;
   let server;
+  let oidcVerifier;
   try {
+    oidcVerifier = await createConfiguredOidcVerifier(args, verified.config);
     authState = await openAuthStateWithRetry(args.state);
     validateNetworkBoundary(args, verified.config, authState);
     authState.health();
@@ -141,6 +167,7 @@ export async function main(argv = process.argv.slice(2)) {
       identitySecret,
       sessionSecret,
       metricsToken,
+      oidcVerifier,
       audit,
       metrics,
     });
@@ -168,11 +195,13 @@ export async function main(argv = process.argv.slice(2)) {
     port: actualPort,
     release_count: store.releases.size,
     state_backend: stateInfo.kind,
+    oidc_enabled: oidcVerifier !== null,
   });
   console.log(`Principia & Atlas hosted control plane: http://${args.host}:${actualPort}/`);
   console.log(`Hosted store: ${store.manifest.store_id}`);
   console.log(`Auth state: ${stateInfo.kind} durable=${stateInfo.durable} multi-instance=${stateInfo.multi_instance}`);
   console.log(`Metrics: ${args.metricsTokenFile ? 'protected /metrics' : 'disabled'}`);
+  console.log(`OIDC: ${oidcVerifier ? `${oidcVerifier.descriptor.jwks.kind} policy=${oidcVerifier.policy.policy_id}` : 'disabled'}`);
   console.log('Release serving: authenticated immutable content store');
   let signalCount = 0;
   const stop = (signal) => {
@@ -183,7 +212,7 @@ export async function main(argv = process.argv.slice(2)) {
   };
   process.once('SIGINT', () => stop('SIGINT'));
   process.once('SIGTERM', () => stop('SIGTERM'));
-  server.principiaAtlasRuntime = Object.freeze({ args, authState, audit, metrics });
+  server.principiaAtlasRuntime = Object.freeze({ args, authState, audit, metrics, oidcVerifier });
   return server;
 }
 
