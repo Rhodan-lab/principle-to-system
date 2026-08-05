@@ -9,6 +9,7 @@ import {
   SAAS_STATE_CONTRACT,
   publicMembership,
   publicOrganization,
+  integer,
   validateEntitlementDraft,
   validateMembershipDraft,
   validateNow,
@@ -45,6 +46,7 @@ function transaction(database, operation) {
 }
 
 export function openSaasControlPlane(pathInput, { busyTimeoutMs = 5000 } = {}) {
+  integer(busyTimeoutMs, 'SQLite busy timeout', 1);
   const path = databasePath(pathInput);
   const database = new DatabaseSync(path);
   let closed = false;
@@ -69,7 +71,8 @@ export function openSaasControlPlane(pathInput, { busyTimeoutMs = 5000 } = {}) {
         status TEXT NOT NULL CHECK(status IN ('active', 'disabled')),
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL,
-        UNIQUE(organization_id, subject_id)
+        UNIQUE(organization_id, subject_id),
+        UNIQUE(id, organization_id)
       ) STRICT;
       CREATE INDEX IF NOT EXISTS memberships_org ON memberships(organization_id, status, role);
       CREATE TABLE IF NOT EXISTS entitlements (
@@ -85,14 +88,15 @@ export function openSaasControlPlane(pathInput, { busyTimeoutMs = 5000 } = {}) {
       CREATE INDEX IF NOT EXISTS entitlements_active ON entitlements(organization_id, starts_at, ends_at);
       CREATE TABLE IF NOT EXISTS learner_progress (
         organization_id TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-        member_id TEXT NOT NULL REFERENCES memberships(id) ON DELETE CASCADE,
+        member_id TEXT NOT NULL,
         route_id TEXT NOT NULL,
         release_id TEXT NOT NULL,
         stage TEXT NOT NULL CHECK(stage IN ('observe', 'map', 'model', 'diagnose', 'redesign')),
         status TEXT NOT NULL CHECK(status IN ('in_progress', 'completed')),
         revision INTEGER NOT NULL,
         updated_at INTEGER NOT NULL,
-        PRIMARY KEY(organization_id, member_id, route_id, release_id, stage)
+        PRIMARY KEY(organization_id, member_id, route_id, release_id, stage),
+        FOREIGN KEY(member_id, organization_id) REFERENCES memberships(id, organization_id) ON DELETE CASCADE
       ) STRICT;
     `);
     const metadata = database.prepare('SELECT value FROM metadata WHERE key = ?').get('contract');
@@ -161,52 +165,56 @@ export function openSaasControlPlane(pathInput, { busyTimeoutMs = 5000 } = {}) {
       ensureOpen();
       const member = validateMembershipDraft(memberInput);
       const now = validateNow(nowSeconds);
-      const { actor } = requireActor(actorMemberId, member.organizationId, new Set(['owner', 'admin']));
-      if (member.role === 'owner' && actor.role !== 'owner') fail('only an owner may add another owner');
-      if (selectMembershipBySubject.get(member.organizationId, member.subjectId)) fail('membership subject already exists in organization');
-      database.prepare('INSERT INTO memberships(id, organization_id, subject_id, role, status, created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?, ?)')
-        .run(member.id, member.organizationId, member.subjectId, member.role, 'active', now, now);
-      return publicMembership(selectMembership.get(member.id));
+      return transaction(database, () => {
+        const { actor } = requireActor(actorMemberId, member.organizationId, new Set(['owner', 'admin']));
+        if (member.role === 'owner' && actor.role !== 'owner') fail('only an owner may add another owner');
+        if (selectMembershipBySubject.get(member.organizationId, member.subjectId)) fail('membership subject already exists in organization');
+        database.prepare('INSERT INTO memberships(id, organization_id, subject_id, role, status, created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?, ?)')
+          .run(member.id, member.organizationId, member.subjectId, member.role, 'active', now, now);
+        return publicMembership(selectMembership.get(member.id));
+      });
     },
     grantEntitlement(actorMemberId, entitlementInput, nowSeconds) {
       ensureOpen();
       const entitlement = validateEntitlementDraft(entitlementInput);
       const now = validateNow(nowSeconds);
-      requireActor(actorMemberId, entitlement.organizationId, new Set(['owner', 'admin']));
-      database.prepare(`
-        INSERT INTO entitlements(organization_id, route_id, release_id, starts_at, ends_at, created_at, updated_at)
-        VALUES(?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(organization_id, route_id, release_id) DO UPDATE SET
-          starts_at = excluded.starts_at,
-          ends_at = excluded.ends_at,
-          updated_at = excluded.updated_at
-      `).run(
-        entitlement.organizationId,
-        entitlement.routeId,
-        entitlement.releaseId,
-        entitlement.startsAt,
-        entitlement.endsAt,
-        now,
-        now,
-      );
-      return Object.freeze({
-        organization_id: entitlement.organizationId,
-        route_id: entitlement.routeId,
-        release_id: entitlement.releaseId,
-        starts_at: entitlement.startsAt,
-        ends_at: entitlement.endsAt,
+      return transaction(database, () => {
+        requireActor(actorMemberId, entitlement.organizationId, new Set(['owner', 'admin']));
+        database.prepare(`
+          INSERT INTO entitlements(organization_id, route_id, release_id, starts_at, ends_at, created_at, updated_at)
+          VALUES(?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(organization_id, route_id, release_id) DO UPDATE SET
+            starts_at = excluded.starts_at,
+            ends_at = excluded.ends_at,
+            updated_at = excluded.updated_at
+        `).run(
+          entitlement.organizationId,
+          entitlement.routeId,
+          entitlement.releaseId,
+          entitlement.startsAt,
+          entitlement.endsAt,
+          now,
+          now,
+        );
+        return Object.freeze({
+          organization_id: entitlement.organizationId,
+          route_id: entitlement.routeId,
+          release_id: entitlement.releaseId,
+          starts_at: entitlement.startsAt,
+          ends_at: entitlement.endsAt,
+        });
       });
     },
     recordProgress(actorMemberId, progressInput, nowSeconds) {
       ensureOpen();
       const progress = validateProgressDraft(progressInput);
       const now = validateNow(nowSeconds);
-      requireActor(actorMemberId, progress.organizationId);
-      if (actorMemberId !== progress.memberId) fail('members may only update their own learner progress');
-      if (!selectActiveEntitlement.get(progress.organizationId, progress.routeId, progress.releaseId, now, now)) {
-        fail('learner route is not entitled');
-      }
       return transaction(database, () => {
+        requireActor(actorMemberId, progress.organizationId);
+        if (actorMemberId !== progress.memberId) fail('members may only update their own learner progress');
+        if (!selectActiveEntitlement.get(progress.organizationId, progress.routeId, progress.releaseId, now, now)) {
+          fail('learner route is not entitled');
+        }
         const existing = selectOneProgress.get(
           progress.organizationId,
           progress.memberId,
