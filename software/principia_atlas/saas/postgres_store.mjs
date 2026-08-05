@@ -75,13 +75,18 @@ async function withReadSnapshot(pool, operation) {
   }
 }
 
-async function requireActor(client, actorMemberId, organizationId = null, allowedRoles = null) {
+async function requireActor(
+  client,
+  actorMemberId,
+  { organizationId = null, allowedRoles = null, lock = true } = {},
+) {
   const parameters = [actorMemberId];
   let organizationClause = '';
   if (organizationId !== null) {
     parameters.push(organizationId);
     organizationClause = 'AND m.organization_id = $2';
   }
+  const lockClause = lock ? 'FOR SHARE OF m, o' : '';
   const result = await client.query(`
     SELECT
       m.id, m.organization_id, m.role, m.status, m.created_at, m.updated_at,
@@ -90,7 +95,7 @@ async function requireActor(client, actorMemberId, organizationId = null, allowe
     FROM principia_atlas_saas_memberships m
     JOIN principia_atlas_saas_organizations o ON o.id = m.organization_id
     WHERE m.id = $1 ${organizationClause}
-    FOR SHARE OF m, o
+    ${lockClause}
   `, parameters);
   if (result.rowCount !== 1 || result.rows[0].status !== 'active') {
     fail('SaaS actor is not an active organization member');
@@ -186,7 +191,10 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
       const now = validateNow(nowSeconds);
       try {
         return await withSerializableTransaction(pool, async (client) => {
-          const actor = await requireActor(client, actorMemberId, member.organizationId, ADMIN_ROLES);
+          const actor = await requireActor(client, actorMemberId, {
+            organizationId: member.organizationId,
+            allowedRoles: ADMIN_ROLES,
+          });
           if (member.role === 'owner' && actor.role !== 'owner') fail('only an owner may add another owner');
           const inserted = await client.query(`
             INSERT INTO principia_atlas_saas_memberships(
@@ -206,7 +214,10 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
       const entitlement = validateEntitlementDraft(entitlementInput);
       const now = validateNow(nowSeconds);
       return withSerializableTransaction(pool, async (client) => {
-        await requireActor(client, actorMemberId, entitlement.organizationId, ADMIN_ROLES);
+        await requireActor(client, actorMemberId, {
+          organizationId: entitlement.organizationId,
+          allowedRoles: ADMIN_ROLES,
+        });
         const updated = await client.query(`
           INSERT INTO principia_atlas_saas_entitlements(
             organization_id, route_id, release_id, starts_at, ends_at, created_at, updated_at
@@ -240,7 +251,7 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
       const now = validateNow(nowSeconds);
       if (actorMemberId !== progress.memberId) fail('members may only update their own learner progress');
       return withSerializableTransaction(pool, async (client) => {
-        await requireActor(client, actorMemberId, progress.organizationId);
+        await requireActor(client, actorMemberId, { organizationId: progress.organizationId });
         const entitlement = await client.query(`
           SELECT 1 AS allowed
           FROM principia_atlas_saas_entitlements
@@ -310,7 +321,7 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
       ensureOpen();
       const now = validateNow(nowSeconds);
       return withReadSnapshot(pool, async (client) => {
-        const actor = await requireActor(client, actorMemberId);
+        const actor = await requireActor(client, actorMemberId, { lock: false });
         const entitlements = await client.query(`
           SELECT organization_id, route_id, release_id, starts_at, ends_at
           FROM principia_atlas_saas_entitlements
