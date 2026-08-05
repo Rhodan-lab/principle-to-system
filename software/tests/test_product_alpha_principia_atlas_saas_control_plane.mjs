@@ -144,12 +144,37 @@ try {
     /not entitled/,
   );
 
+  const replica = openSaasControlPlane(statePath);
+  const mapProgress = state.recordProgress(learner.id, {
+    organization_id: org.id,
+    member_id: learner.id,
+    route_id: 'refrigerator-v1',
+    release_id: releaseId,
+    stage: 'map',
+    status: 'in_progress',
+    expected_revision: 0,
+  }, now + 5);
+  assert.equal(mapProgress.revision, 1);
+  assert.throws(
+    () => replica.recordProgress(learner.id, {
+      organization_id: org.id,
+      member_id: learner.id,
+      route_id: 'refrigerator-v1',
+      release_id: releaseId,
+      stage: 'map',
+      status: 'completed',
+      expected_revision: 0,
+    }, now + 5),
+    /revision conflict/,
+  );
+  replica.close();
+
   let dashboard = state.dashboard(learner.id, now + 5);
   assert.equal(dashboard.contract, 'principia-atlas-saas-dashboard/0.1');
   assert.equal(dashboard.entitlements.length, 1);
   assert.equal(dashboard.entitlements[0].route_id, 'refrigerator-v1');
   assert.equal(JSON.stringify(dashboard).includes(secondOrg.id), false);
-  assert.equal(dashboard.progress.length, 1);
+  assert.equal(dashboard.progress.length, 2);
   assert.equal(JSON.stringify(dashboard).includes('subject_id'), false);
   assert.equal(JSON.stringify(dashboard).includes(learner.subject_id), false);
   assert.equal(state.health().production_ready, false);
