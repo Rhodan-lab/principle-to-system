@@ -1,10 +1,12 @@
 {
-  "schema": "principia-atlas-browser-oidc-edge-boundary/0.1",
-  "status": "implemented-browser-authorization-code-pkce-edge",
+  "schema": "principia-atlas-browser-oidc-edge-boundary/0.2",
+  "status": "implemented-browser-oidc-and-bounded-saas-edge",
   "contracts": [
     "principia-atlas-browser-oidc/0.1",
     "principia-atlas-browser-oidc-flow/0.1",
-    "principia-atlas-browser-oidc-edge/0.1"
+    "principia-atlas-browser-oidc-edge/0.2",
+    "principia-atlas-saas-hosted-runtime/0.1",
+    "principia-atlas-saas-application-api/0.1"
   ],
   "flow": {
     "authorization": "code-with-pkce-s256",
@@ -22,10 +24,26 @@
       "/api/auth/exchange",
       "/metrics"
     ],
-    "request_bodies": "rejected",
-    "origin_policy": "same-public-origin",
+    "request_bodies": {
+      "default": "rejected",
+      "permitted_route": "PUT /api/saas/progress/:route/:stage",
+      "maximum_bytes": 16384,
+      "forwarded_headers": [
+        "content-type",
+        "idempotency-key",
+        "x-csrf-token"
+      ]
+    },
+    "origin_policy": "exact-same-public-origin-for-all-mutations",
     "upstream": "exact-loopback-origin-only",
     "health": "/edge/healthz-bounded-metadata-only"
+  },
+  "runtime_boundary": {
+    "session_verification": "hosted-session-secret-plus-shared-auth-state",
+    "tenant_resolution": "hosted-tenant-plus-pairwise-subject",
+    "csrf": "session-bound-hmac",
+    "idempotency": "database-transactional",
+    "release_core": "separate-loopback-read-only-runtime"
   },
   "authority_boundaries": {
     "identity_provider": "external-identity-evidence-only",
@@ -40,7 +58,7 @@
     "self_registration": false,
     "refresh_token_storage": false,
     "browser_token_storage": false,
-    "learner_data_persistence": false,
+    "edge_learner_data_storage": false,
     "organization_administration": false,
     "billing": false,
     "tls_termination": false,
