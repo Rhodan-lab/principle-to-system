@@ -1,0 +1,66 @@
+name: Validate Principia Atlas Browser OIDC Edge
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/hosted/browser_*.mjs"
+      - "software/principia_atlas/hosted/example-browser-oidc.unsigned.json"
+      - "software/principia_atlas/hosted/BROWSER_EDGE.md"
+      - "software/tests/test_product_alpha_principia_atlas_browser_*.mjs"
+      - "reports/principia-atlas-browser-oidc-edge.*"
+      - ".github/workflows/validate-principia-atlas-browser-edge.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "software/principia_atlas/hosted/browser_*.mjs"
+      - "software/principia_atlas/hosted/example-browser-oidc.unsigned.json"
+      - "software/principia_atlas/hosted/BROWSER_EDGE.md"
+      - "software/tests/test_product_alpha_principia_atlas_browser_*.mjs"
+      - "reports/principia-atlas-browser-oidc-edge.*"
+      - ".github/workflows/validate-principia-atlas-browser-edge.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Verify syntax and example configuration
+        run: |
+          node --check software/principia_atlas/hosted/browser_oidc.mjs
+          node --check software/principia_atlas/hosted/browser_edge.mjs
+          node --check software/principia_atlas/hosted/browser_edge_cli.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_browser_oidc.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_browser_edge.mjs
+          python3 -m json.tool software/principia_atlas/hosted/example-browser-oidc.unsigned.json >/dev/null
+
+      - name: Seal and verify browser OIDC configuration
+        run: |
+          node software/principia_atlas/hosted/browser_edge_cli.mjs seal \
+            --input software/principia_atlas/hosted/example-browser-oidc.unsigned.json \
+            --output /tmp/browser-oidc.json
+          node software/principia_atlas/hosted/browser_edge_cli.mjs verify \
+            --config /tmp/browser-oidc.json
+
+      - name: Run browser OIDC and trusted-edge regressions
+        run: |
+          node --test \
+            software/tests/test_product_alpha_principia_atlas_browser_oidc.mjs \
+            software/tests/test_product_alpha_principia_atlas_browser_edge.mjs
+
+      - name: Verify repository immutability
+        run: test -z "$(git status --porcelain=v1 --untracked-files=all)"
