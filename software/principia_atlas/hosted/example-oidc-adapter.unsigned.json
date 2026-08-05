@@ -1,0 +1,21 @@
+{
+  "contract": "principia-atlas-oidc-adapter/0.1",
+  "issuer": "https://identity.example.test",
+  "audience": "principia-atlas-external",
+  "algorithms": [
+    "RS256"
+  ],
+  "max_token_ttl_seconds": 3600,
+  "clock_skew_seconds": 30,
+  "subject_claim": "sub",
+  "subject_prefix": "oidc:",
+  "tenant_claim": "organization",
+  "roles_claim": "groups",
+  "tenants": {
+    "external-school": "local-preview"
+  },
+  "roles": {
+    "students": "learner",
+    "teachers": "facilitator"
+  }
+}
