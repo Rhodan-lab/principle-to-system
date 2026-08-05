@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, statSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -27,6 +27,17 @@ const learner = {
   role: 'learner',
 };
 const releaseId = 'principia-atlas-release:0.2.0-beta.1';
+const secondOrg = {
+  id: 'org_01SECONDSAASFOUNDATION',
+  slug: 'atlas-school',
+  display_name: 'Atlas School',
+};
+const secondOwner = {
+  id: 'mem_01SECONDSAASOWNER000',
+  organization_id: secondOrg.id,
+  subject_id: `oidc:${'C'.repeat(43)}`,
+  role: 'owner',
+};
 
 try {
   let state = openSaasControlPlane(statePath);
@@ -37,6 +48,17 @@ try {
   const added = state.addMembership(owner.id, learner, now + 1);
   assert.equal(added.role, 'learner');
   assert.equal(JSON.stringify(added).includes(learner.subject_id), false);
+
+  state.bootstrapOrganization(secondOrg, secondOwner, now + 1);
+  assert.throws(
+    () => state.addMembership(owner.id, {
+      id: 'mem_01CROSSTENANTLEARNER0',
+      organization_id: secondOrg.id,
+      subject_id: `oidc:${'D'.repeat(43)}`,
+      role: 'learner',
+    }, now + 1),
+    /not an active organization member/,
+  );
 
   assert.throws(
     () => state.grantEntitlement(learner.id, {
@@ -52,6 +74,21 @@ try {
   state.grantEntitlement(owner.id, {
     organization_id: org.id,
     route_id: 'refrigerator-v1',
+    release_id: releaseId,
+    starts_at: now,
+    ends_at: null,
+  }, now + 2);
+
+  state.grantEntitlement(owner.id, {
+    organization_id: org.id,
+    route_id: 'distributed-information-v1',
+    release_id: releaseId,
+    starts_at: now,
+    ends_at: now + 4,
+  }, now + 2);
+  state.grantEntitlement(secondOwner.id, {
+    organization_id: secondOrg.id,
+    route_id: 'distributed-information-v1',
     release_id: releaseId,
     starts_at: now,
     ends_at: null,
@@ -110,10 +147,13 @@ try {
   let dashboard = state.dashboard(learner.id, now + 5);
   assert.equal(dashboard.contract, 'principia-atlas-saas-dashboard/0.1');
   assert.equal(dashboard.entitlements.length, 1);
+  assert.equal(dashboard.entitlements[0].route_id, 'refrigerator-v1');
+  assert.equal(JSON.stringify(dashboard).includes(secondOrg.id), false);
   assert.equal(dashboard.progress.length, 1);
   assert.equal(JSON.stringify(dashboard).includes('subject_id'), false);
   assert.equal(JSON.stringify(dashboard).includes(learner.subject_id), false);
   assert.equal(state.health().production_ready, false);
+  assert.equal(statSync(statePath).mode & 0o777, 0o600);
   state.close();
 
   state = openSaasControlPlane(statePath);
@@ -121,6 +161,10 @@ try {
   assert.equal(dashboard.progress[0].revision, 1);
   assert.equal(dashboard.organization.slug, 'principia-lab');
   state.close();
+
+  const symlinkPath = join(root, 'state', 'linked.sqlite');
+  symlinkSync(statePath, symlinkPath);
+  assert.throws(() => openSaasControlPlane(symlinkPath), /regular file/);
 
   const cliState = join(root, 'state', 'cli.sqlite');
   let cliOutput = '';
