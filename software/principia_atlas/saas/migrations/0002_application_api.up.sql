@@ -49,3 +49,8 @@ CREATE TABLE principia_atlas_saas_idempotency (
 
 CREATE INDEX principia_atlas_saas_idempotency_expiry
   ON principia_atlas_saas_idempotency(expires_at);
+
+UPDATE principia_atlas_saas_metadata
+SET value = 'principia-atlas-saas-state/0.2'
+WHERE key = 'contract'
+  AND value = 'principia-atlas-saas-state/0.1';
