@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import { main as runSaasCli } from '../principia_atlas/saas/cli.mjs';
 import { openSaasControlPlane } from '../principia_atlas/saas/store.mjs';
 
 const root = mkdtempSync(join(tmpdir(), 'principia-atlas-saas-'));
@@ -120,6 +121,22 @@ try {
   assert.equal(dashboard.progress[0].revision, 1);
   assert.equal(dashboard.organization.slug, 'principia-lab');
   state.close();
+
+  const cliState = join(root, 'state', 'cli.sqlite');
+  let cliOutput = '';
+  runSaasCli(
+    ['bootstrap', '--state', cliState, '--now', String(now)],
+    () => Buffer.from(JSON.stringify({ organization: org, owner })),
+    (value) => { cliOutput += value; },
+  );
+  assert.equal(cliOutput.includes(owner.subject_id), false);
+  cliOutput = '';
+  runSaasCli(
+    ['health', '--state', cliState, '--now', String(now + 1)],
+    () => Buffer.alloc(0),
+    (value) => { cliOutput += value; },
+  );
+  assert.match(cliOutput, /sqlite-reference/);
 
   console.log('Principia Atlas SaaS control-plane kernel tests passed');
 } finally {
