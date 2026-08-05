@@ -1,0 +1,45 @@
+name: Validate Principia Atlas SaaS
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/saas/**"
+      - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
+      - ".github/workflows/validate-principia-atlas-saas.yml"
+  push:
+    branches: [main]
+    paths:
+      - "software/principia_atlas/saas/**"
+      - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
+      - ".github/workflows/validate-principia-atlas-saas.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Verify SaaS JavaScript syntax
+        run: |
+          for file in software/principia_atlas/saas/*.mjs; do
+            node --check "$file"
+          done
+
+      - name: Run SaaS control-plane regressions
+        run: node --test software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs
+
+      - name: Verify clean repository
+        run: git diff --exit-code
