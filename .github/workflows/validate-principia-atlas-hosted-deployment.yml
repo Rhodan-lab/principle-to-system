@@ -1,0 +1,251 @@
+name: Validate Principia Atlas Hosted Deployment
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs"
+      - ".github/workflows/validate-principia-atlas-hosted-deployment.yml"
+  push:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs"
+      - ".github/workflows/validate-principia-atlas-hosted-deployment.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
+  RELEASE_VERSION: 0.1.0-alpha.1
+  PROMOTION_TAG: principia-atlas-v0.1.0-alpha.1
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out pinned Atlas
+        uses: actions/checkout@v4
+        with:
+          repository: Rhodan-lab/Atlas
+          ref: ${{ env.ATLAS_COMMIT }}
+          path: atlas
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: atlas/tools/foundation-validator/requirements.txt
+
+      - name: Install pinned Atlas dependencies
+        run: python3 -m pip install -r atlas/tools/foundation-validator/requirements.txt
+
+      - name: Isolate Atlas from Principia worktree
+        run: mv atlas "$RUNNER_TEMP/atlas"
+
+      - name: Verify hosted operational regressions
+        run: |
+          for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
+          node --check software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
+          node --test software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
+
+      - name: Build actual release and hosted store
+        run: |
+          python3 software/principia_atlas/release.py build \
+            --atlas-repo "$RUNNER_TEMP/atlas" \
+            --route distributed-information \
+            --version "$RELEASE_VERSION" \
+            --expected-principia-commit "$(git rev-parse HEAD)" \
+            --expected-atlas-commit "$ATLAS_COMMIT" \
+            --product-output "$RUNNER_TEMP/principia-atlas-product" \
+            --output "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip"
+          mkdir -p \
+            "$RUNNER_TEMP/promotion-history" \
+            "$RUNNER_TEMP/promotion" \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG" \
+            "$RUNNER_TEMP/hosted/archives"
+          : > "$RUNNER_TEMP/expected-release-tags.txt"
+          python3 software/principia_atlas/promotion.py prepare \
+            --archive "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            --tag "$PROMOTION_TAG" \
+            --history-dir "$RUNNER_TEMP/promotion-history" \
+            --expected-tags "$RUNNER_TEMP/expected-release-tags.txt" \
+            --output-dir "$RUNNER_TEMP/promotion"
+          cp "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG/principia-atlas-promotion.json"
+          cp "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip.sha256" \
+            "$RUNNER_TEMP/hosted/archives/"
+          python3 software/principia_atlas/hosted_catalog.py build \
+            --promotions "$RUNNER_TEMP/hosted-promotion-history" \
+            --output "$RUNNER_TEMP/hosted/catalog.json"
+          python3 software/principia_atlas/hosted_store.py build \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json" \
+            --archives "$RUNNER_TEMP/hosted/archives" \
+            --output "$RUNNER_TEMP/hosted/store"
+          node --input-type=module <<'JS'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { sealTenantConfig } from './software/principia_atlas/hosted/catalog.mjs';
+          const root = process.env.RUNNER_TEMP;
+          const unsigned = JSON.parse(await readFile('software/principia_atlas/hosted/example-tenants.unsigned.json', 'utf8'));
+          unsigned.session.secure = true;
+          await writeFile(`${root}/hosted/tenants.json`, JSON.stringify(sealTenantConfig(unsigned), null, 2) + '\n');
+          JS
+
+      - name: Build reproducible non-root image
+        run: |
+          export SOURCE_DATE_EPOCH=0
+          docker build --no-cache \
+            --build-arg SOURCE_DATE_EPOCH=0 \
+            --file software/principia_atlas/hosted/Containerfile \
+            --tag principia-atlas-hosted:first .
+          first_id="$(docker image inspect principia-atlas-hosted:first --format '{{.Id}}')"
+          docker build --no-cache \
+            --build-arg SOURCE_DATE_EPOCH=0 \
+            --file software/principia_atlas/hosted/Containerfile \
+            --tag principia-atlas-hosted:second .
+          second_id="$(docker image inspect principia-atlas-hosted:second --format '{{.Id}}')"
+          test "$first_id" = "$second_id"
+          test "$(docker image inspect principia-atlas-hosted:first --format '{{.Config.User}}')" = "10001:10001"
+          docker image inspect principia-atlas-hosted:first > "$RUNNER_TEMP/hosted/image-inspect.json"
+
+      - name: Prepare runtime mounts and secrets
+        run: |
+          mkdir -p \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/backups"
+          printf '%s' 'ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/identity"
+          printf '%s' 'ci-session-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/session"
+          printf '%s' 'ci-metrics-token-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/metrics"
+          chmod 0400 "$RUNNER_TEMP/hosted/secrets/"*
+          sudo chown -R 10001:10001 \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/backups"
+
+      - name: Run two read-only hosted instances
+        run: |
+          set -euo pipefail
+          cleanup() {
+            docker rm -f principia-atlas-a principia-atlas-b >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          common=(
+            --read-only
+            --tmpfs /tmp:rw,noexec,nosuid,nodev,size=32m
+            --cap-drop ALL
+            --security-opt no-new-privileges:true
+            --mount type=bind,src="$RUNNER_TEMP/hosted/catalog.json",dst=/config/catalog.json,readonly
+            --mount type=bind,src="$RUNNER_TEMP/hosted/tenants.json",dst=/config/tenants.json,readonly
+            --mount type=bind,src="$RUNNER_TEMP/hosted/store",dst=/store,readonly
+            --mount type=bind,src="$RUNNER_TEMP/hosted/state",dst=/var/lib/principia-atlas
+            --mount type=bind,src="$RUNNER_TEMP/hosted/audit",dst=/var/log/principia-atlas
+            --mount type=bind,src="$RUNNER_TEMP/hosted/secrets",dst=/run/secrets,readonly
+          )
+          docker run -d --name principia-atlas-a -p 18081:8080 "${common[@]}" \
+            principia-atlas-hosted:first --instance-id instance-a
+          docker run -d --name principia-atlas-b -p 18082:8080 "${common[@]}" \
+            principia-atlas-hosted:first --instance-id instance-b
+          for port in 18081 18082; do
+            for attempt in $(seq 1 30); do
+              curl --fail --silent "http://127.0.0.1:$port/readyz" >/dev/null && break
+              sleep 1
+            done
+            curl --fail --silent "http://127.0.0.1:$port/readyz" >/dev/null
+          done
+          export PRINCIPIA_ATLAS_DEV_AUTH=1
+          export PRINCIPIA_ATLAS_IDENTITY_SECRET='ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz'
+          assertion="$(node software/principia_atlas/hosted/dev_identity.mjs \
+            --tenants "$RUNNER_TEMP/hosted/tenants.json" \
+            --subject ci-learner \
+            --tenant local-preview \
+            --roles learner)"
+          curl --fail --silent --dump-header "$RUNNER_TEMP/hosted/exchange.headers" \
+            --request POST \
+            --header "Authorization: Bearer $assertion" \
+            --header "Origin: http://127.0.0.1:18081" \
+            http://127.0.0.1:18081/api/auth/exchange \
+            > "$RUNNER_TEMP/hosted/exchange.json"
+          cookie="$(awk 'BEGIN{IGNORECASE=1} /^set-cookie:/{print $2}' "$RUNNER_TEMP/hosted/exchange.headers" | tr -d '\r' | cut -d';' -f1)"
+          test -n "$cookie"
+          curl --fail --silent \
+            --header "Cookie: $cookie" \
+            "http://127.0.0.1:18082/app/$RELEASE_VERSION/" \
+            > "$RUNNER_TEMP/hosted/release.html"
+          curl --fail --silent \
+            --header 'Authorization: Bearer ci-metrics-token-0123456789-abcdefghijklmnopqrstuvwxyz' \
+            http://127.0.0.1:18082/metrics \
+            > "$RUNNER_TEMP/hosted/metrics.txt"
+          grep -q '^principia_atlas_up 1$' "$RUNNER_TEMP/hosted/metrics.txt"
+          ! grep -Eiq 'tenant|subject|session|assertion' "$RUNNER_TEMP/hosted/metrics.txt"
+          docker stop --time 25 principia-atlas-a >/dev/null
+          curl --fail --silent \
+            --header "Cookie: $cookie" \
+            "http://127.0.0.1:18082/api/session" >/dev/null
+          node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
+            --state "$RUNNER_TEMP/hosted/state/auth-state.sqlite" \
+            --output "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
+            > "$RUNNER_TEMP/hosted/backup-result.json"
+          node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
+            --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
+            > "$RUNNER_TEMP/hosted/backup-verify.json"
+          docker stop --time 25 principia-atlas-b >/dev/null
+          node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
+            --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
+            --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
+            --confirm-offline ALL_INSTANCES_STOPPED \
+            > "$RUNNER_TEMP/hosted/restore-result.json"
+          node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
+            --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
+            > "$RUNNER_TEMP/hosted/restored-integrity.json"
+          test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+
+      - name: Remove sensitive runtime state
+        if: always()
+        run: |
+          docker rm -f principia-atlas-a principia-atlas-b >/dev/null 2>&1 || true
+          rm -rf \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/backups" \
+            "$RUNNER_TEMP/hosted/exchange.headers" \
+            "$RUNNER_TEMP/hosted/exchange.json"
+
+      - name: Verify source checkout immutability
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/atlas" status --porcelain=v1 --untracked-files=all)"
+
+      - name: Upload sanitized deployment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: principia-atlas-hosted-deployment-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/hosted/image-inspect.json
+            ${{ runner.temp }}/hosted/metrics.txt
+            ${{ runner.temp }}/hosted/backup-result.json
+            ${{ runner.temp }}/hosted/backup-verify.json
+            ${{ runner.temp }}/hosted/restore-result.json
+            ${{ runner.temp }}/hosted/restored-integrity.json
+          if-no-files-found: error
+          retention-days: 14
