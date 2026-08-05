@@ -1,0 +1,57 @@
+{
+  "schema": "principia-atlas-saas-process-readiness/0.1",
+  "status": "implemented-contract-not-packaged",
+  "contracts": {
+    "process": "principia-atlas-saas-process/0.1",
+    "runtime": "principia-atlas-saas-hosted-runtime/0.2",
+    "application_api": "principia-atlas-saas-application-api/0.1",
+    "control_plane": "principia-atlas-saas-control-plane/0.1",
+    "migration_ledger": "principia-atlas-saas-postgres-migrations/0.1"
+  },
+  "startup": {
+    "migration_before_listen": true,
+    "database_url_in_argv": false,
+    "database_url_in_environment": false,
+    "session_secret_file": true,
+    "csrf_secret_file": true,
+    "postgres_url_secret_file": true,
+    "postgres_tls_mode": "verify-full",
+    "postgres_driver": "read-only-sha256-bound-module",
+    "runtime_bind": "loopback-only"
+  },
+  "readiness": {
+    "liveness_path": "/saas/healthz",
+    "readiness_path": "/saas/readyz",
+    "auth_state_required": true,
+    "postgres_migration_and_control_plane_required": true,
+    "immutable_core_ready_required": true,
+    "public_proxy_visibility": false,
+    "dependency_details_exposed": false
+  },
+  "shutdown": {
+    "stop_accepting": true,
+    "bounded_socket_drain": true,
+    "forced_socket_close_after_timeout": true,
+    "csrf_secret_overwrite": true,
+    "control_plane_close": true,
+    "postgres_pool_end": true,
+    "auth_state_close": true,
+    "continue_after_cleanup_error": true
+  },
+  "scaling": {
+    "saas_state": "postgresql-multi-instance",
+    "hosted_auth_state": "sqlite-durable",
+    "general_availability_horizontal_scaling": false,
+    "single_pod_beta_candidate": true
+  },
+  "remaining": {
+    "locked_postgres_dependency_layer": false,
+    "reproducible_saas_image": false,
+    "three_process_pod_manifest": false,
+    "database_network_policy": false,
+    "backup_restore_drill": false,
+    "public_domain": false,
+    "public_beta": false,
+    "production_ready": false
+  }
+}
