@@ -6,6 +6,8 @@ on:
       - "software/principia_atlas/saas/**"
       - "software/principia_atlas/hosted/browser_edge.mjs"
       - "software/principia_atlas/hosted/saas_runtime.mjs"
+      - "software/principia_atlas/hosted/saas_process.mjs"
+      - "software/principia_atlas/hosted/saas_runtime_cli.mjs"
       - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
       - ".github/workflows/validate-principia-atlas-saas.yml"
   push:
@@ -14,6 +16,8 @@ on:
       - "software/principia_atlas/saas/**"
       - "software/principia_atlas/hosted/browser_edge.mjs"
       - "software/principia_atlas/hosted/saas_runtime.mjs"
+      - "software/principia_atlas/hosted/saas_process.mjs"
+      - "software/principia_atlas/hosted/saas_runtime_cli.mjs"
       - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
       - ".github/workflows/validate-principia-atlas-saas.yml"
   workflow_dispatch:
@@ -69,19 +73,25 @@ jobs:
           done
           node --check software/principia_atlas/hosted/browser_edge.mjs
           node --check software/principia_atlas/hosted/saas_runtime.mjs
+          node --check software/principia_atlas/hosted/saas_process.mjs
+          node --check software/principia_atlas/hosted/saas_runtime_cli.mjs
 
       - name: Run local SaaS, API, and runtime-edge regressions
         run: |
           node --test \
             software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs \
             software/tests/test_product_alpha_principia_atlas_saas_application_api.mjs \
-            software/tests/test_product_alpha_principia_atlas_saas_runtime_edge.mjs
+            software/tests/test_product_alpha_principia_atlas_saas_runtime_edge.mjs \
+            software/tests/test_product_alpha_principia_atlas_saas_edge_origin.mjs
 
-      - name: Run PostgreSQL migration and semantic parity regressions
+      - name: Run PostgreSQL persistence and process regressions
         env:
           DATABASE_URL: postgres://principia:principia-ci-only@127.0.0.1:5432/principia_atlas_saas
           PG_CLIENT_ROOT: ${{ runner.temp }}/pg-client
-        run: node --test software/tests/test_product_alpha_principia_atlas_saas_postgres.mjs
+        run: |
+          node --test \
+            software/tests/test_product_alpha_principia_atlas_saas_postgres.mjs \
+            software/tests/test_product_alpha_principia_atlas_saas_process.mjs
 
       - name: Verify clean repository
         run: git diff --exit-code
