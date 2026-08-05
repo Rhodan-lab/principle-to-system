@@ -8,7 +8,9 @@ const ASSERTION_ID = /^[A-Za-z0-9_-]{16,128}$/;
 const SESSION_ID = /^[A-Za-z0-9_-]{24,128}$/;
 const SUBJECT = /^[A-Za-z0-9._:@+-]{1,200}$/;
 const TENANT_ID = /^[a-z][a-z0-9-]{1,62}$/;
+const REVOCATION_EVENT_ID = /^[A-Za-z0-9._:@+-]{16,200}$/;
 const MAX_SCOPE_BYTES = 512;
+const MAX_REVOCATION_RECEIPT_TTL_SECONDS = 365 * 24 * 60 * 60;
 
 function integer(value, label, minimum = 0) {
   if (!Number.isSafeInteger(value) || value < minimum) fail(`${label} is invalid`);
@@ -52,6 +54,26 @@ function validateExchange(input, nowSeconds) {
   return { assertionId: input.assertionId, assertionExpiresAt: input.assertionExpiresAt, session };
 }
 
+function validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+  identifier(eventId, REVOCATION_EVENT_ID, 'revocation event identifier');
+  identifier(tenantId, TENANT_ID, 'session tenant');
+  identifier(subject, SUBJECT, 'session subject');
+  integer(nowSeconds, 'current time');
+  integer(receiptExpiresAt, 'revocation receipt expiry');
+  if (receiptExpiresAt <= nowSeconds || receiptExpiresAt - nowSeconds > MAX_REVOCATION_RECEIPT_TTL_SECONDS) fail('revocation receipt TTL is invalid');
+  return { eventId, tenantId, subject, nowSeconds, receiptExpiresAt };
+}
+
+function revocationReceipt(value, replayed) {
+  return Object.freeze({
+    event_id: value.eventId,
+    replayed,
+    revoked_sessions: value.revokedSessions,
+    created_at: value.createdAt,
+    expires_at: value.expiresAt,
+  });
+}
+
 function validateRate(scope, windowStart, windowSeconds, limit, nowSeconds) {
   if (typeof scope !== 'string' || scope.length === 0 || Buffer.byteLength(scope) > MAX_SCOPE_BYTES || /[\u0000-\u001f\u007f]/.test(scope)) fail('rate-limit scope is invalid');
   integer(windowStart, 'rate-limit window');
@@ -67,7 +89,7 @@ function descriptor(kind, durable, multiInstance) {
 }
 
 function interfaceCheck(state) {
-  const methods = ['commitExchange', 'validateSession', 'revokeSession', 'revokeSubject', 'consumeRateLimit', 'prune', 'stats', 'health', 'close'];
+  const methods = ['commitExchange', 'validateSession', 'revokeSession', 'revokeSubject', 'revokeSubjectOnce', 'consumeRateLimit', 'prune', 'stats', 'health', 'close'];
   if (!state || typeof state !== 'object' || !state.descriptor) fail('auth state backend is invalid');
   for (const method of methods) if (typeof state[method] !== 'function') fail('auth state backend is invalid');
   const value = state.descriptor;
@@ -82,6 +104,7 @@ export function authStateInfo(state) {
 export function createMemoryAuthState() {
   const assertions = new Map();
   const sessions = new Map();
+  const revocationReceipts = new Map();
   const rates = new Map();
   let closed = false;
   const ensureOpen = () => { if (closed) fail('auth state backend is closed'); };
@@ -89,6 +112,7 @@ export function createMemoryAuthState() {
     ensureOpen(); integer(nowSeconds, 'current time');
     for (const [key, expiry] of assertions) if (expiry <= nowSeconds) assertions.delete(key);
     for (const [key, value] of sessions) if (value.expiresAt <= nowSeconds) sessions.delete(key);
+    for (const [key, value] of revocationReceipts) if (value.expiresAt <= nowSeconds) revocationReceipts.delete(key);
     for (const [key, value] of rates) if (value.expiresAt <= nowSeconds) rates.delete(key);
   };
   const state = {
@@ -124,6 +148,33 @@ export function createMemoryAuthState() {
       }
       return count;
     },
+    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+      ensureOpen();
+      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt);
+      prune(nowSeconds);
+      const existing = revocationReceipts.get(value.eventId);
+      if (existing) {
+        if (existing.tenantId !== value.tenantId || existing.subject !== value.subject) fail('revocation event target mismatch');
+        return revocationReceipt(existing, true);
+      }
+      let count = 0;
+      for (const stored of sessions.values()) {
+        if (stored.tenantId === value.tenantId && stored.subject === value.subject && stored.revokedAt === null) {
+          stored.revokedAt = value.nowSeconds;
+          count += 1;
+        }
+      }
+      const stored = {
+        eventId: value.eventId,
+        tenantId: value.tenantId,
+        subject: value.subject,
+        revokedSessions: count,
+        createdAt: value.nowSeconds,
+        expiresAt: value.receiptExpiresAt,
+      };
+      revocationReceipts.set(value.eventId, stored);
+      return revocationReceipt(stored, false);
+    },
     consumeRateLimit(scope, windowStart, windowSeconds, limit, nowSeconds) {
       ensureOpen(); const value = validateRate(scope, windowStart, windowSeconds, limit, nowSeconds); prune(nowSeconds);
       const key = `${value.scope}\u0000${value.windowStart}`;
@@ -144,7 +195,7 @@ export function createMemoryAuthState() {
       return Object.freeze({ contract: AUTH_STATE_CONTRACT, backend: 'memory', assertions: assertions.size, active_sessions: active, revoked_sessions: revoked, rate_limit_buckets: rates.size });
     },
     health() { ensureOpen(); return Object.freeze({ status: 'ok', ...state.descriptor }); },
-    close() { closed = true; assertions.clear(); sessions.clear(); rates.clear(); },
+    close() { closed = true; assertions.clear(); sessions.clear(); revocationReceipts.clear(); rates.clear(); },
   };
   return interfaceCheck(state);
 }
@@ -201,6 +252,15 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
       ) STRICT;
       CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
       CREATE INDEX IF NOT EXISTS sessions_subject ON sessions(tenant_id, subject, expires_at);
+      CREATE TABLE IF NOT EXISTS revocation_receipts (
+        event_id TEXT PRIMARY KEY,
+        tenant_id TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        revoked_sessions INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        expires_at INTEGER NOT NULL
+      ) STRICT;
+      CREATE INDEX IF NOT EXISTS revocation_receipts_expiry ON revocation_receipts(expires_at);
       CREATE TABLE IF NOT EXISTS rate_limits (
         scope TEXT NOT NULL,
         window_start INTEGER NOT NULL,
@@ -221,12 +281,15 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
 
   const deleteAssertions = database.prepare('DELETE FROM used_assertions WHERE expires_at <= ?');
   const deleteSessions = database.prepare('DELETE FROM sessions WHERE expires_at <= ?');
+  const deleteRevocationReceipts = database.prepare('DELETE FROM revocation_receipts WHERE expires_at <= ?');
   const deleteRates = database.prepare('DELETE FROM rate_limits WHERE expires_at <= ?');
   const insertAssertion = database.prepare('INSERT INTO used_assertions(jti, claimed_at, expires_at) VALUES(?, ?, ?) ON CONFLICT(jti) DO NOTHING');
   const insertSession = database.prepare('INSERT INTO sessions(sid, assertion_jti, subject, tenant_id, roles_json, issued_at, expires_at, revoked_at) VALUES(?, ?, ?, ?, ?, ?, ?, NULL)');
   const selectSession = database.prepare('SELECT assertion_jti, subject, tenant_id, roles_json, issued_at, expires_at, revoked_at FROM sessions WHERE sid = ?');
   const revokeSessionStatement = database.prepare('UPDATE sessions SET revoked_at = ? WHERE sid = ? AND revoked_at IS NULL AND expires_at > ?');
   const revokeSubjectStatement = database.prepare('UPDATE sessions SET revoked_at = ? WHERE tenant_id = ? AND subject = ? AND revoked_at IS NULL AND expires_at > ?');
+  const selectRevocationReceipt = database.prepare('SELECT tenant_id, subject, revoked_sessions, created_at, expires_at FROM revocation_receipts WHERE event_id = ?');
+  const insertRevocationReceipt = database.prepare('INSERT INTO revocation_receipts(event_id, tenant_id, subject, revoked_sessions, created_at, expires_at) VALUES(?, ?, ?, ?, ?, ?)');
   const upsertRate = database.prepare('INSERT INTO rate_limits(scope, window_start, count, expires_at) VALUES(?, ?, 1, ?) ON CONFLICT(scope, window_start) DO UPDATE SET count = count + 1, expires_at = excluded.expires_at');
   const selectRate = database.prepare('SELECT count FROM rate_limits WHERE scope = ? AND window_start = ?');
   const countAssertions = database.prepare('SELECT COUNT(*) AS count FROM used_assertions');
@@ -240,6 +303,7 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
     transaction(database, () => {
       deleteAssertions.run(nowSeconds);
       deleteSessions.run(nowSeconds);
+      deleteRevocationReceipts.run(nowSeconds);
       deleteRates.run(nowSeconds);
     });
   };
@@ -269,6 +333,31 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
     revokeSubject(tenantId, subject, nowSeconds) {
       ensureOpen(); identifier(tenantId, TENANT_ID, 'session tenant'); identifier(subject, SUBJECT, 'session subject'); integer(nowSeconds, 'current time');
       return Number(revokeSubjectStatement.run(nowSeconds, tenantId, subject, nowSeconds).changes);
+    },
+    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+      ensureOpen();
+      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt);
+      return transaction(database, () => {
+        deleteRevocationReceipts.run(value.nowSeconds);
+        const existing = selectRevocationReceipt.get(value.eventId);
+        if (existing) {
+          if (existing.tenant_id !== value.tenantId || existing.subject !== value.subject) fail('revocation event target mismatch');
+          return revocationReceipt({
+            eventId: value.eventId,
+            revokedSessions: Number(existing.revoked_sessions),
+            createdAt: Number(existing.created_at),
+            expiresAt: Number(existing.expires_at),
+          }, true);
+        }
+        const count = Number(revokeSubjectStatement.run(value.nowSeconds, value.tenantId, value.subject, value.nowSeconds).changes);
+        insertRevocationReceipt.run(value.eventId, value.tenantId, value.subject, count, value.nowSeconds, value.receiptExpiresAt);
+        return revocationReceipt({
+          eventId: value.eventId,
+          revokedSessions: count,
+          createdAt: value.nowSeconds,
+          expiresAt: value.receiptExpiresAt,
+        }, false);
+      });
     },
     consumeRateLimit(scope, windowStart, windowSeconds, limit, nowSeconds) {
       ensureOpen(); const value = validateRate(scope, windowStart, windowSeconds, limit, nowSeconds);
