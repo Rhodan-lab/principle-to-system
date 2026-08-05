@@ -1,0 +1,233 @@
+name: Validate Principia Atlas Browser Replicas
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - ".github/workflows/validate-principia-atlas-browser-replicas.yml"
+  push:
+    branches: [main]
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - ".github/workflows/validate-principia-atlas-browser-replicas.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
+  RELEASE_VERSION: 0.1.0-alpha.1
+  PROMOTION_TAG: principia-atlas-v0.1.0-alpha.1
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out pinned Atlas
+        uses: actions/checkout@v4
+        with:
+          repository: Rhodan-lab/Atlas
+          ref: ${{ env.ATLAS_COMMIT }}
+          path: atlas
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: atlas/tools/foundation-validator/requirements.txt
+
+      - name: Install pinned Atlas dependencies
+        run: python3 -m pip install -r atlas/tools/foundation-validator/requirements.txt
+
+      - name: Isolate Atlas from Principia worktree
+        run: mv atlas "$RUNNER_TEMP/atlas"
+
+      - name: Verify replica smoke syntax
+        run: |
+          node --check software/principia_atlas/hosted/deployment/mock_oidc_provider.mjs
+          node --check software/principia_atlas/hosted/deployment/mock_tls_gateway.mjs
+          node --check software/principia_atlas/hosted/deployment/browser_smoke_client.mjs
+          bash -n software/principia_atlas/hosted/deployment/browser_replica_smoke.sh
+
+      - name: Build release and hosted store
+        run: |
+          python3 software/principia_atlas/release.py build \
+            --atlas-repo "$RUNNER_TEMP/atlas" \
+            --route distributed-information \
+            --version "$RELEASE_VERSION" \
+            --expected-principia-commit "$(git rev-parse HEAD)" \
+            --expected-atlas-commit "$ATLAS_COMMIT" \
+            --product-output "$RUNNER_TEMP/product" \
+            --output "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip"
+          mkdir -p \
+            "$RUNNER_TEMP/history/$PROMOTION_TAG" \
+            "$RUNNER_TEMP/promotion" \
+            "$RUNNER_TEMP/hosted/archives"
+          : > "$RUNNER_TEMP/expected-tags.txt"
+          python3 software/principia_atlas/promotion.py prepare \
+            --archive "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            --tag "$PROMOTION_TAG" \
+            --history-dir "$RUNNER_TEMP/history-source" \
+            --expected-tags "$RUNNER_TEMP/expected-tags.txt" \
+            --output-dir "$RUNNER_TEMP/promotion"
+          cp "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
+            "$RUNNER_TEMP/history/$PROMOTION_TAG/principia-atlas-promotion.json"
+          cp "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip.sha256" \
+            "$RUNNER_TEMP/hosted/archives/"
+          python3 software/principia_atlas/hosted_catalog.py build \
+            --promotions "$RUNNER_TEMP/history" \
+            --output "$RUNNER_TEMP/hosted/catalog.json"
+          python3 software/principia_atlas/hosted_store.py build \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json" \
+            --archives "$RUNNER_TEMP/hosted/archives" \
+            --output "$RUNNER_TEMP/hosted/store"
+
+      - name: Build hosted image
+        run: |
+          docker build \
+            --file software/principia_atlas/hosted/Containerfile \
+            --tag principia-atlas-hosted:first \
+            .
+          test "$(docker image inspect principia-atlas-hosted:first --format '{{.Config.User}}')" = "10001:10001"
+
+      - name: Prepare sealed replica inputs
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/hosted-browser-smoke"
+          mkdir -p \
+            "$root/config" "$root/public" "$root/idp-secrets" \
+            "$root/gateway-secrets" "$root/secrets" \
+            "$root/replica-state" "$root/replica-audit"
+          cp "$RUNNER_TEMP/hosted/catalog.json" "$root/config/catalog.json"
+
+          openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 1 \
+            -keyout "$root/ca.key" -out "$root/public/ca.crt" \
+            -subj '/CN=Principia Atlas Replica Smoke CA' \
+            -addext 'basicConstraints=critical,CA:TRUE' \
+            -addext 'keyUsage=critical,keyCertSign,cRLSign'
+
+          openssl req -newkey rsa:2048 -sha256 -nodes \
+            -keyout "$root/idp-secrets/tls.key" -out "$root/idp.csr" \
+            -subj '/CN=identity.example.test'
+          printf '%s\n' \
+            'subjectAltName=DNS:identity.example.test' \
+            'basicConstraints=critical,CA:FALSE' \
+            'keyUsage=critical,digitalSignature,keyEncipherment' \
+            'extendedKeyUsage=serverAuth' > "$root/idp.ext"
+          openssl x509 -req -sha256 -days 1 \
+            -in "$root/idp.csr" -CA "$root/public/ca.crt" \
+            -CAkey "$root/ca.key" -CAcreateserial \
+            -out "$root/public/idp.crt" -extfile "$root/idp.ext"
+
+          openssl req -newkey rsa:2048 -sha256 -nodes \
+            -keyout "$root/gateway-secrets/tls.key" -out "$root/gateway.csr" \
+            -subj '/CN=learn.example.test'
+          printf '%s\n' \
+            'subjectAltName=DNS:learn.example.test' \
+            'basicConstraints=critical,CA:FALSE' \
+            'keyUsage=critical,digitalSignature,keyEncipherment' \
+            'extendedKeyUsage=serverAuth' > "$root/gateway.ext"
+          openssl x509 -req -sha256 -days 1 \
+            -in "$root/gateway.csr" -CA "$root/public/ca.crt" \
+            -CAkey "$root/ca.key" -CAcreateserial \
+            -out "$root/public/gateway.crt" -extfile "$root/gateway.ext"
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 \
+            -out "$root/idp-secrets/signing.key"
+
+          node --input-type=module <<'JS'
+          import { createPublicKey } from 'node:crypto';
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { canonicalJson } from './software/principia_atlas/hosted/strict_json.mjs';
+          import { sealTenantConfig } from './software/principia_atlas/hosted/catalog.mjs';
+
+          const base = `${process.env.RUNNER_TEMP}/hosted-browser-smoke`;
+          const tenant = JSON.parse(await readFile('software/principia_atlas/hosted/example-tenants.unsigned.json', 'utf8'));
+          tenant.session.secure = true;
+          await writeFile(`${base}/config/tenants.json`, canonicalJson(sealTenantConfig(tenant)));
+
+          const oidc = JSON.parse(await readFile('software/principia_atlas/hosted/example-oidc-policy.unsigned.json', 'utf8'));
+          oidc.issuer = 'https://identity.example.test:19443';
+          oidc.audience = 'principia-atlas-external';
+          oidc.jwks.uri = 'https://identity.example.test:19443/jwks';
+          await writeFile(`${base}/oidc-policy.unsigned.json`, canonicalJson(oidc));
+
+          const browser = JSON.parse(await readFile('software/principia_atlas/hosted/example-browser-oidc.unsigned.json', 'utf8'));
+          browser.issuer = 'https://identity.example.test:19443';
+          browser.public_origin = 'https://learn.example.test:18443';
+          browser.authorization_endpoint = 'https://identity.example.test:19443/authorize';
+          browser.token_endpoint = 'https://identity.example.test:19443/token';
+          browser.client_id = 'principia-atlas-browser';
+          browser.client_auth_method = 'client_secret_post';
+          browser.cookie = { name: '__Host-pa_oidc_flow', secure: true, same_site: 'Lax' };
+          await writeFile(`${base}/browser-oidc.unsigned.json`, canonicalJson(browser));
+
+          const key = createPublicKey(await readFile(`${base}/idp-secrets/signing.key`)).export({ format: 'jwk' });
+          Object.assign(key, { alg: 'RS256', use: 'sig', kid: 'browser-replica-rsa-1' });
+          await writeFile(`${base}/public/jwks.json`, canonicalJson({ keys: [key] }));
+          JS
+
+          node software/principia_atlas/hosted/oidc_cli.mjs seal-policy \
+            --input "$root/oidc-policy.unsigned.json" \
+            --output "$root/config/oidc-policy.json"
+          node software/principia_atlas/hosted/browser_edge_cli.mjs seal \
+            --input "$root/browser-oidc.unsigned.json" \
+            --output "$root/config/browser-oidc.json"
+
+          printf '%s' 'replica-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/identity"
+          printf '%s' 'replica-session-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/session"
+          printf '%s' 'replica-metrics-token-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/metrics"
+          printf '%s' 'replica-flow-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/browser-flow"
+          printf '%s' 'replica-client-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/browser-client"
+
+          chmod 0444 "$root/config/"* "$root/public/"*
+          chmod 0400 "$root/idp-secrets/"* "$root/gateway-secrets/"* "$root/secrets/"*
+          sudo chown -R 10001:10001 \
+            "$root/idp-secrets" "$root/gateway-secrets" "$root/secrets" \
+            "$root/replica-state" "$root/replica-audit"
+          rm -f "$root/ca.key" "$root/ca.srl" "$root/"*.csr "$root/"*.ext \
+            "$root/oidc-policy.unsigned.json" "$root/browser-oidc.unsigned.json"
+
+      - name: Run cross-replica browser smoke
+        run: bash software/principia_atlas/hosted/deployment/browser_replica_smoke.sh
+
+      - name: Preserve sanitized result and remove secrets
+        if: always()
+        run: |
+          docker rm -f \
+            principia-atlas-replica-gateway principia-atlas-replica-edge-b \
+            principia-atlas-replica-edge-a principia-atlas-replica-hosted-b \
+            principia-atlas-replica-hosted-a principia-atlas-replica-idp \
+            principia-atlas-replica-pod >/dev/null 2>&1 || true
+          if [[ -f "$RUNNER_TEMP/hosted-browser-smoke/replica-result.json" ]]; then
+            cp "$RUNNER_TEMP/hosted-browser-smoke/replica-result.json" \
+              "$RUNNER_TEMP/browser-replica-result.json"
+          fi
+          sudo rm -rf "$RUNNER_TEMP/hosted-browser-smoke"
+
+      - name: Verify checkout immutability
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/atlas" status --porcelain=v1 --untracked-files=all)"
+
+      - name: Upload sanitized replica evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: principia-atlas-browser-replicas-${{ github.sha }}
+          path: ${{ runner.temp }}/browser-replica-result.json
+          if-no-files-found: error
+          retention-days: 14
