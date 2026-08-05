@@ -175,6 +175,61 @@ node software/principia_atlas/hosted/auth_state_cli.mjs revoke-subject \
   --subject '<pairwise-subject>'
 ```
 
+`revoke-subject` and `revoke-oidc-subject` are break-glass interfaces. They place target identity in process arguments and must not be used by normal automation.
+
+### Signed OIDC subject revocation
+
+Production automation uses a short-lived Ed25519-signed request. The request producer holds the private key; the networkless state operator receives only the immutable public key. The external issuer and subject remain inside private files and never appear in process arguments or command output.
+
+Generate an Ed25519 key pair in DER form on the controlled signer host:
+
+```bash
+openssl genpkey -algorithm ED25519 -outform DER \
+  -out /secure/revocation-private.der
+openssl pkey -inform DER -in /secure/revocation-private.der \
+  -pubout -outform DER -out /secure/revocation-public.der
+chmod 0400 /secure/revocation-private.der
+chmod 0444 /secure/revocation-public.der
+```
+
+Create a mode-`0600` draft containing exactly the `principia-atlas-hosted-oidc-revocation-request-draft/0.1` fields. `issued_at` and `expires_at` are Unix seconds, the request lifetime may not exceed 300 seconds, and `event_id` must remain stable across retries:
+
+```json
+{
+  "contract": "principia-atlas-hosted-oidc-revocation-request-draft/0.1",
+  "tenant_id": "local-preview",
+  "issuer": "https://identity.example.test",
+  "external_subject": "provider-subject",
+  "event_id": "identity-disable-event-0004",
+  "issued_at": 1800000000,
+  "expires_at": 1800000300,
+  "receipt_ttl_seconds": 2592000
+}
+```
+
+Sign it offline. The signer refuses an existing output path and creates the authenticated request with mode `0600`:
+
+```bash
+node software/principia_atlas/hosted/revocation_request_cli.mjs sign \
+  --input /secure/revocation-draft.json \
+  --private-key-file /secure/revocation-private.der \
+  --output /secure/revocation-request.json
+
+node software/principia_atlas/hosted/revocation_request_cli.mjs key-id \
+  --public-key-file /secure/revocation-public.der
+```
+
+Transfer only the signed request and public key to the isolated operator. Mount both read-only; the public key must have no write or execute bits. The request is verified before SQLite is opened:
+
+```bash
+node software/principia_atlas/hosted/auth_state_cli.mjs revoke-oidc-request \
+  --state /state/auth-state.sqlite \
+  --request-file /run/revocation-request.json \
+  --request-key-file /run/revocation-public.der
+```
+
+The response contains `verified_key_id` and the retry-safe revocation receipt, but no issuer, external subject, pairwise subject, or session identifier. Reusing the same unexpired signed request returns the original receipt with `replayed: true`; reusing its event identifier for another target is rejected.
+
 ## Audit and metrics
 
 Audit contract `principia-atlas-hosted-audit-event/0.1` writes canonical JSON lines. Sensitive field names—including credentials, tokens, raw subjects, assertion identifiers, and session identifiers—are rejected.
