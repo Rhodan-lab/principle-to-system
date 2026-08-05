@@ -19,6 +19,7 @@ function parseArgs(argv) {
     port: 18443,
     upstreamOrigin: 'http://127.0.0.1:8081',
     callbackPath: '/auth/callback',
+    sessionPath: '/api/session',
   };
   const seen = new Set();
   for (let index = 0; index < argv.length; index += 2) {
@@ -58,6 +59,8 @@ function validateOptions(options) {
     upstreamOrigin: 'http://127.0.0.1:8081',
     callbackUpstreamOrigin: null,
     callbackPath: '/auth/callback',
+    sessionUpstreamOrigin: null,
+    sessionPath: '/api/session',
     ...options,
   };
   if (!value.tlsKey || !value.tlsCert) fail('TLS gateway key and certificate are required');
@@ -66,7 +69,12 @@ function validateOptions(options) {
   value.callbackUpstreamOrigin = value.callbackUpstreamOrigin === null
     ? value.upstreamOrigin
     : exactLoopbackOrigin(value.callbackUpstreamOrigin, 'TLS gateway callback upstream origin');
+  value.sessionUpstreamOrigin = value.sessionUpstreamOrigin === null
+    ? value.upstreamOrigin
+    : exactLoopbackOrigin(value.sessionUpstreamOrigin, 'TLS gateway session upstream origin');
   value.callbackPath = exactPath(value.callbackPath, 'TLS gateway callback path');
+  value.sessionPath = exactPath(value.sessionPath, 'TLS gateway session path');
+  if (value.callbackPath === value.sessionPath) fail('TLS gateway routed paths must be distinct');
   return value;
 }
 
@@ -116,7 +124,9 @@ export async function createMockTlsGateway(options = {}) {
     }
     const selectedOrigin = publicPath.pathname === config.callbackPath
       ? config.callbackUpstreamOrigin
-      : config.upstreamOrigin;
+      : publicPath.pathname === config.sessionPath
+        ? config.sessionUpstreamOrigin
+        : config.upstreamOrigin;
     const target = new URL(`${publicPath.pathname}${publicPath.search}`, selectedOrigin);
     let requestBytes = 0;
     const proxy = http.request(target, {
@@ -176,6 +186,7 @@ export async function main(argv = process.argv.slice(2)) {
   console.log(`Mock TLS gateway: https://${args.host}:${args.port}`);
   console.log(`Default upstream: ${args.upstreamOrigin}`);
   console.log(`Callback upstream: ${args.callbackUpstreamOrigin}`);
+  console.log(`Session upstream: ${args.sessionUpstreamOrigin}`);
   let stopping = false;
   const stop = () => {
     if (stopping) return server.closeAllConnections?.();
