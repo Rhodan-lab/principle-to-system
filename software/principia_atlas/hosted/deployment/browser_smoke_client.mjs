@@ -10,7 +10,7 @@ import { canonicalJson, fail, parseStrictJson } from '../strict_json.mjs';
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
 function parseArgs(argv) {
-  const output = { maxRedirects: 10 };
+  const output = { maxRedirects: 10, sessionCookie: 'principia_atlas_session' };
   const seen = new Set();
   for (let index = 0; index < argv.length; index += 2) {
     const name = argv[index];
@@ -19,12 +19,13 @@ function parseArgs(argv) {
     seen.add(name);
     output[name.slice(2).replaceAll(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = value;
   }
-  for (const required of ['origin', 'issuer', 'issuerAddress', 'ca', 'version']) {
+  for (const required of ['origin', 'originAddress', 'issuer', 'issuerAddress', 'ca', 'version']) {
     if (!output[required]) fail(`browser smoke --${required.replaceAll(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} is required`);
   }
   output.maxRedirects = Number(output.maxRedirects);
   if (!Number.isInteger(output.maxRedirects) || output.maxRedirects < 1 || output.maxRedirects > 20) fail('browser smoke redirect limit is invalid');
-  if (isIP(output.issuerAddress) === 0) fail('browser smoke issuer address is invalid');
+  if (isIP(output.originAddress) === 0 || isIP(output.issuerAddress) === 0) fail('browser smoke address is invalid');
+  if (typeof output.sessionCookie !== 'string' || !/^[A-Za-z0-9!#$%&'*+.^_`|~-]{1,120}$/.test(output.sessionCookie)) fail('browser smoke session cookie name is invalid');
   return output;
 }
 
@@ -63,9 +64,19 @@ function updateCookies(jar, url, response) {
   }
 }
 
+function addressLookup(address) {
+  const family = isIP(address);
+  return (_hostname, options, callback) => {
+    if (options?.all) callback(null, [{ address, family }]);
+    else callback(null, address, family);
+  };
+}
+
 async function request(urlInput, {
   ca,
   jar,
+  origin,
+  originAddress,
   issuer,
   issuerAddress,
   method = 'GET',
@@ -73,8 +84,11 @@ async function request(urlInput, {
   const url = new URL(urlInput);
   const transport = url.protocol === 'https:' ? https : http;
   if (!transport) fail('browser smoke protocol is invalid');
-  const issuerFamily = isIP(issuerAddress);
-  const useIssuerAddress = url.origin === issuer;
+  const resolvedAddress = url.origin === origin
+    ? originAddress
+    : url.origin === issuer
+      ? issuerAddress
+      : null;
   return new Promise((resolveRequest, reject) => {
     const headers = { Accept: 'text/html, application/json' };
     const cookie = cookieHeader(jar, url);
@@ -85,9 +99,7 @@ async function request(urlInput, {
       ca: url.protocol === 'https:' ? ca : undefined,
       rejectUnauthorized: true,
       timeout: 5000,
-      lookup: useIssuerAddress
-        ? (_hostname, _options, callback) => callback(null, issuerAddress, issuerFamily)
-        : undefined,
+      lookup: resolvedAddress ? addressLookup(resolvedAddress) : undefined,
     }, (response) => {
       const chunks = [];
       let total = 0;
@@ -111,19 +123,12 @@ async function request(urlInput, {
   });
 }
 
-async function follow(start, {
-  origin,
-  issuer,
-  issuerAddress,
-  ca,
-  jar,
-  maxRedirects,
-}) {
+async function follow(start, options) {
   let current = new URL(start);
-  for (let count = 0; count <= maxRedirects; count += 1) {
-    if (![origin, issuer].includes(current.origin)) fail('browser smoke redirect escaped trusted origins');
-    const response = await request(current, { ca, jar, issuer, issuerAddress });
-    updateCookies(jar, current, response);
+  for (let count = 0; count <= options.maxRedirects; count += 1) {
+    if (![options.origin, options.issuer].includes(current.origin)) fail('browser smoke redirect escaped trusted origins');
+    const response = await request(current, options);
+    updateCookies(options.jar, current, response);
     if (![301, 302, 303, 307, 308].includes(response.status)) return { ...response, url: current };
     const location = response.headers.location;
     if (typeof location !== 'string' || !location) fail('browser smoke redirect is missing Location');
@@ -134,27 +139,28 @@ async function follow(start, {
 
 export async function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
-  const origin = exactOrigin(args.origin, 'browser smoke origin', ['http:', 'https:']);
+  const origin = exactOrigin(args.origin, 'browser smoke origin', ['https:']);
   const issuer = exactOrigin(args.issuer, 'browser smoke issuer', ['https:']);
   const ca = await readFile(args.ca);
   const jar = new Map();
-  const requestOptions = { ca, jar, issuer, issuerAddress: args.issuerAddress };
-
-  const landing = await follow(`${origin}/`, {
-    origin,
-    issuer,
-    issuerAddress: args.issuerAddress,
+  const requestOptions = {
     ca,
     jar,
+    origin,
+    originAddress: args.originAddress,
+    issuer,
+    issuerAddress: args.issuerAddress,
     maxRedirects: args.maxRedirects,
-  });
+  };
+
+  const landing = await follow(`${origin}/`, requestOptions);
   assert.equal(landing.status, 200);
   assert.match(String(landing.headers['content-type'] ?? ''), /^text\/html/i);
   assert.ok(landing.body.length > 100);
   const edgeCookies = hostCookies(jar, new URL(origin));
-  assert.ok(edgeCookies.has('pa_session'));
-  assert.equal(edgeCookies.has('pa_oidc_flow'), false);
-  assert.equal(hostCookies(jar, new URL(issuer)).has('pa_oidc_flow'), false);
+  assert.ok(edgeCookies.has(args.sessionCookie));
+  assert.equal(edgeCookies.has('__Host-pa_oidc_flow'), false);
+  assert.equal(hostCookies(jar, new URL(issuer)).has('__Host-pa_oidc_flow'), false);
 
   const sessionResponse = await request(`${origin}/api/session`, requestOptions);
   assert.equal(sessionResponse.status, 200);
@@ -177,6 +183,7 @@ export async function main(argv = process.argv.slice(2)) {
   const result = {
     status: 'ok',
     login: 'authorization-code-pkce',
+    tls_gateway: true,
     tenant_id: session.tenant_id,
     roles: session.roles,
     release_version: args.version,
