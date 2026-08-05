@@ -1,0 +1,49 @@
+{
+  "schema": "principia-atlas-browser-oidc-edge-boundary/0.1",
+  "status": "implemented-browser-authorization-code-pkce-edge",
+  "contracts": [
+    "principia-atlas-browser-oidc/0.1",
+    "principia-atlas-browser-oidc-flow/0.1",
+    "principia-atlas-browser-oidc-edge/0.1"
+  ],
+  "flow": {
+    "authorization": "code-with-pkce-s256",
+    "state": "random-and-constant-time-verified",
+    "nonce": "random-callback-bound-and-id-token-checked",
+    "flow_storage": "short-lived-aes-256-gcm-http-only-cookie",
+    "return_path": "encrypted-same-origin-relative-path-only",
+    "token_endpoint": "exact-sealed-https-no-redirect-bounded-json",
+    "refresh_tokens": "prohibited",
+    "hosted_exchange": "id-token-only-over-exact-loopback-origin"
+  },
+  "public_boundary": {
+    "hidden_routes": [
+      "/api/auth/oidc",
+      "/api/auth/exchange",
+      "/metrics"
+    ],
+    "request_bodies": "rejected",
+    "origin_policy": "same-public-origin",
+    "upstream": "exact-loopback-origin-only",
+    "health": "/edge/healthz-bounded-metadata-only"
+  },
+  "authority_boundaries": {
+    "identity_provider": "external-identity-evidence-only",
+    "tenant_mapping": "sealed-hosted-policy",
+    "principia_learning": "unchanged",
+    "atlas_knowledge_status": "unchanged",
+    "status_inheritance": "prohibited",
+    "repository_mutation": false
+  },
+  "non_goals": {
+    "passwords": false,
+    "self_registration": false,
+    "refresh_token_storage": false,
+    "browser_token_storage": false,
+    "learner_data_persistence": false,
+    "organization_administration": false,
+    "billing": false,
+    "tls_termination": false,
+    "production_saas_claim": false
+  }
+}
