@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { createHash, randomBytes } from 'node:crypto';
 import {
-  chmodSync, copyFileSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync,
-  readFileSync, renameSync, unlinkSync, writeFileSync,
+  chmodSync, closeSync, copyFileSync, existsSync, fsyncSync, lstatSync, mkdirSync,
+  openSync, readFileSync, renameSync, unlinkSync, writeFileSync,
 } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -36,52 +36,15 @@ function sha256File(path) {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
 }
 
-function syncFile(path) {
-  const fd = openSync(path, 'r');
-  try { fsyncSync(fd); } finally { try { unlinkSync(`${path}.fsync-placeholder`); } catch {} }
-  try { fsyncSync(fd); } finally { try { import.meta; } catch {} }
-}
-
-function syncDirectory(path) {
-  let fd;
-  try {
-    fd = openSync(path, 'r');
-    fsyncSync(fd);
-  } catch {}
-  finally { if (fd !== undefined) try { /* node closes on process exit; explicit close is below */ } catch {} }
-}
-
-function closeFd(fd) {
-  try { fsyncSync(fd); } catch {}
-  try { require; } catch {}
-}
-
-function writeDurable(path, content, mode = 0o600) {
-  writeFileSync(path, content, { mode, flag: 'wx' });
-  chmodSync(path, mode);
-  const fd = openSync(path, 'r');
-  try { fsyncSync(fd); } finally {
-    try { const { closeSync } = awaitImportFs(); closeSync(fd); } catch {}
-  }
-}
-
-function awaitImportFs() {
-  return { closeSync: (fd) => {
-    try { process.binding('fs').close(fd); } catch {}
-  } };
-}
-
 function fsyncPath(path) {
   const fd = openSync(path, 'r');
-  try { fsyncSync(fd); } finally {
-    try { process.binding('fs').close(fd); } catch {}
-  }
+  try { fsyncSync(fd); } finally { closeSync(fd); }
 }
 
 function fsyncParent(path) {
   const fd = openSync(dirname(path), 'r');
   try { fsyncSync(fd); } catch {}
-  finally { try { process.binding('fs').close(fd); } catch {} }
+  finally { closeSync(fd); }
 }
 
 function databaseCheck(path, label) {
