@@ -40,6 +40,7 @@ wait_https() {
   local url=$1
   for attempt in $(seq 1 40); do
     if curl --fail --silent \
+      --noproxy '*' \
       --resolve "$issuer_host:19443:127.0.0.1" \
       --cacert "$root/public/ca.crt" \
       "$url" >/dev/null; then
@@ -152,7 +153,7 @@ docker run -d --name "$edge" \
   --shutdown-timeout-ms 20000
 
 for attempt in $(seq 1 40); do
-  if curl --fail --silent http://127.0.0.1:18083/edge/healthz >/dev/null; then break; fi
+  if curl --fail --silent --noproxy '*' http://127.0.0.1:18083/edge/healthz >/dev/null; then break; fi
   if [[ "$attempt" = 40 ]]; then
     echo 'browser edge did not become ready' >&2
     exit 1
