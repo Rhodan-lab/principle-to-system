@@ -41,13 +41,15 @@ jobs:
           node --check software/principia_atlas/hosted/server.mjs
           node --check software/tests/test_product_alpha_principia_atlas_oidc_cli.mjs
           node --check software/tests/test_product_alpha_principia_atlas_oidc_runtime.mjs
+          node --check software/tests/test_product_alpha_principia_atlas_oidc_security.mjs
           python3 -m json.tool software/principia_atlas/hosted/example-oidc-policy.unsigned.json >/dev/null
 
       - name: Run production OIDC regressions
         run: |
           node --test \
             software/tests/test_product_alpha_principia_atlas_oidc_cli.mjs \
-            software/tests/test_product_alpha_principia_atlas_oidc_runtime.mjs
+            software/tests/test_product_alpha_principia_atlas_oidc_runtime.mjs \
+            software/tests/test_product_alpha_principia_atlas_oidc_security.mjs
 
       - name: Verify repository immutability
         run: |
