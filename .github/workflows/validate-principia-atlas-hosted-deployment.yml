@@ -59,6 +59,7 @@ jobs:
       - name: Verify hosted operational regressions
         run: |
           for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
+          bash -n software/principia_atlas/hosted/deployment/smoke.sh
           node --check software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
           node --test software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
 
@@ -113,11 +114,7 @@ jobs:
             docker buildx rm --force principia-repro >/dev/null 2>&1 || true
           }
           trap cleanup_builder EXIT
-          docker buildx version
-          docker buildx create \
-            --name principia-repro \
-            --driver docker-container \
-            --use
+          docker buildx create --name principia-repro --driver docker-container --use
           docker buildx inspect --bootstrap
           for candidate in first second; do
             docker buildx build --builder principia-repro --no-cache \
@@ -162,98 +159,7 @@ jobs:
             "$RUNNER_TEMP/hosted/backups"
 
       - name: Run two read-only hosted instances
-        run: |
-          set -euo pipefail
-          cleanup() {
-            docker rm -f principia-atlas-a principia-atlas-b >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
-          common=(
-            --read-only
-            --tmpfs /tmp:rw,noexec,nosuid,nodev,size=32m
-            --cap-drop ALL
-            --security-opt no-new-privileges:true
-            --mount type=bind,src="$RUNNER_TEMP/hosted/catalog.json",dst=/config/catalog.json,readonly
-            --mount type=bind,src="$RUNNER_TEMP/hosted/tenants.json",dst=/config/tenants.json,readonly
-            --mount type=bind,src="$RUNNER_TEMP/hosted/store",dst=/store,readonly
-            --mount type=bind,src="$RUNNER_TEMP/hosted/state",dst=/var/lib/principia-atlas
-            --mount type=bind,src="$RUNNER_TEMP/hosted/audit",dst=/var/log/principia-atlas
-            --mount type=bind,src="$RUNNER_TEMP/hosted/secrets",dst=/run/secrets,readonly
-          )
-          server_args=(
-            --catalog /config/catalog.json
-            --tenants /config/tenants.json
-            --store /store
-            --state /var/lib/principia-atlas/auth-state.sqlite
-            --identity-secret-file /run/secrets/identity
-            --session-secret-file /run/secrets/session
-            --metrics-token-file /run/secrets/metrics
-            --audit-log /var/log/principia-atlas/audit.ndjson
-            --host 0.0.0.0
-            --port 8080
-            --allow-network
-            --shutdown-timeout-ms 20000
-          )
-          docker run -d --name principia-atlas-a -p 18081:8080 "${common[@]}" \
-            principia-atlas-hosted:first "${server_args[@]}" --instance-id instance-a
-          docker run -d --name principia-atlas-b -p 18082:8080 "${common[@]}" \
-            principia-atlas-hosted:first "${server_args[@]}" --instance-id instance-b
-          for port in 18081 18082; do
-            for attempt in $(seq 1 30); do
-              curl --fail --silent "http://127.0.0.1:$port/readyz" >/dev/null && break
-              sleep 1
-            done
-            curl --fail --silent "http://127.0.0.1:$port/readyz" >/dev/null
-          done
-          export PRINCIPIA_ATLAS_DEV_AUTH=1
-          export PRINCIPIA_ATLAS_IDENTITY_SECRET='ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz'
-          assertion="$(node software/principia_atlas/hosted/dev_identity.mjs \
-            --tenants "$RUNNER_TEMP/hosted/tenants.json" \
-            --subject ci-learner \
-            --tenant local-preview \
-            --roles learner)"
-          curl --fail --silent --dump-header "$RUNNER_TEMP/hosted/exchange.headers" \
-            --request POST \
-            --header "Authorization: Bearer $assertion" \
-            --header "Origin: http://127.0.0.1:18081" \
-            http://127.0.0.1:18081/api/auth/exchange \
-            > "$RUNNER_TEMP/hosted/exchange.json"
-          cookie="$(awk 'BEGIN{IGNORECASE=1} /^set-cookie:/{print $2}' "$RUNNER_TEMP/hosted/exchange.headers" | tr -d '\r' | cut -d';' -f1)"
-          test -n "$cookie"
-          curl --fail --silent \
-            --header "Cookie: $cookie" \
-            "http://127.0.0.1:18082/app/$RELEASE_VERSION/" \
-            > "$RUNNER_TEMP/hosted/release.html"
-          curl --fail --silent \
-            --header 'Authorization: Bearer ci-metrics-token-0123456789-abcdefghijklmnopqrstuvwxyz' \
-            http://127.0.0.1:18082/metrics \
-            > "$RUNNER_TEMP/hosted/metrics.txt"
-          grep -q '^principia_atlas_up 1$' "$RUNNER_TEMP/hosted/metrics.txt"
-          ! grep -Eiq 'tenant|subject|session|assertion' "$RUNNER_TEMP/hosted/metrics.txt"
-          docker stop --time 25 principia-atlas-a >/dev/null
-          curl --fail --silent \
-            --header "Cookie: $cookie" \
-            "http://127.0.0.1:18082/api/session" >/dev/null
-          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
-            --state "$RUNNER_TEMP/hosted/state/auth-state.sqlite" \
-            --output "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
-            > "$RUNNER_TEMP/hosted/backup-result.json"
-          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
-            --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
-            > "$RUNNER_TEMP/hosted/backup-verify.json"
-          docker stop --time 25 principia-atlas-b >/dev/null
-          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
-            --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
-            --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
-            --confirm-offline ALL_INSTANCES_STOPPED \
-            > "$RUNNER_TEMP/hosted/restore-result.json"
-          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
-            --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
-            > "$RUNNER_TEMP/hosted/restored-integrity.json"
-          sudo -u '#10001' test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! sudo -u '#10001' grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! sudo -u '#10001' grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! sudo -u '#10001' grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+        run: bash software/principia_atlas/hosted/deployment/smoke.sh
 
       - name: Remove sensitive runtime state
         if: always()
