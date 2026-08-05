@@ -60,6 +60,7 @@ jobs:
         run: |
           for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
           node --check software/principia_atlas/hosted/deployment/mock_oidc_provider.mjs
+          node --check software/principia_atlas/hosted/deployment/mock_tls_gateway.mjs
           node --check software/principia_atlas/hosted/deployment/browser_smoke_client.mjs
           bash -n software/principia_atlas/hosted/deployment/smoke.sh
           bash -n software/principia_atlas/hosted/deployment/browser_sidecar_smoke.sh
@@ -189,7 +190,14 @@ jobs:
         run: |
           set -euo pipefail
           root="$RUNNER_TEMP/hosted-browser-smoke"
-          mkdir -p "$root/config" "$root/public" "$root/idp-secrets" "$root/secrets" "$root/state" "$root/audit"
+          mkdir -p \
+            "$root/config" \
+            "$root/public" \
+            "$root/idp-secrets" \
+            "$root/gateway-secrets" \
+            "$root/secrets" \
+            "$root/state" \
+            "$root/audit"
           cp "$RUNNER_TEMP/hosted/catalog.json" "$root/config/catalog.json"
 
           openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 1 \
@@ -198,23 +206,43 @@ jobs:
             -subj '/CN=Principia Atlas Browser Smoke CA' \
             -addext 'basicConstraints=critical,CA:TRUE' \
             -addext 'keyUsage=critical,keyCertSign,cRLSign'
+
           openssl req -newkey rsa:2048 -sha256 -nodes \
             -keyout "$root/idp-secrets/tls.key" \
-            -out "$root/tls.csr" \
+            -out "$root/idp.csr" \
             -subj '/CN=identity.example.test'
-          cat > "$root/tls.ext" <<'EOF'
+          cat > "$root/idp.ext" <<'EOF'
           subjectAltName=DNS:identity.example.test
           basicConstraints=critical,CA:FALSE
           keyUsage=critical,digitalSignature,keyEncipherment
           extendedKeyUsage=serverAuth
           EOF
           openssl x509 -req -sha256 -days 1 \
-            -in "$root/tls.csr" \
+            -in "$root/idp.csr" \
             -CA "$root/public/ca.crt" \
             -CAkey "$root/ca.key" \
             -CAcreateserial \
-            -out "$root/public/tls.crt" \
-            -extfile "$root/tls.ext"
+            -out "$root/public/idp.crt" \
+            -extfile "$root/idp.ext"
+
+          openssl req -newkey rsa:2048 -sha256 -nodes \
+            -keyout "$root/gateway-secrets/tls.key" \
+            -out "$root/gateway.csr" \
+            -subj '/CN=learn.example.test'
+          cat > "$root/gateway.ext" <<'EOF'
+          subjectAltName=DNS:learn.example.test
+          basicConstraints=critical,CA:FALSE
+          keyUsage=critical,digitalSignature,keyEncipherment
+          extendedKeyUsage=serverAuth
+          EOF
+          openssl x509 -req -sha256 -days 1 \
+            -in "$root/gateway.csr" \
+            -CA "$root/public/ca.crt" \
+            -CAkey "$root/ca.key" \
+            -CAcreateserial \
+            -out "$root/public/gateway.crt" \
+            -extfile "$root/gateway.ext"
+
           openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 \
             -out "$root/idp-secrets/signing.key"
 
@@ -226,7 +254,7 @@ jobs:
 
           const base = `${process.env.RUNNER_TEMP}/hosted-browser-smoke`;
           const tenant = JSON.parse(await readFile('software/principia_atlas/hosted/example-tenants.unsigned.json', 'utf8'));
-          tenant.session.secure = false;
+          tenant.session.secure = true;
           await writeFile(`${base}/config/tenants.json`, canonicalJson(sealTenantConfig(tenant)));
 
           const oidc = JSON.parse(await readFile('software/principia_atlas/hosted/example-oidc-policy.unsigned.json', 'utf8'));
@@ -237,12 +265,12 @@ jobs:
 
           const browser = JSON.parse(await readFile('software/principia_atlas/hosted/example-browser-oidc.unsigned.json', 'utf8'));
           browser.issuer = 'https://identity.example.test:19443';
-          browser.public_origin = 'http://127.0.0.1:18083';
+          browser.public_origin = 'https://learn.example.test:18443';
           browser.authorization_endpoint = 'https://identity.example.test:19443/authorize';
           browser.token_endpoint = 'https://identity.example.test:19443/token';
           browser.client_id = 'principia-atlas-browser';
           browser.client_auth_method = 'client_secret_post';
-          browser.cookie = { name: 'pa_oidc_flow', secure: false, same_site: 'Lax' };
+          browser.cookie = { name: '__Host-pa_oidc_flow', secure: true, same_site: 'Lax' };
           await writeFile(`${base}/browser-oidc.unsigned.json`, canonicalJson(browser));
 
           const signingPem = await readFile(`${base}/idp-secrets/signing.key`);
@@ -265,10 +293,22 @@ jobs:
           printf '%s' 'browser-client-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$root/secrets/browser-client"
 
           chmod 0444 "$root/config/"* "$root/public/"*
-          chmod 0400 "$root/idp-secrets/"* "$root/secrets/"*
-          sudo chown -R 10001:10001 "$root/idp-secrets" "$root/secrets" "$root/state" "$root/audit"
-          rm -f "$root/ca.key" "$root/ca.srl" "$root/tls.csr" "$root/tls.ext" \
-            "$root/oidc-policy.unsigned.json" "$root/browser-oidc.unsigned.json"
+          chmod 0400 "$root/idp-secrets/"* "$root/gateway-secrets/"* "$root/secrets/"*
+          sudo chown -R 10001:10001 \
+            "$root/idp-secrets" \
+            "$root/gateway-secrets" \
+            "$root/secrets" \
+            "$root/state" \
+            "$root/audit"
+          rm -f \
+            "$root/ca.key" \
+            "$root/ca.srl" \
+            "$root/idp.csr" \
+            "$root/idp.ext" \
+            "$root/gateway.csr" \
+            "$root/gateway.ext" \
+            "$root/oidc-policy.unsigned.json" \
+            "$root/browser-oidc.unsigned.json"
 
       - name: Run live browser OIDC sidecar smoke
         run: bash software/principia_atlas/hosted/deployment/browser_sidecar_smoke.sh
@@ -277,6 +317,7 @@ jobs:
         if: always()
         run: |
           docker rm -f \
+            principia-atlas-browser-gateway \
             principia-atlas-browser-edge \
             principia-atlas-browser-hosted \
             principia-atlas-browser-idp \
