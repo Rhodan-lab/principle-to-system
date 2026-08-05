@@ -205,6 +205,79 @@ node software/principia_atlas/hosted/deployment/browser_smoke_client.mjs \
   > "$root/replica-result.json"
 
 python3 -m json.tool "$root/replica-result.json" >/dev/null
+
+operator_cookie_jar="$root/operator.cookies"
+: > "$operator_cookie_jar"
+chmod 0600 "$operator_cookie_jar"
+operator_origin="https://$external_host:18443"
+operator_curl=(
+  --silent
+  --show-error
+  --noproxy '*'
+  --resolve "$external_host:18443:127.0.0.1"
+  --resolve "$issuer_host:19443:127.0.0.1"
+  --cacert "$root/public/ca.crt"
+)
+
+curl "${operator_curl[@]}"   --fail   --location   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   "$operator_origin/"   > "$root/operator-landing.html"
+test -s "$root/operator-landing.html"
+
+operator_session_before=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-session-before.json"   --write-out '%{http_code}'   "$operator_origin/api/session")
+test "$operator_session_before" = 200
+operator_subject=$(python3 - <<'PYJSON'
+import json
+import os
+from pathlib import Path
+root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+session = json.loads((root / 'operator-session-before.json').read_text())
+subject = session.get('subject')
+assert isinstance(subject, str) and 1 <= len(subject) <= 200
+print(subject)
+PYJSON
+)
+
+operator_revoke_container="principia-atlas-replica-operator-revoke"
+docker run --rm --name "$operator_revoke_container"   --network none   "${common_security[@]}"   --mount type=bind,src="$root/replica-state",dst=/state   --entrypoint node   "$image"   /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-subject   --state /state/auth-state.sqlite   --tenant local-preview   --subject "$operator_subject"   > "$root/operator-revoke.json"
+unset operator_subject
+
+python3 - <<'PYJSON'
+import json
+from pathlib import Path
+root = Path(__import__('os').environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+revoke = json.loads((root / 'operator-revoke.json').read_text())
+assert revoke['contract'] == 'principia-atlas-hosted-auth-state-command/0.1'
+assert revoke['command'] == 'revoke-subject'
+assert revoke['revoked_sessions'] == 1
+PYJSON
+
+operator_session_after=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-session-after.json"   --write-out '%{http_code}'   "$operator_origin/api/session")
+test "$operator_session_after" = 401
+
+operator_release_after=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-release-after.json"   --write-out '%{http_code}'   "$operator_origin/app/$RELEASE_VERSION/")
+test "$operator_release_after" = 401
+
+operator_logout_after=$(curl "${operator_curl[@]}"   --request POST   --header "Origin: $operator_origin"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-logout-after.json"   --write-out '%{http_code}'   "$operator_origin/api/logout")
+test "$operator_logout_after" = 200
+! grep -Fq $'\tprincipia_atlas_session\t' "$operator_cookie_jar"
+
+python3 - <<'PYJSON'
+import json
+import os
+from pathlib import Path
+root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+result_path = root / 'replica-result.json'
+result = json.loads(result_path.read_text())
+result['operator_revocation'] = {
+    'command': 'revoke-subject',
+    'revoked_sessions': 1,
+    'session_before': 200,
+    'session_after': 401,
+    'release_after': 401,
+    'logout_cleanup': 200,
+}
+result_path.write_text(json.dumps(result, sort_keys=True, separators=(',', ':')) + '\n')
+PYJSON
+
 sudo test -s "$root/replica-audit/replica-a.ndjson"
 sudo test -s "$root/replica-audit/replica-b.ndjson"
 sudo grep -F '"event":"auth.oidc"' "$root/replica-audit/replica-b.ndjson" | grep -Fq '"outcome":"success"'
