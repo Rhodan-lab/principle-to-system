@@ -219,22 +219,38 @@ operator_curl=(
   --cacert "$root/public/ca.crt"
 )
 
-curl "${operator_curl[@]}"   --fail   --location   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   "$operator_origin/"   > "$root/operator-landing.html"
+curl "${operator_curl[@]}" --fail --location \
+  --cookie "$operator_cookie_jar" --cookie-jar "$operator_cookie_jar" \
+  "$operator_origin/" > "$root/operator-landing.html"
 test -s "$root/operator-landing.html"
 
-operator_session_before=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-session-before.json"   --write-out '%{http_code}'   "$operator_origin/api/session")
+operator_session_before=$(curl "${operator_curl[@]}" \
+  --cookie "$operator_cookie_jar" --cookie-jar "$operator_cookie_jar" \
+  --output "$root/operator-session-before.json" --write-out '%{http_code}' \
+  "$operator_origin/api/session")
 test "$operator_session_before" = 200
 
 operator_revoke_container="principia-atlas-replica-operator-revoke"
 operator_event_id="browser-smoke-disable-event-0001"
-operator_draft_file="$root/operator-revocation-draft.json"
-operator_request_file="$root/operator-revocation-request.json"
-operator_private_key="$root/operator-revocation-private.der"
-operator_public_key="$root/operator-revocation-public.der"
-openssl genpkey -algorithm ED25519 -outform DER -out "$operator_private_key"
-openssl pkey -inform DER -in "$operator_private_key" -pubout -outform DER -out "$operator_public_key"
-chmod 0400 "$operator_private_key"
-chmod 0444 "$operator_public_key"
+operator_draft_a="$root/operator-revocation-draft-a.json"
+operator_draft_b="$root/operator-revocation-draft-b.json"
+operator_request_a="$root/operator-revocation-request-a.json"
+operator_request_b="$root/operator-revocation-request-b.json"
+operator_private_a="$root/operator-revocation-private-a.der"
+operator_private_b="$root/operator-revocation-private-b.der"
+operator_public_a="$root/operator-revocation-public-a.der"
+operator_public_b="$root/operator-revocation-public-b.der"
+operator_keyring_draft="$root/operator-revocation-keyring-draft.json"
+operator_keyring="$root/operator-revocation-keyring.json"
+
+for key in a b; do
+  openssl genpkey -algorithm ED25519 -outform DER -out "$root/operator-revocation-private-$key.der"
+  openssl pkey -inform DER -in "$root/operator-revocation-private-$key.der" \
+    -pubout -outform DER -out "$root/operator-revocation-public-$key.der"
+  chmod 0400 "$root/operator-revocation-private-$key.der"
+  chmod 0444 "$root/operator-revocation-public-$key.der"
+done
+
 python3 - <<'PYJSON'
 import json
 import os
@@ -252,76 +268,130 @@ request = {
     'expires_at': now + 295,
     'receipt_ttl_seconds': 3600,
 }
-path = root / 'operator-revocation-draft.json'
-path.write_text(json.dumps(request, sort_keys=True, separators=(',', ':')) + '\n')
+for key in ('a', 'b'):
+    path = root / f'operator-revocation-draft-{key}.json'
+    path.write_text(json.dumps(request, sort_keys=True, separators=(',', ':')) + '\n')
+    path.chmod(0o600)
+keyring = {
+    'contract': 'principia-atlas-hosted-oidc-revocation-keyring-draft/0.1',
+    'keys': [
+        {
+            'public_key_file': str(root / 'operator-revocation-public-a.der'),
+            'not_before': now - 300,
+            'not_after': now + 7200,
+        },
+        {
+            'public_key_file': str(root / 'operator-revocation-public-b.der'),
+            'not_before': now - 300,
+            'not_after': now + 7200,
+        },
+    ],
+    'revoked_key_ids': [],
+}
+path = root / 'operator-revocation-keyring-draft.json'
+path.write_text(json.dumps(keyring, sort_keys=True, separators=(',', ':')) + '\n')
 path.chmod(0o600)
 PYJSON
-operator_sign=(
-  node software/principia_atlas/hosted/revocation_request_cli.mjs sign
-  --input "$operator_draft_file"
-  --private-key-file "$operator_private_key"
-  --output "$operator_request_file"
-)
-operator_sign_argv=$(printf '%q ' "${operator_sign[@]}")
-[[ "$operator_sign_argv" != *browser-smoke-learner* ]]
-[[ "$operator_sign_argv" != *identity.example.test* ]]
-"${operator_sign[@]}" > "$root/operator-sign.json"
-! grep -Fq 'browser-smoke-learner' "$root/operator-sign.json"
-! grep -Fq 'identity.example.test' "$root/operator-sign.json"
-rm -f "$operator_private_key" "$operator_draft_file"
-test ! -e "$operator_private_key"
-test ! -e "$operator_draft_file"
-sudo chown 10001:10001 "$operator_request_file"
-operator_revoke=(
-  docker run --rm --name "$operator_revoke_container"
-  --network none
-  "${common_security[@]}"
-  --mount type=bind,src="$root/replica-state",dst=/state
-  --mount type=bind,src="$operator_request_file",dst=/run/revocation-request.json,readonly
-  --mount type=bind,src="$operator_public_key",dst=/run/revocation-public.der,readonly
-  --entrypoint node
-  "$image"
-  /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-oidc-request
-  --state /state/auth-state.sqlite
-  --request-file /run/revocation-request.json
-  --request-key-file /run/revocation-public.der
-)
-operator_revoke_argv=$(printf '%q ' "${operator_revoke[@]}")
-[[ "$operator_revoke_argv" != *browser-smoke-learner* ]]
-[[ "$operator_revoke_argv" != *identity.example.test* ]]
-"${operator_revoke[@]}" > "$root/operator-revoke.json"
-"${operator_revoke[@]}" > "$root/operator-revoke-replay.json"
+
+sign_request() {
+  local key=$1
+  node software/principia_atlas/hosted/revocation_request_cli.mjs sign \
+    --input "$root/operator-revocation-draft-$key.json" \
+    --private-key-file "$root/operator-revocation-private-$key.der" \
+    --output "$root/operator-revocation-request-$key.json"
+}
+sign_request a > "$root/operator-sign-a.json"
+sign_request b > "$root/operator-sign-b.json"
+node software/principia_atlas/hosted/revocation_request_cli.mjs keyring \
+  --input "$operator_keyring_draft" \
+  --output "$operator_keyring" \
+  > "$root/operator-keyring.json"
+
+! grep -Fq 'browser-smoke-learner' "$root/operator-sign-a.json" "$root/operator-sign-b.json" "$root/operator-keyring.json"
+! grep -Fq 'identity.example.test' "$root/operator-sign-a.json" "$root/operator-sign-b.json" "$root/operator-keyring.json"
+rm -f "$operator_private_a" "$operator_private_b" "$operator_public_a" "$operator_public_b" \
+  "$operator_draft_a" "$operator_draft_b" "$operator_keyring_draft"
+for removed in "$operator_private_a" "$operator_private_b" "$operator_public_a" "$operator_public_b" \
+  "$operator_draft_a" "$operator_draft_b" "$operator_keyring_draft"; do
+  test ! -e "$removed"
+done
+sudo chown 10001:10001 "$operator_request_a" "$operator_request_b"
+
+docker_revoke() {
+  local request=$1
+  local output=$2
+  local command=(
+    docker run --rm --name "$operator_revoke_container"
+    --network none
+    "${common_security[@]}"
+    --mount type=bind,src="$root/replica-state",dst=/state
+    --mount type=bind,src="$request",dst=/run/revocation-request.json,readonly
+    --mount type=bind,src="$operator_keyring",dst=/run/revocation-keyring.json,readonly
+    --entrypoint node
+    "$image"
+    /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-oidc-request
+    --state /state/auth-state.sqlite
+    --request-file /run/revocation-request.json
+    --request-keyring-file /run/revocation-keyring.json
+  )
+  local argv
+  argv=$(printf '%q ' "${command[@]}")
+  [[ "$argv" != *browser-smoke-learner* ]]
+  [[ "$argv" != *identity.example.test* ]]
+  "${command[@]}" > "$output"
+}
+
+docker_revoke "$operator_request_a" "$root/operator-revoke.json"
+docker_revoke "$operator_request_b" "$root/operator-revoke-replay.json"
 ! grep -Fq 'browser-smoke-learner' "$root/operator-revoke.json" "$root/operator-revoke-replay.json"
 ! grep -Fq 'identity.example.test' "$root/operator-revoke.json" "$root/operator-revoke-replay.json"
 
 python3 - <<'PYJSON'
 import json
+import os
 from pathlib import Path
-root = Path(__import__('os').environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
-signed = json.loads((root / 'operator-sign.json').read_text())
+root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+signed_a = json.loads((root / 'operator-sign-a.json').read_text())
+signed_b = json.loads((root / 'operator-sign-b.json').read_text())
+keyring = json.loads((root / 'operator-keyring.json').read_text())
 revoke = json.loads((root / 'operator-revoke.json').read_text())
 replay = json.loads((root / 'operator-revoke-replay.json').read_text())
-assert signed['contract'] == 'principia-atlas-hosted-oidc-revocation-request-command/0.1'
-assert signed['command'] == 'sign'
-assert signed['event_id'] == 'browser-smoke-disable-event-0001'
-assert signed['key_id'].startswith('ed25519:')
+assert signed_a['key_id'] != signed_b['key_id']
+assert set(keyring['key_ids']) == {signed_a['key_id'], signed_b['key_id']}
 assert revoke['contract'] == 'principia-atlas-hosted-auth-state-command/0.1'
 assert revoke['command'] == 'revoke-oidc-request'
-assert revoke['verified_key_id'] == signed['key_id']
+assert revoke['verified_key_id'] == signed_a['key_id']
+assert revoke['authorization_key_id'] == signed_a['key_id']
 assert revoke['event_id'] == 'browser-smoke-disable-event-0001'
 assert revoke['replayed'] is False
 assert revoke['revoked_sessions'] == 1
 assert revoke['expires_at'] > revoke['created_at']
-assert replay == {**revoke, 'replayed': True}
+assert replay['verified_key_id'] == signed_b['key_id']
+assert replay['authorization_key_id'] == signed_a['key_id']
+assert replay['event_id'] == revoke['event_id']
+assert replay['replayed'] is True
+assert replay['revoked_sessions'] == revoke['revoked_sessions']
+assert replay['created_at'] == revoke['created_at']
+assert replay['expires_at'] == revoke['expires_at']
 PYJSON
 
-operator_session_after=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-session-after.json"   --write-out '%{http_code}'   "$operator_origin/api/session")
+operator_session_after=$(curl "${operator_curl[@]}" \
+  --cookie "$operator_cookie_jar" --cookie-jar "$operator_cookie_jar" \
+  --output "$root/operator-session-after.json" --write-out '%{http_code}' \
+  "$operator_origin/api/session")
 test "$operator_session_after" = 401
 
-operator_release_after=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-release-after.json"   --write-out '%{http_code}'   "$operator_origin/app/$RELEASE_VERSION/")
+operator_release_after=$(curl "${operator_curl[@]}" \
+  --cookie "$operator_cookie_jar" --cookie-jar "$operator_cookie_jar" \
+  --output "$root/operator-release-after.json" --write-out '%{http_code}' \
+  "$operator_origin/app/$RELEASE_VERSION/")
 test "$operator_release_after" = 401
 
-operator_logout_after=$(curl "${operator_curl[@]}"   --request POST   --header "Origin: $operator_origin"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-logout-after.json"   --write-out '%{http_code}'   "$operator_origin/api/logout")
+operator_logout_after=$(curl "${operator_curl[@]}" --request POST \
+  --header "Origin: $operator_origin" \
+  --cookie "$operator_cookie_jar" --cookie-jar "$operator_cookie_jar" \
+  --output "$root/operator-logout-after.json" --write-out '%{http_code}' \
+  "$operator_origin/api/logout")
 test "$operator_logout_after" = 200
 ! grep -Fq $'\tprincipia_atlas_session\t' "$operator_cookie_jar"
 
@@ -333,10 +403,13 @@ root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
 result_path = root / 'replica-result.json'
 result = json.loads(result_path.read_text())
 receipt = json.loads((root / 'operator-revoke.json').read_text())
+replay = json.loads((root / 'operator-revoke-replay.json').read_text())
 result['operator_revocation'] = {
     'command': 'revoke-oidc-request',
     'event_id': receipt['event_id'],
-    'verified_key_id': receipt['verified_key_id'],
+    'authorization_key_id': receipt['authorization_key_id'],
+    'verified_key_id_first': receipt['verified_key_id'],
+    'verified_key_id_retry': replay['verified_key_id'],
     'replayed': True,
     'revoked_sessions': receipt['revoked_sessions'],
     'receipt_expires_at': receipt['expires_at'],

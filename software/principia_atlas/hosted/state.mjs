@@ -9,6 +9,7 @@ const SESSION_ID = /^[A-Za-z0-9_-]{24,128}$/;
 const SUBJECT = /^[A-Za-z0-9._:@+-]{1,200}$/;
 const TENANT_ID = /^[a-z][a-z0-9-]{1,62}$/;
 const REVOCATION_EVENT_ID = /^[A-Za-z0-9._:@+-]{16,200}$/;
+const AUTHORIZATION_KEY_ID = /^ed25519:[A-Za-z0-9_-]{43}$/;
 const MAX_SCOPE_BYTES = 512;
 const MAX_REVOCATION_RECEIPT_TTL_SECONDS = 365 * 24 * 60 * 60;
 
@@ -54,24 +55,27 @@ function validateExchange(input, nowSeconds) {
   return { assertionId: input.assertionId, assertionExpiresAt: input.assertionExpiresAt, session };
 }
 
-function validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+function validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId = null) {
   identifier(eventId, REVOCATION_EVENT_ID, 'revocation event identifier');
   identifier(tenantId, TENANT_ID, 'session tenant');
   identifier(subject, SUBJECT, 'session subject');
   integer(nowSeconds, 'current time');
   integer(receiptExpiresAt, 'revocation receipt expiry');
+  if (authorizationKeyId !== null) identifier(authorizationKeyId, AUTHORIZATION_KEY_ID, 'revocation authorization key identifier');
   if (receiptExpiresAt <= nowSeconds || receiptExpiresAt - nowSeconds > MAX_REVOCATION_RECEIPT_TTL_SECONDS) fail('revocation receipt TTL is invalid');
-  return { eventId, tenantId, subject, nowSeconds, receiptExpiresAt };
+  return { eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId };
 }
 
 function revocationReceipt(value, replayed) {
-  return Object.freeze({
+  const output = {
     event_id: value.eventId,
     replayed,
     revoked_sessions: value.revokedSessions,
     created_at: value.createdAt,
     expires_at: value.expiresAt,
-  });
+  };
+  if (value.authorizationKeyId !== null && value.authorizationKeyId !== undefined) output.authorization_key_id = value.authorizationKeyId;
+  return Object.freeze(output);
 }
 
 function validateRate(scope, windowStart, windowSeconds, limit, nowSeconds) {
@@ -148,9 +152,9 @@ export function createMemoryAuthState() {
       }
       return count;
     },
-    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId = null) {
       ensureOpen();
-      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt);
+      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId);
       prune(nowSeconds);
       const existing = revocationReceipts.get(value.eventId);
       if (existing) {
@@ -168,6 +172,7 @@ export function createMemoryAuthState() {
         eventId: value.eventId,
         tenantId: value.tenantId,
         subject: value.subject,
+        authorizationKeyId: value.authorizationKeyId,
         revokedSessions: count,
         createdAt: value.nowSeconds,
         expiresAt: value.receiptExpiresAt,
@@ -228,6 +233,15 @@ function transaction(database, operation) {
   }
 }
 
+function ensureRevocationAuthorizationColumn(database) {
+  const columns = () => database.prepare('PRAGMA table_info(revocation_receipts)').all().map((row) => row.name);
+  if (columns().includes('authorization_key_id')) return;
+  try { database.exec('ALTER TABLE revocation_receipts ADD COLUMN authorization_key_id TEXT'); }
+  catch (error) {
+    if (!columns().includes('authorization_key_id')) throw error;
+  }
+}
+
 export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
   integer(busyTimeoutMs, 'SQLite busy timeout', 1);
   const path = sqlitePath(pathInput);
@@ -258,7 +272,8 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
         subject TEXT NOT NULL,
         revoked_sessions INTEGER NOT NULL,
         created_at INTEGER NOT NULL,
-        expires_at INTEGER NOT NULL
+        expires_at INTEGER NOT NULL,
+        authorization_key_id TEXT
       ) STRICT;
       CREATE INDEX IF NOT EXISTS revocation_receipts_expiry ON revocation_receipts(expires_at);
       CREATE TABLE IF NOT EXISTS rate_limits (
@@ -270,6 +285,7 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
       ) STRICT;
       CREATE INDEX IF NOT EXISTS rate_limits_expiry ON rate_limits(expires_at);
     `);
+    ensureRevocationAuthorizationColumn(database);
     const metadata = database.prepare('SELECT value FROM state_metadata WHERE key = ?').get('contract');
     if (!metadata) database.prepare('INSERT INTO state_metadata(key, value) VALUES(?, ?)').run('contract', AUTH_STATE_CONTRACT);
     else if (metadata.value !== AUTH_STATE_CONTRACT) fail('auth state schema contract is incompatible');
@@ -288,8 +304,8 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
   const selectSession = database.prepare('SELECT assertion_jti, subject, tenant_id, roles_json, issued_at, expires_at, revoked_at FROM sessions WHERE sid = ?');
   const revokeSessionStatement = database.prepare('UPDATE sessions SET revoked_at = ? WHERE sid = ? AND revoked_at IS NULL AND expires_at > ?');
   const revokeSubjectStatement = database.prepare('UPDATE sessions SET revoked_at = ? WHERE tenant_id = ? AND subject = ? AND revoked_at IS NULL AND expires_at > ?');
-  const selectRevocationReceipt = database.prepare('SELECT tenant_id, subject, revoked_sessions, created_at, expires_at FROM revocation_receipts WHERE event_id = ?');
-  const insertRevocationReceipt = database.prepare('INSERT INTO revocation_receipts(event_id, tenant_id, subject, revoked_sessions, created_at, expires_at) VALUES(?, ?, ?, ?, ?, ?)');
+  const selectRevocationReceipt = database.prepare('SELECT tenant_id, subject, revoked_sessions, created_at, expires_at, authorization_key_id FROM revocation_receipts WHERE event_id = ?');
+  const insertRevocationReceipt = database.prepare('INSERT INTO revocation_receipts(event_id, tenant_id, subject, revoked_sessions, created_at, expires_at, authorization_key_id) VALUES(?, ?, ?, ?, ?, ?, ?)');
   const upsertRate = database.prepare('INSERT INTO rate_limits(scope, window_start, count, expires_at) VALUES(?, ?, 1, ?) ON CONFLICT(scope, window_start) DO UPDATE SET count = count + 1, expires_at = excluded.expires_at');
   const selectRate = database.prepare('SELECT count FROM rate_limits WHERE scope = ? AND window_start = ?');
   const countAssertions = database.prepare('SELECT COUNT(*) AS count FROM used_assertions');
@@ -334,9 +350,9 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
       ensureOpen(); identifier(tenantId, TENANT_ID, 'session tenant'); identifier(subject, SUBJECT, 'session subject'); integer(nowSeconds, 'current time');
       return Number(revokeSubjectStatement.run(nowSeconds, tenantId, subject, nowSeconds).changes);
     },
-    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt) {
+    revokeSubjectOnce(eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId = null) {
       ensureOpen();
-      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt);
+      const value = validateRevocationReceipt(eventId, tenantId, subject, nowSeconds, receiptExpiresAt, authorizationKeyId);
       return transaction(database, () => {
         deleteRevocationReceipts.run(value.nowSeconds);
         const existing = selectRevocationReceipt.get(value.eventId);
@@ -344,15 +360,17 @@ export function openSqliteAuthState(pathInput, { busyTimeoutMs = 5000 } = {}) {
           if (existing.tenant_id !== value.tenantId || existing.subject !== value.subject) fail('revocation event target mismatch');
           return revocationReceipt({
             eventId: value.eventId,
+            authorizationKeyId: existing.authorization_key_id,
             revokedSessions: Number(existing.revoked_sessions),
             createdAt: Number(existing.created_at),
             expiresAt: Number(existing.expires_at),
           }, true);
         }
         const count = Number(revokeSubjectStatement.run(value.nowSeconds, value.tenantId, value.subject, value.nowSeconds).changes);
-        insertRevocationReceipt.run(value.eventId, value.tenantId, value.subject, count, value.nowSeconds, value.receiptExpiresAt);
+        insertRevocationReceipt.run(value.eventId, value.tenantId, value.subject, count, value.nowSeconds, value.receiptExpiresAt, value.authorizationKeyId);
         return revocationReceipt({
           eventId: value.eventId,
+          authorizationKeyId: value.authorizationKeyId,
           revokedSessions: count,
           createdAt: value.nowSeconds,
           expiresAt: value.receiptExpiresAt,
