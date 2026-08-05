@@ -5,9 +5,12 @@ import { verifyTenantConfig } from './catalog.mjs';
 import { canonicalJson, fail } from './strict_json.mjs';
 import { verifySession } from './tokens.mjs';
 
-export const SAAS_HOSTED_RUNTIME_CONTRACT = 'principia-atlas-saas-hosted-runtime/0.1';
+export const SAAS_HOSTED_RUNTIME_CONTRACT = 'principia-atlas-saas-hosted-runtime/0.2';
+export const SAAS_RUNTIME_HEALTH_PATH = '/saas/healthz';
+export const SAAS_RUNTIME_READY_PATH = '/saas/readyz';
 const MAX_URL_BYTES = 8192;
 const MAX_UPSTREAM_BYTES = 64 * 1024 * 1024;
+const MAX_READINESS_BYTES = 64 * 1024;
 const LOOPBACK = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
 const PROGRESS_MUTATION = /^\/api\/saas\/progress\/[a-z0-9-]{2,64}\/[a-z_]{2,32}$/;
 const FORWARDED_REQUEST_HEADERS = new Set([
@@ -45,6 +48,12 @@ function validateAuthState(value) {
   if (!value || typeof value.validateSession !== 'function' || typeof value.health !== 'function') {
     fail('SaaS hosted auth state is invalid');
   }
+  return value;
+}
+
+function validateReadiness(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== 'function') fail('SaaS hosted readiness check is invalid');
   return value;
 }
 
@@ -160,6 +169,7 @@ export function createSaasHostedRuntimeServer({
   authState: authStateInput,
   sessionSecret,
   applicationApi: applicationApiInput,
+  readiness: readinessInput = null,
   coreOrigin,
   fetchImpl = globalThis.fetch,
   now = () => Math.floor(Date.now() / 1000),
@@ -168,6 +178,7 @@ export function createSaasHostedRuntimeServer({
   const config = verifyTenantConfig(configInput);
   const authState = validateAuthState(authStateInput);
   const applicationApi = validateApplicationApi(applicationApiInput);
+  const readiness = validateReadiness(readinessInput);
   const core = verifyCoreOrigin(coreOrigin);
   const sessionRaw = Buffer.isBuffer(sessionSecret)
     ? Buffer.from(sessionSecret)
@@ -188,6 +199,24 @@ export function createSaasHostedRuntimeServer({
       return { status: 'unavailable', session: null };
     }
     return { status: 'ok', session };
+  };
+
+  const probeReady = async () => {
+    if (!readiness) return false;
+    try {
+      const auth = authState.health();
+      if (!auth || auth.status !== 'ok') return false;
+      const state = await readiness();
+      if (!state || state.status !== 'ok') return false;
+      const coreResponse = await upstreamFetch(fetchImpl, core, '/readyz', {
+        method: 'GET',
+        headers: { Origin: core },
+      }, timeoutMs);
+      await readBoundedResponse(coreResponse, MAX_READINESS_BYTES);
+      return coreResponse.status >= 200 && coreResponse.status < 300;
+    } catch {
+      return false;
+    }
   };
 
   const proxyCore = async (request, response, url, requestId) => {
@@ -222,6 +251,46 @@ export function createSaasHostedRuntimeServer({
       try { url = new URL(request.url ?? '/', 'http://localhost'); }
       catch { return sendJson(response, 400, { error: 'invalid_request_url' }, requestId); }
 
+      if (url.pathname === SAAS_RUNTIME_HEALTH_PATH) {
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+          response.setHeader('Allow', 'GET, HEAD');
+          return sendJson(response, 405, { error: 'method_not_allowed' }, requestId);
+        }
+        if (hasRequestBody(request)) return sendJson(response, 413, { error: 'request_body_not_allowed' }, requestId);
+        const body = { status: 'ok', contract: SAAS_HOSTED_RUNTIME_CONTRACT };
+        if (request.method === 'HEAD') {
+          const raw = canonicalJson(body);
+          securityHeaders(response, requestId);
+          response.statusCode = 200;
+          response.setHeader('Content-Type', 'application/json; charset=utf-8');
+          response.setHeader('Content-Length', String(Buffer.byteLength(raw)));
+          return response.end();
+        }
+        return sendJson(response, 200, body, requestId);
+      }
+
+      if (url.pathname === SAAS_RUNTIME_READY_PATH) {
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+          response.setHeader('Allow', 'GET, HEAD');
+          return sendJson(response, 405, { error: 'method_not_allowed' }, requestId);
+        }
+        if (hasRequestBody(request)) return sendJson(response, 413, { error: 'request_body_not_allowed' }, requestId);
+        const ready = await probeReady();
+        const status = ready ? 200 : 503;
+        const body = ready
+          ? { status: 'ready', contract: SAAS_HOSTED_RUNTIME_CONTRACT }
+          : { error: 'not_ready' };
+        if (request.method === 'HEAD') {
+          const raw = canonicalJson(body);
+          securityHeaders(response, requestId);
+          response.statusCode = status;
+          response.setHeader('Content-Type', 'application/json; charset=utf-8');
+          response.setHeader('Content-Length', String(Buffer.byteLength(raw)));
+          return response.end();
+        }
+        return sendJson(response, status, body, requestId);
+      }
+
       if (url.pathname.startsWith('/api/saas/')) {
         const bodyAllowed = request.method === 'PUT' && PROGRESS_MUTATION.test(url.pathname);
         if (hasRequestBody(request) && !bodyAllowed) {
@@ -252,6 +321,8 @@ export function createSaasHostedRuntimeServer({
     contract: SAAS_HOSTED_RUNTIME_CONTRACT,
     application_api_contract: applicationApi.descriptor.contract,
     core_kind: 'loopback',
+    health_path: SAAS_RUNTIME_HEALTH_PATH,
+    readiness_path: SAAS_RUNTIME_READY_PATH,
     production_ready: false,
   });
   return server;
