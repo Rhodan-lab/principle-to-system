@@ -64,8 +64,11 @@ jobs:
             node --check "$file"
           done
 
-      - name: Run local SaaS control-plane regressions
-        run: node --test software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs
+      - name: Run local SaaS and application API regressions
+        run: |
+          node --test \
+            software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs \
+            software/tests/test_product_alpha_principia_atlas_saas_application_api.mjs
 
       - name: Run PostgreSQL migration and semantic parity regressions
         env:

@@ -1,4 +1,4 @@
-import { fail } from '../hosted/strict_json.mjs';
+import { canonicalJson, fail, parseStrictJson } from '../hosted/strict_json.mjs';
 import {
   SAAS_CONTROL_PLANE_CONTRACT,
   SAAS_DASHBOARD_CONTRACT,
@@ -6,15 +6,19 @@ import {
   publicOrganization,
   integer,
   validateEntitlementDraft,
+  validateHostedTenantBinding,
+  validateIdempotencyInput,
   validateMembershipDraft,
   validateNow,
   validateOrganizationDraft,
   validateProgressDraft,
+  validateSessionIdentity,
 } from './domain.mjs';
 import { verifyPostgresMigrations } from './postgres_migrations.mjs';
 
 const TRANSIENT_TRANSACTION_CODES = new Set(['40001', '40P01']);
 const ADMIN_ROLES = new Set(['owner', 'admin']);
+const OWNER_ROLES = new Set(['owner']);
 
 function validatePool(pool) {
   if (!pool || typeof pool.connect !== 'function' || typeof pool.query !== 'function') {
@@ -31,6 +35,12 @@ function safeInteger(value, label) {
 
 function isUniqueViolation(error) {
   return error?.code === '23505';
+}
+
+function retryTransaction() {
+  const error = new Error('PostgreSQL transaction requires retry');
+  error.code = '40001';
+  return error;
 }
 
 async function withSerializableTransaction(pool, operation, maxAttempts) {
@@ -90,7 +100,7 @@ async function requireActor(
   const result = await client.query(`
     SELECT
       m.id, m.organization_id, m.role, m.status, m.created_at, m.updated_at,
-      o.slug, o.display_name, o.status AS organization_status,
+      o.slug, o.display_name, o.hosted_tenant_id, o.status AS organization_status,
       o.created_at AS organization_created_at, o.updated_at AS organization_updated_at
     FROM principia_atlas_saas_memberships m
     JOIN principia_atlas_saas_organizations o ON o.id = m.organization_id
@@ -128,9 +138,77 @@ function membershipFromActor(row) {
   });
 }
 
+async function writeProgress(client, actorMemberId, progress, now, { actorVerified = false } = {}) {
+  if (!actorVerified) await requireActor(client, actorMemberId, { organizationId: progress.organizationId });
+  if (actorMemberId !== progress.memberId) fail('members may only update their own learner progress');
+  const entitlement = await client.query(`
+    SELECT 1 AS allowed
+    FROM principia_atlas_saas_entitlements
+    WHERE organization_id = $1
+      AND route_id = $2
+      AND release_id = $3
+      AND starts_at <= $4
+      AND (ends_at IS NULL OR ends_at > $4)
+    FOR SHARE
+  `, [progress.organizationId, progress.routeId, progress.releaseId, now]);
+  if (entitlement.rowCount !== 1) fail('learner route is not entitled');
+
+  let stored;
+  if (progress.expectedRevision === 0) {
+    stored = await client.query(`
+      INSERT INTO principia_atlas_saas_learner_progress(
+        organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
+      ) VALUES($1, $2, $3, $4, $5, $6, 1, $7)
+      ON CONFLICT DO NOTHING
+      RETURNING organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
+    `, [
+      progress.organizationId,
+      progress.memberId,
+      progress.routeId,
+      progress.releaseId,
+      progress.stage,
+      progress.status,
+      now,
+    ]);
+  } else {
+    stored = await client.query(`
+      UPDATE principia_atlas_saas_learner_progress
+      SET status = $1, revision = revision + 1, updated_at = $2
+      WHERE organization_id = $3
+        AND member_id = $4
+        AND route_id = $5
+        AND release_id = $6
+        AND stage = $7
+        AND revision = $8
+      RETURNING organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
+    `, [
+      progress.status,
+      now,
+      progress.organizationId,
+      progress.memberId,
+      progress.routeId,
+      progress.releaseId,
+      progress.stage,
+      progress.expectedRevision,
+    ]);
+  }
+  if (stored.rowCount !== 1) fail('learner progress revision conflict');
+  const row = stored.rows[0];
+  return Object.freeze({
+    organization_id: row.organization_id,
+    member_id: row.member_id,
+    route_id: row.route_id,
+    release_id: row.release_id,
+    stage: row.stage,
+    status: row.status,
+    revision: safeInteger(row.revision, 'learner progress revision'),
+    updated_at: safeInteger(row.updated_at, 'learner progress update time'),
+  });
+}
+
 export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts = 3 } = {}) {
   const pool = validatePool(poolInput);
-  integer(maxTransactionAttempts, 'PostgreSQL transaction retry limit', 1);
+  integer(maxTransactionAttempts, 'PostgreSQL transaction retry limit', 1, 10);
   let closed = false;
   const ensureOpen = () => { if (closed) fail('SaaS control plane is closed'); };
 
@@ -184,6 +262,59 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
         if (isUniqueViolation(error)) fail('organization or bootstrap owner already exists');
         throw error;
       }
+    },
+    async bindHostedTenant(actorMemberId, bindingInput, nowSeconds) {
+      ensureOpen();
+      const binding = validateHostedTenantBinding(bindingInput);
+      const now = validateNow(nowSeconds);
+      try {
+        return await withSerializableTransaction(pool, async (client) => {
+          const actor = await requireActor(client, actorMemberId, {
+            organizationId: binding.organizationId,
+            allowedRoles: OWNER_ROLES,
+          });
+          if (actor.hosted_tenant_id !== null && actor.hosted_tenant_id !== binding.hostedTenantId) {
+            fail('hosted tenant binding is immutable');
+          }
+          if (actor.hosted_tenant_id === null) {
+            await client.query(`
+              UPDATE principia_atlas_saas_organizations
+              SET hosted_tenant_id = $1, updated_at = $2
+              WHERE id = $3 AND hosted_tenant_id IS NULL
+            `, [binding.hostedTenantId, now, binding.organizationId]);
+          }
+          return Object.freeze({ organization_id: binding.organizationId, hosted_tenant_id: binding.hostedTenantId });
+        }, maxTransactionAttempts);
+      } catch (error) {
+        if (isUniqueViolation(error)) fail('hosted tenant is already bound');
+        throw error;
+      }
+    },
+    async resolveSession(hostedTenantInput, subjectInput, nowSeconds) {
+      ensureOpen();
+      validateNow(nowSeconds);
+      const identity = validateSessionIdentity(hostedTenantInput, subjectInput);
+      return withReadSnapshot(pool, async (client) => {
+        const result = await client.query(`
+          SELECT
+            m.id, m.organization_id, m.role, m.status, m.created_at, m.updated_at,
+            o.slug, o.display_name, o.status AS organization_status,
+            o.created_at AS organization_created_at, o.updated_at AS organization_updated_at
+          FROM principia_atlas_saas_memberships m
+          JOIN principia_atlas_saas_organizations o ON o.id = m.organization_id
+          WHERE o.hosted_tenant_id = $1
+            AND m.subject_id = $2
+            AND o.status = 'active'
+            AND m.status = 'active'
+        `, [identity.hostedTenantId, identity.subjectId]);
+        if (result.rowCount === 0) return null;
+        if (result.rowCount !== 1) fail('SaaS session membership is ambiguous');
+        const row = result.rows[0];
+        return Object.freeze({
+          organization: organizationFromActor(row),
+          membership: membershipFromActor(row),
+        });
+      });
     },
     async addMembership(actorMemberId, memberInput, nowSeconds) {
       ensureOpen();
@@ -249,72 +380,69 @@ export function openPostgresSaasControlPlane(poolInput, { maxTransactionAttempts
       ensureOpen();
       const progress = validateProgressDraft(progressInput);
       const now = validateNow(nowSeconds);
-      if (actorMemberId !== progress.memberId) fail('members may only update their own learner progress');
+      return withSerializableTransaction(
+        pool,
+        (client) => writeProgress(client, actorMemberId, progress, now),
+        maxTransactionAttempts,
+      );
+    },
+    async recordProgressIdempotent(actorMemberId, progressInput, idempotencyInput, nowSeconds) {
+      ensureOpen();
+      const progress = validateProgressDraft(progressInput);
+      const idempotency = validateIdempotencyInput(idempotencyInput);
+      const now = validateNow(nowSeconds);
       return withSerializableTransaction(pool, async (client) => {
         await requireActor(client, actorMemberId, { organizationId: progress.organizationId });
-        const entitlement = await client.query(`
-          SELECT 1 AS allowed
-          FROM principia_atlas_saas_entitlements
-          WHERE organization_id = $1
-            AND route_id = $2
-            AND release_id = $3
-            AND starts_at <= $4
-            AND (ends_at IS NULL OR ends_at > $4)
-          FOR SHARE
-        `, [progress.organizationId, progress.routeId, progress.releaseId, now]);
-        if (entitlement.rowCount !== 1) fail('learner route is not entitled');
-
-        let stored;
-        if (progress.expectedRevision === 0) {
-          stored = await client.query(`
-            INSERT INTO principia_atlas_saas_learner_progress(
-              organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
-            ) VALUES($1, $2, $3, $4, $5, $6, 1, $7)
-            ON CONFLICT DO NOTHING
-            RETURNING organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
-          `, [
-            progress.organizationId,
-            progress.memberId,
-            progress.routeId,
-            progress.releaseId,
-            progress.stage,
-            progress.status,
-            now,
-          ]);
-        } else {
-          stored = await client.query(`
-            UPDATE principia_atlas_saas_learner_progress
-            SET status = $1, revision = revision + 1, updated_at = $2
-            WHERE organization_id = $3
-              AND member_id = $4
-              AND route_id = $5
-              AND release_id = $6
-              AND stage = $7
-              AND revision = $8
-            RETURNING organization_id, member_id, route_id, release_id, stage, status, revision, updated_at
-          `, [
-            progress.status,
-            now,
-            progress.organizationId,
-            progress.memberId,
-            progress.routeId,
-            progress.releaseId,
-            progress.stage,
-            progress.expectedRevision,
-          ]);
+        await client.query(`
+          DELETE FROM principia_atlas_saas_idempotency
+          WHERE organization_id = $1 AND member_id = $2 AND operation = $3
+            AND idempotency_key = $4 AND expires_at <= $5
+        `, [progress.organizationId, actorMemberId, idempotency.operation, idempotency.key, now]);
+        const replay = await client.query(`
+          SELECT request_sha256, response_status, response_body, expires_at
+          FROM principia_atlas_saas_idempotency
+          WHERE organization_id = $1 AND member_id = $2 AND operation = $3 AND idempotency_key = $4
+          FOR UPDATE
+        `, [progress.organizationId, actorMemberId, idempotency.operation, idempotency.key]);
+        if (replay.rowCount === 1) {
+          const row = replay.rows[0];
+          if (row.request_sha256 !== idempotency.requestSha256) fail('idempotency key conflict');
+          const parsed = parseStrictJson(row.response_body, 'stored SaaS idempotency response');
+          return Object.freeze({ replayed: true, progress: Object.freeze(parsed) });
         }
-        if (stored.rowCount !== 1) fail('learner progress revision conflict');
-        const row = stored.rows[0];
-        return Object.freeze({
-          organization_id: row.organization_id,
-          member_id: row.member_id,
-          route_id: row.route_id,
-          release_id: row.release_id,
-          stage: row.stage,
-          status: row.status,
-          revision: safeInteger(row.revision, 'learner progress revision'),
-          updated_at: safeInteger(row.updated_at, 'learner progress update time'),
-        });
+
+        const reservation = await client.query(`
+          INSERT INTO principia_atlas_saas_idempotency(
+            organization_id, member_id, operation, idempotency_key, request_sha256,
+            response_status, response_body, created_at, expires_at
+          ) VALUES($1, $2, $3, $4, $5, 202, '{}', $6, $7)
+          ON CONFLICT DO NOTHING
+          RETURNING idempotency_key
+        `, [
+          progress.organizationId,
+          actorMemberId,
+          idempotency.operation,
+          idempotency.key,
+          idempotency.requestSha256,
+          now,
+          now + idempotency.ttlSeconds,
+        ]);
+        if (reservation.rowCount !== 1) throw retryTransaction();
+
+        const stored = await writeProgress(client, actorMemberId, progress, now, { actorVerified: true });
+        const updated = await client.query(`
+          UPDATE principia_atlas_saas_idempotency
+          SET response_status = 200, response_body = $1
+          WHERE organization_id = $2 AND member_id = $3 AND operation = $4 AND idempotency_key = $5
+        `, [
+          canonicalJson(stored),
+          progress.organizationId,
+          actorMemberId,
+          idempotency.operation,
+          idempotency.key,
+        ]);
+        if (updated.rowCount !== 1) fail('SaaS idempotency response could not be committed');
+        return Object.freeze({ replayed: false, progress: stored });
       }, maxTransactionAttempts);
     },
     async dashboard(actorMemberId, nowSeconds) {

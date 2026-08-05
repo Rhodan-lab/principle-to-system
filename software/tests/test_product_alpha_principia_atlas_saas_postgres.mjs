@@ -23,6 +23,7 @@ function postgresDriver() {
 }
 
 const now = 1_800_100_000;
+const hostedTenant = 'postgres-public-tenant';
 const organization = {
   id: 'org_01POSTGRESSAASFOUNDAT',
   slug: 'public-science-lab',
@@ -44,14 +45,18 @@ const releaseId = 'principia-atlas-release:0.3.0-beta.1';
 
 async function populate(state) {
   await state.bootstrapOrganization(organization, owner, now);
-  await state.addMembership(owner.id, learner, now + 1);
+  await state.bindHostedTenant(owner.id, {
+    organization_id: organization.id,
+    hosted_tenant_id: hostedTenant,
+  }, now + 1);
+  await state.addMembership(owner.id, learner, now + 2);
   await state.grantEntitlement(owner.id, {
     organization_id: organization.id,
     route_id: 'refrigerator-v1',
     release_id: releaseId,
     starts_at: now,
     ends_at: null,
-  }, now + 2);
+  }, now + 3);
   await state.recordProgress(learner.id, {
     organization_id: organization.id,
     member_id: learner.id,
@@ -60,8 +65,8 @@ async function populate(state) {
     stage: 'observe',
     status: 'completed',
     expected_revision: 0,
-  }, now + 3);
-  return state.dashboard(learner.id, now + 4);
+  }, now + 4);
+  return state.dashboard(learner.id, now + 5);
 }
 
 test('PostgreSQL SaaS adapter preserves reference semantics', { skip: !databaseUrl || !clientRoot }, async () => {
@@ -77,15 +82,21 @@ test('PostgreSQL SaaS adapter preserves reference semantics', { skip: !databaseU
     ]);
     assert.deepEqual(firstPlan, secondPlan);
     assert.deepEqual(await verifyPostgresMigrations(pool), postgresMigrationPlan());
+    assert.equal(firstPlan.migrations.length, 2);
 
-    const postgres = openPostgresSaasControlPlane(pool);
+    const postgres = openPostgresSaasControlPlane(pool, { maxTransactionAttempts: 5 });
     const referenceDashboard = await populate(sqlite);
     const postgresDashboard = await populate(postgres);
     assert.deepEqual(postgresDashboard, referenceDashboard);
     assert.equal(JSON.stringify(postgresDashboard).includes(owner.subject_id), false);
     assert.equal(JSON.stringify(postgresDashboard).includes(learner.subject_id), false);
 
-    const replica = openPostgresSaasControlPlane(replicaPool);
+    const referenceSession = await sqlite.resolveSession(hostedTenant, learner.subject_id, now + 5);
+    const postgresSession = await postgres.resolveSession(hostedTenant, learner.subject_id, now + 5);
+    assert.deepEqual(postgresSession, referenceSession);
+    assert.equal(await postgres.resolveSession('wrong-tenant', learner.subject_id, now + 5), null);
+
+    const replica = openPostgresSaasControlPlane(replicaPool, { maxTransactionAttempts: 5 });
     const progressInput = {
       organization_id: organization.id,
       member_id: learner.id,
@@ -96,12 +107,48 @@ test('PostgreSQL SaaS adapter preserves reference semantics', { skip: !databaseU
       expected_revision: 0,
     };
     const concurrent = await Promise.allSettled([
-      postgres.recordProgress(learner.id, progressInput, now + 5),
-      replica.recordProgress(learner.id, progressInput, now + 5),
+      postgres.recordProgress(learner.id, progressInput, now + 6),
+      replica.recordProgress(learner.id, progressInput, now + 6),
     ]);
     assert.equal(concurrent.filter((item) => item.status === 'fulfilled').length, 1);
     const rejected = concurrent.find((item) => item.status === 'rejected');
     assert.match(rejected.reason.message, /revision conflict/);
+
+    const idempotentProgress = {
+      organization_id: organization.id,
+      member_id: learner.id,
+      route_id: 'refrigerator-v1',
+      release_id: releaseId,
+      stage: 'diagnose',
+      status: 'completed',
+      expected_revision: 0,
+    };
+    const idempotency = {
+      operation: 'progress.write',
+      key: 'postgres_idempotent_0001',
+      request_sha256: '1'.repeat(64),
+      ttl_seconds: 3600,
+    };
+    const duplicate = await Promise.all([
+      postgres.recordProgressIdempotent(learner.id, idempotentProgress, idempotency, now + 7),
+      replica.recordProgressIdempotent(learner.id, idempotentProgress, idempotency, now + 7),
+    ]);
+    assert.deepEqual(duplicate[0].progress, duplicate[1].progress);
+    assert.deepEqual(duplicate.map((item) => item.replayed).sort(), [false, true]);
+    const receipts = await pool.query(`
+      SELECT COUNT(*)::int AS count
+      FROM principia_atlas_saas_idempotency
+      WHERE organization_id = $1 AND member_id = $2 AND operation = $3 AND idempotency_key = $4
+    `, [organization.id, learner.id, idempotency.operation, idempotency.key]);
+    assert.equal(receipts.rows[0].count, 1);
+
+    await assert.rejects(
+      () => postgres.recordProgressIdempotent(learner.id, idempotentProgress, {
+        ...idempotency,
+        request_sha256: '2'.repeat(64),
+      }, now + 8),
+      /idempotency key conflict/,
+    );
 
     await assert.rejects(
       () => postgres.addMembership(owner.id, {
@@ -109,7 +156,7 @@ test('PostgreSQL SaaS adapter preserves reference semantics', { skip: !databaseU
         organization_id: organization.id,
         subject_id: learner.subject_id,
         role: 'learner',
-      }, now + 6),
+      }, now + 9),
       /already exists/,
     );
     const membershipCount = await pool.query(`
@@ -159,12 +206,14 @@ test('failed PostgreSQL migration rolls back every partial object', { skip: !dat
         to_regclass('saas_migration_failure.principia_atlas_saas_migrations') AS ledger,
         to_regclass('saas_migration_failure.principia_atlas_saas_metadata') AS metadata,
         to_regclass('saas_migration_failure.principia_atlas_saas_organizations') AS organizations,
-        to_regclass('saas_migration_failure.principia_atlas_saas_memberships') AS preexisting
+        to_regclass('saas_migration_failure.principia_atlas_saas_memberships') AS preexisting,
+        to_regclass('saas_migration_failure.principia_atlas_saas_idempotency') AS idempotency
     `);
     assert.equal(objects.rows[0].ledger, null);
     assert.equal(objects.rows[0].metadata, null);
     assert.equal(objects.rows[0].organizations, null);
     assert.equal(objects.rows[0].preexisting, 'saas_migration_failure.principia_atlas_saas_memberships');
+    assert.equal(objects.rows[0].idempotency, null);
   } finally {
     await failurePool.end();
     await admin.end();

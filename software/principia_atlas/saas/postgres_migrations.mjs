@@ -21,6 +21,7 @@ function migration(version, name, relativePath) {
 
 const MIGRATIONS = Object.freeze([
   migration(1, 'control-plane', './migrations/0001_control_plane.up.sql'),
+  migration(2, 'application-api', './migrations/0002_application_api.up.sql'),
 ]);
 
 function validatePool(pool) {
@@ -121,6 +122,12 @@ export async function verifyPostgresMigrations(pool) {
     if (asVersion(actual.version) !== expected.version || actual.name !== expected.name || actual.sha256 !== expected.sha256) {
       fail('PostgreSQL migration set does not match source');
     }
+  }
+  const contract = await validatePool(pool).query(`
+    SELECT value FROM principia_atlas_saas_metadata WHERE key = 'contract'
+  `);
+  if (contract.rowCount !== 1 || contract.rows[0].value !== SAAS_STATE_CONTRACT) {
+    fail('PostgreSQL SaaS state contract is incompatible');
   }
   return plan;
 }

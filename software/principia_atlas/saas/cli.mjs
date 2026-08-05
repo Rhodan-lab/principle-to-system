@@ -5,9 +5,12 @@ import { canonicalJson, exactKeys, fail, parseStrictJson } from '../hosted/stric
 import { openSaasControlPlane } from './store.mjs';
 
 const COMMAND_CONTRACT = 'principia-atlas-saas-control-plane-command/0.1';
-const COMMANDS = new Set(['bootstrap', 'add-member', 'grant-entitlement', 'record-progress', 'dashboard', 'health']);
+const COMMANDS = new Set([
+  'bootstrap', 'bind-tenant', 'add-member', 'grant-entitlement',
+  'record-progress', 'dashboard', 'health',
+]);
 const FLAGS = new Set(['--state', '--actor', '--now']);
-const INPUT_COMMANDS = new Set(['bootstrap', 'add-member', 'grant-entitlement', 'record-progress']);
+const INPUT_COMMANDS = new Set(['bootstrap', 'bind-tenant', 'add-member', 'grant-entitlement', 'record-progress']);
 const MAX_INPUT_BYTES = 32 * 1024;
 
 function parseArgs(argv) {
@@ -51,6 +54,8 @@ export function main(
     if (args.command === 'bootstrap') {
       exactKeys(input, ['organization', 'owner'], 'SaaS bootstrap input');
       result = state.bootstrapOrganization(input.organization, input.owner, args.now);
+    } else if (args.command === 'bind-tenant') {
+      result = state.bindHostedTenant(args.actor, input, args.now);
     } else if (args.command === 'add-member') {
       result = state.addMembership(args.actor, input, args.now);
     } else if (args.command === 'grant-entitlement') {
