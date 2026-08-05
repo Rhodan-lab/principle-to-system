@@ -1,0 +1,27 @@
+FROM node:24.18.0-bookworm-slim
+
+ARG SOURCE_DATE_EPOCH=0
+LABEL org.opencontainers.image.title="Principia & Atlas hosted control plane" \
+      org.opencontainers.image.description="Authenticated immutable Principia and Atlas release runtime" \
+      org.opencontainers.image.source="https://github.com/Rhodan-lab/principle-to-system" \
+      org.opencontainers.image.created="1970-01-01T00:00:00Z"
+
+RUN groupadd --gid 10001 principia \
+    && useradd --uid 10001 --gid 10001 --home-dir /nonexistent --no-create-home --shell /usr/sbin/nologin principia \
+    && mkdir -p /opt/principia-atlas /var/lib/principia-atlas /var/log/principia-atlas \
+    && chown -R 10001:10001 /var/lib/principia-atlas /var/log/principia-atlas
+
+WORKDIR /opt/principia-atlas
+COPY --chown=10001:10001 software/principia_atlas/hosted/ ./hosted/
+RUN find /opt/principia-atlas -type d -exec chmod 0555 {} + \
+    && find /opt/principia-atlas -type f -exec chmod 0444 {} +
+
+USER 10001:10001
+EXPOSE 8080
+VOLUME ["/var/lib/principia-atlas", "/var/log/principia-atlas"]
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:8080/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+
+ENTRYPOINT ["node", "/opt/principia-atlas/hosted/server.mjs"]
+CMD ["--catalog", "/config/catalog.json", "--tenants", "/config/tenants.json", "--store", "/store", "--state", "/var/lib/principia-atlas/auth-state.sqlite", "--identity-secret-file", "/run/secrets/identity", "--session-secret-file", "/run/secrets/session", "--metrics-token-file", "/run/secrets/metrics", "--audit-log", "/var/log/principia-atlas/audit.ndjson", "--host", "0.0.0.0", "--port", "8080", "--allow-network"]
