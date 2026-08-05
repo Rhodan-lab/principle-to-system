@@ -61,6 +61,31 @@ async function loadJson(path, label) {
   return parseStrictJson(raw, label);
 }
 
+function transientSqliteStartup(error) {
+  const message = String(error?.message ?? error);
+  return /database is (?:locked|busy)|SQLITE_(?:BUSY|LOCKED)|UNIQUE constraint failed: state_metadata\.key/i.test(message);
+}
+
+export async function openAuthStateWithRetry(path, {
+  attempts = 20,
+  delayMs = 100,
+  open = openSqliteAuthState,
+  sleep = (duration) => new Promise((resolveSleep) => setTimeout(resolveSleep, duration)),
+} = {}) {
+  if (!Number.isSafeInteger(attempts) || attempts < 1 || attempts > 100) throw new Error('auth state startup attempts are invalid');
+  if (!Number.isSafeInteger(delayMs) || delayMs < 1 || delayMs > 5000) throw new Error('auth state startup delay is invalid');
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try { return open(path); }
+    catch (error) {
+      lastError = error;
+      if (!transientSqliteStartup(error) || attempt === attempts) throw error;
+      await sleep(delayMs * attempt);
+    }
+  }
+  throw lastError;
+}
+
 export function gracefulShutdown({ server, authState, audit, signal = 'SIGTERM', timeoutMs = 10000 }) {
   if (server.__principiaAtlasShutdown) return server.__principiaAtlasShutdown;
   server.__principiaAtlasShutdown = new Promise((resolveShutdown) => {
@@ -101,9 +126,10 @@ export async function main(argv = process.argv.slice(2)) {
   if (identitySecret.equals(sessionSecret)) throw new Error('identity and session secrets must be distinct');
   const audit = createAuditLogger({ path: args.auditLog ?? null, instanceId: args.instanceId });
   const metrics = createMetricsRegistry();
-  const authState = openSqliteAuthState(args.state);
+  let authState;
   let server;
   try {
+    authState = await openAuthStateWithRetry(args.state);
     validateNetworkBoundary(args, verified.config, authState);
     authState.health();
     metrics.setReady(true);
@@ -129,7 +155,7 @@ export async function main(argv = process.argv.slice(2)) {
     identitySecret.fill(0);
     sessionSecret.fill(0);
     metricsToken?.fill(0);
-    try { authState.close(); } catch {}
+    try { authState?.close(); } catch {}
     try { audit.event('server.start_fail', { reason: 'initialization' }); } catch {}
     try { audit.close(); } catch {}
     throw error;
@@ -146,7 +172,7 @@ export async function main(argv = process.argv.slice(2)) {
   console.log(`Principia & Atlas hosted control plane: http://${args.host}:${actualPort}/`);
   console.log(`Hosted store: ${store.manifest.store_id}`);
   console.log(`Auth state: ${stateInfo.kind} durable=${stateInfo.durable} multi-instance=${stateInfo.multi_instance}`);
-  console.log(`Metrics: ${metricsToken ? 'protected /metrics' : 'disabled'}`);
+  console.log(`Metrics: ${args.metricsTokenFile ? 'protected /metrics' : 'disabled'}`);
   console.log('Release serving: authenticated immutable content store');
   let signalCount = 0;
   const stop = (signal) => {
