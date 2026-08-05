@@ -227,7 +227,14 @@ test "$operator_session_before" = 200
 
 operator_revoke_container="principia-atlas-replica-operator-revoke"
 operator_event_id="browser-smoke-disable-event-0001"
+operator_draft_file="$root/operator-revocation-draft.json"
 operator_request_file="$root/operator-revocation-request.json"
+operator_private_key="$root/operator-revocation-private.der"
+operator_public_key="$root/operator-revocation-public.der"
+openssl genpkey -algorithm ED25519 -outform DER -out "$operator_private_key"
+openssl pkey -inform DER -in "$operator_private_key" -pubout -outform DER -out "$operator_public_key"
+chmod 0400 "$operator_private_key"
+chmod 0444 "$operator_public_key"
 python3 - <<'PYJSON'
 import json
 import os
@@ -236,7 +243,7 @@ from pathlib import Path
 root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
 now = int(time.time())
 request = {
-    'contract': 'principia-atlas-hosted-oidc-revocation-request/0.1',
+    'contract': 'principia-atlas-hosted-oidc-revocation-request-draft/0.1',
     'tenant_id': 'local-preview',
     'issuer': 'https://identity.example.test:19443',
     'external_subject': 'browser-smoke-learner',
@@ -245,10 +252,25 @@ request = {
     'expires_at': now + 295,
     'receipt_ttl_seconds': 3600,
 }
-path = root / 'operator-revocation-request.json'
+path = root / 'operator-revocation-draft.json'
 path.write_text(json.dumps(request, sort_keys=True, separators=(',', ':')) + '\n')
 path.chmod(0o600)
 PYJSON
+operator_sign=(
+  node software/principia_atlas/hosted/revocation_request_cli.mjs sign
+  --input "$operator_draft_file"
+  --private-key-file "$operator_private_key"
+  --output "$operator_request_file"
+)
+operator_sign_argv=$(printf '%q ' "${operator_sign[@]}")
+[[ "$operator_sign_argv" != *browser-smoke-learner* ]]
+[[ "$operator_sign_argv" != *identity.example.test* ]]
+"${operator_sign[@]}" > "$root/operator-sign.json"
+! grep -Fq 'browser-smoke-learner' "$root/operator-sign.json"
+! grep -Fq 'identity.example.test' "$root/operator-sign.json"
+rm -f "$operator_private_key" "$operator_draft_file"
+test ! -e "$operator_private_key"
+test ! -e "$operator_draft_file"
 sudo chown 10001:10001 "$operator_request_file"
 operator_revoke=(
   docker run --rm --name "$operator_revoke_container"
@@ -256,11 +278,13 @@ operator_revoke=(
   "${common_security[@]}"
   --mount type=bind,src="$root/replica-state",dst=/state
   --mount type=bind,src="$operator_request_file",dst=/run/revocation-request.json,readonly
+  --mount type=bind,src="$operator_public_key",dst=/run/revocation-public.der,readonly
   --entrypoint node
   "$image"
   /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-oidc-request
   --state /state/auth-state.sqlite
   --request-file /run/revocation-request.json
+  --request-key-file /run/revocation-public.der
 )
 operator_revoke_argv=$(printf '%q ' "${operator_revoke[@]}")
 [[ "$operator_revoke_argv" != *browser-smoke-learner* ]]
@@ -274,10 +298,16 @@ python3 - <<'PYJSON'
 import json
 from pathlib import Path
 root = Path(__import__('os').environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+signed = json.loads((root / 'operator-sign.json').read_text())
 revoke = json.loads((root / 'operator-revoke.json').read_text())
 replay = json.loads((root / 'operator-revoke-replay.json').read_text())
+assert signed['contract'] == 'principia-atlas-hosted-oidc-revocation-request-command/0.1'
+assert signed['command'] == 'sign'
+assert signed['event_id'] == 'browser-smoke-disable-event-0001'
+assert signed['key_id'].startswith('ed25519:')
 assert revoke['contract'] == 'principia-atlas-hosted-auth-state-command/0.1'
 assert revoke['command'] == 'revoke-oidc-request'
+assert revoke['verified_key_id'] == signed['key_id']
 assert revoke['event_id'] == 'browser-smoke-disable-event-0001'
 assert revoke['replayed'] is False
 assert revoke['revoked_sessions'] == 1
@@ -306,6 +336,7 @@ receipt = json.loads((root / 'operator-revoke.json').read_text())
 result['operator_revocation'] = {
     'command': 'revoke-oidc-request',
     'event_id': receipt['event_id'],
+    'verified_key_id': receipt['verified_key_id'],
     'replayed': True,
     'revoked_sessions': receipt['revoked_sessions'],
     'receipt_expires_at': receipt['expires_at'],
