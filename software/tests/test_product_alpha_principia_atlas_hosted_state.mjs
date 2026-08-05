@@ -5,12 +5,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
+import { main as authStateCommand } from '../principia_atlas/hosted/auth_state_cli.mjs';
 import {
   AUTH_STATE_CONTRACT,
   CATALOG_CONTRACT,
   PRODUCT,
   TENANT_CONTRACT,
   canonicalJson,
+  canonicalOidcSubject,
   createControlPlaneServer,
   exchangeIdentityAssertion,
   openSqliteAuthState,
@@ -236,6 +238,51 @@ test('operator revocation invalidates every active subject session', async () =>
     assert.equal(stats.revoked_sessions, 2);
     state.prune(now + 4000);
     assert.equal(state.stats(now + 4000).active_sessions, 0);
+    state.close();
+  } finally {
+    await rm(fixture.directory, { recursive: true, force: true });
+  }
+});
+
+test('operator CLI revokes an external OIDC subject without exposing canonical identity', async () => {
+  const fixture = temporaryState();
+  try {
+    const state = openSqliteAuthState(fixture.path);
+    const now = 1_800_000_000;
+    const issuer = 'https://identity.external.test';
+    const externalSubject = 'external-learner';
+    const canonicalSubject = canonicalOidcSubject(issuer, externalSubject);
+    const otherSubject = canonicalOidcSubject(issuer, 'other-learner');
+    assert.match(canonicalSubject, /^oidc:[A-Za-z0-9_-]{43}$/);
+    assert.notEqual(canonicalSubject, canonicalOidcSubject('https://other-identity.external.test', externalSubject));
+    assert.throws(() => canonicalOidcSubject('http://identity.external.test', externalSubject), /HTTPS/);
+    assert.throws(() => canonicalOidcSubject(issuer, 'bad\u0000subject'), /subject claim/);
+
+    const sessions = [];
+    for (const [index, subject] of [canonicalSubject, canonicalSubject, otherSubject].entries()) {
+      const assertion = signIdentityAssertion(claims(now, `external_operator_assertion_000${index + 1}`, subject), identitySecret, config());
+      const exchanged = exchangeIdentityAssertion(assertion, identitySecret, sessionSecret, config(), now, () => `external_operator_session_000${index + 1}`);
+      assert.equal(state.commitExchange({ assertionId: exchanged.assertion.jti, assertionExpiresAt: exchanged.assertion.exp, session: exchanged.session }, now), true);
+      sessions.push(exchanged.session);
+    }
+
+    let output = '';
+    const result = authStateCommand([
+      'revoke-oidc-subject',
+      '--state', fixture.path,
+      '--tenant', 'school-demo',
+      '--issuer', issuer,
+      '--external-subject', externalSubject,
+      '--now', String(now + 1),
+    ], (value) => { output += value; });
+    assert.equal(result.contract, 'principia-atlas-hosted-auth-state-command/0.1');
+    assert.equal(result.command, 'revoke-oidc-subject');
+    assert.equal(result.revoked_sessions, 2);
+    assert.equal(output.includes(externalSubject), false);
+    assert.equal(output.includes(canonicalSubject), false);
+    assert.equal(state.validateSession(sessions[0], now + 2), false);
+    assert.equal(state.validateSession(sessions[1], now + 2), false);
+    assert.equal(state.validateSession(sessions[2], now + 2), true);
     state.close();
   } finally {
     await rm(fixture.directory, { recursive: true, force: true });
