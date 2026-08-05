@@ -168,7 +168,8 @@ test('SaaS startup accepts only secret-file database URLs with verified TLS', as
     ];
     await assert.rejects(() => runtimeMain(args), /sslmode=verify-full/);
 
-    writeFileSync(databasePath, 'postgres://user:password@db.internal/app?sslmode=verify-full', { mode: 0o400 });
+    chmodSync(databasePath, 0o600);
+    writeFileSync(databasePath, 'postgres://user:password@db.internal/app?sslmode=verify-full');
     chmodSync(databasePath, 0o400);
     chmodSync(driverPath, 0o600);
     await assert.rejects(() => runtimeMain(args), /must be read-only/);
