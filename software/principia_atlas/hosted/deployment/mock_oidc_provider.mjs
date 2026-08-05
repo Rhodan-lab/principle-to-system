@@ -1,10 +1,5 @@
 #!/usr/bin/env node
-import {
-  createHash,
-  createSign,
-  randomBytes,
-  timingSafeEqual,
-} from 'node:crypto';
+import { createHash, createSign, randomBytes, timingSafeEqual } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:https';
 import { resolve } from 'node:path';
@@ -27,24 +22,16 @@ function parseArgs(argv) {
     seen.add(name);
     output[name.slice(2).replaceAll(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = value;
   }
-  for (const required of [
-    'issuer', 'clientId', 'clientSecretFile', 'audience', 'redirectUri',
-    'tlsKey', 'tlsCert', 'signingKey', 'jwks',
-  ]) {
-    if (!output[required]) fail(`mock OIDC --${required.replaceAll(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} is required`);
-  }
   output.port = Number(output.port);
   output.codeTtlSeconds = Number(output.codeTtlSeconds);
-  if (!Number.isInteger(output.port) || output.port < 1 || output.port > 65535) fail('mock OIDC port is invalid');
-  if (!Number.isInteger(output.codeTtlSeconds) || output.codeTtlSeconds < 30 || output.codeTtlSeconds > 300) fail('mock OIDC code TTL is invalid');
   return output;
 }
 
-function exactHttpsUrl(value, label) {
+function exactHttpsOrigin(value, label) {
   let parsed;
   try { parsed = new URL(value); } catch { fail(`${label} is invalid`); }
-  if (parsed.protocol !== 'https:' || parsed.username || parsed.password || parsed.search || parsed.hash) fail(`${label} is invalid`);
-  return parsed.toString().replace(/\/$/, '');
+  if (parsed.protocol !== 'https:' || parsed.username || parsed.password || parsed.pathname !== '/' || parsed.search || parsed.hash) fail(`${label} must be an exact HTTPS origin`);
+  return parsed.origin;
 }
 
 function exactCallback(value) {
@@ -73,14 +60,12 @@ function constantEquals(left, right) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-function base64urlJson(value) {
+function encodeJson(value) {
   return Buffer.from(canonicalJson(value), 'utf8').toString('base64url');
 }
 
 function signJwt(payload, privateKey, kid) {
-  const header = base64urlJson({ alg: 'RS256', kid, typ: 'JWT' });
-  const body = base64urlJson(payload);
-  const input = `${header}.${body}`;
+  const input = `${encodeJson({ alg: 'RS256', kid, typ: 'JWT' })}.${encodeJson(payload)}`;
   const signer = createSign('RSA-SHA256');
   signer.update(input, 'ascii');
   signer.end();
@@ -99,6 +84,7 @@ async function readBody(request) {
 }
 
 function sendJson(response, status, value) {
+  if (response.writableEnded) return;
   const raw = Buffer.from(canonicalJson(value), 'utf8');
   response.statusCode = status;
   response.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -108,20 +94,32 @@ function sendJson(response, status, value) {
   response.end(raw);
 }
 
-function sendEmpty(response, status, location = null) {
-  response.statusCode = status;
+function redirect(response, location) {
+  response.statusCode = 302;
+  response.setHeader('Location', location);
   response.setHeader('Cache-Control', 'no-store');
-  if (location !== null) response.setHeader('Location', location);
   response.setHeader('Content-Length', '0');
   response.end();
 }
 
+function validateOptions(options) {
+  const args = { host: '127.0.0.1', port: 9443, codeTtlSeconds: 120, ...options };
+  for (const required of [
+    'issuer', 'clientId', 'clientSecretFile', 'audience', 'redirectUri',
+    'tlsKey', 'tlsCert', 'signingKey', 'jwks',
+  ]) {
+    if (!args[required]) fail(`mock OIDC ${required} is required`);
+  }
+  args.issuer = exactHttpsOrigin(args.issuer, 'mock OIDC issuer');
+  args.redirectUri = exactCallback(args.redirectUri);
+  if (!TOKEN.test(args.clientId) || !TOKEN.test(args.audience)) fail('mock OIDC client or audience is invalid');
+  if (!Number.isInteger(args.port) || args.port < 1 || args.port > 65535) fail('mock OIDC port is invalid');
+  if (!Number.isInteger(args.codeTtlSeconds) || args.codeTtlSeconds < 30 || args.codeTtlSeconds > 300) fail('mock OIDC code TTL is invalid');
+  return args;
+}
+
 export async function createMockOidcProvider(options = {}) {
-  const args = { ...parseArgs([]), ...options };
-  const issuer = exactHttpsUrl(args.issuer, 'mock OIDC issuer');
-  const redirectUri = exactCallback(args.redirectUri);
-  if (typeof args.clientId !== 'string' || !TOKEN.test(args.clientId)) fail('mock OIDC client ID is invalid');
-  if (typeof args.audience !== 'string' || !TOKEN.test(args.audience)) fail('mock OIDC audience is invalid');
+  const args = validateOptions(options);
   const clientSecret = readSecretFile(args.clientSecretFile, 'mock OIDC client secret');
   const [tlsKey, tlsCert, signingKey, jwksRaw] = await Promise.all([
     readFile(resolve(args.tlsKey)),
@@ -134,18 +132,15 @@ export async function createMockOidcProvider(options = {}) {
   const kid = jwks.keys[0]?.kid;
   if (typeof kid !== 'string' || !TOKEN.test(kid)) fail('mock OIDC JWKS kid is invalid');
   const codes = new Map();
-  let closed = false;
 
   const purge = (current) => {
-    for (const [code, record] of codes) {
-      if (record.expiresAt < current) codes.delete(code);
-    }
+    for (const [code, record] of codes) if (record.expiresAt < current) codes.delete(code);
   };
 
   const server = createServer({ key: tlsKey, cert: tlsCert }, (request, response) => {
     const handle = async () => {
-      const url = new URL(request.url ?? '/', issuer);
-      if (url.origin !== issuer) return sendJson(response, 400, { error: 'invalid_request' });
+      const url = new URL(request.url ?? '/', args.issuer);
+      if (url.origin !== args.issuer) fail('mock OIDC request origin is invalid');
       if (request.method === 'GET' && url.pathname === '/healthz') return sendJson(response, 200, { status: 'ok' });
       if (request.method === 'GET' && url.pathname === '/jwks') return sendJson(response, 200, jwks);
 
@@ -157,20 +152,20 @@ export async function createMockOidcProvider(options = {}) {
         const state = one(url.searchParams, 'state', { max: 256 });
         const nonce = one(url.searchParams, 'nonce', { max: 256 });
         const challenge = one(url.searchParams, 'code_challenge', { max: 256 });
-        const challengeMethod = one(url.searchParams, 'code_challenge_method');
-        if (responseType !== 'code' || clientId !== args.clientId || callback !== redirectUri) fail('mock OIDC authorization request is invalid');
+        const method = one(url.searchParams, 'code_challenge_method');
+        if (responseType !== 'code' || clientId !== args.clientId || callback !== args.redirectUri) fail('mock OIDC authorization request is invalid');
         if (!scope.split(/\s+/).includes('openid')) fail('mock OIDC openid scope is required');
-        if (!BASE64URL.test(state) || !BASE64URL.test(nonce) || !BASE64URL.test(challenge) || challengeMethod !== 'S256') fail('mock OIDC PKCE request is invalid');
+        if (!BASE64URL.test(state) || !BASE64URL.test(nonce) || !BASE64URL.test(challenge) || method !== 'S256') fail('mock OIDC PKCE request is invalid');
         const current = Math.floor(Date.now() / 1000);
         purge(current);
         if (codes.size >= MAX_CODES) fail('mock OIDC authorization code capacity exceeded');
         const code = randomBytes(32).toString('base64url');
         codes.set(code, { nonce, challenge, expiresAt: current + args.codeTtlSeconds });
-        const location = new URL(redirectUri);
+        const location = new URL(args.redirectUri);
         location.searchParams.set('code', code);
         location.searchParams.set('state', state);
-        location.searchParams.set('iss', issuer);
-        return sendEmpty(response, 302, location.toString());
+        location.searchParams.set('iss', args.issuer);
+        return redirect(response, location.toString());
       }
 
       if (request.method === 'POST' && url.pathname === '/token') {
@@ -183,7 +178,7 @@ export async function createMockOidcProvider(options = {}) {
         const clientId = one(form, 'client_id');
         const verifier = one(form, 'code_verifier', { max: 256 });
         const suppliedSecret = one(form, 'client_secret');
-        if (grantType !== 'authorization_code' || callback !== redirectUri || clientId !== args.clientId) fail('mock OIDC token request is invalid');
+        if (grantType !== 'authorization_code' || callback !== args.redirectUri || clientId !== args.clientId) fail('mock OIDC token request is invalid');
         if (!constantEquals(suppliedSecret, clientSecret.toString('utf8'))) return sendJson(response, 401, { error: 'invalid_client' });
         const current = Math.floor(Date.now() / 1000);
         purge(current);
@@ -193,7 +188,7 @@ export async function createMockOidcProvider(options = {}) {
         const expected = createHash('sha256').update(verifier, 'ascii').digest('base64url');
         if (!constantEquals(expected, record.challenge)) return sendJson(response, 400, { error: 'invalid_grant' });
         const idToken = signJwt({
-          iss: issuer,
+          iss: args.issuer,
           aud: args.audience,
           sub: 'browser-smoke-learner',
           organization: 'external-school',
@@ -204,11 +199,7 @@ export async function createMockOidcProvider(options = {}) {
           exp: current + 300,
           jti: randomBytes(24).toString('base64url'),
         }, signingKey, kid);
-        return sendJson(response, 200, {
-          token_type: 'Bearer',
-          expires_in: 300,
-          id_token: idToken,
-        });
+        return sendJson(response, 200, { token_type: 'Bearer', expires_in: 300, id_token: idToken });
       }
 
       return sendJson(response, 404, { error: 'not_found' });
@@ -217,8 +208,6 @@ export async function createMockOidcProvider(options = {}) {
   });
 
   server.once('close', () => {
-    if (closed) return;
-    closed = true;
     clientSecret.fill(0);
     signingKey.fill(0);
     tlsKey.fill(0);
@@ -228,7 +217,7 @@ export async function createMockOidcProvider(options = {}) {
 }
 
 export async function main(argv = process.argv.slice(2)) {
-  const args = parseArgs(argv);
+  const args = validateOptions(parseArgs(argv));
   const server = await createMockOidcProvider(args);
   await new Promise((resolveListen, reject) => {
     server.once('error', reject);
