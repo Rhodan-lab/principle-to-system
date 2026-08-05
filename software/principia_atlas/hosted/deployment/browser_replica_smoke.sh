@@ -189,6 +189,8 @@ docker run -d --name "$gateway" \
   --upstream-origin http://127.0.0.1:8081 \
   --callback-upstream-origin http://127.0.0.1:8082 \
   --callback-path /auth/callback \
+  --session-upstream-origin http://127.0.0.1:8082 \
+  --session-path /api/session \
   --tls-key /run/gateway/tls.key \
   --tls-cert /mock/gateway.crt
 wait_https "$external_host" 18443 "https://$external_host:18443/edge/healthz"
@@ -207,5 +209,8 @@ sudo test -s "$root/replica-audit/replica-a.ndjson"
 sudo test -s "$root/replica-audit/replica-b.ndjson"
 sudo grep -F '"event":"auth.oidc"' "$root/replica-audit/replica-b.ndjson" | grep -Fq '"outcome":"success"'
 ! sudo grep -Fq '"event":"auth.oidc"' "$root/replica-audit/replica-a.ndjson"
+sudo grep -F '"event":"auth.logout"' "$root/replica-audit/replica-a.ndjson" | grep -Fq '"outcome":"revoked"'
+! sudo grep -Fq '"event":"auth.logout"' "$root/replica-audit/replica-b.ndjson"
+sudo grep -F '"event":"session.reject"' "$root/replica-audit/replica-b.ndjson" | grep -Fq '"reason":"unregistered_or_revoked"'
 ! sudo grep -Fq 'browser-client-secret' "$root/replica-audit/"*.ndjson
 ! sudo grep -Fq 'browser-flow-secret' "$root/replica-audit/"*.ndjson
