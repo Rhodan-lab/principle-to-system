@@ -105,22 +105,35 @@ jobs:
           await writeFile(`${root}/hosted/tenants.json`, JSON.stringify(sealTenantConfig(unsigned), null, 2) + '\n');
           JS
 
-      - name: Build reproducible non-root image
+      - name: Build reproducible non-root OCI image
         run: |
+          set -euo pipefail
           export SOURCE_DATE_EPOCH=0
-          docker build --no-cache \
+          docker buildx version
+          for candidate in first second; do
+            docker buildx build --no-cache \
+              --provenance=false \
+              --sbom=false \
+              --build-arg SOURCE_DATE_EPOCH=0 \
+              --file software/principia_atlas/hosted/Containerfile \
+              --output "type=oci,dest=$RUNNER_TEMP/hosted/image-$candidate.oci.tar,rewrite-timestamp=true" \
+              .
+          done
+          cmp "$RUNNER_TEMP/hosted/image-first.oci.tar" "$RUNNER_TEMP/hosted/image-second.oci.tar"
+          sha256sum "$RUNNER_TEMP/hosted/image-first.oci.tar" \
+            | sed 's#image-first\.oci\.tar#principia-atlas-hosted.oci.tar#' \
+            > "$RUNNER_TEMP/hosted/image-oci.sha256"
+          docker buildx build --no-cache \
+            --provenance=false \
+            --sbom=false \
             --build-arg SOURCE_DATE_EPOCH=0 \
             --file software/principia_atlas/hosted/Containerfile \
-            --tag principia-atlas-hosted:first .
-          first_id="$(docker image inspect principia-atlas-hosted:first --format '{{.Id}}')"
-          docker build --no-cache \
-            --build-arg SOURCE_DATE_EPOCH=0 \
-            --file software/principia_atlas/hosted/Containerfile \
-            --tag principia-atlas-hosted:second .
-          second_id="$(docker image inspect principia-atlas-hosted:second --format '{{.Id}}')"
-          test "$first_id" = "$second_id"
+            --load \
+            --tag principia-atlas-hosted:first \
+            .
           test "$(docker image inspect principia-atlas-hosted:first --format '{{.Config.User}}')" = "10001:10001"
           docker image inspect principia-atlas-hosted:first > "$RUNNER_TEMP/hosted/image-inspect.json"
+          rm -f "$RUNNER_TEMP/hosted/image-first.oci.tar" "$RUNNER_TEMP/hosted/image-second.oci.tar"
 
       - name: Prepare runtime mounts and secrets
         run: |
@@ -256,6 +269,7 @@ jobs:
           name: principia-atlas-hosted-deployment-${{ github.sha }}
           path: |
             ${{ runner.temp }}/hosted/image-inspect.json
+            ${{ runner.temp }}/hosted/image-oci.sha256
             ${{ runner.temp }}/hosted/metrics.txt
             ${{ runner.temp }}/hosted/backup-result.json
             ${{ runner.temp }}/hosted/backup-verify.json
