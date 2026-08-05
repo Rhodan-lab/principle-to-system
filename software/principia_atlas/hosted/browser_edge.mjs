@@ -3,7 +3,8 @@ import { createServer as createHttpServer } from 'node:http';
 import { isIP } from 'node:net';
 
 import { createBrowserOidcFlow } from './browser_oidc.mjs';
-import { canonicalJson, fail, parseStrictJson } from './strict_json.mjs';
+import { canonicalJson, exactKeys, fail, parseStrictJson } from './strict_json.mjs';
+import { SESSION_CONTRACT } from './tokens.mjs';
 
 export const BROWSER_EDGE_CONTRACT = 'principia-atlas-browser-oidc-edge/0.1';
 const MAX_URL_BYTES = 8192;
@@ -81,7 +82,7 @@ function redirect(response, location, id, cookies = []) {
 
 function samePublicOrigin(request, publicOrigin) {
   const origin = request.headers.origin;
-  if (!origin) return true;
+  if (!origin) return request.method !== 'POST';
   try { return new URL(origin).origin === publicOrigin; } catch { return false; }
 }
 
@@ -174,8 +175,8 @@ export function createBrowserOidcEdgeServer({
       return sendJson(response, 405, { error: 'method_not_allowed' }, id);
     }
     if (hasRequestBody(request)) return sendJson(response, 413, { error: 'request_body_not_allowed' }, id);
-    if (!samePublicOrigin(request, publicOrigin)) return sendJson(response, 403, { error: 'origin_rejected' }, id);
     if (['/api/auth/oidc', '/api/auth/exchange', '/metrics'].includes(url.pathname)) return sendJson(response, 404, { error: 'not_found' }, id);
+    if (!samePublicOrigin(request, publicOrigin)) return sendJson(response, 403, { error: 'origin_rejected' }, id);
     const upstreamResponse = await upstreamFetch(fetchImpl, upstream, `${url.pathname}${url.search}`, {
       method: request.method,
       headers: forwardedRequestHeaders(request, upstream),
@@ -224,10 +225,15 @@ export function createBrowserOidcEdgeServer({
         if (completed.status !== 'complete') {
           return redirect(response, completed.return_to, id, [completed.clear_cookie]);
         }
-        const exchanged = await upstreamFetch(fetchImpl, upstream, '/api/auth/oidc', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${completed.id_token}`, Origin: upstream },
-        }, exchangeTimeoutMs);
+        let exchanged;
+        try {
+          exchanged = await upstreamFetch(fetchImpl, upstream, '/api/auth/oidc', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${completed.id_token}`, Origin: upstream },
+          }, exchangeTimeoutMs);
+        } catch {
+          return sendJson(response, 503, { error: 'identity_exchange_unavailable' }, id, { 'Set-Cookie': completed.clear_cookie });
+        }
         const raw = await readBoundedResponse(exchanged, 65536);
         if (exchanged.status !== 200) {
           return sendJson(response, 401, { error: 'browser_login_failed' }, id, { 'Set-Cookie': completed.clear_cookie });
@@ -239,7 +245,14 @@ export function createBrowserOidcEdgeServer({
         let exchangeBody;
         try { exchangeBody = parseStrictJson(raw, 'browser edge identity exchange'); }
         catch { return sendJson(response, 502, { error: 'identity_exchange_invalid' }, id, { 'Set-Cookie': completed.clear_cookie }); }
-        if (!exchangeBody || typeof exchangeBody !== 'object' || Array.isArray(exchangeBody)) {
+        try {
+          exactKeys(exchangeBody, ['contract', 'subject', 'tenant_id', 'roles', 'expires_at'], 'browser edge identity exchange');
+          if (exchangeBody.contract !== SESSION_CONTRACT
+            || typeof exchangeBody.subject !== 'string' || !exchangeBody.subject
+            || typeof exchangeBody.tenant_id !== 'string' || !exchangeBody.tenant_id
+            || !Array.isArray(exchangeBody.roles) || !exchangeBody.roles.every((role) => typeof role === 'string' && role)
+            || !Number.isSafeInteger(exchangeBody.expires_at)) fail('browser edge identity exchange contract is invalid');
+        } catch {
           return sendJson(response, 502, { error: 'identity_exchange_invalid' }, id, { 'Set-Cookie': completed.clear_cookie });
         }
         const cookies = exchanged.headers.getSetCookie?.() ?? [];
