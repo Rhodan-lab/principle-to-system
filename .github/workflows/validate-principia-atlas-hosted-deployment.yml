@@ -158,10 +158,24 @@ jobs:
             --mount type=bind,src="$RUNNER_TEMP/hosted/audit",dst=/var/log/principia-atlas
             --mount type=bind,src="$RUNNER_TEMP/hosted/secrets",dst=/run/secrets,readonly
           )
+          server_args=(
+            --catalog /config/catalog.json
+            --tenants /config/tenants.json
+            --store /store
+            --state /var/lib/principia-atlas/auth-state.sqlite
+            --identity-secret-file /run/secrets/identity
+            --session-secret-file /run/secrets/session
+            --metrics-token-file /run/secrets/metrics
+            --audit-log /var/log/principia-atlas/audit.ndjson
+            --host 0.0.0.0
+            --port 8080
+            --allow-network
+            --shutdown-timeout-ms 20000
+          )
           docker run -d --name principia-atlas-a -p 18081:8080 "${common[@]}" \
-            principia-atlas-hosted:first --instance-id instance-a
+            principia-atlas-hosted:first "${server_args[@]}" --instance-id instance-a
           docker run -d --name principia-atlas-b -p 18082:8080 "${common[@]}" \
-            principia-atlas-hosted:first --instance-id instance-b
+            principia-atlas-hosted:first "${server_args[@]}" --instance-id instance-b
           for port in 18081 18082; do
             for attempt in $(seq 1 30); do
               curl --fail --silent "http://127.0.0.1:$port/readyz" >/dev/null && break
@@ -198,32 +212,32 @@ jobs:
           curl --fail --silent \
             --header "Cookie: $cookie" \
             "http://127.0.0.1:18082/api/session" >/dev/null
-          node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
+          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
             --state "$RUNNER_TEMP/hosted/state/auth-state.sqlite" \
             --output "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
             > "$RUNNER_TEMP/hosted/backup-result.json"
-          node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
+          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
             --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
             > "$RUNNER_TEMP/hosted/backup-verify.json"
           docker stop --time 25 principia-atlas-b >/dev/null
-          node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
+          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
             --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
             --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
             --confirm-offline ALL_INSTANCES_STOPPED \
             > "$RUNNER_TEMP/hosted/restore-result.json"
-          node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
+          sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
             --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
             > "$RUNNER_TEMP/hosted/restored-integrity.json"
-          test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-          ! grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          sudo -u '#10001' test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! sudo -u '#10001' grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! sudo -u '#10001' grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+          ! sudo -u '#10001' grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
 
       - name: Remove sensitive runtime state
         if: always()
         run: |
           docker rm -f principia-atlas-a principia-atlas-b >/dev/null 2>&1 || true
-          rm -rf \
+          sudo rm -rf \
             "$RUNNER_TEMP/hosted/secrets" \
             "$RUNNER_TEMP/hosted/state" \
             "$RUNNER_TEMP/hosted/audit" \
