@@ -62,6 +62,12 @@ function identifier(value, pattern, label) {
   return value;
 }
 
+function compareAscii(left, right) {
+  if (left < right) return -1;
+  if (left > right) return 1;
+  return 0;
+}
+
 function privateFilePermissions(mode) {
   return (mode & 0o111n) === 0n && (mode & 0o027n) === 0n;
 }
@@ -315,11 +321,11 @@ export function createOidcRevocationKeyring(draftInput) {
       not_before: window.notBefore,
       not_after: window.notAfter,
     };
-  }).sort((left, right) => left.key_id.localeCompare(right.key_id));
+  }).sort((left, right) => compareAscii(left.key_id, right.key_id));
   return Object.freeze({
     contract: OIDC_REVOCATION_KEYRING_CONTRACT,
     keys,
-    revoked_key_ids: [...revoked].sort(),
+    revoked_key_ids: [...revoked].sort(compareAscii),
   });
 }
 
