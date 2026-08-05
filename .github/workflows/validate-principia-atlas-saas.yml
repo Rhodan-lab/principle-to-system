@@ -20,7 +20,23 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18.4-alpine
+        env:
+          POSTGRES_DB: principia_atlas_saas
+          POSTGRES_USER: principia
+          POSTGRES_PASSWORD: principia-ci-only
+          POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U principia -d principia_atlas_saas"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
     steps:
       - name: Check out Principia
         uses: actions/checkout@v4
@@ -32,14 +48,30 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Install pinned PostgreSQL test client outside checkout
+        run: |
+          mkdir -p "$RUNNER_TEMP/pg-client"
+          printf '%s\n' '{"private":true}' > "$RUNNER_TEMP/pg-client/package.json"
+          npm install \
+            --prefix "$RUNNER_TEMP/pg-client" \
+            --no-package-lock \
+            --save-exact \
+            pg@8.22.0
+
       - name: Verify SaaS JavaScript syntax
         run: |
           for file in software/principia_atlas/saas/*.mjs; do
             node --check "$file"
           done
 
-      - name: Run SaaS control-plane regressions
+      - name: Run local SaaS control-plane regressions
         run: node --test software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs
+
+      - name: Run PostgreSQL migration and semantic parity regressions
+        env:
+          DATABASE_URL: postgres://principia:principia-ci-only@127.0.0.1:5432/principia_atlas_saas
+          PG_CLIENT_ROOT: ${{ runner.temp }}/pg-client
+        run: node --test software/tests/test_product_alpha_principia_atlas_saas_postgres.mjs
 
       - name: Verify clean repository
         run: git diff --exit-code
