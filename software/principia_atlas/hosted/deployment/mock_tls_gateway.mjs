@@ -14,7 +14,12 @@ const HOP_BY_HOP = new Set([
 ]);
 
 function parseArgs(argv) {
-  const output = { host: '127.0.0.1', port: 18443, upstreamOrigin: 'http://127.0.0.1:8081' };
+  const output = {
+    host: '127.0.0.1',
+    port: 18443,
+    upstreamOrigin: 'http://127.0.0.1:8081',
+    callbackPath: '/auth/callback',
+  };
   const seen = new Set();
   for (let index = 0; index < argv.length; index += 2) {
     const name = argv[index];
@@ -27,18 +32,41 @@ function parseArgs(argv) {
   return output;
 }
 
-function validateOptions(options) {
-  const value = { host: '127.0.0.1', port: 18443, upstreamOrigin: 'http://127.0.0.1:8081', ...options };
-  if (!value.tlsKey || !value.tlsCert) fail('TLS gateway key and certificate are required');
-  if (!Number.isInteger(value.port) || value.port < 1 || value.port > 65535) fail('TLS gateway port is invalid');
+function exactLoopbackOrigin(value, label) {
   let upstream;
-  try { upstream = new URL(value.upstreamOrigin); } catch { fail('TLS gateway upstream origin is invalid'); }
-  if (upstream.origin !== value.upstreamOrigin || upstream.protocol !== 'http:'
+  try { upstream = new URL(value); } catch { fail(`${label} is invalid`); }
+  if (upstream.origin !== value || upstream.protocol !== 'http:'
     || upstream.hostname !== '127.0.0.1' || upstream.pathname !== '/'
     || upstream.username || upstream.password || upstream.search || upstream.hash) {
-    fail('TLS gateway upstream must be an exact loopback HTTP origin');
+    fail(`${label} must be an exact loopback HTTP origin`);
   }
-  value.upstreamOrigin = upstream.origin;
+  return upstream.origin;
+}
+
+function exactPath(value, label) {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.length > 512) fail(`${label} is invalid`);
+  let parsed;
+  try { parsed = new URL(value, 'https://path.invalid'); } catch { fail(`${label} is invalid`); }
+  if (parsed.origin !== 'https://path.invalid' || parsed.pathname !== value || parsed.search || parsed.hash) fail(`${label} must be a normalized path`);
+  return value;
+}
+
+function validateOptions(options) {
+  const value = {
+    host: '127.0.0.1',
+    port: 18443,
+    upstreamOrigin: 'http://127.0.0.1:8081',
+    callbackUpstreamOrigin: null,
+    callbackPath: '/auth/callback',
+    ...options,
+  };
+  if (!value.tlsKey || !value.tlsCert) fail('TLS gateway key and certificate are required');
+  if (!Number.isInteger(value.port) || value.port < 1 || value.port > 65535) fail('TLS gateway port is invalid');
+  value.upstreamOrigin = exactLoopbackOrigin(value.upstreamOrigin, 'TLS gateway upstream origin');
+  value.callbackUpstreamOrigin = value.callbackUpstreamOrigin === null
+    ? value.upstreamOrigin
+    : exactLoopbackOrigin(value.callbackUpstreamOrigin, 'TLS gateway callback upstream origin');
+  value.callbackPath = exactPath(value.callbackPath, 'TLS gateway callback path');
   return value;
 }
 
@@ -65,7 +93,6 @@ export async function createMockTlsGateway(options = {}) {
     readFile(resolve(config.tlsKey)),
     readFile(resolve(config.tlsCert)),
   ]);
-  const upstream = new URL(config.upstreamOrigin);
   const server = https.createServer({ key, cert }, (request, response) => {
     if (!['GET', 'HEAD', 'POST'].includes(request.method ?? '')) {
       response.statusCode = 405;
@@ -74,19 +101,23 @@ export async function createMockTlsGateway(options = {}) {
       response.end();
       return;
     }
-    let target;
-    try { target = new URL(request.url ?? '/', upstream); } catch {
+    let publicPath;
+    try { publicPath = new URL(request.url ?? '/', 'https://gateway.invalid'); } catch {
       response.statusCode = 400;
       response.setHeader('Content-Length', '0');
       response.end();
       return;
     }
-    if (target.origin !== upstream.origin) {
+    if (publicPath.origin !== 'https://gateway.invalid') {
       response.statusCode = 400;
       response.setHeader('Content-Length', '0');
       response.end();
       return;
     }
+    const selectedOrigin = publicPath.pathname === config.callbackPath
+      ? config.callbackUpstreamOrigin
+      : config.upstreamOrigin;
+    const target = new URL(`${publicPath.pathname}${publicPath.search}`, selectedOrigin);
     let requestBytes = 0;
     const proxy = http.request(target, {
       method: request.method,
@@ -143,6 +174,8 @@ export async function main(argv = process.argv.slice(2)) {
     server.listen(args.port, args.host, resolveListen);
   });
   console.log(`Mock TLS gateway: https://${args.host}:${args.port}`);
+  console.log(`Default upstream: ${args.upstreamOrigin}`);
+  console.log(`Callback upstream: ${args.callbackUpstreamOrigin}`);
   let stopping = false;
   const stop = () => {
     if (stopping) return server.closeAllConnections?.();
