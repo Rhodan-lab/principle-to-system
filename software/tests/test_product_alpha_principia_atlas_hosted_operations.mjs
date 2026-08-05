@@ -129,6 +129,15 @@ function sessionRecord() {
   };
 }
 
+function revokedSessionRecord() {
+  return {
+    ...sessionRecord(),
+    sub: 'learner-2',
+    jti: 'assertion_identifier_5678',
+    sid: 'session_identifier_0987654321',
+  };
+}
+
 test('secret files are bounded regular files with restrictive permissions', async () => {
   const root = await mkdtemp(join(tmpdir(), 'principia-secrets-'));
   const secret = join(root, 'identity');
@@ -217,18 +226,37 @@ test('metrics expose bounded aggregate data without tenant or subject labels', (
   assert.equal(/tenant|subject|session|assertion/i.test(output), false);
 });
 
-test('auth state backup verifies and restores a registered session', async () => {
+test('auth state backup restores sessions and retry-safe revocation receipts', async () => {
   const root = await mkdtemp(join(tmpdir(), 'principia-recovery-'));
   const source = join(root, 'state.sqlite');
   const backup = join(root, 'backup.sqlite');
   const restoredPath = join(root, 'restored.sqlite');
   const record = sessionRecord();
+  const revokedRecord = revokedSessionRecord();
   const state = openSqliteAuthState(source);
   assert.equal(state.commitExchange({
     assertionId: record.jti,
     assertionExpiresAt: now + 180,
     session: record,
   }, now), true);
+  assert.equal(state.commitExchange({
+    assertionId: revokedRecord.jti,
+    assertionExpiresAt: now + 180,
+    session: revokedRecord,
+  }, now), true);
+  assert.deepEqual(state.revokeSubjectOnce(
+    'recovery-revocation-event-0001',
+    revokedRecord.tenant_id,
+    revokedRecord.sub,
+    now + 1,
+    now + 3601,
+  ), {
+    event_id: 'recovery-revocation-event-0001',
+    replayed: false,
+    revoked_sessions: 1,
+    created_at: now + 1,
+    expires_at: now + 3601,
+  });
   state.close();
 
   assert.equal(inspectAuthState(source).status, 'ok');
@@ -240,7 +268,28 @@ test('auth state backup verifies and restores a registered session', async () =>
   assert.equal(restored.status, 'ok');
   const reopened = openSqliteAuthState(restoredPath);
   try {
-    assert.equal(reopened.validateSession(record, now + 1), true);
+    assert.equal(reopened.validateSession(record, now + 2), true);
+    assert.equal(reopened.validateSession(revokedRecord, now + 2), false);
+    assert.deepEqual(reopened.revokeSubjectOnce(
+      'recovery-revocation-event-0001',
+      revokedRecord.tenant_id,
+      revokedRecord.sub,
+      now + 2,
+      now + 3602,
+    ), {
+      event_id: 'recovery-revocation-event-0001',
+      replayed: true,
+      revoked_sessions: 1,
+      created_at: now + 1,
+      expires_at: now + 3601,
+    });
+    assert.throws(() => reopened.revokeSubjectOnce(
+      'recovery-revocation-event-0001',
+      record.tenant_id,
+      record.sub,
+      now + 3,
+      now + 3603,
+    ), /target mismatch/);
   } finally {
     reopened.close();
   }
