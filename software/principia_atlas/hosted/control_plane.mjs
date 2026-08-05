@@ -8,7 +8,7 @@ import { canonicalJson } from './strict_json.mjs';
 import { exchangeIdentityAssertion, SESSION_CONTRACT, verifySession } from './tokens.mjs';
 
 const MAX_URL_BYTES = 8192;
-const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.4';
+const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.3';
 
 function securityHeaders(response, requestId) {
   response.setHeader('Content-Security-Policy', "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'");
@@ -144,7 +144,7 @@ export function createControlPlaneServer({
         if (!token) return { status: 'missing', session: null };
         const current = now();
         let session;
-        try { session = verifySession(token, sessionSecret, config, current); }
+        try { session = verifySession(token, sessionRaw, config, current); }
         catch {
           audit.event('session.reject', { request_id: requestId, reason: 'invalid_signature_or_time' });
           return { status: 'invalid', session: null };
@@ -228,7 +228,7 @@ export function createControlPlaneServer({
           return sendJson(response, 401, { error: 'identity_assertion_required' }, requestId);
         }
         let exchanged;
-        try { exchanged = exchangeIdentityAssertion(match[1], identitySecret, sessionSecret, config, current); }
+        try { exchanged = exchangeIdentityAssertion(match[1], identityRaw, sessionRaw, config, current); }
         catch {
           metrics.auth('invalid');
           audit.event('auth.exchange', { request_id: requestId, outcome: 'invalid' });
@@ -281,6 +281,11 @@ export function createControlPlaneServer({
       if (!response.headersSent) sendJson(response, 500, { error: 'internal_error' }, requestId);
       else response.destroy();
     });
+  });
+  server.once('close', () => {
+    identityRaw.fill(0);
+    sessionRaw.fill(0);
+    metricsSecret?.fill(0);
   });
   server.principiaAtlas = Object.freeze({ audit, metrics });
   return server;
