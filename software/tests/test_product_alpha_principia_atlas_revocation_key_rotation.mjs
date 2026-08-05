@@ -141,7 +141,7 @@ test('revocation keyring enforces overlap, validity windows, revocation, and imm
 
     const future = buildKeyring(root, [{ ...keyB, notBefore: now + 1 }], [], 'future-keyring.json');
     assert.throws(() => readOidcRevocationRequestWithKeyring(requestB, future.path, now), /validity window/);
-    const expired = buildKeyring(root, [{ ...keyB, notAfter: now - 4 }], [], 'expired-keyring.json');
+    const expired = buildKeyring(root, [{ ...keyB, notAfter: now - 6 }], [], 'expired-keyring.json');
     assert.throws(() => readOidcRevocationRequestWithKeyring(requestB, expired.path, now), /validity window/);
 
     assert.throws(() => createOidcRevocationKeyring({
