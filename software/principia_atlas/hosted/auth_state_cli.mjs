@@ -23,9 +23,10 @@ const FLAGS = new Set([
   '--event-id',
   '--receipt-ttl-seconds',
   '--request-file',
+  '--request-key-file',
   '--now',
 ]);
-const REQUEST_FLAGS = new Set(['--state', '--request-file', '--now']);
+const REQUEST_FLAGS = new Set(['--state', '--request-file', '--request-key-file', '--now']);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -50,14 +51,16 @@ function parseArgs(argv) {
   if (command === 'revoke-oidc-subject' && (!output.tenant || !output.issuer || !output['external-subject'] || !output['event-id'])) {
     throw new Error('--tenant, --issuer, --external-subject, and --event-id are required');
   }
-  if (command === 'revoke-oidc-request' && !output['request-file']) throw new Error('--request-file is required');
+  if (command === 'revoke-oidc-request' && (!output['request-file'] || !output['request-key-file'])) {
+    throw new Error('--request-file and --request-key-file are required');
+  }
   return output;
 }
 
 export function main(argv = process.argv.slice(2), write = (value) => process.stdout.write(value)) {
   const args = parseArgs(argv);
   const request = args.command === 'revoke-oidc-request'
-    ? readOidcRevocationRequest(args['request-file'], args.now)
+    ? readOidcRevocationRequest(args['request-file'], args['request-key-file'], args.now)
     : null;
   const state = openSqliteAuthState(args.state);
   try {
@@ -86,7 +89,12 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
         args.now,
         args.now + request.receiptTtlSeconds,
       );
-      result = { contract: COMMAND_CONTRACT, command: args.command, ...receipt };
+      result = {
+        contract: COMMAND_CONTRACT,
+        command: args.command,
+        verified_key_id: request.keyId,
+        ...receipt,
+      };
     } else {
       result = {
         contract: COMMAND_CONTRACT,
