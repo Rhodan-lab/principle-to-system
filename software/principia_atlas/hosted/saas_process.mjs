@@ -85,6 +85,14 @@ async function closeServer(server, timeoutMs) {
   });
 }
 
+function closeSyncResource(operation, errors) {
+  try { operation(); } catch (error) { errors.push(error); }
+}
+
+async function closeAsyncResource(operation, errors) {
+  try { await operation(); } catch (error) { errors.push(error); }
+}
+
 export async function createSaasRuntimeProcess({
   config,
   authState: authStateInput,
@@ -112,6 +120,7 @@ export async function createSaasRuntimeProcess({
   if (typeof closeAuthState !== 'boolean' || typeof closePool !== 'boolean') fail('SaaS process ownership flags are invalid');
 
   let controlPlane = null;
+  let applicationApi = null;
   let server = null;
   let started = false;
   let stopped = false;
@@ -119,7 +128,7 @@ export async function createSaasRuntimeProcess({
   try {
     await applyPostgresMigrations(pool);
     controlPlane = openPostgresSaasControlPlane(pool, { maxTransactionAttempts });
-    const applicationApi = createSaasApplicationApi({ controlPlane, csrfSecret });
+    applicationApi = createSaasApplicationApi({ controlPlane, csrfSecret });
     server = createSaasHostedRuntimeServer({
       config,
       authState,
@@ -133,13 +142,11 @@ export async function createSaasRuntimeProcess({
     });
     hideInternalPathsFromProxy(server);
   } catch (error) {
-    controlPlane?.close();
-    if (closePool) {
-      try { await pool.end(); } catch {}
-    }
-    if (closeAuthState) {
-      try { authState.close(); } catch {}
-    }
+    const errors = [];
+    if (applicationApi) closeSyncResource(() => applicationApi.close(), errors);
+    if (controlPlane) closeSyncResource(() => controlPlane.close(), errors);
+    if (closePool) await closeAsyncResource(() => pool.end(), errors);
+    if (closeAuthState) closeSyncResource(() => authState.close(), errors);
     throw error;
   }
 
@@ -173,10 +180,14 @@ export async function createSaasRuntimeProcess({
       if (stopPromise) return stopPromise;
       stopped = true;
       stopPromise = (async () => {
-        const result = await closeServer(server, shutdownTimeoutMs);
-        controlPlane.close();
-        if (closePool) await pool.end();
-        if (closeAuthState) authState.close();
+        const errors = [];
+        let result = Object.freeze({ forced: false });
+        await closeAsyncResource(async () => { result = await closeServer(server, shutdownTimeoutMs); }, errors);
+        closeSyncResource(() => applicationApi.close(), errors);
+        closeSyncResource(() => controlPlane.close(), errors);
+        if (closePool) await closeAsyncResource(() => pool.end(), errors);
+        if (closeAuthState) closeSyncResource(() => authState.close(), errors);
+        if (errors.length) throw errors[0];
         return result;
       })();
       return stopPromise;
