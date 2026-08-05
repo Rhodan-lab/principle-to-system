@@ -4,14 +4,17 @@
     "identity_adapter": "external-short-lived-assertion",
     "identity_assertion_replay": "durable-single-use-shared-state",
     "password_database": false,
+    "secret_loading": "bounded-regular-files-only",
     "session": "signed-http-only-samesite-cookie-with-registered-revocable-sid"
   },
   "auth_state": {
     "backend": "sqlite",
+    "backup": "online-vacuum-into-integrity-checked-sha256-pair",
     "contract": "principia-atlas-hosted-auth-state/0.1",
-    "coordination_scope": "processes-sharing-one-durable-filesystem-location",
+    "coordination_scope": "processes-sharing-one-posix-locking-durable-filesystem-location",
     "rate_limit": "shared-window-counters",
     "replay": "atomic-assertion-claim",
+    "restore": "offline-confirmed-atomic-swap-with-rollback",
     "session_registration": "atomic-with-assertion-claim",
     "session_revocation": "durable-global-for-shared-state",
     "storage_mode": "wal-full-synchronous-strict-tables"
@@ -37,11 +40,28 @@
     "principia-atlas-hosted-store/0.1",
     "principia-atlas-hosted-auth-state/0.1",
     "principia-atlas-hosted-auth-state-command/0.1",
+    "principia-atlas-hosted-auth-recovery/0.1",
+    "principia-atlas-hosted-audit-event/0.1",
+    "principia-atlas-hosted-metrics/0.1",
     "principia-atlas-identity-assertion/0.1",
     "principia-atlas-hosted-session/0.2",
     "principia-atlas-hosted-view/0.1",
     "principia-atlas-hosted-health/0.3"
   ],
+  "deployment": {
+    "application_files": "root-owned-read-only",
+    "container_user": "10001:10001",
+    "image_base": "digest-pinned-node-24.18.0-bookworm-slim",
+    "image_reproducibility": "byte-identical-oci-export-with-source-date-epoch",
+    "network_egress": "denied-by-example-policy",
+    "root_filesystem": "read-only",
+    "rolling_shutdown": "sigterm-drain-bounded-force-close",
+    "writable_mounts": [
+      "shared-auth-state",
+      "audit-output",
+      "bounded-tmp"
+    ]
+  },
   "network": {
     "default_host": "127.0.0.1",
     "non_loopback_requires_durable_auth_state": true,
@@ -51,11 +71,20 @@
   },
   "non_goals": {
     "anonymous_release_serving": false,
+    "automated_backup_scheduler": false,
     "billing": false,
     "distributed_database": false,
     "learner_data_persistence": false,
+    "multi_region_failover": false,
     "organization_administration": false,
+    "production_identity_provider_adapter": false,
     "self_registration": false
+  },
+  "observability": {
+    "audit": "canonical-bounded-json-lines-with-sensitive-field-rejection",
+    "metrics": "protected-aggregate-prometheus-without-identity-labels",
+    "metrics_endpoint": "/metrics",
+    "request_identity": "x-request-id"
   },
   "release_serving": {
     "archive_parser": "python-build-time-only",
@@ -74,10 +103,10 @@
     "hosted_control_plane": "nodejs",
     "liveness": "/healthz",
     "multi_instance_coordination": "sqlite-shared-state",
-    "persistence": "authentication-coordination-only",
+    "persistence": "authentication-coordination-and-audit-only",
     "readiness": "/readyz",
     "store_materialization": "python"
   },
-  "schema": "principia-atlas-hosted-control-plane-boundary/0.3",
-  "status": "implemented-durable-authenticated-read-only-runtime-not-production-saas"
+  "schema": "principia-atlas-hosted-control-plane-boundary/0.4",
+  "status": "implemented-deployment-recovery-authenticated-read-only-runtime-not-production-saas"
 }

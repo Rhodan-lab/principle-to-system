@@ -1,26 +1,28 @@
 # Hosted authenticated release runtime
 
-This directory is the hosted/SaaS boundary for Principia & Atlas. It serves already promoted releases only after the release archive, hosted catalog, tenant policy, content store, and authentication state have been verified.
+This directory is the hosted/SaaS boundary for Principia & Atlas. It serves promoted immutable releases only after the release archive, hosted catalog, tenant policy, content store, authentication state, and deployment inputs have been verified.
 
 It remains an authenticated read-only runtime, not a learner-data platform.
 
 ## Responsibilities
 
-- accept a short-lived signed identity assertion from an external identity adapter;
-- claim that assertion once in shared durable state;
+- accept short-lived assertions from an external identity adapter;
+- claim each assertion once in shared durable state;
 - register a revocable HttpOnly, SameSite session with an independent session identifier;
 - derive tenant identity exclusively from the verified session;
-- coordinate assertion replay protection, session revocation, and exchange rate limits across processes using the same SQLite state file;
-- filter immutable promoted releases by tenant channel, route, and optional version pins;
-- serve only the entitled release files from a verified memory-resident store;
-- expose liveness, readiness, session, catalog, logout, and authenticated release routes;
+- coordinate replay protection, session revocation, and exchange rate limits across processes using the same SQLite state file;
+- filter promoted releases by tenant channel, route, and optional version pins;
+- serve only entitled release files from a verified memory-resident store;
+- expose liveness, readiness, protected aggregate metrics, and authenticated product routes;
+- emit bounded structured audit events;
+- support verified online backup and explicit offline restore of authentication state;
 - retain no password database, learner records, billing data, or browser-storage profile.
 
-The browser cannot submit a tenant identifier to switch workspaces. A session is bound to exactly one tenant. Identity and session secrets must be distinct and at least 32 bytes.
+The browser cannot submit a tenant identifier to switch workspaces. A session is bound to exactly one tenant.
 
-## Build the hosted catalog
+## Build the hosted inputs
 
-Collect verified `principia-atlas-promotion.json` files under one directory, then run:
+Build the sealed hosted catalog from verified promotion descriptors:
 
 ```bash
 python3 software/principia_atlas/hosted_catalog.py build \
@@ -28,38 +30,22 @@ python3 software/principia_atlas/hosted_catalog.py build \
   --output /tmp/hosted/catalog.json
 ```
 
-The catalog contract `principia-atlas-hosted-catalog/0.1` preserves exact release, route, archive, source, compatibility, and channel-pointer identities.
-
-## Materialize the immutable release store
-
-Place every catalog-referenced release ZIP and its `.sha256` sidecar in one archive directory. The Python materializer verifies each complete release before extracting only its `product/` subtree:
+Materialize the content-addressed release store from complete verified ZIP and checksum pairs:
 
 ```bash
 python3 software/principia_atlas/hosted_store.py build \
   --catalog /tmp/hosted/catalog.json \
   --archives /tmp/hosted-archives \
   --output /tmp/hosted/store
-```
 
-Verify or reproduce the store:
-
-```bash
 python3 software/principia_atlas/hosted_store.py verify \
   --store /tmp/hosted/store \
   --catalog /tmp/hosted/catalog.json
-
-python3 software/principia_atlas/hosted_store.py check \
-  --catalog /tmp/hosted/catalog.json \
-  --archives /tmp/hosted-archives
 ```
 
-Store contract `principia-atlas-hosted-store/0.1` binds the catalog ID, release and bundle identities, archive SHA-256, content-addressed object root, and every hosted file path, size, and digest. Publication replaces the complete directory atomically and restores the previous verified store if post-swap verification fails.
+ZIP parsing never occurs in Node.js. At startup, Node verifies the store manifest, exact file set, symlink boundary, catalog identities, sizes, and SHA-256 digests, then retains verified bytes in memory.
 
-ZIP parsing never occurs in Node.js. At startup, Node validates the store manifest, exact file set, symlink boundary, catalog identities, sizes, and SHA-256 digests, then keeps verified bytes in memory. Requests do not reopen release files from disk.
-
-## Seal tenant configuration
-
-Copy `example-tenants.unsigned.json`, edit it, then seal it:
+Seal tenant policy:
 
 ```bash
 node software/principia_atlas/hosted/config.mjs seal \
@@ -67,19 +53,55 @@ node software/principia_atlas/hosted/config.mjs seal \
   --output /tmp/hosted/tenants.json
 ```
 
-For non-loopback hosting, `session.secure` must be `true`, durable multi-instance auth state is required, and the server must be started with `--allow-network`. The runtime does not terminate TLS; that remains the responsibility of a reviewed deployment edge.
+For non-loopback hosting, `session.secure` must be `true`, durable multi-instance state is required, and the server must receive `--allow-network`. TLS termination remains the responsibility of a reviewed deployment edge.
+
+## Secret files
+
+The hosted server does not load production secrets from environment variables. Create separate regular files readable only by the runtime identity:
+
+```bash
+install -m 0400 /dev/null /tmp/hosted/identity.secret
+install -m 0400 /dev/null /tmp/hosted/session.secret
+install -m 0400 /dev/null /tmp/hosted/metrics.secret
+```
+
+Populate them using a controlled secret-management mechanism. Identity and session values must be distinct and at least 32 bytes. Secret files must not be symlinks, executable, group-writable, or accessible to other users.
+
+The server copies credentials into process-owned buffers and clears those copies when the server closes.
+
+## Start locally
+
+```bash
+node software/principia_atlas/hosted/server.mjs \
+  --catalog /tmp/hosted/catalog.json \
+  --tenants /tmp/hosted/tenants.json \
+  --store /tmp/hosted/store \
+  --state /tmp/hosted/auth-state.sqlite \
+  --identity-secret-file /tmp/hosted/identity.secret \
+  --session-secret-file /tmp/hosted/session.secret \
+  --metrics-token-file /tmp/hosted/metrics.secret \
+  --audit-log /tmp/hosted/audit.ndjson \
+  --instance-id local-a \
+  --host 127.0.0.1 \
+  --port 8080
+```
+
+- `/healthz` reports process liveness.
+- `/readyz` checks shared authentication-state readiness.
+- `/metrics` requires the configured bearer token.
+- `/app/<version>/...` serves entitled immutable release assets.
+
+Every asset request rechecks the signed session, registered session state, and tenant entitlements. Anonymous or revoked sessions receive `401`; releases outside policy receive `404`. Only `GET` and `HEAD` are accepted.
 
 ## Durable authentication state
 
-Contract `principia-atlas-hosted-auth-state/0.1` stores only bounded authentication coordination data:
+Contract `principia-atlas-hosted-auth-state/0.1` stores bounded authentication coordination data only:
 
-- consumed assertion identifiers and their expiry;
-- registered session identifiers, subject, tenant, role set, issue time, expiry, and revocation time;
-- exchange rate-limit counters and expiry.
+- consumed assertion identifiers and expiry;
+- registered session identity, subject, tenant, role set, issue time, expiry, and revocation time;
+- exchange-rate counters and expiry.
 
-Assertion claim and session registration occur in one `BEGIN IMMEDIATE` transaction. A second process opening the same SQLite file cannot accept the same assertion. Logout records session revocation before clearing the browser cookie, so the token is rejected by every process sharing that state.
-
-The database uses WAL mode, full synchronous writes, a bounded busy timeout, strict tables, contract metadata, and restrictive file permissions. Existing symlink or non-regular database paths are rejected.
+The database uses WAL mode, full synchronous writes, bounded busy handling, strict tables, contract metadata, and restrictive permissions. Parallel server startup retries transient lock and metadata races, while structural errors remain fail-closed.
 
 Operational commands do not list session contents:
 
@@ -96,63 +118,80 @@ node software/principia_atlas/hosted/auth_state_cli.mjs revoke-subject \
   --subject learner-1
 ```
 
-`revoke-session` is also available when an operator has an exact session identifier from a separately controlled operational channel.
+## Audit and metrics
 
-## Start locally
+Audit contract `principia-atlas-hosted-audit-event/0.1` writes canonical JSON lines. Sensitive field names—including credentials, tokens, subjects, assertion identifiers, and session identifiers—are rejected.
 
-Use separate high-entropy secrets and a state path outside the source checkout:
+Metrics contract `principia-atlas-hosted-metrics/0.1` exposes protected aggregate counters and gauges without tenant, subject, session, assertion, token, or release-path labels.
+
+Audit files and metrics access tokens must be handled as operational security assets.
+
+## Backup and restore
+
+Create and verify an online SQLite backup while instances remain available:
 
 ```bash
-export PRINCIPIA_ATLAS_IDENTITY_SECRET='replace-with-at-least-32-random-bytes'
-export PRINCIPIA_ATLAS_SESSION_SECRET='replace-with-a-different-32-byte-secret'
-node software/principia_atlas/hosted/server.mjs \
-  --catalog /tmp/hosted/catalog.json \
-  --tenants /tmp/hosted/tenants.json \
-  --store /tmp/hosted/store \
+node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
   --state /tmp/hosted/auth-state.sqlite \
-  --host 127.0.0.1 \
-  --port 8080
+  --output /tmp/hosted/backups/auth-state.sqlite
+
+node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
+  --backup /tmp/hosted/backups/auth-state.sqlite
 ```
 
-`/healthz` is process liveness. `/readyz` verifies that the authentication state backend is available and returns `503` when it is not ready.
+The backup uses `VACUUM INTO`, database integrity checks, an exact SHA-256 sidecar, and atomic pair publication.
 
-Authenticated release URLs use:
+Restore is offline-only. Stop every instance first:
 
-```text
-/app/<version>/
-/app/<version>/principia/
-/app/<version>/atlas/
+```bash
+node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
+  --backup /tmp/hosted/backups/auth-state.sqlite \
+  --state /tmp/hosted/auth-state.sqlite \
+  --confirm-offline ALL_INSTANCES_STOPPED
+
+node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
+  --state /tmp/hosted/auth-state.sqlite
 ```
 
-Every asset request rechecks the signed session, registered session state, and tenant entitlements. Anonymous or revoked sessions return `401`; releases outside the tenant's channel, route, or exact-version policy return `404` rather than revealing availability. Only `GET` and `HEAD` are accepted. Traversal, encoded separators, symlinks, extra files, and digest drift are rejected.
+Active WAL or shared-memory files cause restore rejection. Replacement is staged, verified, atomically swapped, and rolled back on failure.
+
+## Container and deployment
+
+`Containerfile` is digest-pinned, non-root, and reproducibly exported as OCI bytes. The validated runtime uses:
+
+- UID/GID `10001:10001`;
+- root-owned application files;
+- read-only root filesystem;
+- all capabilities dropped;
+- no privilege escalation;
+- read-only catalog, policy, store, and secret mounts;
+- writable state, audit, and bounded temporary mounts only;
+- graceful `SIGTERM` drain with a bounded forced close.
+
+The two-instance example, NetworkPolicy, rolling-restart procedure, and recovery instructions are under `deployment/`.
 
 ## Development identity adapter
 
-Development assertion minting is disabled unless explicitly enabled:
+Development assertion minting remains disabled unless explicitly enabled. It may use `PRINCIPIA_ATLAS_IDENTITY_SECRET` only for local test assertion generation; the hosted server itself does not read production secrets from environment variables.
 
 ```bash
 export PRINCIPIA_ATLAS_DEV_AUTH=1
-assertion=$(node software/principia_atlas/hosted/dev_identity.mjs \
+export PRINCIPIA_ATLAS_IDENTITY_SECRET='local-development-only-secret-at-least-32-bytes'
+node software/principia_atlas/hosted/dev_identity.mjs \
   --tenants /tmp/hosted/tenants.json \
   --subject learner-1 \
   --tenant local-preview \
-  --roles learner)
-
-curl -i -X POST \
-  -H "Authorization: Bearer $assertion" \
-  -H "Origin: http://127.0.0.1:8080" \
-  http://127.0.0.1:8080/api/auth/exchange
+  --roles learner
 ```
-
-This development adapter is not a password system and is not enabled by the server. Production identity integration must issue the same short-lived assertion contract from a separately reviewed adapter.
 
 ## Current non-goals and limitations
 
 - no anonymous or public release serving;
-- no self-registration or password recovery;
+- no self-registration, passwords, or account recovery;
 - no learner-event or facilitator-record persistence;
 - no payments, subscriptions, or organization administration;
-- no production identity-provider adapter or TLS termination;
-- no distributed database, cross-region consensus, automatic backup, or failover orchestration;
-- SQLite coordination is for processes sharing one durable filesystem location;
+- no production identity-provider adapter or built-in TLS termination;
+- no distributed database, cross-region consensus, or multi-region failover;
+- no automatic backup scheduler, retention service, external audit collector, or alerting platform;
+- SQLite coordination is limited to processes sharing one durable POSIX-locking filesystem;
 - no claim of complete production SaaS readiness.

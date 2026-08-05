@@ -1,0 +1,194 @@
+name: Validate Principia Atlas Hosted Deployment
+
+on:
+  pull_request:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs"
+      - ".github/workflows/validate-principia-atlas-hosted-deployment.yml"
+  push:
+    paths:
+      - "software/principia_atlas/hosted/**"
+      - "software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs"
+      - ".github/workflows/validate-principia-atlas-hosted-deployment.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ATLAS_COMMIT: 750933883996cc0759cfa40931db6cd262b13b07
+  RELEASE_VERSION: 0.1.0-alpha.1
+  PROMOTION_TAG: principia-atlas-v0.1.0-alpha.1
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out pinned Atlas
+        uses: actions/checkout@v4
+        with:
+          repository: Rhodan-lab/Atlas
+          ref: ${{ env.ATLAS_COMMIT }}
+          path: atlas
+          persist-credentials: false
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: atlas/tools/foundation-validator/requirements.txt
+
+      - name: Install pinned Atlas dependencies
+        run: python3 -m pip install -r atlas/tools/foundation-validator/requirements.txt
+
+      - name: Isolate Atlas from Principia worktree
+        run: mv atlas "$RUNNER_TEMP/atlas"
+
+      - name: Verify hosted operational regressions
+        run: |
+          for file in software/principia_atlas/hosted/*.mjs; do node --check "$file"; done
+          bash -n software/principia_atlas/hosted/deployment/smoke.sh
+          node --check software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
+          node --test software/tests/test_product_alpha_principia_atlas_hosted_operations.mjs
+
+      - name: Build actual release and hosted store
+        run: |
+          python3 software/principia_atlas/release.py build \
+            --atlas-repo "$RUNNER_TEMP/atlas" \
+            --route distributed-information \
+            --version "$RELEASE_VERSION" \
+            --expected-principia-commit "$(git rev-parse HEAD)" \
+            --expected-atlas-commit "$ATLAS_COMMIT" \
+            --product-output "$RUNNER_TEMP/principia-atlas-product" \
+            --output "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip"
+          mkdir -p \
+            "$RUNNER_TEMP/promotion-history" \
+            "$RUNNER_TEMP/promotion" \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG" \
+            "$RUNNER_TEMP/hosted/archives"
+          : > "$RUNNER_TEMP/expected-release-tags.txt"
+          python3 software/principia_atlas/promotion.py prepare \
+            --archive "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            --tag "$PROMOTION_TAG" \
+            --history-dir "$RUNNER_TEMP/promotion-history" \
+            --expected-tags "$RUNNER_TEMP/expected-release-tags.txt" \
+            --output-dir "$RUNNER_TEMP/promotion"
+          cp "$RUNNER_TEMP/promotion/principia-atlas-promotion.json" \
+            "$RUNNER_TEMP/hosted-promotion-history/$PROMOTION_TAG/principia-atlas-promotion.json"
+          cp "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip" \
+            "$RUNNER_TEMP/principia-atlas-$RELEASE_VERSION.zip.sha256" \
+            "$RUNNER_TEMP/hosted/archives/"
+          python3 software/principia_atlas/hosted_catalog.py build \
+            --promotions "$RUNNER_TEMP/hosted-promotion-history" \
+            --output "$RUNNER_TEMP/hosted/catalog.json"
+          python3 software/principia_atlas/hosted_store.py build \
+            --catalog "$RUNNER_TEMP/hosted/catalog.json" \
+            --archives "$RUNNER_TEMP/hosted/archives" \
+            --output "$RUNNER_TEMP/hosted/store"
+          node --input-type=module <<'JS'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { sealTenantConfig } from './software/principia_atlas/hosted/catalog.mjs';
+          const root = process.env.RUNNER_TEMP;
+          const unsigned = JSON.parse(await readFile('software/principia_atlas/hosted/example-tenants.unsigned.json', 'utf8'));
+          unsigned.session.secure = true;
+          await writeFile(`${root}/hosted/tenants.json`, JSON.stringify(sealTenantConfig(unsigned), null, 2) + '\n');
+          JS
+
+      - name: Build reproducible non-root OCI image
+        run: |
+          set -euo pipefail
+          export SOURCE_DATE_EPOCH=0
+          cleanup_builder() {
+            docker buildx rm --force principia-repro >/dev/null 2>&1 || true
+          }
+          trap cleanup_builder EXIT
+          docker buildx create --name principia-repro --driver docker-container --use
+          docker buildx inspect --bootstrap
+          for candidate in first second; do
+            docker buildx build --builder principia-repro --no-cache \
+              --provenance=false \
+              --sbom=false \
+              --build-arg SOURCE_DATE_EPOCH=0 \
+              --file software/principia_atlas/hosted/Containerfile \
+              --output "type=oci,dest=$RUNNER_TEMP/hosted/image-$candidate.oci.tar,rewrite-timestamp=true" \
+              .
+          done
+          cmp "$RUNNER_TEMP/hosted/image-first.oci.tar" "$RUNNER_TEMP/hosted/image-second.oci.tar"
+          sha256sum "$RUNNER_TEMP/hosted/image-first.oci.tar" \
+            | sed 's#image-first\.oci\.tar#principia-atlas-hosted.oci.tar#' \
+            > "$RUNNER_TEMP/hosted/image-oci.sha256"
+          docker buildx build --builder principia-repro --no-cache \
+            --provenance=false \
+            --sbom=false \
+            --build-arg SOURCE_DATE_EPOCH=0 \
+            --file software/principia_atlas/hosted/Containerfile \
+            --load \
+            --tag principia-atlas-hosted:first \
+            .
+          test "$(docker image inspect principia-atlas-hosted:first --format '{{.Config.User}}')" = "10001:10001"
+          docker image inspect principia-atlas-hosted:first > "$RUNNER_TEMP/hosted/image-inspect.json"
+          rm -f "$RUNNER_TEMP/hosted/image-first.oci.tar" "$RUNNER_TEMP/hosted/image-second.oci.tar"
+
+      - name: Prepare runtime mounts and secrets
+        run: |
+          mkdir -p \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/backups"
+          printf '%s' 'ci-identity-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/identity"
+          printf '%s' 'ci-session-secret-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/session"
+          printf '%s' 'ci-metrics-token-0123456789-abcdefghijklmnopqrstuvwxyz' > "$RUNNER_TEMP/hosted/secrets/metrics"
+          chmod 0400 "$RUNNER_TEMP/hosted/secrets/"*
+          sudo chown -R 10001:10001 \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/backups"
+
+      - name: Run two read-only hosted instances
+        run: bash software/principia_atlas/hosted/deployment/smoke.sh
+
+      - name: Remove sensitive runtime state
+        if: always()
+        run: |
+          docker rm -f principia-atlas-a principia-atlas-b >/dev/null 2>&1 || true
+          sudo rm -rf \
+            "$RUNNER_TEMP/hosted/secrets" \
+            "$RUNNER_TEMP/hosted/state" \
+            "$RUNNER_TEMP/hosted/audit" \
+            "$RUNNER_TEMP/hosted/backups" \
+            "$RUNNER_TEMP/hosted/exchange.headers" \
+            "$RUNNER_TEMP/hosted/exchange.json"
+
+      - name: Verify source checkout immutability
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/atlas" status --porcelain=v1 --untracked-files=all)"
+
+      - name: Upload sanitized deployment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: principia-atlas-hosted-deployment-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/hosted/image-inspect.json
+            ${{ runner.temp }}/hosted/image-oci.sha256
+            ${{ runner.temp }}/hosted/metrics.txt
+            ${{ runner.temp }}/hosted/backup-result.json
+            ${{ runner.temp }}/hosted/backup-verify.json
+            ${{ runner.temp }}/hosted/restore-result.json
+            ${{ runner.temp }}/hosted/restored-integrity.json
+          if-no-files-found: error
+          retention-days: 14
