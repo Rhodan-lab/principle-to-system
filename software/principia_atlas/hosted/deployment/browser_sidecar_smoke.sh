@@ -6,10 +6,12 @@ set -euo pipefail
 
 root="$RUNNER_TEMP/hosted-browser-smoke"
 image="principia-atlas-hosted:first"
+network="principia-atlas-browser-smoke-net"
 pod="principia-atlas-browser-pod"
 idp="principia-atlas-browser-idp"
 hosted="principia-atlas-browser-hosted"
 edge="principia-atlas-browser-edge"
+issuer_host="identity.example.test"
 containers=("$edge" "$hosted" "$idp" "$pod")
 
 show_diagnostics() {
@@ -29,6 +31,7 @@ cleanup() {
   local status=$?
   if [[ $status -ne 0 ]]; then show_diagnostics; fi
   docker rm -f "${containers[@]}" >/dev/null 2>&1 || true
+  docker network rm "$network" >/dev/null 2>&1 || true
   exit "$status"
 }
 trap cleanup EXIT
@@ -36,7 +39,12 @@ trap cleanup EXIT
 wait_https() {
   local url=$1
   for attempt in $(seq 1 40); do
-    if curl --fail --silent --cacert "$root/public/ca.crt" "$url" >/dev/null; then return 0; fi
+    if curl --fail --silent \
+      --resolve "$issuer_host:19443:127.0.0.1" \
+      --cacert "$root/public/ca.crt" \
+      "$url" >/dev/null; then
+      return 0
+    fi
     sleep 1
   done
   echo "HTTPS dependency did not become ready: $url" >&2
@@ -65,7 +73,11 @@ common_security=(
   --security-opt no-new-privileges:true
 )
 
+docker network create "$network" >/dev/null
+
 docker run -d --name "$pod" \
+  --network "$network" \
+  --network-alias "$issuer_host" \
   -p 18083:8081 \
   -p 19443:19443 \
   --entrypoint sleep \
@@ -82,7 +94,7 @@ docker run -d --name "$idp" \
   /opt/principia-atlas/hosted/deployment/mock_oidc_provider.mjs \
   --host 0.0.0.0 \
   --port 19443 \
-  --issuer https://127.0.0.1:19443 \
+  --issuer "https://$issuer_host:19443" \
   --client-id principia-atlas-browser \
   --client-secret-file /run/secrets/browser-client \
   --audience principia-atlas-external \
@@ -91,7 +103,7 @@ docker run -d --name "$idp" \
   --tls-cert /mock/tls.crt \
   --signing-key /run/idp/signing.key \
   --jwks /mock/jwks.json
-wait_https https://127.0.0.1:19443/healthz
+wait_https "https://$issuer_host:19443/healthz"
 
 docker run -d --name "$hosted" \
   --network "container:$pod" \
@@ -150,7 +162,8 @@ done
 
 node software/principia_atlas/hosted/deployment/browser_smoke_client.mjs \
   --origin http://127.0.0.1:18083 \
-  --issuer https://127.0.0.1:19443 \
+  --issuer "https://$issuer_host:19443" \
+  --issuer-address 127.0.0.1 \
   --ca "$root/public/ca.crt" \
   --version "$RELEASE_VERSION" \
   > "$root/result.json"
