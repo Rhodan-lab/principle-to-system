@@ -2,13 +2,14 @@ import { timingSafeEqual } from 'node:crypto';
 import { createServer as createHttpServer } from 'node:http';
 import { catalogForSession, verifyTenantCatalogCompatibility } from './catalog.mjs';
 import { createMetricsRegistry, createNullAuditLogger, newRequestId } from './observability.mjs';
+import { mintOidcIdentityAssertion, verifyOidcTenantCompatibility } from './oidc.mjs';
 import { authStateInfo, createMemoryAuthState } from './state.mjs';
 import { hostedAsset, parseHostedAssetPath } from './store.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { exchangeIdentityAssertion, SESSION_CONTRACT, verifySession } from './tokens.mjs';
 
 const MAX_URL_BYTES = 8192;
-const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.3';
+const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.4';
 
 function securityHeaders(response, requestId) {
   response.setHeader('Content-Security-Policy', "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'");
@@ -93,6 +94,12 @@ function clearSessionCookie(response, config) {
   response.setHeader('Set-Cookie', attributes.join('; '));
 }
 
+function setSessionCookie(response, config, token) {
+  const attributes = [`${config.session.cookie_name}=${token}`, 'Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${config.session.ttl_seconds}`];
+  if (config.session.secure) attributes.push('Secure');
+  response.setHeader('Set-Cookie', attributes.join('; '));
+}
+
 function normalizeMetricsToken(value) {
   if (value === null || value === undefined) return null;
   const raw = Buffer.isBuffer(value) ? Buffer.from(value) : Buffer.from(String(value), 'utf8');
@@ -108,6 +115,11 @@ function metricsAuthorized(request, expected) {
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
 
+function bearerToken(request) {
+  const match = /^Bearer ([A-Za-z0-9_.-]+)$/.exec(request.headers.authorization ?? '');
+  return match?.[1] ?? null;
+}
+
 export function createControlPlaneServer({
   catalog: catalogInput,
   config: configInput,
@@ -116,6 +128,7 @@ export function createControlPlaneServer({
   identitySecret,
   sessionSecret,
   metricsToken = null,
+  oidcVerifier = null,
   audit = createNullAuditLogger(),
   metrics = createMetricsRegistry(),
   now = () => Math.floor(Date.now() / 1000),
@@ -130,8 +143,20 @@ export function createControlPlaneServer({
   if (identityRaw.length < 32 || sessionRaw.length < 32) throw new Error('identity and session secrets must be at least 32 bytes');
   if (identityRaw.equals(sessionRaw)) throw new Error('identity and session secrets must be distinct');
   if (!Number.isSafeInteger(exchangeLimit) || exchangeLimit < 1 || exchangeLimit > 10000) throw new Error('exchange limit is invalid');
+  if (oidcVerifier !== null) {
+    if (!oidcVerifier || typeof oidcVerifier.verify !== 'function' || typeof oidcVerifier.health !== 'function' || !oidcVerifier.policy || !oidcVerifier.descriptor) throw new Error('OIDC verifier is invalid');
+    verifyOidcTenantCompatibility(oidcVerifier.policy, config);
+  }
   const stateInfo = authStateInfo(authState);
   const metricsSecret = normalizeMetricsToken(metricsToken);
+  const oidcInfo = oidcVerifier === null
+    ? Object.freeze({ enabled: false })
+    : Object.freeze({
+      enabled: true,
+      contract: oidcVerifier.descriptor.contract,
+      policy_id: oidcVerifier.descriptor.policy_id,
+      jwks_kind: oidcVerifier.descriptor.jwks.kind,
+    });
 
   const server = createHttpServer((request, response) => {
     const requestId = newRequestId();
@@ -158,6 +183,43 @@ export function createControlPlaneServer({
           return { status: 'unavailable', session: null };
         }
         return { status: 'ok', session };
+      };
+      const consumeExchangeRate = (scope, current, event) => {
+        const address = request.socket.remoteAddress ?? 'unknown';
+        const minuteStart = Math.floor(current / 60) * 60;
+        let rate;
+        try { rate = authState.consumeRateLimit(`${scope}:${address}`, minuteStart, 60, exchangeLimit, current); }
+        catch {
+          audit.event(event, { request_id: requestId, outcome: 'state_unavailable' });
+          sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+          return null;
+        }
+        if (!rate.allowed) {
+          metrics.auth('rate_limited');
+          audit.event(event, { request_id: requestId, outcome: 'rate_limited', reset_at: rate.reset_at });
+          response.setHeader('Retry-After', String(Math.max(1, rate.reset_at - current)));
+          sendJson(response, 429, { error: 'rate_limited' }, requestId);
+          return null;
+        }
+        return rate;
+      };
+      const commitExchange = (exchanged, current, event, invalidError) => {
+        let committed;
+        try {
+          committed = authState.commitExchange({ assertionId: exchanged.assertion.jti, assertionExpiresAt: exchanged.assertion.exp, session: exchanged.session }, current);
+        } catch {
+          audit.event(event, { request_id: requestId, outcome: 'state_unavailable' });
+          return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+        }
+        if (!committed) {
+          metrics.auth('invalid');
+          audit.event(event, { request_id: requestId, outcome: 'replay' });
+          return sendJson(response, 401, { error: invalidError }, requestId);
+        }
+        audit.event(event, { request_id: requestId, outcome: 'success', tenant_id: exchanged.session.tenant_id, roles_count: exchanged.session.roles.length });
+        metrics.auth('success');
+        setSessionCookie(response, config, exchanged.token);
+        return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: exchanged.session.sub, tenant_id: exchanged.session.tenant_id, roles: exchanged.session.roles, expires_at: exchanged.session.exp }, requestId);
       };
 
       let appRequest = null;
@@ -186,17 +248,23 @@ export function createControlPlaneServer({
       try { url = new URL(request.url ?? '/', 'http://localhost'); }
       catch { return sendJson(response, 400, { error: 'invalid_request_url' }, requestId); }
       if (request.method === 'GET' && url.pathname === '/healthz') {
-        return sendJson(response, 200, { status: 'ok', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo }, requestId);
+        return sendJson(response, 200, { status: 'ok', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo, oidc: oidcInfo }, requestId);
       }
       if (request.method === 'GET' && url.pathname === '/readyz') {
         try {
           const state = authState.health();
+          let oidc = oidcInfo;
+          if (oidcVerifier) {
+            const checked = oidcVerifier.health();
+            if (checked.provider?.status !== 'ok') throw new Error('OIDC provider is not ready');
+            oidc = { ...oidcInfo, status: 'ok' };
+          }
           metrics.setReady(true);
-          return sendJson(response, 200, { status: 'ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: state }, requestId);
+          return sendJson(response, 200, { status: 'ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: state, oidc }, requestId);
         } catch {
           metrics.setReady(false);
-          audit.event('readiness.fail', { request_id: requestId, reason: 'auth_state_unavailable' });
-          return sendJson(response, 503, { status: 'not_ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo }, requestId);
+          audit.event('readiness.fail', { request_id: requestId, reason: 'dependency_unavailable' });
+          return sendJson(response, 503, { status: 'not_ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo, oidc: oidcInfo }, requestId);
         }
       }
       if (request.method === 'GET' && url.pathname === '/metrics') {
@@ -207,51 +275,44 @@ export function createControlPlaneServer({
       if (request.method === 'POST' && url.pathname === '/api/auth/exchange') {
         if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' }, requestId);
         const current = now();
-        const address = request.socket.remoteAddress ?? 'unknown';
-        const minuteStart = Math.floor(current / 60) * 60;
-        let rate;
-        try { rate = authState.consumeRateLimit(`identity-exchange:${address}`, minuteStart, 60, exchangeLimit, current); }
-        catch {
-          audit.event('auth.exchange', { request_id: requestId, outcome: 'state_unavailable' });
-          return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
-        }
-        if (!rate.allowed) {
-          metrics.auth('rate_limited');
-          audit.event('auth.exchange', { request_id: requestId, outcome: 'rate_limited', reset_at: rate.reset_at });
-          response.setHeader('Retry-After', String(Math.max(1, rate.reset_at - current)));
-          return sendJson(response, 429, { error: 'rate_limited' }, requestId);
-        }
-        const match = /^Bearer ([A-Za-z0-9_.-]+)$/.exec(request.headers.authorization ?? '');
-        if (!match) {
+        if (!consumeExchangeRate('identity-exchange', current, 'auth.exchange')) return;
+        const token = bearerToken(request);
+        if (!token) {
           metrics.auth('invalid');
           audit.event('auth.exchange', { request_id: requestId, outcome: 'missing' });
           return sendJson(response, 401, { error: 'identity_assertion_required' }, requestId);
         }
         let exchanged;
-        try { exchanged = exchangeIdentityAssertion(match[1], identityRaw, sessionRaw, config, current); }
+        try { exchanged = exchangeIdentityAssertion(token, identityRaw, sessionRaw, config, current); }
         catch {
           metrics.auth('invalid');
           audit.event('auth.exchange', { request_id: requestId, outcome: 'invalid' });
           return sendJson(response, 401, { error: 'identity_assertion_invalid' }, requestId);
         }
-        let committed;
-        try {
-          committed = authState.commitExchange({ assertionId: exchanged.assertion.jti, assertionExpiresAt: exchanged.assertion.exp, session: exchanged.session }, current);
-        } catch {
-          audit.event('auth.exchange', { request_id: requestId, outcome: 'state_unavailable' });
-          return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
-        }
-        if (!committed) {
+        return commitExchange(exchanged, current, 'auth.exchange', 'identity_assertion_invalid');
+      }
+      if (request.method === 'POST' && url.pathname === '/api/auth/oidc') {
+        if (!oidcVerifier) return sendJson(response, 404, { error: 'not_found' }, requestId);
+        if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' }, requestId);
+        const current = now();
+        if (!consumeExchangeRate('oidc-exchange', current, 'auth.oidc')) return;
+        const token = bearerToken(request);
+        if (!token) {
           metrics.auth('invalid');
-          audit.event('auth.exchange', { request_id: requestId, outcome: 'replay' });
-          return sendJson(response, 401, { error: 'identity_assertion_invalid' }, requestId);
+          audit.event('auth.oidc', { request_id: requestId, outcome: 'missing' });
+          return sendJson(response, 401, { error: 'oidc_token_required' }, requestId);
         }
-        audit.event('auth.exchange', { request_id: requestId, outcome: 'success', tenant_id: exchanged.session.tenant_id, roles_count: exchanged.session.roles.length });
-        metrics.auth('success');
-        const attributes = [`${config.session.cookie_name}=${exchanged.token}`, 'Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${config.session.ttl_seconds}`];
-        if (config.session.secure) attributes.push('Secure');
-        response.setHeader('Set-Cookie', attributes.join('; '));
-        return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: exchanged.session.sub, tenant_id: exchanged.session.tenant_id, roles: exchanged.session.roles, expires_at: exchanged.session.exp }, requestId);
+        let exchanged;
+        try {
+          const principal = await oidcVerifier.verify(token, current);
+          const assertion = mintOidcIdentityAssertion(principal, identityRaw, config, oidcVerifier.policy, current);
+          exchanged = exchangeIdentityAssertion(assertion, identityRaw, sessionRaw, config, current);
+        } catch {
+          metrics.auth('invalid');
+          audit.event('auth.oidc', { request_id: requestId, outcome: 'invalid' });
+          return sendJson(response, 401, { error: 'oidc_token_invalid' }, requestId);
+        }
+        return commitExchange(exchanged, current, 'auth.oidc', 'oidc_token_invalid');
       }
       if (request.method === 'POST' && url.pathname === '/api/logout') {
         if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' }, requestId);
@@ -287,6 +348,6 @@ export function createControlPlaneServer({
     sessionRaw.fill(0);
     metricsSecret?.fill(0);
   });
-  server.principiaAtlas = Object.freeze({ audit, metrics });
+  server.principiaAtlas = Object.freeze({ audit, metrics, oidc: oidcInfo });
   return server;
 }
