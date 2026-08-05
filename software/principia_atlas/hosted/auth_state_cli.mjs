@@ -4,6 +4,8 @@ import {
   readOidcRevocationRequest,
   readOidcRevocationRequestWithKeyring,
 } from './revocation_request.mjs';
+import { readOidcRevocationRequestWithSignedKeyring } from './revocation_keyring.mjs';
+import { revokeSubjectOnceWithTrustState } from './revocation_operator.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { openSqliteAuthState } from './state.mjs';
 
@@ -28,9 +30,17 @@ const FLAGS = new Set([
   '--request-file',
   '--request-key-file',
   '--request-keyring-file',
+  '--keyring-root-key-file',
   '--now',
 ]);
-const REQUEST_FLAGS = new Set(['--state', '--request-file', '--request-key-file', '--request-keyring-file', '--now']);
+const REQUEST_FLAGS = new Set([
+  '--state',
+  '--request-file',
+  '--request-key-file',
+  '--request-keyring-file',
+  '--keyring-root-key-file',
+  '--now',
+]);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -59,17 +69,54 @@ function parseArgs(argv) {
     if (!output['request-file']) throw new Error('--request-file is required');
     const trustSources = Number(Boolean(output['request-key-file'])) + Number(Boolean(output['request-keyring-file']));
     if (trustSources !== 1) throw new Error('exactly one of --request-key-file or --request-keyring-file is required');
+    if (output['request-key-file'] && output['keyring-root-key-file']) {
+      throw new Error('--keyring-root-key-file is only valid with --request-keyring-file');
+    }
   }
   return output;
+}
+
+function initializeState(path) {
+  const state = openSqliteAuthState(path);
+  state.close();
 }
 
 export function main(argv = process.argv.slice(2), write = (value) => process.stdout.write(value)) {
   const args = parseArgs(argv);
   const request = args.command === 'revoke-oidc-request'
     ? (args['request-keyring-file']
-      ? readOidcRevocationRequestWithKeyring(args['request-file'], args['request-keyring-file'], args.now)
+      ? (args['keyring-root-key-file']
+        ? readOidcRevocationRequestWithSignedKeyring(
+          args['request-file'],
+          args['request-keyring-file'],
+          args['keyring-root-key-file'],
+          args.now,
+        )
+        : readOidcRevocationRequestWithKeyring(
+          args['request-file'],
+          args['request-keyring-file'],
+          args.now,
+        ))
       : readOidcRevocationRequest(args['request-file'], args['request-key-file'], args.now))
     : null;
+
+  if (args.command === 'revoke-oidc-request') {
+    initializeState(args.state);
+    const receipt = revokeSubjectOnceWithTrustState(args.state, request, args.now);
+    const result = {
+      contract: COMMAND_CONTRACT,
+      command: args.command,
+      verified_key_id: request.keyId,
+      ...(request.keyringGeneration === undefined ? {} : {
+        verified_keyring_generation: request.keyringGeneration,
+        verified_keyring_root_id: request.rootKeyId,
+      }),
+      ...receipt,
+    };
+    write(canonicalJson(result));
+    return result;
+  }
+
   const state = openSqliteAuthState(args.state);
   try {
     let result;
@@ -89,21 +136,6 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
         args.now + args.receiptTtlSeconds,
       );
       result = { contract: COMMAND_CONTRACT, command: args.command, ...receipt };
-    } else if (args.command === 'revoke-oidc-request') {
-      const receipt = state.revokeSubjectOnce(
-        request.eventId,
-        request.tenantId,
-        request.subject,
-        args.now,
-        args.now + request.receiptTtlSeconds,
-        request.keyId,
-      );
-      result = {
-        contract: COMMAND_CONTRACT,
-        command: args.command,
-        verified_key_id: request.keyId,
-        ...receipt,
-      };
     } else {
       result = {
         contract: COMMAND_CONTRACT,
