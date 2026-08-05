@@ -6,15 +6,18 @@ import { createBrowserOidcFlow } from './browser_oidc.mjs';
 import { canonicalJson, exactKeys, fail, parseStrictJson } from './strict_json.mjs';
 import { SESSION_CONTRACT } from './tokens.mjs';
 
-export const BROWSER_EDGE_CONTRACT = 'principia-atlas-browser-oidc-edge/0.1';
+export const BROWSER_EDGE_CONTRACT = 'principia-atlas-browser-oidc-edge/0.2';
 const MAX_URL_BYTES = 8192;
 const MAX_UPSTREAM_BYTES = 64 * 1024 * 1024;
+const MAX_SAAS_REQUEST_BYTES = 16 * 1024;
 const LOOPBACK = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+const SAAS_PROGRESS_MUTATION = /^\/api\/saas\/progress\/[a-z0-9-]{2,64}\/[a-z_]{2,32}$/;
 const FORWARDED_REQUEST_HEADERS = new Set(['accept', 'accept-language', 'cookie', 'if-none-match', 'user-agent']);
+const SAAS_MUTATION_HEADERS = new Set(['content-type', 'idempotency-key', 'x-csrf-token']);
 const FORWARDED_RESPONSE_HEADERS = new Set([
-  'cache-control', 'content-disposition', 'content-length', 'content-security-policy',
+  'allow', 'cache-control', 'content-disposition', 'content-length', 'content-security-policy',
   'content-type', 'cross-origin-opener-policy', 'cross-origin-resource-policy', 'etag',
-  'permissions-policy', 'referrer-policy', 'retry-after', 'set-cookie',
+  'idempotency-replayed', 'permissions-policy', 'referrer-policy', 'retry-after', 'set-cookie',
   'x-content-type-options', 'x-frame-options', 'x-request-id',
 ]);
 
@@ -82,8 +85,13 @@ function redirect(response, location, id, cookies = []) {
 
 function samePublicOrigin(request, publicOrigin) {
   const origin = request.headers.origin;
-  if (!origin) return request.method !== 'POST';
-  try { return new URL(origin).origin === publicOrigin; } catch { return false; }
+  if (!origin) return ['GET', 'HEAD'].includes(request.method ?? '');
+  try {
+    const parsed = new URL(origin);
+    return parsed.origin === origin && parsed.origin === publicOrigin;
+  } catch {
+    return false;
+  }
 }
 
 function oneQueryParameter(url, name) {
@@ -97,6 +105,22 @@ function hasRequestBody(request) {
   const raw = request.headers['content-length'];
   if (raw === undefined) return false;
   return raw !== '0';
+}
+
+async function readBoundedRequest(request, limit = MAX_SAAS_REQUEST_BYTES) {
+  const declared = request.headers['content-length'];
+  if (declared !== undefined && (!/^\d+$/.test(declared) || Number(declared) > limit)) {
+    fail('browser edge request exceeds resource limit');
+  }
+  const chunks = [];
+  let total = 0;
+  for await (const chunk of request) {
+    const raw = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    total += raw.length;
+    if (total > limit) fail('browser edge request exceeds resource limit');
+    chunks.push(raw);
+  }
+  return Buffer.concat(chunks, total);
 }
 
 async function readBoundedResponse(response, limit = MAX_UPSTREAM_BYTES) {
@@ -117,10 +141,11 @@ async function readBoundedResponse(response, limit = MAX_UPSTREAM_BYTES) {
   return Buffer.concat(chunks, total);
 }
 
-function forwardedRequestHeaders(request, upstreamOrigin) {
+function forwardedRequestHeaders(request, upstreamOrigin, { saasMutation = false } = {}) {
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
-    if (!FORWARDED_REQUEST_HEADERS.has(name) || value === undefined) continue;
+    const permitted = FORWARDED_REQUEST_HEADERS.has(name) || (saasMutation && SAAS_MUTATION_HEADERS.has(name));
+    if (!permitted || value === undefined) continue;
     headers.set(name, Array.isArray(value) ? value.join(', ') : value);
   }
   headers.set('Origin', upstreamOrigin);
@@ -170,16 +195,21 @@ export function createBrowserOidcEdgeServer({
   if (!Number.isSafeInteger(exchangeTimeoutMs) || exchangeTimeoutMs < 500 || exchangeTimeoutMs > 30000) fail('browser edge exchange timeout is invalid');
 
   const proxy = async (request, response, url, id) => {
-    if (!['GET', 'HEAD', 'POST'].includes(request.method ?? '')) {
-      response.setHeader('Allow', 'GET, HEAD, POST');
+    const saasProgressPath = SAAS_PROGRESS_MUTATION.test(url.pathname);
+    const saasMutation = request.method === 'PUT' && saasProgressPath;
+    const allowedMethods = saasProgressPath ? ['GET', 'HEAD', 'POST', 'PUT'] : ['GET', 'HEAD', 'POST'];
+    if (!allowedMethods.includes(request.method ?? '')) {
+      response.setHeader('Allow', allowedMethods.join(', '));
       return sendJson(response, 405, { error: 'method_not_allowed' }, id);
     }
-    if (hasRequestBody(request)) return sendJson(response, 413, { error: 'request_body_not_allowed' }, id);
+    if (hasRequestBody(request) && !saasMutation) return sendJson(response, 413, { error: 'request_body_not_allowed' }, id);
     if (['/api/auth/oidc', '/api/auth/exchange', '/metrics'].includes(url.pathname)) return sendJson(response, 404, { error: 'not_found' }, id);
     if (!samePublicOrigin(request, publicOrigin)) return sendJson(response, 403, { error: 'origin_rejected' }, id);
+    const body = saasMutation ? await readBoundedRequest(request) : undefined;
     const upstreamResponse = await upstreamFetch(fetchImpl, upstream, `${url.pathname}${url.search}`, {
       method: request.method,
-      headers: forwardedRequestHeaders(request, upstream),
+      headers: forwardedRequestHeaders(request, upstream, { saasMutation }),
+      ...(saasMutation ? { body } : {}),
     }, exchangeTimeoutMs);
     const raw = await readBoundedResponse(upstreamResponse);
     securityHeaders(response, id);
@@ -284,9 +314,11 @@ export function createBrowserOidcEdgeServer({
 
       return proxy(request, response, url, id);
     };
-    handle().catch(() => {
-      if (!response.headersSent) sendJson(response, 500, { error: 'internal_error' }, id);
-      else response.destroy();
+    handle().catch((error) => {
+      if (!response.headersSent) {
+        const resourceLimit = /request exceeds resource limit/.test(String(error?.message ?? error));
+        sendJson(response, resourceLimit ? 413 : 500, { error: resourceLimit ? 'request_too_large' : 'internal_error' }, id);
+      } else response.destroy();
     });
   });
   server.once('close', () => browserFlow.close());
@@ -294,6 +326,7 @@ export function createBrowserOidcEdgeServer({
     contract: BROWSER_EDGE_CONTRACT,
     config_id: browserFlow.config.config_id,
     upstream_kind: 'loopback',
+    saas_progress_mutations: true,
   });
   return server;
 }

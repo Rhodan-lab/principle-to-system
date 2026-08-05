@@ -4,12 +4,16 @@ on:
   pull_request:
     paths:
       - "software/principia_atlas/saas/**"
+      - "software/principia_atlas/hosted/browser_edge.mjs"
+      - "software/principia_atlas/hosted/saas_runtime.mjs"
       - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
       - ".github/workflows/validate-principia-atlas-saas.yml"
   push:
     branches: [main]
     paths:
       - "software/principia_atlas/saas/**"
+      - "software/principia_atlas/hosted/browser_edge.mjs"
+      - "software/principia_atlas/hosted/saas_runtime.mjs"
       - "software/tests/test_product_alpha_principia_atlas_saas*.mjs"
       - ".github/workflows/validate-principia-atlas-saas.yml"
   workflow_dispatch:
@@ -63,12 +67,15 @@ jobs:
           for file in software/principia_atlas/saas/*.mjs; do
             node --check "$file"
           done
+          node --check software/principia_atlas/hosted/browser_edge.mjs
+          node --check software/principia_atlas/hosted/saas_runtime.mjs
 
-      - name: Run local SaaS and application API regressions
+      - name: Run local SaaS, API, and runtime-edge regressions
         run: |
           node --test \
             software/tests/test_product_alpha_principia_atlas_saas_control_plane.mjs \
-            software/tests/test_product_alpha_principia_atlas_saas_application_api.mjs
+            software/tests/test_product_alpha_principia_atlas_saas_application_api.mjs \
+            software/tests/test_product_alpha_principia_atlas_saas_runtime_edge.mjs
 
       - name: Run PostgreSQL migration and semantic parity regressions
         env:
