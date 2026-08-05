@@ -215,7 +215,7 @@ test('hosted shell uses DOM text APIs and health reports release serving', async
     const health = await fetch(`${base}/healthz`);
     assert.deepEqual(await health.json(), {
       status: 'ok',
-      contract: 'principia-atlas-hosted-health/0.3',
+      contract: 'principia-atlas-hosted-health/0.4',
       release_serving: true,
       auth_state: {
         contract: 'principia-atlas-hosted-auth-state/0.1',
@@ -223,6 +223,7 @@ test('hosted shell uses DOM text APIs and health reports release serving', async
         durable: false,
         multi_instance: false,
       },
+      oidc: { enabled: false },
     });
   });
 });
