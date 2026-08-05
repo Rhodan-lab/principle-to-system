@@ -86,7 +86,12 @@ function redirect(response, location, id, cookies = []) {
 function samePublicOrigin(request, publicOrigin) {
   const origin = request.headers.origin;
   if (!origin) return ['GET', 'HEAD'].includes(request.method ?? '');
-  try { return new URL(origin).origin === publicOrigin; } catch { return false; }
+  try {
+    const parsed = new URL(origin);
+    return parsed.origin === origin && parsed.origin === publicOrigin;
+  } catch {
+    return false;
+  }
 }
 
 function oneQueryParameter(url, name) {
@@ -190,8 +195,9 @@ export function createBrowserOidcEdgeServer({
   if (!Number.isSafeInteger(exchangeTimeoutMs) || exchangeTimeoutMs < 500 || exchangeTimeoutMs > 30000) fail('browser edge exchange timeout is invalid');
 
   const proxy = async (request, response, url, id) => {
-    const saasMutation = request.method === 'PUT' && SAAS_PROGRESS_MUTATION.test(url.pathname);
-    const allowedMethods = saasMutation ? ['GET', 'HEAD', 'POST', 'PUT'] : ['GET', 'HEAD', 'POST'];
+    const saasProgressPath = SAAS_PROGRESS_MUTATION.test(url.pathname);
+    const saasMutation = request.method === 'PUT' && saasProgressPath;
+    const allowedMethods = saasProgressPath ? ['GET', 'HEAD', 'POST', 'PUT'] : ['GET', 'HEAD', 'POST'];
     if (!allowedMethods.includes(request.method ?? '')) {
       response.setHeader('Allow', allowedMethods.join(', '));
       return sendJson(response, 405, { error: 'method_not_allowed' }, id);
