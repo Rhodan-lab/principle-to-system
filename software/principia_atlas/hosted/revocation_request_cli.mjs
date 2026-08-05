@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import {
+  readOidcRevocationKeyringDraft,
   revocationPublicKeyIdFromFile,
   signOidcRevocationRequestFile,
 } from './revocation_request.mjs';
@@ -39,11 +40,9 @@ function parseArgs(argv) {
     if (!output['public-key-file']) fail('key-id requires --public-key-file');
     if (output.input || output['private-key-file'] || output['root-private-key-file'] || output.output) fail('key-id only accepts --public-key-file');
   } else {
-    if (!output.input || !output['root-private-key-file'] || !output.output) {
-      fail('keyring requires --input, --root-private-key-file, and --output');
-    }
+    if (!output.input || !output.output) fail('keyring requires --input and --output');
     if (output['private-key-file'] || output['public-key-file']) {
-      fail('keyring only accepts --input, --root-private-key-file, and --output');
+      fail('keyring only accepts --input, optional --root-private-key-file, and --output');
     }
   }
   return output;
@@ -62,13 +61,17 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
   }
 
   if (args.command === 'keyring') {
-    const keyring = signOidcRevocationKeyringDraftFile(args.input, args['root-private-key-file']);
+    const keyring = args['root-private-key-file']
+      ? signOidcRevocationKeyringDraftFile(args.input, args['root-private-key-file'])
+      : readOidcRevocationKeyringDraft(args.input);
     writeFileSync(resolve(args.output), canonicalJson(keyring), { flag: 'wx', mode: 0o444 });
     const result = {
       contract: COMMAND_CONTRACT,
       command: args.command,
-      generation: keyring.generation,
-      root_key_id: keyring.root_key_id,
+      ...(keyring.generation === undefined ? { legacy_unsigned: true } : {
+        generation: keyring.generation,
+        root_key_id: keyring.root_key_id,
+      }),
       key_ids: keyring.keys.map((entry) => entry.key_id),
       revoked_key_ids: keyring.revoked_key_ids,
     };
