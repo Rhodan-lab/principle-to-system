@@ -176,12 +176,13 @@ export function createSaasApplicationApi({
         status: requestProgress.status,
         expected_revision: requestProgress.expectedRevision,
       })).digest('hex');
-      const idempotency = validateIdempotencyInput({
+      const idempotencyInput = {
         operation: IDEMPOTENCY_OPERATION,
         key: header(request, 'idempotency-key'),
         request_sha256: requestDigest,
         ttl_seconds: idempotencyTtlSeconds,
-      });
+      };
+      validateIdempotencyInput(idempotencyInput);
       const stored = await controlPlane.recordProgressIdempotent(
         resolved.membership.id,
         {
@@ -193,7 +194,7 @@ export function createSaasApplicationApi({
           status: requestProgress.status,
           expected_revision: requestProgress.expectedRevision,
         },
-        idempotency,
+        idempotencyInput,
         nowSeconds,
       );
       event('saas.progress.write', {
