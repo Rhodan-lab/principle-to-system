@@ -80,6 +80,8 @@ async function request(urlInput, {
   issuer,
   issuerAddress,
   method = 'GET',
+  originHeader = null,
+  cookieHeaderOverride = null,
 } = {}) {
   const url = new URL(urlInput);
   const transport = url.protocol === 'https:' ? https : http;
@@ -91,8 +93,9 @@ async function request(urlInput, {
       : null;
   return new Promise((resolveRequest, reject) => {
     const headers = { Accept: 'text/html, application/json' };
-    const cookie = cookieHeader(jar, url);
+    const cookie = cookieHeaderOverride ?? cookieHeader(jar, url);
     if (cookie) headers.Cookie = cookie;
+    if (originHeader !== null) headers.Origin = originHeader;
     const requestHandle = transport.request(url, {
       method,
       headers,
@@ -159,6 +162,10 @@ export async function main(argv = process.argv.slice(2)) {
   assert.ok(landing.body.length > 100);
   const edgeCookies = hostCookies(jar, new URL(origin));
   assert.ok(edgeCookies.has(args.sessionCookie));
+  const revokedCookieValue = edgeCookies.get(args.sessionCookie);
+  assert.equal(typeof revokedCookieValue, 'string');
+  assert.ok(revokedCookieValue.length > 32);
+  const revokedCookieHeader = `${args.sessionCookie}=${revokedCookieValue}`;
   assert.equal(edgeCookies.has('__Host-pa_oidc_flow'), false);
   assert.equal(hostCookies(jar, new URL(issuer)).has('__Host-pa_oidc_flow'), false);
 
@@ -180,13 +187,41 @@ export async function main(argv = process.argv.slice(2)) {
   const hiddenMetrics = await request(`${origin}/metrics`, requestOptions);
   assert.equal(hiddenMetrics.status, 404);
 
+  const logoutResponse = await request(`${origin}/api/logout`, {
+    ...requestOptions,
+    method: 'POST',
+    originHeader: origin,
+  });
+  updateCookies(jar, new URL(origin), logoutResponse);
+  assert.equal(logoutResponse.status, 200);
+  const logout = parseStrictJson(logoutResponse.body, 'browser smoke logout');
+  assert.equal(logout.status, 'signed_out');
+  assert.equal(edgeCookies.has(args.sessionCookie), false);
+
+  const sessionAfterLogout = await request(`${origin}/api/session`, requestOptions);
+  assert.equal(sessionAfterLogout.status, 401);
+  const revokedSessionReplay = await request(`${origin}/api/session`, {
+    ...requestOptions,
+    cookieHeaderOverride: revokedCookieHeader,
+  });
+  assert.equal(revokedSessionReplay.status, 401);
+  const revokedReleaseReplay = await request(`${origin}/app/${encodeURIComponent(args.version)}/`, {
+    ...requestOptions,
+    cookieHeaderOverride: revokedCookieHeader,
+  });
+  assert.equal(revokedReleaseReplay.status, 401);
+
   const result = {
     status: 'ok',
     login: 'authorization-code-pkce',
+    logout: 'durable-session-revocation',
     tls_gateway: true,
     tenant_id: session.tenant_id,
     roles: session.roles,
     release_version: args.version,
+    post_logout_session_status: sessionAfterLogout.status,
+    revoked_session_replay_status: revokedSessionReplay.status,
+    revoked_release_replay_status: revokedReleaseReplay.status,
     hidden_routes: ['/api/auth/oidc', '/metrics'],
   };
   process.stdout.write(`${canonicalJson(result)}\n`);
