@@ -3,11 +3,17 @@ import { isIP } from 'node:net';
 import { createSaasApplicationApi } from '../saas/application_api.mjs';
 import { applyPostgresMigrations } from '../saas/postgres_migrations.mjs';
 import { openPostgresSaasControlPlane } from '../saas/postgres_store.mjs';
-import { createSaasHostedRuntimeServer, SAAS_HOSTED_RUNTIME_CONTRACT } from './saas_runtime.mjs';
+import {
+  createSaasHostedRuntimeServer,
+  SAAS_HOSTED_RUNTIME_CONTRACT,
+  SAAS_RUNTIME_HEALTH_PATH,
+  SAAS_RUNTIME_READY_PATH,
+} from './saas_runtime.mjs';
 import { fail } from './strict_json.mjs';
 
 export const SAAS_PROCESS_CONTRACT = 'principia-atlas-saas-process/0.1';
 const LOOPBACK = new Set(['localhost', '127.0.0.1', '::1']);
+const INTERNAL_PATHS = new Set([SAAS_RUNTIME_HEALTH_PATH, SAAS_RUNTIME_READY_PATH]);
 
 function validatePool(pool) {
   if (!pool || typeof pool.connect !== 'function' || typeof pool.query !== 'function' || typeof pool.end !== 'function') {
@@ -33,6 +39,28 @@ function validateHost(value) {
 function boundedInteger(value, label, minimum, maximum) {
   if (!Number.isSafeInteger(value) || value < minimum || value > maximum) fail(`${label} is invalid`);
   return value;
+}
+
+function hideInternalPathsFromProxy(server) {
+  const listeners = server.listeners('request');
+  if (listeners.length !== 1) fail('SaaS runtime request boundary is invalid');
+  const runtimeHandler = listeners[0];
+  server.removeAllListeners('request');
+  server.on('request', (request, response) => {
+    let pathname = null;
+    try { pathname = new URL(request.url ?? '/', 'http://localhost').pathname; } catch {}
+    if (pathname && INTERNAL_PATHS.has(pathname) && request.headers.origin !== undefined) {
+      const raw = Buffer.from('{"error":"not_found"}\n', 'utf8');
+      response.statusCode = 404;
+      response.setHeader('Content-Type', 'application/json; charset=utf-8');
+      response.setHeader('Content-Length', String(raw.length));
+      response.setHeader('Cache-Control', 'private, no-store');
+      response.setHeader('X-Content-Type-Options', 'nosniff');
+      response.end(raw);
+      return;
+    }
+    runtimeHandler(request, response);
+  });
 }
 
 async function closeServer(server, timeoutMs) {
@@ -103,6 +131,7 @@ export async function createSaasRuntimeProcess({
       now,
       timeoutMs,
     });
+    hideInternalPathsFromProxy(server);
   } catch (error) {
     controlPlane?.close();
     if (closePool) {
@@ -122,6 +151,8 @@ export async function createSaasRuntimeProcess({
       port,
       database: 'postgresql',
       auth_state: authState.descriptor?.kind ?? 'unknown',
+      health_path: SAAS_RUNTIME_HEALTH_PATH,
+      readiness_path: SAAS_RUNTIME_READY_PATH,
       production_ready: false,
     }),
     get server() { return server; },
