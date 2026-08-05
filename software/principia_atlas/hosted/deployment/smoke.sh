@@ -46,6 +46,15 @@ wait_ready() {
   return 1
 }
 
+# Immutable deployment inputs are root-owned and readable but never writable by
+# the numeric runtime user. Docker bind mounts them read-only as a second layer
+# of protection. Writable state, audit, and backup paths remain UID 10001-owned.
+sudo chown root:root "$RUNNER_TEMP/hosted/catalog.json" "$RUNNER_TEMP/hosted/tenants.json"
+sudo chmod 0444 "$RUNNER_TEMP/hosted/catalog.json" "$RUNNER_TEMP/hosted/tenants.json"
+sudo chown -R root:root "$RUNNER_TEMP/hosted/store"
+sudo find "$RUNNER_TEMP/hosted/store" -type d -exec chmod 0555 {} +
+sudo find "$RUNNER_TEMP/hosted/store" -type f -exec chmod 0444 {} +
+
 common=(
   --read-only
   --tmpfs /tmp:rw,noexec,nosuid,nodev,size=32m
