@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createHash } from 'node:crypto';
 import { lstat, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -64,8 +65,14 @@ async function readRegular(pathInput, label, maximum, { immutableCode = false } 
   const stats = await lstat(path);
   if (stats.isSymbolicLink() || !stats.isFile()) fail(`${label} must be a regular file`);
   if (stats.size < 1 || stats.size > maximum) fail(`${label} exceeds resource limit`);
-  if (immutableCode && (stats.mode & 0o022) !== 0) fail(`${label} permissions are too broad`);
-  return Object.freeze({ path, raw: await readFile(path) });
+  if (immutableCode && (stats.mode & 0o222) !== 0) fail(`${label} must be read-only`);
+  const raw = await readFile(path);
+  if (raw.length !== stats.size) fail(`${label} changed while reading`);
+  return Object.freeze({
+    path,
+    raw,
+    sha256: createHash('sha256').update(raw).digest('hex'),
+  });
 }
 
 async function loadTenantConfig(pathInput) {
@@ -90,7 +97,7 @@ function validateDatabaseUrl(raw) {
 
 async function loadDriver(pathInput) {
   const input = await readRegular(pathInput, 'PostgreSQL driver module', MAX_CONFIG_BYTES, { immutableCode: true });
-  const module = await import(`${pathToFileURL(input.path).href}?v=${input.raw.byteLength}`);
+  const module = await import(`${pathToFileURL(input.path).href}?sha256=${input.sha256}`);
   if (typeof module.createPostgresPool !== 'function') fail('PostgreSQL driver module is invalid');
   return module.createPostgresPool;
 }
