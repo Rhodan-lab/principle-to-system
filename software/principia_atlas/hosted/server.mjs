@@ -65,10 +65,11 @@ export function gracefulShutdown({ server, authState, audit, signal = 'SIGTERM',
   if (server.__principiaAtlasShutdown) return server.__principiaAtlasShutdown;
   server.__principiaAtlasShutdown = new Promise((resolveShutdown) => {
     let finished = false;
+    let timer = null;
     const finish = (forced) => {
       if (finished) return;
       finished = true;
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       try { authState.close(); } catch {}
       try { audit.event('server.stop', { forced, signal }); } catch {}
       try { audit.close(); } catch {}
@@ -77,7 +78,7 @@ export function gracefulShutdown({ server, authState, audit, signal = 'SIGTERM',
     try { audit.event('server.drain', { signal, timeout_ms: timeoutMs }); } catch {}
     server.close(() => finish(false));
     server.closeIdleConnections?.();
-    const timer = setTimeout(() => {
+    timer = setTimeout(() => {
       try { audit.event('server.drain_timeout', { signal, timeout_ms: timeoutMs }); } catch {}
       server.closeAllConnections?.();
       finish(true);
