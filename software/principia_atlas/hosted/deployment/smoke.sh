@@ -46,6 +46,20 @@ wait_ready() {
   return 1
 }
 
+run_recovery() {
+  docker run --rm \
+    --user 10001:10001 \
+    --read-only \
+    --tmpfs /tmp:rw,noexec,nosuid,nodev,size=16m \
+    --cap-drop ALL \
+    --security-opt no-new-privileges:true \
+    --mount type=bind,src="$RUNNER_TEMP/hosted/state",dst=/state \
+    --mount type=bind,src="$RUNNER_TEMP/hosted/backups",dst=/backup \
+    --entrypoint node \
+    principia-atlas-hosted:first \
+    /opt/principia-atlas/hosted/auth_state_recovery.mjs "$@"
+}
+
 # Immutable deployment inputs are root-owned and readable but never writable by
 # the numeric runtime user. Docker bind mounts them read-only as a second layer
 # of protection. Writable state, audit, and backup paths remain UID 10001-owned.
@@ -123,25 +137,25 @@ curl --fail --silent \
   --header "Cookie: $cookie" \
   http://127.0.0.1:18082/api/session >/dev/null
 
-sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs backup \
-  --state "$RUNNER_TEMP/hosted/state/auth-state.sqlite" \
-  --output "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
+run_recovery backup \
+  --state /state/auth-state.sqlite \
+  --output /backup/auth-state.sqlite \
   > "$RUNNER_TEMP/hosted/backup-result.json"
-sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs verify \
-  --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
+run_recovery verify \
+  --backup /backup/auth-state.sqlite \
   > "$RUNNER_TEMP/hosted/backup-verify.json"
 
 docker stop --time 25 principia-atlas-b >/dev/null
-sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs restore \
-  --backup "$RUNNER_TEMP/hosted/backups/auth-state.sqlite" \
-  --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
+run_recovery restore \
+  --backup /backup/auth-state.sqlite \
+  --state /state/restored.sqlite \
   --confirm-offline ALL_INSTANCES_STOPPED \
   > "$RUNNER_TEMP/hosted/restore-result.json"
-sudo -u '#10001' node software/principia_atlas/hosted/auth_state_recovery.mjs integrity \
-  --state "$RUNNER_TEMP/hosted/state/restored.sqlite" \
+run_recovery integrity \
+  --state /state/restored.sqlite \
   > "$RUNNER_TEMP/hosted/restored-integrity.json"
 
-sudo -u '#10001' test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-! sudo -u '#10001' grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-! sudo -u '#10001' grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
-! sudo -u '#10001' grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+sudo test -s "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+! sudo grep -Fq 'ci-identity-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+! sudo grep -Fq 'ci-session-secret' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
+! sudo grep -Fq 'ci-metrics-token' "$RUNNER_TEMP/hosted/audit/audit.ndjson"
