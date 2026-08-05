@@ -1,14 +1,16 @@
+import { timingSafeEqual } from 'node:crypto';
 import { createServer as createHttpServer } from 'node:http';
 import { catalogForSession, verifyTenantCatalogCompatibility } from './catalog.mjs';
+import { createMetricsRegistry, createNullAuditLogger, newRequestId } from './observability.mjs';
 import { authStateInfo, createMemoryAuthState } from './state.mjs';
 import { hostedAsset, parseHostedAssetPath } from './store.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { exchangeIdentityAssertion, SESSION_CONTRACT, verifySession } from './tokens.mjs';
 
 const MAX_URL_BYTES = 8192;
-const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.3';
+const HEALTH_CONTRACT = 'principia-atlas-hosted-health/0.4';
 
-function securityHeaders(response) {
+function securityHeaders(response, requestId) {
   response.setHeader('Content-Security-Policy', "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'");
   response.setHeader('Referrer-Policy', 'no-referrer');
   response.setHeader('X-Content-Type-Options', 'nosniff');
@@ -17,29 +19,36 @@ function securityHeaders(response) {
   response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()');
   response.setHeader('Cache-Control', 'private, no-store');
+  response.setHeader('X-Request-ID', requestId);
 }
 
-function sendJson(response, status, value) {
-  securityHeaders(response);
+function sendRaw(response, status, contentType, raw, requestId) {
+  const body = Buffer.isBuffer(raw) ? raw : Buffer.from(String(raw), 'utf8');
+  securityHeaders(response, requestId);
   response.statusCode = status;
-  response.setHeader('Content-Type', 'application/json; charset=utf-8');
-  response.end(canonicalJson(value));
+  response.setHeader('Content-Type', contentType);
+  response.setHeader('Content-Length', String(body.length));
+  response.__principiaAtlasBytes = body.length;
+  response.end(body);
 }
 
-function sendHtml(response, status, html) {
-  securityHeaders(response);
-  response.statusCode = status;
-  response.setHeader('Content-Type', 'text/html; charset=utf-8');
-  response.end(html);
+function sendJson(response, status, value, requestId) {
+  sendRaw(response, status, 'application/json; charset=utf-8', canonicalJson(value), requestId);
 }
 
-function sendAsset(request, response, asset) {
-  securityHeaders(response);
+function sendHtml(response, status, html, requestId) {
+  sendRaw(response, status, 'text/html; charset=utf-8', html, requestId);
+}
+
+function sendAsset(request, response, asset, requestId, metrics) {
+  securityHeaders(response, requestId);
   response.statusCode = 200;
   response.setHeader('Content-Type', asset.contentType);
   response.setHeader('Content-Length', String(asset.size));
   response.setHeader('ETag', `"sha256-${asset.sha256}"`);
   response.setHeader('Content-Disposition', 'inline');
+  response.__principiaAtlasBytes = request.method === 'HEAD' ? 0 : asset.size;
+  metrics.release(asset.size);
   if (request.method === 'HEAD') response.end();
   else response.end(asset.raw);
 }
@@ -84,6 +93,21 @@ function clearSessionCookie(response, config) {
   response.setHeader('Set-Cookie', attributes.join('; '));
 }
 
+function normalizeMetricsToken(value) {
+  if (value === null || value === undefined) return null;
+  const raw = Buffer.isBuffer(value) ? Buffer.from(value) : Buffer.from(String(value), 'utf8');
+  if (raw.length < 24 || raw.length > 4096) throw new Error('metrics token length is invalid');
+  return raw;
+}
+
+function metricsAuthorized(request, expected) {
+  if (expected === null) return false;
+  const match = /^Bearer ([^\s]{1,4096})$/.exec(request.headers.authorization ?? '');
+  if (!match) return false;
+  const actual = Buffer.from(match[1], 'utf8');
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
 export function createControlPlaneServer({
   catalog: catalogInput,
   config: configInput,
@@ -91,6 +115,9 @@ export function createControlPlaneServer({
   authState = createMemoryAuthState(),
   identitySecret,
   sessionSecret,
+  metricsToken = null,
+  audit = createNullAuditLogger(),
+  metrics = createMetricsRegistry(),
   now = () => Math.floor(Date.now() / 1000),
   exchangeLimit = 10,
 }) {
@@ -98,25 +125,35 @@ export function createControlPlaneServer({
   const catalog = verified.catalog;
   const config = verified.config;
   if (store && store.catalog.catalog_id !== catalog.catalog_id) throw new Error('hosted store catalog identity does not match control plane');
-  const identityRaw = Buffer.from(String(identitySecret ?? ''), 'utf8');
-  const sessionRaw = Buffer.from(String(sessionSecret ?? ''), 'utf8');
+  const identityRaw = Buffer.isBuffer(identitySecret) ? Buffer.from(identitySecret) : Buffer.from(String(identitySecret ?? ''), 'utf8');
+  const sessionRaw = Buffer.isBuffer(sessionSecret) ? Buffer.from(sessionSecret) : Buffer.from(String(sessionSecret ?? ''), 'utf8');
   if (identityRaw.length < 32 || sessionRaw.length < 32) throw new Error('identity and session secrets must be at least 32 bytes');
   if (identityRaw.equals(sessionRaw)) throw new Error('identity and session secrets must be distinct');
   if (!Number.isSafeInteger(exchangeLimit) || exchangeLimit < 1 || exchangeLimit > 10000) throw new Error('exchange limit is invalid');
   const stateInfo = authStateInfo(authState);
+  const metricsSecret = normalizeMetricsToken(metricsToken);
 
   const server = createHttpServer((request, response) => {
+    const requestId = newRequestId();
+    metrics.beginRequest();
+    response.once('finish', () => metrics.endRequest(response.statusCode, response.__principiaAtlasBytes ?? 0));
     const handle = async () => {
-      if (Buffer.byteLength(request.url ?? '') > MAX_URL_BYTES) return sendJson(response, 414, { error: 'uri_too_long' });
+      if (Buffer.byteLength(request.url ?? '') > MAX_URL_BYTES) return sendJson(response, 414, { error: 'uri_too_long' }, requestId);
       const getSession = () => {
         const token = parseCookies(request.headers.cookie)[config.session.cookie_name];
         if (!token) return { status: 'missing', session: null };
         const current = now();
         let session;
         try { session = verifySession(token, sessionSecret, config, current); }
-        catch { return { status: 'invalid', session: null }; }
+        catch {
+          audit.event('session.reject', { request_id: requestId, reason: 'invalid_signature_or_time' });
+          return { status: 'invalid', session: null };
+        }
         try {
-          if (!authState.validateSession(session, current)) return { status: 'invalid', session: null };
+          if (!authState.validateSession(session, current)) {
+            audit.event('session.reject', { request_id: requestId, reason: 'unregistered_or_revoked', tenant_id: session.tenant_id });
+            return { status: 'invalid', session: null };
+          }
         } catch {
           return { status: 'unavailable', session: null };
         }
@@ -125,95 +162,126 @@ export function createControlPlaneServer({
 
       let appRequest = null;
       try { appRequest = parseHostedAssetPath(request.url); }
-      catch { return sendJson(response, 400, { error: 'invalid_asset_path' }); }
+      catch { return sendJson(response, 400, { error: 'invalid_asset_path' }, requestId); }
       if (appRequest) {
         if (!['GET', 'HEAD'].includes(request.method ?? '')) {
           response.setHeader('Allow', 'GET, HEAD');
-          return sendJson(response, 405, { error: 'method_not_allowed' });
+          return sendJson(response, 405, { error: 'method_not_allowed' }, requestId);
         }
         const resolved = getSession();
-        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' });
-        if (!resolved.session) return sendJson(response, 401, { error: 'session_required' });
-        if (!store) return sendJson(response, 503, { error: 'release_store_unavailable' });
+        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+        if (!resolved.session) return sendJson(response, 401, { error: 'session_required' }, requestId);
+        if (!store) return sendJson(response, 503, { error: 'release_store_unavailable' }, requestId);
         const view = catalogForSession(resolved.session, catalog, config);
-        if (!view.releases.some((item) => item.version === appRequest.version)) return sendJson(response, 404, { error: 'not_found' });
+        if (!view.releases.some((item) => item.version === appRequest.version)) {
+          audit.event('release.deny', { request_id: requestId, tenant_id: resolved.session.tenant_id, version: appRequest.version });
+          return sendJson(response, 404, { error: 'not_found' }, requestId);
+        }
         const asset = hostedAsset(store, appRequest.version, appRequest.assetPath);
-        if (!asset) return sendJson(response, 404, { error: 'not_found' });
-        return sendAsset(request, response, asset);
+        if (!asset) return sendJson(response, 404, { error: 'not_found' }, requestId);
+        return sendAsset(request, response, asset, requestId, metrics);
       }
 
       let url;
       try { url = new URL(request.url ?? '/', 'http://localhost'); }
-      catch { return sendJson(response, 400, { error: 'invalid_request_url' }); }
+      catch { return sendJson(response, 400, { error: 'invalid_request_url' }, requestId); }
       if (request.method === 'GET' && url.pathname === '/healthz') {
-        return sendJson(response, 200, { status: 'ok', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo });
+        return sendJson(response, 200, { status: 'ok', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo }, requestId);
       }
       if (request.method === 'GET' && url.pathname === '/readyz') {
         try {
           const state = authState.health();
-          return sendJson(response, 200, { status: 'ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: state });
+          metrics.setReady(true);
+          return sendJson(response, 200, { status: 'ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: state }, requestId);
         } catch {
-          return sendJson(response, 503, { status: 'not_ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo });
+          metrics.setReady(false);
+          audit.event('readiness.fail', { request_id: requestId, reason: 'auth_state_unavailable' });
+          return sendJson(response, 503, { status: 'not_ready', contract: HEALTH_CONTRACT, release_serving: store !== null, auth_state: stateInfo }, requestId);
         }
       }
-      if (request.method === 'GET' && url.pathname === '/') return sendHtml(response, 200, shellHtml());
+      if (request.method === 'GET' && url.pathname === '/metrics') {
+        if (!metricsAuthorized(request, metricsSecret)) return sendJson(response, 404, { error: 'not_found' }, requestId);
+        return sendRaw(response, 200, 'text/plain; version=0.0.4; charset=utf-8', metrics.render(), requestId);
+      }
+      if (request.method === 'GET' && url.pathname === '/') return sendHtml(response, 200, shellHtml(), requestId);
       if (request.method === 'POST' && url.pathname === '/api/auth/exchange') {
-        if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' });
+        if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' }, requestId);
         const current = now();
         const address = request.socket.remoteAddress ?? 'unknown';
         const minuteStart = Math.floor(current / 60) * 60;
         let rate;
         try { rate = authState.consumeRateLimit(`identity-exchange:${address}`, minuteStart, 60, exchangeLimit, current); }
-        catch { return sendJson(response, 503, { error: 'auth_state_unavailable' }); }
+        catch {
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'state_unavailable' });
+          return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+        }
         if (!rate.allowed) {
+          metrics.auth('rate_limited');
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'rate_limited', reset_at: rate.reset_at });
           response.setHeader('Retry-After', String(Math.max(1, rate.reset_at - current)));
-          return sendJson(response, 429, { error: 'rate_limited' });
+          return sendJson(response, 429, { error: 'rate_limited' }, requestId);
         }
         const match = /^Bearer ([A-Za-z0-9_.-]+)$/.exec(request.headers.authorization ?? '');
-        if (!match) return sendJson(response, 401, { error: 'identity_assertion_required' });
+        if (!match) {
+          metrics.auth('invalid');
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'missing' });
+          return sendJson(response, 401, { error: 'identity_assertion_required' }, requestId);
+        }
         let exchanged;
         try { exchanged = exchangeIdentityAssertion(match[1], identitySecret, sessionSecret, config, current); }
-        catch { return sendJson(response, 401, { error: 'identity_assertion_invalid' }); }
+        catch {
+          metrics.auth('invalid');
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'invalid' });
+          return sendJson(response, 401, { error: 'identity_assertion_invalid' }, requestId);
+        }
         let committed;
         try {
-          committed = authState.commitExchange({
-            assertionId: exchanged.assertion.jti,
-            assertionExpiresAt: exchanged.assertion.exp,
-            session: exchanged.session,
-          }, current);
+          committed = authState.commitExchange({ assertionId: exchanged.assertion.jti, assertionExpiresAt: exchanged.assertion.exp, session: exchanged.session }, current);
         } catch {
-          return sendJson(response, 503, { error: 'auth_state_unavailable' });
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'state_unavailable' });
+          return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
         }
-        if (!committed) return sendJson(response, 401, { error: 'identity_assertion_invalid' });
+        if (!committed) {
+          metrics.auth('invalid');
+          audit.event('auth.exchange', { request_id: requestId, outcome: 'replay' });
+          return sendJson(response, 401, { error: 'identity_assertion_invalid' }, requestId);
+        }
+        audit.event('auth.exchange', { request_id: requestId, outcome: 'success', tenant_id: exchanged.session.tenant_id, roles_count: exchanged.session.roles.length });
+        metrics.auth('success');
         const attributes = [`${config.session.cookie_name}=${exchanged.token}`, 'Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${config.session.ttl_seconds}`];
         if (config.session.secure) attributes.push('Secure');
         response.setHeader('Set-Cookie', attributes.join('; '));
-        return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: exchanged.session.sub, tenant_id: exchanged.session.tenant_id, roles: exchanged.session.roles, expires_at: exchanged.session.exp });
+        return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: exchanged.session.sub, tenant_id: exchanged.session.tenant_id, roles: exchanged.session.roles, expires_at: exchanged.session.exp }, requestId);
       }
       if (request.method === 'POST' && url.pathname === '/api/logout') {
-        if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' });
+        if (!sameOrigin(request)) return sendJson(response, 403, { error: 'origin_rejected' }, requestId);
         const resolved = getSession();
-        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' });
+        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+        let revoked = false;
         if (resolved.session) {
-          try { authState.revokeSession(resolved.session.sid, now()); }
-          catch { return sendJson(response, 503, { error: 'auth_state_unavailable' }); }
+          try { revoked = authState.revokeSession(resolved.session.sid, now()); }
+          catch { return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId); }
         }
+        audit.event('auth.logout', { request_id: requestId, outcome: revoked ? 'revoked' : 'no_active_session', tenant_id: resolved.session?.tenant_id ?? null });
+        if (revoked) metrics.auth('revoked');
         clearSessionCookie(response, config);
-        return sendJson(response, 200, { status: 'signed_out' });
+        return sendJson(response, 200, { status: 'signed_out' }, requestId);
       }
       if (request.method === 'GET' && (url.pathname === '/api/session' || url.pathname === '/api/catalog')) {
         const resolved = getSession();
-        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' });
-        if (!resolved.session) return sendJson(response, 401, { error: 'session_required' });
-        if (url.pathname === '/api/session') return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: resolved.session.sub, tenant_id: resolved.session.tenant_id, roles: resolved.session.roles, expires_at: resolved.session.exp });
-        return sendJson(response, 200, withLaunchPaths(catalogForSession(resolved.session, catalog, config), store));
+        if (resolved.status === 'unavailable') return sendJson(response, 503, { error: 'auth_state_unavailable' }, requestId);
+        if (!resolved.session) return sendJson(response, 401, { error: 'session_required' }, requestId);
+        if (url.pathname === '/api/session') return sendJson(response, 200, { contract: SESSION_CONTRACT, subject: resolved.session.sub, tenant_id: resolved.session.tenant_id, roles: resolved.session.roles, expires_at: resolved.session.exp }, requestId);
+        return sendJson(response, 200, withLaunchPaths(catalogForSession(resolved.session, catalog, config), store), requestId);
       }
-      return sendJson(response, 404, { error: 'not_found' });
+      return sendJson(response, 404, { error: 'not_found' }, requestId);
     };
     handle().catch(() => {
-      if (!response.headersSent) sendJson(response, 500, { error: 'internal_error' });
+      try { audit.event('request.error', { request_id: requestId, reason: 'unhandled' }); } catch {}
+      if (!response.headersSent) sendJson(response, 500, { error: 'internal_error' }, requestId);
       else response.destroy();
     });
   });
+  server.principiaAtlas = Object.freeze({ audit, metrics });
   return server;
 }
