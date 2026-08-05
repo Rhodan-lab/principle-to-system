@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const UTF8 = new TextDecoder('utf-8', { fatal: true });
+const RESERVED_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
 
 export function fail(message) {
   throw new Error(message);
@@ -20,7 +21,10 @@ function canonicalValue(value) {
   if (Array.isArray(value)) return value.map(canonicalValue);
   if (typeof value === 'object') {
     const output = {};
-    for (const key of Object.keys(value).sort()) output[key] = canonicalValue(value[key]);
+    for (const key of Object.keys(value).sort()) {
+      if (RESERVED_KEYS.has(key)) fail('canonical JSON contains a reserved object key');
+      output[key] = canonicalValue(value[key]);
+    }
     return output;
   }
   fail('canonical JSON contains an unsupported value');
@@ -85,6 +89,7 @@ export function parseStrictJson(raw, label = 'JSON') {
       if (text[index] === '}') { index += 1; return object; }
       while (true) {
         whitespace(); const key = parseString();
+        if (RESERVED_KEYS.has(key)) fail(`${label} contains reserved object key: ${key}`);
         if (keys.has(key)) fail(`${label} contains duplicate key: ${key}`);
         keys.add(key); whitespace();
         if (text[index++] !== ':') fail(`${label} contains invalid object separator`);
