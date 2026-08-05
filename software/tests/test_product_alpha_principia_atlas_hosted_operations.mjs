@@ -274,16 +274,51 @@ test('graceful shutdown is idempotent and closes state and audit once', async ()
   assert.deepEqual(events.map(([name]) => name), ['server.drain', 'server.stop']);
 });
 
-test('canonical container and deployment manifests preserve hardening boundaries', async () => {
+test('canonical container and deployment manifests preserve trusted-edge boundaries', async () => {
   const container = await readFile('software/principia_atlas/hosted/Containerfile', 'utf8');
   assert.match(container, /^FROM node:24\.18\.0-bookworm-slim@sha256:[0-9a-f]{64}$/m);
   assert.match(container, /^USER 10001:10001$/m);
+  assert.match(container, /^EXPOSE 8080 8081$/m);
   assert.match(container, /^STOPSIGNAL SIGTERM$/m);
   assert.equal(container.includes(':latest'), false);
+
   const deployment = await readFile('software/principia_atlas/hosted/deployment/kubernetes.example.yaml', 'utf8');
+  assert.match(deployment, /name: principia-atlas-hosted-headless/);
+  assert.match(deployment, /name: principia-atlas-browser-edge/);
+  assert.match(deployment, /serviceName: principia-atlas-hosted-headless/);
   assert.match(deployment, /replicas: 2/);
   assert.match(deployment, /readOnlyRootFilesystem: true/);
   assert.match(deployment, /allowPrivilegeEscalation: false/);
   assert.match(deployment, /claimName: principia-atlas-auth-state/);
-  assert.match(deployment, /egress: \[\]/);
+
+  const hosted = deployment.split('        - name: hosted\n')[1].split('        - name: browser-edge\n')[0];
+  const edge = deployment.split('        - name: browser-edge\n')[1].split('      volumes:\n')[0];
+  assert.match(hosted, /- --oidc-policy\n\s+- \/config\/oidc-policy\.json/);
+  assert.match(hosted, /- --oidc-remote-jwks/);
+  assert.match(hosted, /- --host\n\s+- 127\.0\.0\.1/);
+  assert.match(hosted, /fetch\('http:\/\/127\.0\.0\.1:8080\/readyz'\)/);
+  assert.match(hosted, /fetch\('http:\/\/127\.0\.0\.1:8080\/healthz'\)/);
+  assert.equal(hosted.includes('--allow-network'), false);
+  assert.equal(hosted.includes('containerPort: 8080'), false);
+
+  assert.match(edge, /\/opt\/principia-atlas\/hosted\/browser_edge_cli\.mjs/);
+  assert.match(edge, /- \/config\/browser-oidc\.json/);
+  assert.match(edge, /- \/run\/secrets\/browser-flow/);
+  assert.match(edge, /- \/run\/secrets\/browser-client/);
+  assert.match(edge, /- http:\/\/127\.0\.0\.1:8080/);
+  assert.match(edge, /- --host\n\s+- 0\.0\.0\.0/);
+  assert.match(edge, /containerPort: 8081/);
+  assert.match(edge, /path: \/edge\/healthz/);
+  assert.match(edge, /- --allow-network/);
+
+  assert.equal(deployment.includes('containerPort: 8080'), false);
+  assert.match(deployment, /targetPort: edge-http/);
+  assert.match(deployment, /port: 8081/);
+  assert.match(deployment, /kubernetes\.io\/metadata\.name: kube-system/);
+  assert.match(deployment, /k8s-app: kube-dns/);
+  assert.match(deployment, /cidr: 203\.0\.113\.0\/24/);
+  assert.equal(deployment.includes('egress: []'), false);
+  const ingress = deployment.split('  ingress:\n')[1].split('  egress:\n')[0];
+  assert.match(ingress, /port: 8081/);
+  assert.equal(ingress.includes('port: 8080'), false);
 });
