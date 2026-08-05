@@ -126,7 +126,7 @@ test('SaaS process migrates before listen and aggregates readiness', { skip: !da
 
     const stopped = await processHandle.stop();
     assert.equal(typeof stopped.forced, 'boolean');
-    await assert.rejects(() => pool.query('SELECT 1'), /ended|closed/i);
+    await assert.rejects(() => pool.query('SELECT 1'), /after calling end|ended|closed/i);
     assert.throws(() => authState.health(), /closed/);
   } finally {
     if (processHandle) {
@@ -157,7 +157,7 @@ test('SaaS startup accepts only secret-file database URLs with verified TLS', as
     writeFileSync(databasePath, 'postgres://user:password@db.internal/app', { mode: 0o400 });
     writeFileSync(driverPath, 'export async function createPostgresPool(){ throw new Error("driver must not load"); }\n', { mode: 0o400 });
     for (const path of [tenantPath, sessionPath, csrfPath, databasePath, driverPath]) chmodSync(path, 0o400);
-    await assert.rejects(() => runtimeMain([
+    const args = [
       '--tenants', tenantPath,
       '--state', join(root, 'auth.sqlite'),
       '--session-secret-file', sessionPath,
@@ -165,7 +165,13 @@ test('SaaS startup accepts only secret-file database URLs with verified TLS', as
       '--database-url-file', databasePath,
       '--postgres-driver-module', driverPath,
       '--core-origin', 'http://127.0.0.1:8080',
-    ]), /sslmode=verify-full/);
+    ];
+    await assert.rejects(() => runtimeMain(args), /sslmode=verify-full/);
+
+    writeFileSync(databasePath, 'postgres://user:password@db.internal/app?sslmode=verify-full', { mode: 0o400 });
+    chmodSync(databasePath, 0o400);
+    chmodSync(driverPath, 0o600);
+    await assert.rejects(() => runtimeMain(args), /must be read-only/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
