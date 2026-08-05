@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { canonicalOidcSubject } from './oidc_subject.mjs';
+import { readOidcRevocationRequest } from './revocation_request.mjs';
 import { canonicalJson } from './strict_json.mjs';
 import { openSqliteAuthState } from './state.mjs';
 
@@ -10,6 +11,7 @@ const COMMANDS = new Set([
   'revoke-session',
   'revoke-subject',
   'revoke-oidc-subject',
+  'revoke-oidc-request',
 ]);
 const FLAGS = new Set([
   '--state',
@@ -20,17 +22,19 @@ const FLAGS = new Set([
   '--external-subject',
   '--event-id',
   '--receipt-ttl-seconds',
+  '--request-file',
   '--now',
 ]);
+const REQUEST_FLAGS = new Set(['--state', '--request-file', '--now']);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
-  if (!COMMANDS.has(command)) throw new Error('command must be stats, prune, revoke-session, revoke-subject, or revoke-oidc-subject');
+  if (!COMMANDS.has(command)) throw new Error('command must be stats, prune, revoke-session, revoke-subject, revoke-oidc-subject, or revoke-oidc-request');
   const output = { command, now: Math.floor(Date.now() / 1000), receiptTtlSeconds: 30 * 24 * 60 * 60 };
   const seen = new Set();
   for (let index = 0; index < rest.length; index += 1) {
     const item = rest[index];
-    if (!FLAGS.has(item) || seen.has(item)) throw new Error(`unknown or duplicate argument: ${item}`);
+    if (!FLAGS.has(item) || seen.has(item) || (command === 'revoke-oidc-request' && !REQUEST_FLAGS.has(item))) throw new Error(`unknown or duplicate argument: ${item}`);
     seen.add(item);
     const value = rest[++index];
     if (!value) throw new Error(`${item} requires a value`);
@@ -46,11 +50,15 @@ function parseArgs(argv) {
   if (command === 'revoke-oidc-subject' && (!output.tenant || !output.issuer || !output['external-subject'] || !output['event-id'])) {
     throw new Error('--tenant, --issuer, --external-subject, and --event-id are required');
   }
+  if (command === 'revoke-oidc-request' && !output['request-file']) throw new Error('--request-file is required');
   return output;
 }
 
 export function main(argv = process.argv.slice(2), write = (value) => process.stdout.write(value)) {
   const args = parseArgs(argv);
+  const request = args.command === 'revoke-oidc-request'
+    ? readOidcRevocationRequest(args['request-file'], args.now)
+    : null;
   const state = openSqliteAuthState(args.state);
   try {
     let result;
@@ -68,6 +76,15 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
         canonicalOidcSubject(args.issuer, args['external-subject']),
         args.now,
         args.now + args.receiptTtlSeconds,
+      );
+      result = { contract: COMMAND_CONTRACT, command: args.command, ...receipt };
+    } else if (args.command === 'revoke-oidc-request') {
+      const receipt = state.revokeSubjectOnce(
+        request.eventId,
+        request.tenantId,
+        request.subject,
+        args.now,
+        args.now + request.receiptTtlSeconds,
       );
       result = { contract: COMMAND_CONTRACT, command: args.command, ...receipt };
     } else {
