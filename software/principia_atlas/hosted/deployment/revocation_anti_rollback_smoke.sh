@@ -113,7 +113,8 @@ test ! -e "$root_private"
 test ! -e "$request_private"
 chmod 0400 "$request_file"
 chmod 0444 "$root_public" "$request_public" "$keyring_1" "$keyring_2"
-sudo chown -R 10001:10001 "$work"
+sudo chown -R 10001:10001 "$state_dir"
+sudo chown 10001:10001 "$request_file"
 
 common_security=(
   --read-only
