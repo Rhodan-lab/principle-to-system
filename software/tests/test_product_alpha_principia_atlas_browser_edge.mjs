@@ -9,7 +9,7 @@ import {
   validateBrowserEdgeNetwork,
   verifyBrowserEdgeUpstream,
 } from '../principia_atlas/hosted/browser_edge.mjs';
-import { PRODUCT } from '../principia_atlas/hosted/catalog.mjs';
+import { PRODUCT, } from '../principia_atlas/hosted/catalog.mjs';
 
 const issuer = 'https://identity.example.test';
 const now = 1_800_000_000;
@@ -53,12 +53,13 @@ function cookiePair(header) {
   return header.split(';')[0];
 }
 
-function router({ tokenResponse = null } = {}) {
+function router({ tokenResponse = null, exchangeUnavailable = false } = {}) {
   const calls = [];
   const fetchImpl = async (input, options = {}) => {
     const url = new URL(input);
     calls.push({ url: url.toString(), options });
     if (url.origin === issuer && url.pathname === '/token') {
+      const body = new URLSearchParams(options.body);
       const nonce = router.currentNonce;
       const response = tokenResponse ?? { id_token: jwt({ iss: issuer, nonce }), token_type: 'Bearer' };
       return new Response(JSON.stringify(response), { status: 200, headers: { 'content-type': 'application/json' } });
@@ -71,9 +72,10 @@ function router({ tokenResponse = null } = {}) {
       });
     }
     if (url.origin === 'http://127.0.0.1:9099' && url.pathname === '/api/auth/oidc') {
+      if (exchangeUnavailable) throw new Error('upstream unavailable');
       assert.match(options.headers.Authorization, /^Bearer [A-Za-z0-9_.-]+$/);
       assert.equal(options.headers.Origin, 'http://127.0.0.1:9099');
-      return new Response('{"status":"ok"}', {
+      return new Response('{"contract":"principia-atlas-hosted-session/0.1","subject":"user","tenant_id":"local-preview","roles":["learner"],"expires_at":1800003600}', {
         status: 200,
         headers: { 'content-type': 'application/json', 'set-cookie': 'pa_session=ok; Path=/; HttpOnly; SameSite=Lax' },
       });
@@ -151,6 +153,7 @@ test('authenticated root proxies content and protected internal auth routes stay
     assert.match(await root.text(), /upstream/);
     assert.equal((await fetch(`${origin}/api/auth/oidc`, { method: 'POST' })).status, 404);
     assert.equal((await fetch(`${origin}/metrics`)).status, 404);
+    assert.equal((await fetch(`${origin}/api/logout`, { method: 'POST' })).status, 403);
     const logout = await fetch(`${origin}/api/logout`, { method: 'POST', headers: { Origin: origin } });
     assert.equal(logout.status, 200);
     assert.equal((await fetch(`${origin}/api/logout`, { method: 'POST', headers: { Origin: 'https://attacker.test' } })).status, 403);
@@ -178,6 +181,26 @@ test('refresh tokens and tampered flow cookies fail closed and clear browser sta
     const tampered = await fetch(callback, { headers: { Cookie: `${flowCookie}x` }, redirect: 'manual' });
     assert.equal(tampered.status, 401);
     assert.match(tampered.headers.get('set-cookie'), /Max-Age=0/);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+
+test('upstream identity exchange failure clears the one-time browser flow', async () => {
+  const port = await freePort();
+  const origin = `http://127.0.0.1:${port}`;
+  const fetchImpl = router({ exchangeUnavailable: true });
+  const server = createBrowserOidcEdgeServer({ config: config(origin), flowSecret, clientSecret, upstreamOrigin: 'http://127.0.0.1:9099', fetchImpl, now: () => now });
+  await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
+  try {
+    const start = await fetch(`${origin}/auth/login`, { redirect: 'manual' });
+    const authorization = new URL(start.headers.get('location'));
+    router.currentNonce = authorization.searchParams.get('nonce');
+    const callback = new URL('/auth/callback', origin);
+    callback.searchParams.set('code', 'code');
+    callback.searchParams.set('state', authorization.searchParams.get('state'));
+    const failed = await fetch(callback, { headers: { Cookie: cookiePair(start.headers.get('set-cookie')) }, redirect: 'manual' });
+    assert.equal(failed.status, 503);
+    assert.match(failed.headers.get('set-cookie'), /Max-Age=0/);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
