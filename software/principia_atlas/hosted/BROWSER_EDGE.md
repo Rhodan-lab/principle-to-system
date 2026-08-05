@@ -1,3 +1,9 @@
+---
+title: Principia & Atlas trusted browser OIDC edge
+status: implemented
+authority: hosted-product-integration
+---
+
 # Trusted browser OIDC edge
 
 The hosted control plane already verifies external OIDC ID tokens and creates durable Principia & Atlas sessions. The browser edge adds the missing browser-facing Authorization Code flow with PKCE without moving identity, tenant, content, or status authority into the browser layer.
@@ -24,8 +30,11 @@ The edge:
 - refuses token-endpoint redirects, oversized responses, non-JSON responses, duplicate callback parameters, issuer mismatch, nonce mismatch, and malformed JWT structure;
 - rejects `offline_access` and any returned refresh token;
 - forwards only the returned ID token to the loopback hosted `/api/auth/oidc` endpoint;
+- validates the exact hosted-session response contract before relaying its cookie;
+- clears the one-time browser flow cookie after success and on callback or upstream exchange failure;
 - never exposes `/api/auth/oidc`, `/api/auth/exchange`, or `/metrics` through the public proxy;
 - rewrites browser-origin requests to the exact loopback upstream origin;
+- requires the exact public origin on public POST requests and rejects originless POST requests;
 - accepts no request body on proxied routes;
 - does not persist authorization codes, tokens, external subjects, client secrets, or learner records.
 
@@ -86,7 +95,7 @@ node software/principia_atlas/hosted/browser_edge_cli.mjs serve \
 
 TLS termination must be provided by a reviewed deployment boundary. Non-loopback binding requires explicit `--allow-network`, and the sealed public origin must use HTTPS. The upstream origin is restricted to an exact loopback HTTP or HTTPS origin.
 
-A request to `/` without a valid hosted session starts the login flow. After callback completion, the edge forwards the ID token to the hosted runtime, relays the hosted session cookie, clears the flow cookie, and redirects only to the encrypted same-origin return path.
+A request to `/` without a valid hosted session starts the login flow. After callback completion, the edge forwards the ID token to the hosted runtime, validates the hosted-session contract, relays its cookie, clears the flow cookie, and redirects only to the encrypted same-origin return path.
 
 The edge health endpoint is:
 
