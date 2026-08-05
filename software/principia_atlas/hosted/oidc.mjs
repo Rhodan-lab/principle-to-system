@@ -6,6 +6,7 @@ import {
 import { lstat, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { PRODUCT, verifyTenantConfig } from './catalog.mjs';
+import { canonicalOidcSubject } from './oidc_subject.mjs';
 import { signIdentityAssertion } from './tokens.mjs';
 import {
   canonicalJson,
@@ -364,7 +365,7 @@ function validateOidcClaims(payload, policy, nowSeconds, token) {
   const expectedAzp = policy.authorized_party ?? policy.audience;
   if (aud.length > 1 && payload.azp !== expectedAzp) fail('OIDC authorized party claim is invalid');
   if (payload.azp !== undefined && payload.azp !== expectedAzp) fail('OIDC authorized party claim is invalid');
-  if (typeof payload.sub !== 'string' || payload.sub.length === 0 || Buffer.byteLength(payload.sub) > 512 || /[\u0000-\u001f\u007f]/.test(payload.sub)) fail('OIDC subject claim is invalid');
+  const canonicalSubject = canonicalOidcSubject(policy.issuer, payload.sub);
   const skew = policy.token.clock_skew_seconds;
   if (!Number.isSafeInteger(payload.exp) || payload.exp + skew <= nowSeconds) fail('OIDC token is expired');
   if (payload.nbf !== undefined && (!Number.isSafeInteger(payload.nbf) || payload.nbf - skew > nowSeconds)) fail('OIDC token is not active');
@@ -395,7 +396,7 @@ function validateOidcClaims(payload, policy, nowSeconds, token) {
   return Object.freeze({
     contract: OIDC_PRINCIPAL_CONTRACT,
     policy_id: policy.policy_id,
-    sub: `oidc:${createHash('sha256').update(`${policy.issuer}\u0000${payload.sub}`).digest('base64url')}`,
+    sub: canonicalSubject,
     tenant_id: tenantId,
     roles,
     token_id: createHash('sha256').update(token).digest('base64url'),

@@ -11,6 +11,7 @@ import {
   PRODUCT,
   TENANT_CONTRACT,
   canonicalJson,
+  canonicalOidcSubject,
   createAuditLogger,
   createControlPlaneServer,
   createFileOidcJwksProvider,
@@ -178,6 +179,7 @@ test('ES256 verifier accepts fixed-width P-1363 signature and pairwise subject',
   const principal = await output.verify(signJwt('ES256'), now);
   assert.equal(principal.tenant_id, 'school-demo');
   assert.deepEqual(principal.roles, ['learner']);
+  assert.equal(principal.sub, canonicalOidcSubject(issuer, 'learner-1'));
   assert.match(principal.sub, /^oidc:[A-Za-z0-9_-]{43}$/);
   assert.equal(principal.sub.includes('learner-1'), false);
 });
