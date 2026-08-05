@@ -80,6 +80,7 @@ async function request(urlInput, {
   issuer,
   issuerAddress,
   method = 'GET',
+  originHeader = null,
 } = {}) {
   const url = new URL(urlInput);
   const transport = url.protocol === 'https:' ? https : http;
@@ -93,6 +94,7 @@ async function request(urlInput, {
     const headers = { Accept: 'text/html, application/json' };
     const cookie = cookieHeader(jar, url);
     if (cookie) headers.Cookie = cookie;
+    if (originHeader !== null) headers.Origin = originHeader;
     const requestHandle = transport.request(url, {
       method,
       headers,
@@ -180,13 +182,32 @@ export async function main(argv = process.argv.slice(2)) {
   const hiddenMetrics = await request(`${origin}/metrics`, requestOptions);
   assert.equal(hiddenMetrics.status, 404);
 
+  const logoutResponse = await request(`${origin}/api/logout`, {
+    ...requestOptions,
+    method: 'POST',
+    originHeader: origin,
+  });
+  updateCookies(jar, new URL(origin), logoutResponse);
+  assert.equal(logoutResponse.status, 200);
+  const logout = parseStrictJson(logoutResponse.body, 'browser smoke logout');
+  assert.equal(logout.status, 'signed_out');
+  assert.equal(edgeCookies.has(args.sessionCookie), false);
+
+  const sessionAfterLogout = await request(`${origin}/api/session`, requestOptions);
+  assert.equal(sessionAfterLogout.status, 401);
+  const releaseAfterLogout = await request(`${origin}/app/${encodeURIComponent(args.version)}/`, requestOptions);
+  assert.equal(releaseAfterLogout.status, 401);
+
   const result = {
     status: 'ok',
     login: 'authorization-code-pkce',
+    logout: 'durable-session-revocation',
     tls_gateway: true,
     tenant_id: session.tenant_id,
     roles: session.roles,
     release_version: args.version,
+    post_logout_session_status: sessionAfterLogout.status,
+    post_logout_release_status: releaseAfterLogout.status,
     hidden_routes: ['/api/auth/oidc', '/metrics'],
   };
   process.stdout.write(`${canonicalJson(result)}\n`);
