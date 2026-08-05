@@ -6,4 +6,5 @@ export * from './store.mjs';
 export * from './secrets.mjs';
 export * from './observability.mjs';
 export * from './auth_state_recovery.mjs';
+export * from './oidc_adapter.mjs';
 export * from './control_plane.mjs';
