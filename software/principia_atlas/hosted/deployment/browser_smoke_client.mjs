@@ -1,0 +1,154 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import http from 'node:http';
+import https from 'node:https';
+
+import { canonicalJson, fail, parseStrictJson } from '../strict_json.mjs';
+
+const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
+
+function parseArgs(argv) {
+  const output = { maxRedirects: 10 };
+  const seen = new Set();
+  for (let index = 0; index < argv.length; index += 2) {
+    const name = argv[index];
+    const value = argv[index + 1];
+    if (!name?.startsWith('--') || !value || seen.has(name)) fail('browser smoke arguments are invalid');
+    seen.add(name);
+    output[name.slice(2).replaceAll(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = value;
+  }
+  for (const required of ['origin', 'issuer', 'ca', 'version']) {
+    if (!output[required]) fail(`browser smoke --${required} is required`);
+  }
+  output.maxRedirects = Number(output.maxRedirects);
+  if (!Number.isInteger(output.maxRedirects) || output.maxRedirects < 1 || output.maxRedirects > 20) fail('browser smoke redirect limit is invalid');
+  return output;
+}
+
+function exactOrigin(value, label, protocols) {
+  let parsed;
+  try { parsed = new URL(value); } catch { fail(`${label} is invalid`); }
+  if (!protocols.includes(parsed.protocol) || parsed.username || parsed.password || parsed.pathname !== '/' || parsed.search || parsed.hash) fail(`${label} must be an exact origin`);
+  return parsed.origin;
+}
+
+function cookieHeader(jar) {
+  return [...jar].map(([name, value]) => `${name}=${value}`).join('; ');
+}
+
+function updateCookies(jar, response) {
+  const values = response.headers['set-cookie'] ?? [];
+  for (const raw of Array.isArray(values) ? values : [values]) {
+    const parts = raw.split(';').map((part) => part.trim());
+    const position = parts[0].indexOf('=');
+    if (position < 1) fail('browser smoke received a malformed cookie');
+    const name = parts[0].slice(0, position);
+    const value = parts[0].slice(position + 1);
+    const expired = parts.some((part) => /^Max-Age=0$/i.test(part));
+    if (expired || value === '') jar.delete(name);
+    else jar.set(name, value);
+  }
+}
+
+async function request(urlInput, { ca, jar, method = 'GET' } = {}) {
+  const url = new URL(urlInput);
+  const transport = url.protocol === 'https:' ? https : http;
+  if (!transport) fail('browser smoke protocol is invalid');
+  return new Promise((resolveRequest, reject) => {
+    const headers = { Accept: 'text/html, application/json' };
+    const cookie = cookieHeader(jar);
+    if (cookie) headers.Cookie = cookie;
+    const requestHandle = transport.request(url, {
+      method,
+      headers,
+      ca: url.protocol === 'https:' ? ca : undefined,
+      rejectUnauthorized: true,
+      timeout: 5000,
+    }, (response) => {
+      const chunks = [];
+      let total = 0;
+      response.on('data', (chunk) => {
+        total += chunk.length;
+        if (total > MAX_RESPONSE_BYTES) {
+          response.destroy(new Error('browser smoke response exceeds resource limit'));
+          return;
+        }
+        chunks.push(Buffer.from(chunk));
+      });
+      response.on('end', () => resolveRequest({
+        status: response.statusCode ?? 0,
+        headers: response.headers,
+        body: Buffer.concat(chunks, total),
+      }));
+    });
+    requestHandle.once('timeout', () => requestHandle.destroy(new Error('browser smoke request timed out')));
+    requestHandle.once('error', reject);
+    requestHandle.end();
+  });
+}
+
+async function follow(start, { origin, issuer, ca, jar, maxRedirects }) {
+  let current = new URL(start);
+  for (let count = 0; count <= maxRedirects; count += 1) {
+    if (![origin, issuer].includes(current.origin)) fail('browser smoke redirect escaped trusted origins');
+    const response = await request(current, { ca, jar });
+    updateCookies(jar, response);
+    if (![301, 302, 303, 307, 308].includes(response.status)) return { ...response, url: current };
+    const location = response.headers.location;
+    if (typeof location !== 'string' || !location) fail('browser smoke redirect is missing Location');
+    current = new URL(location, current);
+  }
+  fail('browser smoke redirect limit exceeded');
+}
+
+export async function main(argv = process.argv.slice(2)) {
+  const args = parseArgs(argv);
+  const origin = exactOrigin(args.origin, 'browser smoke origin', ['http:', 'https:']);
+  const issuer = exactOrigin(args.issuer, 'browser smoke issuer', ['https:']);
+  const ca = await readFile(args.ca);
+  const jar = new Map();
+
+  const landing = await follow(`${origin}/`, { origin, issuer, ca, jar, maxRedirects: args.maxRedirects });
+  assert.equal(landing.status, 200);
+  assert.match(String(landing.headers['content-type'] ?? ''), /^text\/html/i);
+  assert.ok(landing.body.length > 100);
+  assert.ok(jar.has('pa_session'));
+  assert.equal(jar.has('pa_oidc_flow'), false);
+
+  const sessionResponse = await request(`${origin}/api/session`, { ca, jar });
+  assert.equal(sessionResponse.status, 200);
+  const session = parseStrictJson(sessionResponse.body, 'browser smoke session');
+  assert.equal(session.tenant_id, 'local-preview');
+  assert.deepEqual(session.roles, ['learner']);
+  assert.equal(typeof session.subject, 'string');
+  assert.ok(session.subject.length > 8);
+
+  const releaseResponse = await request(`${origin}/app/${encodeURIComponent(args.version)}/`, { ca, jar });
+  assert.equal(releaseResponse.status, 200);
+  assert.match(String(releaseResponse.headers['content-type'] ?? ''), /^text\/html/i);
+  assert.ok(releaseResponse.body.length > 100);
+
+  const hiddenOidc = await request(`${origin}/api/auth/oidc`, { ca, jar, method: 'POST' });
+  assert.equal(hiddenOidc.status, 404);
+  const hiddenMetrics = await request(`${origin}/metrics`, { ca, jar });
+  assert.equal(hiddenMetrics.status, 404);
+
+  const result = {
+    status: 'ok',
+    login: 'authorization-code-pkce',
+    tenant_id: session.tenant_id,
+    roles: session.roles,
+    release_version: args.version,
+    hidden_routes: ['/api/auth/oidc', '/metrics'],
+  };
+  process.stdout.write(`${canonicalJson(result)}\n`);
+  return result;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}
