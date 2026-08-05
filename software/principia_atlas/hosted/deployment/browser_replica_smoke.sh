@@ -249,6 +249,7 @@ path = root / 'operator-revocation-request.json'
 path.write_text(json.dumps(request, sort_keys=True, separators=(',', ':')) + '\n')
 path.chmod(0o600)
 PYJSON
+sudo chown 10001:10001 "$operator_request_file"
 operator_revoke=(
   docker run --rm --name "$operator_revoke_container"
   --network none
