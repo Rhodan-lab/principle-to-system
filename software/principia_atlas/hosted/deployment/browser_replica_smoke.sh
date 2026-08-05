@@ -224,9 +224,21 @@ test -s "$root/operator-landing.html"
 
 operator_session_before=$(curl "${operator_curl[@]}"   --cookie "$operator_cookie_jar"   --cookie-jar "$operator_cookie_jar"   --output "$root/operator-session-before.json"   --write-out '%{http_code}'   "$operator_origin/api/session")
 test "$operator_session_before" = 200
+operator_subject=$(python3 - <<'PYJSON'
+import json
+import os
+from pathlib import Path
+root = Path(os.environ['RUNNER_TEMP']) / 'hosted-browser-smoke'
+session = json.loads((root / 'operator-session-before.json').read_text())
+subject = session.get('subject')
+assert isinstance(subject, str) and 1 <= len(subject) <= 200
+print(subject)
+PYJSON
+)
 
 operator_revoke_container="principia-atlas-replica-operator-revoke"
-docker run --rm --name "$operator_revoke_container"   --network none   "${common_security[@]}"   --mount type=bind,src="$root/replica-state",dst=/state   --entrypoint node   "$image"   /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-subject   --state /state/auth-state.sqlite   --tenant local-preview   --subject browser-smoke-learner   > "$root/operator-revoke.json"
+docker run --rm --name "$operator_revoke_container"   --network none   "${common_security[@]}"   --mount type=bind,src="$root/replica-state",dst=/state   --entrypoint node   "$image"   /opt/principia-atlas/hosted/auth_state_cli.mjs revoke-subject   --state /state/auth-state.sqlite   --tenant local-preview   --subject "$operator_subject"   > "$root/operator-revoke.json"
+unset operator_subject
 
 python3 - <<'PYJSON'
 import json
