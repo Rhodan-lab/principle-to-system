@@ -273,11 +273,17 @@ test('operator CLI revokes an external OIDC subject without exposing canonical i
       '--tenant', 'school-demo',
       '--issuer', issuer,
       '--external-subject', externalSubject,
+      '--event-id', 'external-operator-disable-event-0001',
+      '--receipt-ttl-seconds', '3600',
       '--now', String(now + 1),
     ], (value) => { output += value; });
     assert.equal(result.contract, 'principia-atlas-hosted-auth-state-command/0.1');
     assert.equal(result.command, 'revoke-oidc-subject');
+    assert.equal(result.event_id, 'external-operator-disable-event-0001');
+    assert.equal(result.replayed, false);
     assert.equal(result.revoked_sessions, 2);
+    assert.equal(result.created_at, now + 1);
+    assert.equal(result.expires_at, now + 3601);
     assert.equal(output.includes(externalSubject), false);
     assert.equal(output.includes(canonicalSubject), false);
     assert.equal(state.validateSession(sessions[0], now + 2), false);
