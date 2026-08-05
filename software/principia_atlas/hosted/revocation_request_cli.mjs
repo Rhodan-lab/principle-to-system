@@ -3,15 +3,21 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import {
-  readOidcRevocationKeyringDraft,
   revocationPublicKeyIdFromFile,
   signOidcRevocationRequestFile,
 } from './revocation_request.mjs';
+import { signOidcRevocationKeyringDraftFile } from './revocation_keyring.mjs';
 import { canonicalJson, fail } from './strict_json.mjs';
 
 const COMMAND_CONTRACT = 'principia-atlas-hosted-oidc-revocation-request-command/0.1';
 const COMMANDS = new Set(['sign', 'key-id', 'keyring']);
-const FLAGS = new Set(['--input', '--private-key-file', '--public-key-file', '--output']);
+const FLAGS = new Set([
+  '--input',
+  '--private-key-file',
+  '--public-key-file',
+  '--root-private-key-file',
+  '--output',
+]);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -28,13 +34,17 @@ function parseArgs(argv) {
   }
   if (command === 'sign') {
     if (!output.input || !output['private-key-file'] || !output.output) fail('sign requires --input, --private-key-file, and --output');
-    if (output['public-key-file']) fail('sign does not accept --public-key-file');
+    if (output['public-key-file'] || output['root-private-key-file']) fail('sign only accepts --input, --private-key-file, and --output');
   } else if (command === 'key-id') {
     if (!output['public-key-file']) fail('key-id requires --public-key-file');
-    if (output.input || output['private-key-file'] || output.output) fail('key-id only accepts --public-key-file');
+    if (output.input || output['private-key-file'] || output['root-private-key-file'] || output.output) fail('key-id only accepts --public-key-file');
   } else {
-    if (!output.input || !output.output) fail('keyring requires --input and --output');
-    if (output['private-key-file'] || output['public-key-file']) fail('keyring only accepts --input and --output');
+    if (!output.input || !output['root-private-key-file'] || !output.output) {
+      fail('keyring requires --input, --root-private-key-file, and --output');
+    }
+    if (output['private-key-file'] || output['public-key-file']) {
+      fail('keyring only accepts --input, --root-private-key-file, and --output');
+    }
   }
   return output;
 }
@@ -52,11 +62,13 @@ export function main(argv = process.argv.slice(2), write = (value) => process.st
   }
 
   if (args.command === 'keyring') {
-    const keyring = readOidcRevocationKeyringDraft(args.input);
+    const keyring = signOidcRevocationKeyringDraftFile(args.input, args['root-private-key-file']);
     writeFileSync(resolve(args.output), canonicalJson(keyring), { flag: 'wx', mode: 0o444 });
     const result = {
       contract: COMMAND_CONTRACT,
       command: args.command,
+      generation: keyring.generation,
+      root_key_id: keyring.root_key_id,
       key_ids: keyring.keys.map((entry) => entry.key_id),
       revoked_key_ids: keyring.revoked_key_ids,
     };
