@@ -269,6 +269,7 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
             "__PRINCIPIA_COMMIT__": principle_head[:12],
             "__ATLAS_COMMIT__": ATLAS_PIN[:12],
             "__ATLAS_WORKSPACE__": str(atlas_meta["workspace"]["id"]),
+            "__ATLAS_REVISION__": str(atlas_meta["workspace"]["revision"]),
         }.items():
             if home.count(needle) != 1:
                 raise ValueError("Home template token missing or duplicated")
