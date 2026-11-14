@@ -247,3 +247,21 @@ body.pa-knowledge .sr-only{position:absolute;width:1px;height:1px;padding:0;marg
  .knowledge-topic-link[aria-current=location],.knowledge-filter[aria-pressed=true]{outline:2px solid Highlight}
  .knowledge-article,.knowledge-index,.knowledge-inspector{border:1px solid CanvasText}
 }
+
+
+/* Three concrete stages make a mechanism readable, not merely memorable. */
+.knowledge-scenario{margin:2.5rem 0;padding:clamp(1.2rem,2vw,2rem);background:#2e3a31;
+ color:#f7f4e9;border-radius:8px}
+.knowledge-scenario-header{padding-bottom:1.3rem;border-bottom:1px solid #556958}
+.knowledge-scenario-header .knowledge-small{color:#c3a287}
+.knowledge-scenario-header h4{font:400 clamp(1.75rem,2.5vw,2.65rem)/1.17 Georgia,serif;
+ letter-spacing:-.045em;margin:.55rem 0;color:#fff9f0}
+.knowledge-scenario-header>p:last-child{font-size:.8rem;line-height:1.75;color:#bbcbbb;max-width:65ch}
+.knowledge-scenario-cards{counter-reset:scene;display:grid;gap:0}
+.knowledge-scenario-part{display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem;
+ padding:1.45rem 0 1.65rem;border-bottom:1px solid #536453}
+.knowledge-scenario-part:last-child{border-bottom:0;padding-bottom:0}
+.knowledge-scenario-part>.knowledge-small{color:#c0a48b}
+.knowledge-scenario-part h5{font:400 1.45rem/1.18 Georgia,serif;letter-spacing:-.035em;color:#f4f3e9;margin:0}
+.knowledge-scenario-part p{font-size:.85rem;line-height:1.88;color:#d2dbd1;max-width:70ch;margin:0}
+@media(max-width:650px){.knowledge-scenario{margin:1.5rem 0;padding:1.15rem}.knowledge-scenario-part h5{font-size:1.32rem}}
