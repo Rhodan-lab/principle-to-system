@@ -303,3 +303,24 @@ body.pa-home #pa-global-nav a:focus-visible,.pa-command-dialog a:focus-visible{
 @media(prefers-reduced-motion:reduce){#pa-global-nav *,.pa-command-dialog *{transition:none!important}}
 @media(forced-colors:active){#pa-global-nav{border-bottom:1px solid CanvasText!important}
  #pa-global-nav .pa-nav-link[aria-current=page]{outline:2px solid Highlight}}
+
+
+/* Navigation remains usable as the scientific catalog expands. */
+#pa-global-nav .pa-nav-links{
+  overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;
+  scrollbar-width:none;scroll-snap-type:x proximity;justify-content:flex-start;
+}
+#pa-global-nav .pa-nav-links::-webkit-scrollbar{display:none}
+#pa-global-nav .pa-nav-link{flex:0 0 auto!important;scroll-snap-align:start}
+body.pa-exploration #pa-global-nav,body.pa-lab-library #pa-global-nav{
+  position:sticky!important;top:0!important;z-index:3000!important;
+  background:#faf9f6f5!important;border-radius:0!important;
+}
+@media(max-width:1160px){#pa-global-nav .pa-nav-product{display:none}
+ #pa-global-nav .pa-nav-status{display:none}}
+@media(max-width:660px){#pa-global-nav .pa-nav-links{
+  order:3;flex-basis:100%;width:100%;max-width:100%;
+  justify-content:flex-start;gap:.15rem;min-width:0}
+ #pa-global-nav .pa-nav-link{min-height:37px;padding:.43rem .62rem!important;font-size:.69rem}
+ body.pa-exploration,body.pa-lab-library{--pa3-header-h:92px}
+}
