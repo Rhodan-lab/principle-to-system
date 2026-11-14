@@ -88,9 +88,11 @@ body.pa-learner,body.pa-research{padding-bottom:2rem!important}
   white-space:nowrap;
 }
 #pa-global-nav .pa-nav-status:before{content:"";width:7px;height:7px;border-radius:50%;background:#8ca48a}
+.pa-command-dialog .pa-cmd-list a[data-active="true"]{border-color:#dcbda8;background:#f7ece2;box-shadow:inset 3px 0 var(--pa3-coral)}
+.pa-command-dialog .pa-cmd-list a[data-active="true"] .pa-cmd-index{background:#eadac8;color:#99593d}
 body.pa-learner #pa-global-nav,body.pa-research #pa-global-nav{position:sticky!important}
 body.pa-learner header{top:var(--pa3-header-h)!important;z-index:1500}
-body.pa-learner .journey-shell{top:calc(var(--pa3-header-h) + 1rem)!important;z-index:20}
+body.pa-learner .journey-shell{top:calc(var(--pa3-header-h) + 5.4rem)!important;z-index:20}
 body.pa-research .atlas-toolbar{top:var(--pa3-header-h)!important;z-index:1100}
 body.pa-research .atlas-inspector,
 body.pa-research .sidebar{top:calc(var(--pa3-header-h) + 4.4rem)!important;
@@ -197,7 +199,7 @@ body.pa-learner .note-head label{font:400 1.45rem var(--pa3-serif)!important}
 body.pa-learner .private-note{background:#e7e9df!important;color:#50604e!important}
 body.pa-learner textarea{background:#fffdfa!important;color:#293128;border:1px solid #cbc8bc;
  border-radius:7px!important;line-height:1.7}
-body.pa-learner .activity{top:calc(var(--pa3-header-h) + 1rem)!important;overflow:visible}
+body.pa-learner .activity{top:calc(var(--pa3-header-h) + 5.4rem)!important;overflow:visible}
 body.pa-learner .activity-head{background:#2c342c!important;color:#f8f6ed;padding:1.6rem 1.7rem!important;
  border-radius:9px 9px 0 0}
 body.pa-learner .activity-head .eyebrow{color:#bba794!important;font:.61rem var(--pa3-mono)!important}
