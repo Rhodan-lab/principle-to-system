@@ -71,7 +71,7 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn(b'/universe.css', generated)
         self.assertIn(b'/universe.js', generated)
 
-    def test_exploration_templates_are_source-bounded(self) -> None:
+    def test_exploration_templates_are_source_bounded(self) -> None:
         template = (ROOT / "software/one_website/exploration.html").read_text()
         library = (ROOT / "software/one_website/explore-library.html").read_text()
         self.assertEqual(template.count("__EXPLORATION_ID__"), 2)
