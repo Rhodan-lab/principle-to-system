@@ -50,7 +50,21 @@ const topics=[
       "models"
     ],
     "lab": "/learn/refrigerator/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md",
+    "expedition": [
+      {
+        "title": "A refrigerator in a closed room",
+        "text": "Imagine a refrigerator standing in a sealed, insulated room. Its door is shut and the compressor runs. Through the cabinet boundary, cooling removes energy from the cold compartment. Through the room boundary, electricity enters the appliance and eventually contributes heat to the room. The apparent contradiction disappears once you name which boundary you are describing."
+      },
+      {
+        "title": "Move the boundary and the answer changes",
+        "text": "Now open the refrigerator door. Heat from the room enters the cold compartment more freely, while the appliance still transfers heat back into the room and consumes electrical work. A cabinet-only calculation cannot tell the whole room's temperature trajectory. You would need the room's thermal mass, heat leaks to outside, power use, and other heat sources."
+      },
+      {
+        "title": "Test the missing assumption",
+        "text": "Ask what the phrase 'the room gets warmer' assumes. If the room is ventilated or connected to a powerful air conditioner, heat may leave through a boundary you had ignored. The correct causal story is not a slogan about refrigerators but a conservation argument with an explicit environment and time horizon."
+      }
+    ]
   },
   {
     "id": "conservation",
@@ -99,7 +113,21 @@ const topics=[
       "water"
     ],
     "lab": "/explore/rainwater/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/energy-and-matter.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/energy-and-matter.md",
+    "expedition": [
+      {
+        "title": "Start with the ledger",
+        "text": "A classroom demonstration begins with an empty 800-liter conceptual tank. A simulated storm delivers 640 liters, and a simulated non-potable outlet serves 90 liters. The model must end with 550 liters if there is no overflow or other loss. An output of 700 liters is not an exciting discovery; it is an accounting error."
+      },
+      {
+        "title": "Find the concealed term",
+        "text": "Suppose a field level gauge appears to show only 500 liters. You now have a 50-liter mismatch. Possibilities include an inaccurate gauge, an unmeasured leak, different starting storage, an incorrect runoff factor, or a physical deformation affecting the level-to-volume conversion. Conservation guides the investigation without telling you which explanation is true."
+      },
+      {
+        "title": "Repeat with battery energy",
+        "text": "The same discipline applies to a battery, but charging and discharging lose energy as heat. An energy ledger must track the battery's initial and final stored energy, delivered electrical energy, unused generation, and conversion losses. Calling every discrepancy a 'loss' hides important distinctions between curtailment, dissipation and an unmodeled transfer."
+      }
+    ]
   },
   {
     "id": "units",
@@ -148,7 +176,21 @@ const topics=[
       "solar"
     ],
     "lab": "/explore/microgrid/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/03-mathematical-models/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/03-mathematical-models/overview.md",
+    "expedition": [
+      {
+        "title": "Power is a speed, not a quantity of stored energy",
+        "text": "Picture two appliances, each labeled 2 kW. One runs for one hour and the other for five. Their power ratings match, but the first uses 2 kWh and the second 10 kWh under constant power. Dividing battery capacity in kWh by load in kW gives hours only in an idealized case with no losses or output limits."
+      },
+      {
+        "title": "Rainwater offers a geometric unit test",
+        "text": "One millimeter of rainfall spreads 0.001 meters deep. Across an area of one square meter, that is 0.001 cubic meters, or one liter. If a calculator reports one thousand liters from one millimeter over one square meter, it has likely confused cubic meters and liters. Geometry can invalidate its result without any field measurement."
+      },
+      {
+        "title": "Inspect a suspicious percentage",
+        "text": "A PV conversion efficiency of 18% means 18% of specified incident solar power becomes the modeled electrical output. A '90% service' number means 90% of requested demand was served in the chosen scenario. Those percentages describe different relationships, and multiplying them together without a defensible system boundary produces meaningless confidence."
+      }
+    ]
   },
   {
     "id": "stocks",
@@ -197,7 +239,21 @@ const topics=[
       "water"
     ],
     "lab": "/explore/rainwater/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md",
+    "expedition": [
+      {
+        "title": "Two tanks, one rain event",
+        "text": "Consider two identical 800-liter tanks. Tank A begins empty, Tank B already contains 750 liters. Both receive 200 liters of captured water and have no immediate demand. Tank A finishes with 200 liters; Tank B reaches 800 and overflows 150. Rainfall is identical, but the starting state changes the outcome completely."
+      },
+      {
+        "title": "Apply the same logic to a service queue",
+        "text": "Two web services have equal request and processing rates this minute. One has an empty buffer and the other carries 500 waiting requests from an earlier incident. Identical current rates need not produce identical waiting times. If you only plot today's arrivals, you miss the state inherited from the past."
+      },
+      {
+        "title": "Ask how a stock is observed",
+        "text": "A water-height gauge is not a direct volume reading without tank geometry and calibration. A battery percentage estimate depends on an internal state estimator and operating conditions. Your simulation may store an exact number, while a real system has uncertain state estimates. Explain that difference before interpreting apparently precise graphs."
+      }
+    ]
   },
   {
     "id": "models",
@@ -246,7 +302,21 @@ const topics=[
       "evidence"
     ],
     "lab": "/explore/microgrid/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md",
+    "expedition": [
+      {
+        "title": "An attractive graph can still mislead",
+        "text": "A synthetic solar simulation might display a smooth midday production curve and an exact battery percentage. Internally it follows the chosen area, irradiance, efficiency and storage rules. Real modules experience cell-temperature changes, uneven shading, wiring losses and equipment limits, so a neat curve is not automatically an accurate forecast."
+      },
+      {
+        "title": "Verification comes before validation",
+        "text": "First check that doubling panel area doubles the simple modeled power when all other variables remain fixed, and that the energy balance closes to numerical tolerance. Those checks verify the code implements its own assumptions. Next compare output with independently measured data, including challenging periods, to evaluate whether the assumptions are adequate."
+      },
+      {
+        "title": "The question determines adequacy",
+        "text": "For learning the difference between power and energy, a simple hourly solar model may be excellent. For an electrician deciding whether critical equipment can survive an outage, omitted inverter constraints, protection, heat, power quality and transfer-switching behavior make the same model inadequate. Complexity is useful only when the extra details address the actual decision."
+      }
+    ]
   },
   {
     "id": "feedback",
@@ -295,7 +365,21 @@ const topics=[
       "resilience"
     ],
     "lab": "/learn/distributed-information/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/technology/20-sensors-control-infrastructure/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/technology/20-sensors-control-infrastructure/overview.md",
+    "expedition": [
+      {
+        "title": "Why a retry is not just kindness to the user",
+        "text": "A user sends a request, receives no answer promptly and retries. The second attempt may arrive while the first is still consuming service capacity. When many users do this together, offered work increases and delays become more likely. The response to delay now contributes to further delay, forming a reinforcing loop."
+      },
+      {
+        "title": "Add time and a sensor",
+        "text": "A controller measures queue length once a second and decides how many requests to admit. During a sudden burst, its measurement might be stale by the time the next command reaches the server. If it overreacts or has no rate limit, admission and rejection can oscillate. A static diagram alone cannot establish stability; delays and saturation matter."
+      },
+      {
+        "title": "Compare two policies without claiming certainty",
+        "text": "A simple scenario can compare 'retry immediately once' against 'retry only after an interval with backoff'. The experiment may show less offered load under one rule. But actual production behavior depends on correlated failures, client timeouts, idempotency, request priorities and network conditions. The model suggests a mechanism worth testing, not an automatic operational recommendation."
+      }
+    ]
   },
   {
     "id": "capacity",
@@ -344,7 +428,21 @@ const topics=[
       "stocks"
     ],
     "lab": "/learn/distributed-information/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/03-mathematical-models/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/03-mathematical-models/overview.md",
+    "expedition": [
+      {
+        "title": "The threshold is more than a number",
+        "text": "Suppose a service processes 10 requests per second. At a constant 9 requests per second offered, an empty ideal fluid buffer need not accumulate work. At 11 offered, it gains one request per second until the finite queue fills. Beyond that point some requests must be rejected, delayed elsewhere or otherwise handled by a mechanism outside this simple model."
+      },
+      {
+        "title": "A larger buffer can hide pressure",
+        "text": "Changing capacity from 50 to 200 requests delays the moment rejection starts, but does not change an offered rate greater than service rate. The deeper problem remains positive net accumulation. Worse, a bigger buffer may allow users to wait longer for responses that are no longer useful. Increasing a stock limit is not the same as increasing throughput."
+      },
+      {
+        "title": "Transfer the principle to energy",
+        "text": "An 8 kWh battery describes a stored-energy limit. A 3 kW inverter describes a power limit. A load demanding 5 kW can exceed the inverter's instantaneous capability even with a full battery. This is why identifying 'capacity' requires units, and why a single storage number cannot certify service or resilience."
+      }
+    ]
   },
   {
     "id": "heat",
@@ -393,7 +491,21 @@ const topics=[
       "models"
     ],
     "lab": "/learn/refrigerator/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/science/08-energy-thermodynamics/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/science/08-energy-thermodynamics/overview.md",
+    "expedition": [
+      {
+        "title": "Follow a parcel of thermal energy",
+        "text": "A cabinet is colder than its surrounding room. The temperature difference drives heat into the cabinet through its walls. A powered refrigeration cycle takes that heat and rejects it outside the cabinet, alongside the electrical work that eventually dissipates. No stage requires manufacturing a substance called cold; the process relocates energy."
+      },
+      {
+        "title": "Read the sign of the derivative",
+        "text": "With the example values in the field guide, 64 W enters through the wall and 18 W through an internal load. A cooling term of 95 W leaves a net −13 W for the cabinet. Dividing that by thermal capacitance gives an initial temperature-change rate. It does not mean the cabinet instantly becomes 13 degrees colder."
+      },
+      {
+        "title": "Derive the fixed-parameter equilibrium",
+        "text": "As temperature decreases, the difference between the warm room and cabinet increases, so inward leakage rises. Equilibrium occurs when inward heat plus internal load balances the active cooling term. The idealized equilibrium depends on constant conductance, room temperature, load and cooling, none of which is guaranteed in a working household appliance."
+      }
+    ]
   },
   {
     "id": "queue",
@@ -442,7 +554,21 @@ const topics=[
       "resilience"
     ],
     "lab": "/learn/distributed-information/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/software/product_alpha/routes/distributed-information.json"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/software/product_alpha/routes/distributed-information.json",
+    "expedition": [
+      {
+        "title": "The extra load hidden inside a timeout",
+        "text": "An external system sends 7.5 requests each second. A fraction of those requests gets one additional attempt. If the fraction is 0.5, offered load is 7.5 × 1.5 = 11.25 requests per second. Against a service rate of 10 per second, the simple backlog grows at 1.25 requests per second until its finite buffer is full."
+      },
+      {
+        "title": "Distinguish three different observable quantities",
+        "text": "Offered load is a rate, backlog is a count and latency is a time. The fluid model estimates queue accumulation and rejection under constant rates. A separate M/M/1 expression can estimate steady-state mean time under restrictive stochastic assumptions and only below utilization one. Treating both as interchangeable is a category error."
+      },
+      {
+        "title": "How to diagnose the actual incident",
+        "text": "In production, examine request arrival traces, retry identifiers, completed throughput, latency percentiles, timeouts and rejection codes. A rising queue can be caused by increased demand, decreased capacity or both. Testing those hypotheses requires independent observations; a simulated retry fraction by itself cannot identify the real failure."
+      }
+    ]
   },
   {
     "id": "water",
@@ -491,7 +617,21 @@ const topics=[
       "units"
     ],
     "lab": "/explore/rainwater/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/design-challenges/nonpotable-rainwater-buffer.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/design-challenges/nonpotable-rainwater-buffer.md",
+    "expedition": [
+      {
+        "title": "Rain in one day, demand over many",
+        "text": "Imagine 640 liters of captured rain arriving into an initially empty 800-liter tank. The first day's non-potable demand of 90 liters leaves 550. If the next six days are dry and each demands 90 liters, the stored water declines by 90 per day and eventually cannot satisfy a full day. Rainfall total alone did not tell you the service history."
+      },
+      {
+        "title": "When overflow wastes apparent abundance",
+        "text": "Suppose the same 640 liters arrive when the tank already contains 700 liters. Even after using 90 liters, the tank cannot retain the full inflow; some escapes as overflow. Increasing capacity may reduce this loss, but it also has footprint, material, maintenance, structural and safety consequences outside the volume model."
+      },
+      {
+        "title": "Why volume is not water quality",
+        "text": "A tank can pass the conservation test perfectly while containing unsafe water. The educational model does not simulate microbes, chemical contaminants, cross-connections, mosquitoes or competent drainage design. Its correct use is to reason about an explicitly non-potable conceptual buffer, not to decide what water anyone can drink."
+      }
+    ]
   },
   {
     "id": "solar",
@@ -540,7 +680,21 @@ const topics=[
       "conservation"
     ],
     "lab": "/explore/microgrid/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/system-dossiers/solar-battery-microgrid.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/system-dossiers/solar-battery-microgrid.md",
+    "expedition": [
+      {
+        "title": "A power peak may not meet a later need",
+        "text": "At midday, a simple 16 m² PV field at 800 W/m² and 18% efficiency produces about 2.304 kW before additional system losses. During a one-hour interval that amounts to 2.304 kWh. Some may serve the load immediately; surplus can charge storage if space remains, with less energy stored than entered because charging is not perfectly efficient."
+      },
+      {
+        "title": "A battery's percentage can conceal the limit",
+        "text": "An 8 kWh battery at 50% modeled state contains 4 kWh. If the model reserves 10% of capacity, only the energy above 0.8 kWh is available under its policy, before discharge losses. A high-demand hour may therefore leave load unserved even though the battery is not mathematically empty."
+      },
+      {
+        "title": "Why this is not an islanding design",
+        "text": "Real power systems must sustain voltage and frequency, satisfy inverter current limits, coordinate protective devices and respond safely to grid faults. A correct energy trajectory cannot prove any of those properties. The calculation is useful for asking energy-planning questions, but no responsible reader should treat it as an electrical safety certificate."
+      }
+    ]
   },
   {
     "id": "uncertainty",
@@ -589,7 +743,21 @@ const topics=[
       "causality"
     ],
     "lab": "/explore/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/02-measurement-uncertainty/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/02-measurement-uncertainty/overview.md",
+    "expedition": [
+      {
+        "title": "Three precise readings can share one bias",
+        "text": "A water-level sensor reports nearly identical values on three successive days. Repetition suggests low observed variability, but if the sensor was installed at the wrong height all three readings can be systematically wrong. Precision within a series is not the same as accuracy against the relevant physical quantity."
+      },
+      {
+        "title": "Pull uncertain assumptions apart",
+        "text": "A simple rainwater model may be sensitive to catchment area, runoff fraction, demand and event sequence. These uncertainties are not equivalent. Area may be known from a survey; future rainfall may be unknowable beyond a probability distribution; the runoff fraction may vary after surface changes. Reporting one crisp answer hides their different epistemic status."
+      },
+      {
+        "title": "Design a better follow-up",
+        "text": "To test a suspected model omission, compare predicted and observed outputs across challenging conditions rather than fitting a single favorable event. Measure relevant flows independently when possible. Explain both systematic residuals and the uncertainty of instruments before assigning a cause to a discrepancy."
+      }
+    ]
   },
   {
     "id": "causality",
@@ -638,7 +806,21 @@ const topics=[
       "evidence"
     ],
     "lab": "/explore/rainwater/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/01-scientific-reasoning/overview.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/foundations/01-scientific-reasoning/overview.md",
+    "expedition": [
+      {
+        "title": "When two curves move together",
+        "text": "A rooftop solar array loses output while a cloud passes overhead. It is reasonable to suspect lower irradiance, but module temperature, inverter curtailment, shifting shadow and measurement timing may also matter. Observing two curves move together does not uniquely identify the mechanism by which the system changed."
+      },
+      {
+        "title": "Use a discriminating comparison",
+        "text": "Record irradiance, module temperature, power and operating mode over synchronized intervals. Compare events with similar irradiance but different shadow geometry, or similar shadows but different inverter states. A model's predictions can then differ meaningfully across competing hypotheses. This is more informative than simply choosing whichever curve looks most alike."
+      },
+      {
+        "title": "Know what an intervention establishes",
+        "text": "Within a software model, increasing panel area while holding every other parameter fixed shows a conditional response encoded by the equation. In the physical world, modifying one feature can also change cooling, wiring, layout or operating behavior. Controlled simulation is a useful test of assumptions; it is not universal causal identification."
+      }
+    ]
   },
   {
     "id": "resilience",
@@ -687,7 +869,21 @@ const topics=[
       "feedback"
     ],
     "lab": "/explore/microgrid/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/system-dossiers/solar-battery-microgrid.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/system-dossiers/solar-battery-microgrid.md",
+    "expedition": [
+      {
+        "title": "Define the service that must survive",
+        "text": "A community microgrid might be designed for refrigeration of medicines, lighting, communications or all building demand. The choice of critical loads radically changes what 'resilience' means. A system that serves 99% of total annual demand could still fail during the single hour when a critical device must operate."
+      },
+      {
+        "title": "Reserve energy is a trade-off",
+        "text": "Keeping 10% of battery capacity unavailable to current discharge may cause some service to be unmet today. That rule might preserve an emergency reserve for tomorrow, but whether it improves resilience depends on the forecast and failure scenarios. An apparently worse short-term utilization score can support a different long-term objective."
+      },
+      {
+        "title": "Look beyond one device",
+        "text": "Even two batteries do not guarantee resilience if both rely on one faulty control sensor or a shared inverter. A server cluster can be similarly vulnerable to common network, power or authentication infrastructure. The proper unit of analysis is the service and its dependencies, not the number of boxes labeled backup."
+      }
+    ]
   },
   {
     "id": "evidence",
@@ -736,7 +932,21 @@ const topics=[
       "systems"
     ],
     "lab": "/research/",
-    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md"
+    "source": "https://github.com/Rhodan-lab/principle-to-system/blob/main/concepts/systems-and-models.md",
+    "expedition": [
+      {
+        "title": "An exact record is a starting point",
+        "text": "Imagine two researchers disputing a claim. One cites 'the latest document', and the other names a specific commit with precise files and page sections. The exact revision allows both to examine the same evidence object. It does not yet tell them whether the inference made from that object is sound."
+      },
+      {
+        "title": "Evidence must answer a specific claim",
+        "text": "If a report claims an appliance is efficient, ask what quantity was measured, over what interval, with which boundary and uncertainty. A source about compressor temperature cannot automatically establish whole-house savings. A citation is valuable only insofar as its contents genuinely support the nearby statement."
+      },
+      {
+        "title": "Approval and truth have different owners",
+        "text": "A reviewed Principia source can ground educational commentary, but a new website simulation does not automatically inherit its review status. An accepted Atlas export can identify the research record, but adding a visually prominent badge does not make it human-verified. Provenance, evaluation and formal approval must remain distinct and inspectable."
+      }
+    ]
   }
 ];
 const byId=Object.fromEntries(topics.map(topic=>[topic.id,topic]));
