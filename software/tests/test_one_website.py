@@ -20,7 +20,7 @@ class UnifiedWebsiteTests(unittest.TestCase):
     def test_route_contract_and_expected_files(self) -> None:
         self.assertEqual(web.ROUTES, ("refrigerator", "distributed-information"))
         self.assertEqual(len(web.ATLAS_PIN), 40)
-        self.assertEqual(len(web.expected_paths()), 22)
+        self.assertEqual(len(web.expected_paths()), 28)
         self.assertIn("research/data/workspace-shell-data.json", web.expected_paths())
         self.assertIn("experience.css", web.expected_paths())
         self.assertIn("experience.js", web.expected_paths())
@@ -29,6 +29,13 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn("atlas-workspace.js", web.expected_paths())
         self.assertIn("universe.css", web.expected_paths())
         self.assertIn("universe.js", web.expected_paths())
+        self.assertEqual(web.EXPLORATIONS, ("rainwater", "microgrid"))
+        for topic in web.EXPLORATIONS:
+            self.assertIn(f"explore/{topic}/index.html", web.expected_paths())
+        self.assertIn("explore/index.html", web.expected_paths())
+        self.assertIn("exploration.js", web.expected_paths())
+        self.assertIn("exploration-models.js", web.expected_paths())
+        self.assertIn("exploration.css", web.expected_paths())
         self.assertNotIn("learn/refrigerator/facilitator.html", web.expected_paths())
         self.assertNotIn("learn/refrigerator/pilot-lab.html", web.expected_paths())
 
@@ -64,6 +71,18 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn(b'/universe.css', generated)
         self.assertIn(b'/universe.js', generated)
 
+    def test_exploration_templates_are_source_bounded(self) -> None:
+        template = (ROOT / "software/one_website/exploration.html").read_text()
+        library = (ROOT / "software/one_website/explore-library.html").read_text()
+        self.assertEqual(template.count("__EXPLORATION_ID__"), 2)
+        self.assertEqual(template.count("__EXPLORATION_TITLE__"), 3)
+        self.assertIn('id="lab-form"', template)
+        self.assertIn('src="/exploration-models.js"', template)
+        self.assertIn('src="/exploration.js"', template)
+        self.assertIn("NOT PRODUCT ALPHA", template)
+        for route in web.EXPLORATIONS:
+            self.assertIn(f'href="/explore/{route}/"', library)
+
     def test_navigation_rejects_unexpected_structure_and_route(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown navigation"):
             web.add_navigation(b"<body></body>", "unknown")
@@ -77,6 +96,10 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn("/learn/refrigerator/", homepage)
         self.assertIn("/learn/distributed-information/", homepage)
         self.assertIn("/research/", homepage)
+        self.assertIn("/explore/", homepage)
+        self.assertIn("/explore/rainwater/", homepage)
+        self.assertIn("/explore/microgrid/", homepage)
+        self.assertIn("04</b> Interactive laboratories", homepage)
         self.assertNotIn("localStorage", homepage)
         self.assertNotIn("sessionStorage", homepage)
         self.assertIn('id="studio-panel"', homepage)

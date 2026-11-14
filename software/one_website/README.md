@@ -143,3 +143,57 @@ This release is a **structural redesign across the entire unified website**, not
 - Node tests check keyword navigation, stable route identities, site-wide source boundary markers, UI feature contracts and the unchanged thermal/queue model preview.
 - All three experiences and static data files are HTTP smoke-tested through a local server after the deterministic cross-repository build.
 - Existing Atlas integrity checks, scientific model regressions, Vercel build, and repository status checks remain required.
+
+## Expanding beyond two learning subjects — scientific exploration library
+
+The unified website now offers **four interactive simulations** through the discovery page and an independently designed, navigable library at \`/explore/\`.
+
+The original, formally packaged Product Alpha journeys remain exactly two:
+
+- \`/learn/refrigerator/\` — thermal cabinet / heat balance.
+- \`/learn/distributed-information/\` — bounded queue / retries.
+
+Two further, explicitly **website-only conceptual experiments** are now available, grounded in reviewed Principia documents rather than promoted to Product Alpha routes:
+
+- \`/explore/rainwater/\` — non-potable rainfall capture and storage buffer, drawn from \`design-challenges/nonpotable-rainwater-buffer.md\`.
+- \`/explore/microgrid/\` — simplified solar–battery energy system, drawn from \`system-dossiers/solar-battery-microgrid.md\`.
+
+### What learners can do
+
+Every new interactive lab includes an observation, a dimensional equation, visible assumptions, synthetic weather scenarios, adjustable bounded variables, prediction-before-run gating, model output, an accessible SVG time-series, a complete per-step numerical table, baseline comparison and a link to the foundational source.
+
+**Rainwater model (units liters)** — for a daily rainfall event \`P\` in millimeters:
+
+\`\`\`text
+capture = P(mm) × area(m²) × runoff_fraction  [liters]
+available = stored + capture
+served = min(available, non_potable_daily_demand)
+overflow = max(0, available − served − capacity)
+new_storage = min(capacity, available − served)
+unmet = demand − served
+capture_total = served_total + overflow_total + ending_storage
+\`\`\`
+
+An eight-day synthetic sequence starts with empty storage; rain occurs before daily demand; no evaporation/leakage/first-flush water loss is modeled. Reliability is the fraction of *stated scenario demand* served, not a drinking-water-quality or installation-safety measure. The simulation expressly prohibits connecting the concept to drinking-water plumbing.
+
+**Solar microgrid (units kWh per 1-hour step)** — for irradiance \`G\` in W/m²:
+
+\`\`\`text
+PV(kWh) = G(W/m²) × area(m²) × efficiency × 1h / 1000
+battery_delta = ηcharge × charge_input − discharge_to_load / ηdischarge
+ending_energy = clamp(initial_energy + battery_delta, 10%-reserve, capacity)
+unserved_critical_energy = max(0, demand_energy − served_energy)
+initial_battery + generated_PV = end_battery + served + curtailment + conversion_loss
+\`\`\`
+
+This twelve-hour synthetic, islanded balance has 50% initial battery energy, fixed 10% energy reserve, 92% charge and discharge efficiencies, simplified direct PV service priority and no grid support. It deliberately omits real electrical protections, transient dynamics, grid-forming controls, installation decisions, inverter limits and night-long backup claims.
+
+### Different evidence status by construction
+
+The \`ROUTES\` contract and all Product Alpha route packages, pilot/rubric machinery and Atlas accepted export remain unchanged. New lab pages are generated **only** by the website static builder from \`exploration.html\`, \`exploration.js\`, \`exploration-models.js\` and \`exploration.css\`. No new Product Alpha model adapter, canonical decision, repository write or source-review transition is introduced.
+
+The static inventory and SHA-256 manifest include all new pages and assets. The Vercel preview and GitHub Actions must verify scenario models' conservation under multiple conditions and inspect all lab pages through an HTTP server. All first-party visual assets work without dependencies, external APIs, persistence or user accounts.
+
+### Scope and limitations
+
+This expansion makes **four genuinely runnable laboratories**, not a claim that all Principia science modules have been turned into interactive lessons. Further science topics would require explicit models, content review and tests; placeholders or inert cards are not counted.

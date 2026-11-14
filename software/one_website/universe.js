@@ -16,7 +16,10 @@
   const paths=[
     {href:"/",title:"Discover",description:"Return to the knowledge observatory",group:"Explore"},
     {href:"/learn/refrigerator/",title:"Thermal laboratory",description:"Heat, energy balance and counterfactual models",group:"Experiments"},
+    {href:"/explore/",title:"All laboratories",description:"Browse four interactive scientific subjects",group:"Explore"},
     {href:"/learn/distributed-information/",title:"Distributed systems",description:"Queues, overload and retry dynamics",group:"Experiments"},
+    {href:"/explore/rainwater/",title:"Rainwater storage",description:"Non-potable capture, storage, demand and overflow",group:"Experiments"},
+    {href:"/explore/microgrid/",title:"Solar microgrid",description:"Solar power, battery capacity, reserve and critical load",group:"Experiments"},
     {href:"/research/",title:"Research Atlas",description:"Accepted evidence, revisions, provenance and review boundaries",group:"Evidence"},
     {href:"/research/#overview",title:"Atlas overview",description:"Accepted workspace identity and source boundary",group:"Evidence"},
     {href:"/learn/refrigerator/#model",title:"Thermal model",description:"Predict and experiment with the heat-balance model",group:"Experiments"},
@@ -33,6 +36,7 @@
   }
   function currentArea(pathname){
     if(pathname.startsWith("/research"))return"atlas";
+    if(pathname.startsWith("/explore"))return"explore";
     if(pathname.startsWith("/learn/refrigerator"))return"refrigerator";
     if(pathname.startsWith("/learn/distributed-information"))return"distributed-information";
     return"home";
@@ -154,6 +158,38 @@
       if(eyebrow)eyebrow.textContent="A FIRST-PRINCIPLES EXPEDITION";
       const brief=hero.querySelector(".hero-brief>strong");
       if(brief)brief.textContent="Your working method";
+    }
+    const related=main.querySelector(".stats");
+    if(related&&!main.querySelector(".pa-next-labs")){
+      const section=document.createElement("section");
+      section.className="pa-next-labs";
+      section.setAttribute("aria-label","Continue into other scientific laboratories");
+      const head=document.createElement("div");
+      head.className="pa-next-labs-heading";
+      const overline=document.createElement("span");
+      overline.textContent="FURTHER / EXPLORATION";
+      const h=document.createElement("h2");
+      h.textContent="The next question is yours.";
+      const all=document.createElement("a");
+      all.href="/explore/";all.textContent="Browse all four laboratories ↗";
+      head.append(overline,h,all);section.append(head);
+      const grid=document.createElement("div");grid.className="pa-next-labs-grid";
+      const suggested=[
+        {href:"/explore/rainwater/",tag:"WATER · NEW CONCEPTUAL LAB",title:"Where does the rain go?",desc:"A bounded tank, changing storms and everyday demand."},
+        {href:"/explore/microgrid/",tag:"ENERGY · NEW CONCEPTUAL LAB",title:"What if sunlight fades?",desc:"Solar generation, limited storage and critical loads."},
+        {href:location.pathname.includes("refrigerator")?"/learn/distributed-information/":"/learn/refrigerator/",
+          tag:"ANOTHER PRODUCT ALPHA JOURNEY",title:location.pathname.includes("refrigerator")?"When do retries fail?":"Where does heat flow?",
+          desc:"A full five-step learning investigation."}
+      ];
+      for(const item of suggested){
+        const card=document.createElement("a");card.className="pa-next-lab";card.href=item.href;
+        const kicker=document.createElement("span");kicker.className="pa-next-lab-kicker";kicker.textContent=item.tag;
+        const title=document.createElement("strong");title.textContent=item.title;
+        const desc=document.createElement("span");desc.className="pa-next-lab-desc";desc.textContent=item.desc;
+        const arrow=document.createElement("span");arrow.className="pa-next-lab-arrow";arrow.textContent="Open investigation ↗";
+        card.append(kicker,title,desc,arrow);grid.append(card);
+      }
+      section.append(grid);related.after(section);
     }
     const note=document.querySelector("#note");
     if(note)note.setAttribute("aria-label","In-tab working explanation for this lesson");
