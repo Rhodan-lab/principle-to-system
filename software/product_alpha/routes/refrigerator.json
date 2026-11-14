@@ -37,7 +37,7 @@
     "adapter": "thermal-cabinet-v1",
     "activity_title": "Interactive thermal model",
     "run_label": "Run model",
-    "equation": "C dT/dt = UA(T_room - T) + Q_load - Q_cool",
+    "equation": "C·dT/dt = UA·(T_room − T) + P_load − I_on·P_cool",
     "initial_temperature_c": 8,
     "duration_minutes": 180,
     "time_step_seconds": 30,
@@ -137,7 +137,9 @@
     "limitations": [
       "The cabinet is treated as one uniform temperature.",
       "Refrigerant pressure dynamics and compressor startup are omitted.",
-      "The model is for reasoning, not appliance repair or safety decisions."
+      "The model is for reasoning, not appliance repair or safety decisions.",
+      "The balance uses power in watts; heat capacity is in joules per kelvin and time is in seconds.",
+      "The solver takes explicit Euler steps, while constant-parameter equilibrium is an analytical reference."
     ]
   },
   "challenge": {
