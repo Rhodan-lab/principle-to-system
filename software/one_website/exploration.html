@@ -21,6 +21,7 @@
   <div class="pa-nav-links">
     <a class="pa-nav-link" data-pa-area="home" href="/">Discover</a>
     <a class="pa-nav-link" data-pa-area="explore" href="/explore/">All laboratories</a>
+    <a class="pa-nav-link" data-pa-area="knowledge" href="/knowledge/">Knowledge Atlas</a>
     <a class="pa-nav-link" data-pa-area="atlas" href="/research/">Research Atlas</a>
   </div>
   <div class="pa-nav-actions"><button class="pa-nav-command" type="button" aria-label="Open website navigation search">⌕ Jump <kbd>Alt G</kbd></button><span class="pa-nav-status">Conceptual model</span></div>
@@ -52,7 +53,7 @@
         <a href="#lab-boundary"><span>05</span> Limits</a>
       </nav>
       <p class="lab-index-note">Choose any section. Change the variables, form a prediction, and see what this simplified model actually implies.</p>
-      <a class="lab-index-return" href="/explore/">← All laboratories</a>
+      <a class="lab-index-return" href="/explore/">← All laboratories</a><a class="lab-index-return" id="lab-understand-link" href="/knowledge/">↗ Understand the science</a>
     </aside>
     <article class="lab-document">
       <section id="lab-observe" class="lab-reading-block">
@@ -67,6 +68,7 @@
         <p>System models become useful when every flow, store, boundary, and simplifying assumption can be inspected.</p>
         <div class="lab-equation"><span>THE GOVERNING BALANCE</span><code id="lab-formula"></code><p id="lab-formula-explain"></p></div>
         <details class="lab-details" open><summary>What the model includes</summary><p id="lab-mode"></p></details>
+        <aside class="lab-theory-bridge" id="lab-theory-bridge"><span>CONCEPTUAL FOUNDATION</span><h3 id="lab-theory-title">Understand the reasoning before interpreting the numbers.</h3><p id="lab-theory-description">Connect the symbols and quantities to the science behind the model.</p><div id="lab-theory-links"></div></aside>
       </section>
       <section id="lab-result" class="lab-reading-block lab-result-section" aria-labelledby="lab-result-heading">
         <div class="lab-result-head"><div><p class="lab-small">04 / INTERPRET THE EXPERIMENT</p><h2 id="lab-result-heading">The model <em>responds.</em></h2></div><span class="lab-result-state" id="lab-state">NOT YET RUN</span></div>
@@ -85,6 +87,10 @@
             <p id="lab-chart-note"></p>
           </div>
           <p class="lab-feedback" id="lab-feedback" aria-live="polite"></p>
+          <section class="lab-explain-result" id="lab-explain-result" aria-labelledby="lab-explain-heading" hidden>
+            <p class="lab-small">EXPLAIN THE OUTCOME / NOT JUST THE NUMBER</p><h3 id="lab-explain-heading">Why did the model respond this way?</h3>
+            <ol id="lab-explanation-steps"></ol><a id="lab-explain-knowledge-link" href="/knowledge/">Learn the science behind this result ↗</a>
+          </section>
           <details class="lab-details"><summary>Inspect each time step as a table</summary><div class="lab-table-wrap" tabindex="0" role="region" aria-label="Complete numerical model output"><table><caption class="sr-only">One row per modeled time step</caption><thead><tr><th scope="col">Step</th><th scope="col" id="lab-input-head">Input</th><th scope="col" id="lab-captured-head">Captured</th><th scope="col">Served</th><th scope="col">End storage</th><th scope="col">Overflow / curtailed</th><th scope="col">Unmet</th></tr></thead><tbody id="lab-table-body"></tbody></table></div></details>
         </div>
       </section>
