@@ -20,8 +20,11 @@ class UnifiedWebsiteTests(unittest.TestCase):
     def test_route_contract_and_expected_files(self) -> None:
         self.assertEqual(web.ROUTES, ("refrigerator", "distributed-information"))
         self.assertEqual(len(web.ATLAS_PIN), 40)
-        self.assertEqual(len(web.expected_paths()), 15)
+        self.assertEqual(len(web.expected_paths()), 18)
         self.assertIn("research/data/workspace-shell-data.json", web.expected_paths())
+        self.assertIn("experience.css", web.expected_paths())
+        self.assertIn("experience.js", web.expected_paths())
+        self.assertIn("site.js", web.expected_paths())
         self.assertNotIn("learn/refrigerator/facilitator.html", web.expected_paths())
         self.assertNotIn("learn/refrigerator/pilot-lab.html", web.expected_paths())
 
@@ -38,6 +41,9 @@ class UnifiedWebsiteTests(unittest.TestCase):
             ) + "</a>"
             self.assertIn(marker.encode(), published)
             self.assertNotIn(b"//cdn.", published)
+            self.assertIn(b'href="/experience.css"', published)
+            self.assertIn(b'src="/experience.js"', published)
+            self.assertIn(b'class="pa-learner"', published)
 
     def test_navigation_rejects_unexpected_structure_and_route(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown navigation"):
@@ -54,6 +60,9 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn("/research/", homepage)
         self.assertNotIn("localStorage", homepage)
         self.assertNotIn("sessionStorage", homepage)
+        self.assertIn('id="studio-panel"', homepage)
+        self.assertIn('src="/site.js"', homepage)
+        self.assertIn('aria-label="Model preview"', homepage)
 
     def test_manifest_rejects_missing_or_modified_assets(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
