@@ -41,6 +41,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install Atlas canonical parser dependency
+        working-directory: principle-to-system
+        run: python3 -m pip install --disable-pip-version-check -r ../Atlas/tools/foundation-validator/requirements.txt
       - name: Validate exact source pins
         working-directory: principle-to-system
         run: |
