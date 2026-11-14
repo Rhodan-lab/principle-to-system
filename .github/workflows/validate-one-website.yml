@@ -9,6 +9,7 @@ on:
       - "software/tests/test_one_website.py"
       - "software/tests/test_one_website_math.mjs"
       - "software/tests/test_one_website_atlas_ui.mjs"
+      - "software/tests/test_one_website_universe.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
   push:
@@ -18,6 +19,7 @@ on:
       - "software/tests/test_one_website.py"
       - "software/tests/test_one_website_math.mjs"
       - "software/tests/test_one_website_atlas_ui.mjs"
+      - "software/tests/test_one_website_universe.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
 permissions:
@@ -60,8 +62,10 @@ jobs:
           node --check software/one_website/site.js
           node --check software/one_website/experience.js
           node --check software/one_website/atlas-workspace.js
+          node --check software/one_website/universe.js
           node --test software/tests/test_one_website_math.mjs
           node --test software/tests/test_one_website_atlas_ui.mjs
+          node --test software/tests/test_one_website_universe.mjs
       - name: Build unified static website
         working-directory: principle-to-system
         run: python3 software/one_website/build.py build --atlas-repo ../Atlas --output dist
@@ -76,8 +80,19 @@ jobs:
           test -f dist/research/data/workspace-shell-data.json
           test -f dist/atlas-workspace.css
           test -f dist/atlas-workspace.js
+          test -f dist/universe.css
+          test -f dist/universe.js
           test ! -e dist/learn/refrigerator/facilitator.html
           test ! -e dist/learn/refrigerator/pilot-lab.html
+      - name: Smoke-test all routes through a real local HTTP server
+        working-directory: principle-to-system
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory dist >/tmp/principia-site-smoke.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for path in / /universe.css /universe.js /site.js /research/ /research/app.js /research/data/workspace-export.json /learn/refrigerator/ /learn/refrigerator/data/refrigerator.json /learn/distributed-information/ /learn/distributed-information/data/distributed-information.json; do
+            curl --fail --silent --show-error --retry 8 --retry-delay 1 --retry-connrefused "http://127.0.0.1:8765$path" > /dev/null
+          done
       - name: Upload preview site artifact
         uses: actions/upload-artifact@v4
         with:

@@ -36,25 +36,7 @@ MAX_FILES = 48
 MAX_ASSET = 16 * 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
 
-GLOBAL_NAV_STYLE = """
-<style id="principia-atlas-navigation">
-#pa-global-nav{position:fixed;z-index:2000;bottom:1rem;left:50%;transform:translateX(-50%);
-display:flex;align-items:center;justify-content:center;gap:.3rem;max-width:calc(100vw - 1.25rem);
-border:1px solid #c7cec8;border-radius:999px;box-shadow:0 12px 45px #17221d24;
-padding:.35rem;background:#faf9f5f5;backdrop-filter:blur(18px);font:700 12px/1.25 system-ui,-apple-system,sans-serif}
-#pa-global-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:2.75rem;
-padding:.55rem .9rem;border-radius:999px;white-space:nowrap;text-decoration:none;color:#34453b}
-#pa-global-nav a[aria-current="page"]{background:#173d33;color:#fff}
-#pa-global-nav a:focus-visible,.pa-global-skip:focus-visible{outline:3px solid #bd8129;outline-offset:2px}
-.pa-global-skip{position:fixed;top:.5rem;left:.5rem;z-index:2500;transform:translateY(-160%);
-padding:.6rem .9rem;border-radius:.6rem;background:#173d33;color:#fff;font:700 13px system-ui}
-.pa-global-skip:focus{transform:none}
-body{padding-bottom:5.75rem!important}
-@media(max-width:570px){#pa-global-nav{bottom:.5rem;gap:0;padding:.25rem;border-radius:1rem}
-#pa-global-nav a{padding:.5rem .55rem;font-size:11px;white-space:normal;text-align:center}}
-@media(prefers-reduced-motion:reduce){#pa-global-nav{backdrop-filter:none}}
-</style>
-"""
+GLOBAL_NAV_STYLE = ""
 
 NAV_ITEMS = (
     ("/", "Home", "home"),
@@ -101,12 +83,19 @@ def add_navigation(raw: bytes, active: str) -> bytes:
     links = []
     for url, label, key in NAV_ITEMS:
         current = ' aria-current="page"' if key == active else ""
-        links.append(f'<a href="{url}"{current}>{label}</a>')
+        links.append(f'<a class="pa-nav-link" data-pa-area="{key}" href="{url}"{current}>{label}</a>')
     skip_target = "#main-content" if active == "atlas" else "#heading"
     navigation = (
         f'<a class="pa-global-skip" href="{skip_target}">Skip to page content</a>'
         '<nav id="pa-global-nav" aria-label="Unified Principia and Atlas navigation">'
-        + "".join(links) + "</nav>"
+        '<a class="pa-nav-brand" href="/" aria-label="Principia and Atlas home">'
+        '<span class="pa-brand-mark" aria-hidden="true">∴</span>'
+        '<span class="pa-brand-wordmark">Principia <span>&amp;</span> Atlas</span></a>'
+        '<span class="pa-nav-product">A living systems atlas</span>'
+        '<div class="pa-nav-links">' + "".join(links) + '</div>'
+        '<div class="pa-nav-actions"><button class="pa-nav-command" type="button" '
+        'aria-label="Open website navigation search">⌕ Jump <kbd>Alt G</kbd></button>'
+        '<span class="pa-nav-status">Read-only knowledge</span></div></nav>'
     )
     assets = '<link rel="stylesheet" href="/experience.css">'
     if active == "atlas":
@@ -116,6 +105,8 @@ def add_navigation(raw: bytes, active: str) -> bytes:
         assets += '<script defer src="/atlas-workspace.js"></script>'
     else:
         assets += '<script defer src="/experience.js"></script>'
+    assets += '<link rel="stylesheet" href="/universe.css">'
+    assets += '<script defer src="/universe.js"></script>'
     source = source.replace("</head>", GLOBAL_NAV_STYLE + assets + "</head>", 1)
     body_class = "pa-research" if active == "atlas" else "pa-learner"
     source = source.replace("<body>", f'<body class="{body_class}">' + navigation, 1)
@@ -135,7 +126,7 @@ def write_asset(target: Path, relative: str, content: bytes, files: list[dict[st
 
 
 def expected_paths() -> set[str]:
-    paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "robots.txt"}
+    paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "robots.txt"}
     for route in ROUTES:
         paths.update((
             f"learn/{route}/index.html",
@@ -280,7 +271,7 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
                 raise ValueError("Home template token missing or duplicated")
             home = home.replace(needle, value)
         write_asset(stage, "index.html", home.encode("utf-8"), files)
-        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js"):
+        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js"):
             write_asset(stage, asset, (HERE / asset).read_bytes(), files)
         write_asset(stage, "robots.txt", b"User-agent: *\nDisallow: /\n", files)
         files.sort(key=lambda x: x["path"])
