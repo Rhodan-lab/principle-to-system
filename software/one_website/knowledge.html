@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf9f6">
+<meta name="description" content="The Knowledge Atlas: an explorable library of scientific ideas, clear explanations, worked equations, and interactive reasoning challenges.">
+<title>Knowledge Atlas — The structures beneath the world</title>
+<link rel="stylesheet" href="/universe.css">
+<link rel="stylesheet" href="/knowledge.css">
+<script defer src="/universe.js"></script>
+<script defer src="/knowledge-content.js"></script>
+<script defer src="/knowledge.js"></script>
+</head>
+<body class="pa-knowledge">
+<a href="#knowledge-main" class="knowledge-skip">Skip to learning content</a>
+<nav id="pa-global-nav" aria-label="Unified Principia and Atlas navigation">
+ <a class="pa-nav-brand" href="/" aria-label="Principia and Atlas home"><span class="pa-brand-mark" aria-hidden="true">∴</span><span class="pa-brand-wordmark">Principia <span>&amp;</span> Atlas</span></a>
+ <span class="pa-nav-product">The Knowledge Atlas</span>
+ <div class="pa-nav-links">
+  <a class="pa-nav-link" data-pa-area="home" href="/">Discover</a>
+  <a class="pa-nav-link" data-pa-area="explore" href="/explore/">Laboratories</a>
+  <a class="pa-nav-link" data-pa-area="knowledge" href="/knowledge/" aria-current="page">Knowledge Atlas</a>
+  <a class="pa-nav-link" data-pa-area="atlas" href="/research/">Research desk</a>
+ </div>
+ <div class="pa-nav-actions"><button class="pa-nav-command" type="button" aria-label="Open website navigation search">⌕ Jump <kbd>Alt G</kbd></button><span class="pa-nav-status">Free exploration</span></div>
+</nav>
+
+<main id="knowledge-main">
+ <header class="knowledge-hero">
+  <div class="knowledge-hero-copy">
+   <p class="knowledge-kicker">AN OPEN LIBRARY OF IDEAS / PRINCIPIA &amp; ATLAS</p>
+   <h1>Understanding is<br>an act of <em>discovery.</em></h1>
+   <p>Not a glossary. Not another quiz farm. Follow a question into its hidden mechanism, see the mathematics take shape, and test whether you really understood it. Start anywhere.</p>
+   <div class="knowledge-hero-actions">
+    <a href="#knowledge-library" class="knowledge-main-cta">Browse the knowledge universe <span aria-hidden="true">↘</span></a>
+    <a href="/explore/" class="knowledge-quiet-cta">Go to interactive experiments ↗</a>
+   </div>
+  </div>
+  <div class="knowledge-hero-drawing" aria-label="Concepts in a connected network, with conservation at its centre">
+    <svg viewBox="0 0 520 440" role="img" aria-label="Illustration of a network of scientific ideas surrounding conservation">
+      <defs><radialGradient id="khalo"><stop stop-color="#fff9ec"/><stop offset="1" stop-color="#e4e6d9"/></radialGradient></defs>
+      <circle cx="260" cy="210" r="150" fill="none" stroke="#c6cabc" stroke-width="1"/>
+      <circle cx="260" cy="210" r="105" fill="none" stroke="#c6cabc" stroke-width="1" stroke-dasharray="5 8"/>
+      <path d="M260 60L395 143L356 303L174 344L108 180Z" fill="none" stroke="#8ea18e" stroke-width="1.5"/>
+      <path d="M108 180L356 303M395 143L174 344M260 60L260 210L174 344M260 210L395 143" fill="none" stroke="#c98d6e" stroke-width="1"/>
+      <circle cx="260" cy="210" r="59" fill="url(#khalo)" stroke="#a0ae97"/><text x="260" y="208" font-family="Georgia,serif" font-size="24" text-anchor="middle" fill="#51664e">∴</text><text x="260" y="227" font-family="system-ui" font-size="9" text-anchor="middle" letter-spacing="2" fill="#697d65">KNOWLEDGE</text>
+      <g fill="#ba7c5f"><circle cx="260" cy="60" r="7"/><circle cx="395" cy="143" r="7"/><circle cx="356" cy="303" r="7"/><circle cx="174" cy="344" r="7"/><circle cx="108" cy="180" r="7"/></g>
+      <g font-family="system-ui" font-size="12" fill="#727a6b"><text x="260" y="38" text-anchor="middle">Energy</text><text x="410" y="139">Models</text><text x="369" y="322">Feedback</text><text x="146" y="372" text-anchor="middle">Evidence</text><text x="94" y="177" text-anchor="end">Systems</text></g>
+    </svg>
+    <div class="knowledge-hero-art-top">MAP OF IDEAS / DIAGRAM 001</div>
+    <div class="knowledge-hero-art-bottom">CONCEPTS ARE CONNECTED, NOT RANKED</div>
+  </div>
+ </header>
+ <div class="knowledge-identity"><span><b>15</b> CONCEPTUAL CHAPTERS</span><span><b>04</b> SCIENTIFIC LABORATORIES</span><span><b>01</b> CONNECTED LEARNING UNIVERSE</span></div>
+
+ <section class="knowledge-frame" id="knowledge-library" aria-labelledby="knowledge-section-title">
+  <div class="knowledge-frame-title">
+    <div><p class="knowledge-kicker">FIELD GUIDE / FREE NAVIGATION</p><h2 id="knowledge-section-title">The atlas of <em>why.</em></h2></div>
+    <div class="knowledge-mode"><span>YOUR READING MODE</span><button id="knowledge-focus" type="button" aria-pressed="false">Focus reading <span aria-hidden="true">⤢</span></button></div>
+  </div>
+  <div class="knowledge-workspace">
+   <aside class="knowledge-index" aria-labelledby="knowledge-index-heading">
+    <div class="knowledge-index-top"><p class="knowledge-kicker">EXPLORE / INDEX</p><h3 id="knowledge-index-heading">Every idea has an entrance.</h3>
+     <label for="knowledge-search">SEARCH THE CONCEPTS</label>
+     <input id="knowledge-search" type="search" placeholder="Search ideas or questions…" autocomplete="off">
+     <div id="knowledge-filters" class="knowledge-filters" role="group" aria-label="Filter topics by field"></div>
+     <p id="knowledge-search-status" class="knowledge-search-count" role="status" aria-live="polite">15 conceptual chapters</p>
+    </div>
+    <nav aria-label="Knowledge topics"><ul id="knowledge-topics" class="knowledge-topic-list"></ul></nav>
+    <div class="knowledge-index-bottom"><a href="/explore/">Open the experimental labs <span aria-hidden="true">↗</span></a><p>Free navigation, no account, no progress tracking across visits.</p></div>
+   </aside>
+   <article class="knowledge-article" id="knowledge-article" aria-labelledby="knowledge-article-title" tabindex="-1">
+    <div class="knowledge-article-meta"><span id="knowledge-domain">FOUNDATIONS</span><span id="knowledge-chapter-index">CHAPTER / 01</span></div>
+    <p class="knowledge-article-lead-in" id="knowledge-question"></p>
+    <h3 id="knowledge-article-title">Where does a system begin?</h3>
+    <p id="knowledge-lead" class="knowledge-lead"></p>
+    <div class="knowledge-experiment-connection"><span>THE GUIDING QUESTION</span><strong id="knowledge-guiding"></strong></div>
+    <div id="knowledge-sections" class="knowledge-sections"></div>
+    <section class="knowledge-scenario" aria-labelledby="knowledge-scenario-heading">
+      <div class="knowledge-scenario-header"><p class="knowledge-small">GO DEEPER / A WORKED THOUGHT EXPERIMENT</p><h4 id="knowledge-scenario-heading">Follow the mechanism.</h4>
+      <p>Move from an observable situation into the explanation—and then find what the explanation leaves out.</p></div>
+      <div id="knowledge-scenario-cards" class="knowledge-scenario-cards"></div>
+    </section>
+    <div class="knowledge-equation" id="knowledge-equation-section">
+     <div class="knowledge-equation-head"><span>THE MATHEMATICAL LENS</span><span>CONCEPTUAL / TRANSPARENT</span></div>
+     <div id="knowledge-formula" class="knowledge-formula"></div>
+     <div class="knowledge-worked"><p class="knowledge-small">WORKED EXAMPLE</p><p id="knowledge-example"></p></div>
+    </div>
+    <div class="knowledge-misconception"><p class="knowledge-small">COMMON MISCONCEPTION</p><p id="knowledge-mistake"></p></div>
+    <section class="knowledge-reflection" aria-labelledby="knowledge-reflect-heading">
+     <p class="knowledge-kicker">RETRIEVE / DON'T JUST RECOGNIZE</p>
+     <h4 id="knowledge-reflect-heading">Can you explain it <em>without looking?</em></h4>
+     <p>Write your explanation in your own words. Nothing is sent or stored; your notes exist only in this tab.</p>
+     <label for="knowledge-notes" class="knowledge-notes-label">MY EXPLANATION</label>
+     <textarea id="knowledge-notes" rows="4" placeholder="The mechanism is… because… The model is limited by…"></textarea>
+     <div class="knowledge-reflection-actions"><button type="button" id="knowledge-copy-notes">Copy my explanation</button><span id="knowledge-copy-status" aria-live="polite"></span></div>
+    </section>
+    <footer class="knowledge-article-footer"><div><p class="knowledge-small">RESEARCH &amp; ATTRIBUTION</p><p>These are original teaching syntheses linked to reviewed Principia source documents; they are not new canonical reviews.</p><a id="knowledge-source" target="_blank" rel="noopener noreferrer" href="https://github.com/Rhodan-lab/principle-to-system">Read the underlying Principia material ↗</a></div><div class="knowledge-article-next"><span>KEEP EXPLORING</span><a id="knowledge-next" href="#conservation">Next concept ↗</a></div></footer>
+   </article>
+   <aside class="knowledge-inspector" aria-label="Learning companion and connections">
+     <div class="knowledge-inspector-top"><span class="knowledge-inspector-mark">∴</span><div><p class="knowledge-kicker">LEARNING COMPANION</p><h3>Think with the ideas.</h3></div></div>
+     <section class="knowledge-practice" aria-labelledby="knowledge-practice-title">
+       <p class="knowledge-small">ACTIVE RECALL / CONCEPT CHECK</p><h4 id="knowledge-practice-title">Test your understanding</h4>
+       <p id="knowledge-check-question"></p>
+       <form id="knowledge-check-form"><fieldset><legend class="sr-only">Select one answer</legend><div id="knowledge-check-options"></div></fieldset><button type="submit" id="knowledge-check-submit">Check my reasoning <span aria-hidden="true">↗</span></button></form>
+       <div id="knowledge-check-feedback" role="status" aria-live="polite" hidden></div>
+     </section>
+     <section class="knowledge-connections" aria-labelledby="knowledge-connections-heading">
+      <p class="knowledge-small">CROSS-DISCIPLINARY CONNECTIONS</p><h4 id="knowledge-connections-heading">Go deeper from here</h4>
+      <div id="knowledge-links" class="knowledge-link-list"></div>
+     </section>
+     <section class="knowledge-application" aria-labelledby="knowledge-lab-heading">
+      <p class="knowledge-small">MAKE THE IDEA MOVE</p><h4 id="knowledge-lab-heading">Apply it in a lab</h4>
+      <p>A calculation becomes meaningful when you change the conditions and examine the result.</p><a id="knowledge-lab" href="/explore/">Open an investigation ↗</a>
+     </section>
+     <section class="knowledge-progress"><p class="knowledge-small">THIS TAB'S EXPLORATION</p><p><strong id="knowledge-visited">1</strong> of 15 chapters opened</p><small>Ephemeral by design. No account or saved analytics.</small></section>
+   </aside>
+  </div>
+ </section>
+ <section class="knowledge-bottom" aria-labelledby="knowledge-end-title"><p class="knowledge-kicker">THE QUESTION IS NEVER FINISHED</p><h2 id="knowledge-end-title">Read the idea.<br><em>Then test the world.</em></h2><p>A strong explanation includes the mechanism, the mathematics, its limits, and the evidence that could change your mind.</p><div><a href="/explore/">Experiment in the laboratories ↗</a><a href="/research/">Inspect research evidence ↗</a></div></section>
+</main>
+<footer class="knowledge-footer"><a href="/">∴ Principia &amp; Atlas</a><span>Questions before conclusions · Models before certainty</span></footer>
+</body></html>

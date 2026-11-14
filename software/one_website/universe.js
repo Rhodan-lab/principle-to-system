@@ -17,6 +17,12 @@
     {href:"/",title:"Discover",description:"Return to the knowledge observatory",group:"Explore"},
     {href:"/learn/refrigerator/",title:"Thermal laboratory",description:"Heat, energy balance and counterfactual models",group:"Experiments"},
     {href:"/explore/",title:"All laboratories",description:"Browse four interactive scientific subjects",group:"Explore"},
+    {href:"/knowledge/",title:"Knowledge Atlas",description:"Read and understand 15 connected explanations about how systems work",group:"Understand"},
+    {href:"/knowledge/#systems",title:"Understanding systems",description:"Boundaries, inputs, outputs and physical relationships",group:"Understand"},
+    {href:"/knowledge/#conservation",title:"Conservation and balance",description:"Where energy, water and stored quantities must go",group:"Understand"},
+    {href:"/knowledge/#feedback",title:"Feedback and delay",description:"How responses amplify or correct a system",group:"Understand"},
+    {href:"/knowledge/#models",title:"Models versus reality",description:"The assumptions and limitations of simulations",group:"Understand"},
+    {href:"/knowledge/#evidence",title:"Sources and scientific trust",description:"What a pinned source can establish",group:"Understand"},
     {href:"/learn/distributed-information/",title:"Distributed systems",description:"Queues, overload and retry dynamics",group:"Experiments"},
     {href:"/explore/rainwater/",title:"Rainwater storage",description:"Non-potable capture, storage, demand and overflow",group:"Experiments"},
     {href:"/explore/microgrid/",title:"Solar microgrid",description:"Solar power, battery capacity, reserve and critical load",group:"Experiments"},
@@ -37,6 +43,7 @@
   function currentArea(pathname){
     if(pathname.startsWith("/research"))return"atlas";
     if(pathname.startsWith("/explore"))return"explore";
+    if(pathname.startsWith("/knowledge"))return"knowledge";
     if(pathname.startsWith("/learn/refrigerator"))return"refrigerator";
     if(pathname.startsWith("/learn/distributed-information"))return"distributed-information";
     return"home";
@@ -50,7 +57,7 @@
     body.dataset.paArea=area;
     const links=[...navigation.querySelectorAll(".pa-nav-link")];
     links.forEach(link=>{
-      const active=link.dataset.paArea===area;
+      const active=link.dataset.paArea===area||(link.dataset.paArea==="explore"&&(area==="refrigerator"||area==="distributed-information"));
       if(active)link.setAttribute("aria-current","page");
       else link.removeAttribute("aria-current");
     });
@@ -130,7 +137,7 @@
       const globalShortcut=(event.altKey&&event.key.toLowerCase()==="g") ||
         (area!=="atlas"&&(event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==="k");
       if(globalShortcut){event.preventDefault();openMenu();}
-      if(event.key==="/"&&!typing&&area!=="atlas"&&!dialog.open&&!event.ctrlKey&&!event.altKey&&!event.metaKey){
+      if(event.key==="/"&&!typing&&area!=="atlas"&&area!=="knowledge"&&!dialog.open&&!event.ctrlKey&&!event.altKey&&!event.metaKey){
         event.preventDefault();openMenu();
       }
     });
@@ -150,6 +157,37 @@
     frame.className="pa-lab-frame";
     frame.setAttribute("aria-label","Three-pane learning workspace");
     steps.before(frame);frame.append(steps,workspace);
+    if(!main.querySelector(".pa-knowledge-prelude")){
+      const isThermal=location.pathname.includes("refrigerator");
+      const guide=document.createElement("section");
+      guide.className="pa-knowledge-prelude";
+      guide.setAttribute("aria-label","Learn the scientific explanations behind this experiment");
+      const heading=document.createElement("div");
+      const marker=document.createElement("p");
+      marker.textContent="UNDERSTAND / BEFORE OR AFTER EXPERIMENTING";
+      const title=document.createElement("h2");title.textContent="The ideas behind this investigation.";
+      const intro=document.createElement("p");intro.textContent="Every numerical outcome needs a conceptual explanation. Explore the foundations freely, then return and test your understanding in the live model.";
+      heading.append(marker,title,intro);
+      const links=document.createElement("div");links.className="pa-knowledge-prelude-links";
+      const chapters=isThermal?[
+        ["heat","Heat is a transfer, not a substance","Why moving heat out of a cabinet warms the surroundings"],
+        ["conservation","Follow every joule","Account for energy crossing the chosen system boundary"],
+        ["systems","Choose the right boundary","Distinguish the cabinet, appliance and whole room"]
+      ]:[
+        ["queue","Why retries become pressure","See how added attempts push service beyond capacity"],
+        ["feedback","The loop behind the failure","Learn how a response can amplify overload"],
+        ["capacity","The bottleneck is the story","Separate arrival rates, service rates and bounded queues"]
+      ];
+      for(const [id,name,summary]of chapters){
+        const card=document.createElement("a");card.href="/knowledge/#"+id;
+        const label=document.createElement("span");label.textContent="CONCEPTUAL FOUNDATION / "+id.toUpperCase();
+        const title=document.createElement("strong");title.textContent=name;
+        const description=document.createElement("small");description.textContent=summary;
+        card.append(label,title,description);
+        links.append(card);
+      }
+      guide.append(heading,links);frame.before(guide);
+    }
     const heading=steps.querySelector(".journey-head strong");
     if(heading)heading.textContent="Field guide";
     const hero=main.querySelector(".hero");
@@ -226,7 +264,7 @@
     }
   }
   function enhanceHome(){
-    const sectionNav=document.querySelector(".pa-section-index");
+    const sectionNav=document.querySelector(".pa3-section-index");
     if(!sectionNav)return;
     const anchors=[...sectionNav.querySelectorAll('a[href^="#"]')];
     if(typeof IntersectionObserver!=="function")return;

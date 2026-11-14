@@ -6,6 +6,14 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/knowledge",
+      "destination": "/knowledge/index.html"
+    },
+    {
+      "source": "/knowledge/",
+      "destination": "/knowledge/index.html"
+    },
+    {
       "source": "/learn/refrigerator",
       "destination": "/learn/refrigerator/index.html"
     },

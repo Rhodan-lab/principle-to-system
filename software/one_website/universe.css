@@ -343,3 +343,22 @@ body.pa-learner .pa-next-lab-arrow{font-size:.72rem;color:#547157;font-weight:76
 @media(max-width:580px){body.pa-learner .pa-next-labs-grid{grid-template-columns:1fr}
  body.pa-learner .pa-next-labs-heading h2{font-size:2.3rem}}
 @media(prefers-reduced-motion:reduce){body.pa-learner .pa-next-lab{transition:none}}
+
+
+/* Explanations become a first-class part of both Product Alpha journeys. */
+body.pa-learner .pa-knowledge-prelude{margin:1rem 0 clamp(1.6rem,3vw,3rem);
+ padding:clamp(1.4rem,2.3vw,2.7rem);background:#f3f1eb;border:1px solid #e1dfd6;border-radius:10px}
+body.pa-learner .pa-knowledge-prelude>div:first-child{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:1.1rem 2rem;align-items:end;margin-bottom:1.5rem}
+body.pa-learner .pa-knowledge-prelude>div:first-child>p:first-child{grid-column:1/-1;font:.63rem ui-monospace,monospace;letter-spacing:.08em;color:#ab775e;margin:0}
+body.pa-learner .pa-knowledge-prelude h2{font:400 clamp(1.8rem,2.8vw,3.3rem)/1.12 Georgia,serif;letter-spacing:-.046em;color:#303a30;margin:0}
+body.pa-learner .pa-knowledge-prelude>div:first-child>p:last-child{font-size:.79rem;color:#7f867a;line-height:1.8;margin:0;max-width:54ch}
+body.pa-learner .pa-knowledge-prelude-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
+body.pa-learner .pa-knowledge-prelude-links a{display:flex;min-width:0;flex-direction:column;gap:.55rem;background:#fffefa;border:1px solid #e0dfd6;border-radius:6px;text-decoration:none;padding:1.1rem;transition:transform .15s,border-color .15s}
+body.pa-learner .pa-knowledge-prelude-links a:hover{transform:translateY(-2px);border-color:#bdc9b9}
+body.pa-learner .pa-knowledge-prelude-links span{font:.59rem ui-monospace,monospace;letter-spacing:.07em;color:#aa795d}
+body.pa-learner .pa-knowledge-prelude-links strong{font:400 clamp(1.25rem,1.7vw,1.85rem)/1.17 Georgia,serif;letter-spacing:-.036em;color:#385341}
+body.pa-learner .pa-knowledge-prelude-links small{font-size:.71rem;color:#848d80;line-height:1.62}
+@media(max-width:800px){body.pa-learner .pa-knowledge-prelude>div:first-child{grid-template-columns:1fr}
+body.pa-learner .pa-knowledge-prelude-links{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){body.pa-learner .pa-knowledge-prelude-links{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){body.pa-learner .pa-knowledge-prelude-links a{transition:none}}

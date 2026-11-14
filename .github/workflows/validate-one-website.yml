@@ -11,6 +11,7 @@ on:
       - "software/tests/test_one_website_atlas_ui.mjs"
       - "software/tests/test_one_website_universe.mjs"
       - "software/tests/test_one_website_explorations.mjs"
+      - "software/tests/test_one_website_knowledge.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
   push:
@@ -22,6 +23,7 @@ on:
       - "software/tests/test_one_website_atlas_ui.mjs"
       - "software/tests/test_one_website_universe.mjs"
       - "software/tests/test_one_website_explorations.mjs"
+      - "software/tests/test_one_website_knowledge.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
 permissions:
@@ -67,10 +69,13 @@ jobs:
           node --check software/one_website/universe.js
           node --check software/one_website/exploration-models.js
           node --check software/one_website/exploration.js
+          node --check software/one_website/knowledge-content.js
+          node --check software/one_website/knowledge.js
           node --test software/tests/test_one_website_math.mjs
           node --test software/tests/test_one_website_atlas_ui.mjs
           node --test software/tests/test_one_website_universe.mjs
           node --test software/tests/test_one_website_explorations.mjs
+          node --test software/tests/test_one_website_knowledge.mjs
       - name: Build unified static website
         working-directory: principle-to-system
         run: python3 software/one_website/build.py build --atlas-repo ../Atlas --output dist
@@ -93,6 +98,10 @@ jobs:
           test -f dist/exploration-models.js
           test -f dist/exploration.js
           test -f dist/exploration.css
+          test -f dist/knowledge/index.html
+          test -f dist/knowledge.css
+          test -f dist/knowledge.js
+          test -f dist/knowledge-content.js
           test ! -e dist/learn/refrigerator/facilitator.html
           test ! -e dist/learn/refrigerator/pilot-lab.html
       - name: Smoke-test all routes through a real local HTTP server
@@ -101,7 +110,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 --directory dist >/tmp/principia-site-smoke.log 2>&1 &
           server=$!
           trap 'kill "$server" 2>/dev/null || true' EXIT
-          for path in / /universe.css /universe.js /site.js /explore/ /explore/rainwater/ /explore/microgrid/ /exploration.js /exploration-models.js /exploration.css /research/ /research/app.js /research/data/workspace-export.json /learn/refrigerator/ /learn/refrigerator/data/refrigerator.json /learn/distributed-information/ /learn/distributed-information/data/distributed-information.json; do
+          for path in / /universe.css /universe.js /site.js /knowledge/ /knowledge.css /knowledge.js /knowledge-content.js /explore/ /explore/rainwater/ /explore/microgrid/ /exploration.js /exploration-models.js /exploration.css /research/ /research/app.js /research/data/workspace-export.json /learn/refrigerator/ /learn/refrigerator/data/refrigerator.json /learn/distributed-information/ /learn/distributed-information/data/distributed-information.json; do
             curl --fail --silent --show-error --retry 8 --retry-delay 1 --retry-connrefused "http://127.0.0.1:8765$path" > /dev/null
           done
       - name: Upload preview site artifact
