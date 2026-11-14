@@ -30,6 +30,7 @@ MANIFEST = "site-manifest.json"
 ATLAS_MODULE = "tools.phase4_workspace.package_product_input"
 ATLAS_REPORT = "workspace-shell-build-report.json"
 ROUTES = ("refrigerator", "distributed-information")
+EXPLORATIONS = ("rainwater", "microgrid")  # Website-only models; NOT reviewed Product Alpha routes.
 ATLAS_PIN = (HERE / "atlas-commit.txt").read_text(encoding="ascii").strip()
 SHA = re.compile(r"^[0-9a-f]{40}$")
 MAX_FILES = 48
@@ -40,8 +41,11 @@ GLOBAL_NAV_STYLE = ""
 
 NAV_ITEMS = (
     ("/", "Home", "home"),
+    ("/explore/", "All labs", "explore"),
     ("/learn/refrigerator/", "Refrigerator", "refrigerator"),
     ("/learn/distributed-information/", "Information", "distributed-information"),
+    ("/explore/rainwater/", "Rainwater", "rainwater"),
+    ("/explore/microgrid/", "Solar", "microgrid"),
     ("/research/", "Atlas research", "atlas"),
 )
 
@@ -126,7 +130,8 @@ def write_asset(target: Path, relative: str, content: bytes, files: list[dict[st
 
 
 def expected_paths() -> set[str]:
-    paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "robots.txt"}
+    paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "exploration-models.js", "exploration.js", "exploration.css", "robots.txt", "explore/index.html"}
+    paths.update(f"explore/{route}/index.html" for route in EXPLORATIONS)
     for route in ROUTES:
         paths.update((
             f"learn/{route}/index.html",
@@ -211,6 +216,15 @@ def verify(output: Path) -> dict[str, object]:
         html = (source / "index.html").read_text(encoding="utf-8")
         if f'<meta name="principia-route" content="{route}">' not in html:
             raise ValueError("Packaged learner marker mismatch")
+    for exploration in EXPLORATIONS:
+        page = (output / "explore" / exploration / "index.html").read_text(encoding="utf-8")
+        if f'<meta name="exploration-id" content="{exploration}">' not in page:
+            raise ValueError(f"Website-only exploration identity mismatch: {exploration}")
+        if 'src="/exploration-models.js"' not in page or 'src="/exploration.js"' not in page:
+            raise ValueError(f"Exploration missing its first-party simulation runtime: {exploration}")
+    library_html = (output / "explore/index.html").read_text(encoding="utf-8")
+    if any(f'/explore/{route}/' not in library_html for route in EXPLORATIONS):
+        raise ValueError("Exploration library missing a scenario")
     research_html = (output / "research/index.html").read_text(encoding="utf-8")
     if 'aria-current="page">Atlas research</a>' not in research_html:
         raise ValueError("Research navigation missing")
@@ -271,7 +285,19 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
                 raise ValueError("Home template token missing or duplicated")
             home = home.replace(needle, value)
         write_asset(stage, "index.html", home.encode("utf-8"), files)
-        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js"):
+        write_asset(stage, "explore/index.html", (HERE / "explore-library.html").read_bytes(), files)
+        lab_template = (HERE / "exploration.html").read_text(encoding="utf-8")
+        for exploration, label in (("rainwater", "The rainwater buffer"), ("microgrid", "The solar microgrid")):
+            page = lab_template
+            # These are presentation artifacts, not canonical research or Product Alpha routes.
+            for token, value in (("__EXPLORATION_ID__", exploration), ("__EXPLORATION_TITLE__", label)):
+                if token not in page:
+                    raise ValueError(f"Missing conceptual exploration template token: {token}")
+                page = page.replace(token, value)
+            if "__EXPLORATION_" in page:
+                raise ValueError("Unresolved exploration template token")
+            write_asset(stage, f"explore/{exploration}/index.html", page.encode("utf-8"), files)
+        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "exploration-models.js", "exploration.js", "exploration.css"):
             write_asset(stage, asset, (HERE / asset).read_bytes(), files)
         write_asset(stage, "robots.txt", b"User-agent: *\nDisallow: /\n", files)
         files.sort(key=lambda x: x["path"])
