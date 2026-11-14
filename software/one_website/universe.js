@@ -17,6 +17,12 @@
     {href:"/",title:"Discover",description:"Return to the knowledge observatory",group:"Explore"},
     {href:"/learn/refrigerator/",title:"Thermal laboratory",description:"Heat, energy balance and counterfactual models",group:"Experiments"},
     {href:"/explore/",title:"All laboratories",description:"Browse four interactive scientific subjects",group:"Explore"},
+    {href:"/knowledge/",title:"Knowledge Atlas",description:"Read and understand 15 connected explanations about how systems work",group:"Understand"},
+    {href:"/knowledge/#systems",title:"Understanding systems",description:"Boundaries, inputs, outputs and physical relationships",group:"Understand"},
+    {href:"/knowledge/#conservation",title:"Conservation and balance",description:"Where energy, water and stored quantities must go",group:"Understand"},
+    {href:"/knowledge/#feedback",title:"Feedback and delay",description:"How responses amplify or correct a system",group:"Understand"},
+    {href:"/knowledge/#models",title:"Models versus reality",description:"The assumptions and limitations of simulations",group:"Understand"},
+    {href:"/knowledge/#evidence",title:"Sources and scientific trust",description:"What a pinned source can establish",group:"Understand"},
     {href:"/learn/distributed-information/",title:"Distributed systems",description:"Queues, overload and retry dynamics",group:"Experiments"},
     {href:"/explore/rainwater/",title:"Rainwater storage",description:"Non-potable capture, storage, demand and overflow",group:"Experiments"},
     {href:"/explore/microgrid/",title:"Solar microgrid",description:"Solar power, battery capacity, reserve and critical load",group:"Experiments"},
@@ -37,6 +43,7 @@
   function currentArea(pathname){
     if(pathname.startsWith("/research"))return"atlas";
     if(pathname.startsWith("/explore"))return"explore";
+    if(pathname.startsWith("/knowledge"))return"knowledge";
     if(pathname.startsWith("/learn/refrigerator"))return"refrigerator";
     if(pathname.startsWith("/learn/distributed-information"))return"distributed-information";
     return"home";
@@ -130,7 +137,7 @@
       const globalShortcut=(event.altKey&&event.key.toLowerCase()==="g") ||
         (area!=="atlas"&&(event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==="k");
       if(globalShortcut){event.preventDefault();openMenu();}
-      if(event.key==="/"&&!typing&&area!=="atlas"&&!dialog.open&&!event.ctrlKey&&!event.altKey&&!event.metaKey){
+      if(event.key==="/"&&!typing&&area!=="atlas"&&area!=="knowledge"&&!dialog.open&&!event.ctrlKey&&!event.altKey&&!event.metaKey){
         event.preventDefault();openMenu();
       }
     });
