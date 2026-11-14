@@ -40,13 +40,9 @@ MAX_TOTAL = 64 * 1024 * 1024
 GLOBAL_NAV_STYLE = ""
 
 NAV_ITEMS = (
-    ("/", "Home", "home"),
-    ("/explore/", "All labs", "explore"),
-    ("/knowledge/", "Knowledge", "knowledge"),
-    ("/learn/refrigerator/", "Refrigerator", "refrigerator"),
-    ("/learn/distributed-information/", "Information", "distributed-information"),
-    ("/explore/rainwater/", "Rainwater", "rainwater"),
-    ("/explore/microgrid/", "Solar", "microgrid"),
+    ("/", "Discover", "home"),
+    ("/explore/", "Laboratories", "explore"),
+    ("/knowledge/", "Knowledge Atlas", "knowledge"),
     ("/research/", "Atlas research", "atlas"),
 )
 
@@ -86,8 +82,9 @@ def add_navigation(raw: bytes, active: str) -> bytes:
     if source.count("</head>") != 1 or source.count("<body>") != 1:
         raise ValueError("Expected one head and one body in canonical viewer")
     links = []
+    nav_active = "explore" if active in ROUTES else active
     for url, label, key in NAV_ITEMS:
-        current = ' aria-current="page"' if key == active else ""
+        current = ' aria-current="page"' if key == nav_active else ""
         links.append(f'<a class="pa-nav-link" data-pa-area="{key}" href="{url}"{current}>{label}</a>')
     skip_target = "#main-content" if active == "atlas" else "#heading"
     navigation = (
