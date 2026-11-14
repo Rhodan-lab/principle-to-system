@@ -20,11 +20,13 @@ class UnifiedWebsiteTests(unittest.TestCase):
     def test_route_contract_and_expected_files(self) -> None:
         self.assertEqual(web.ROUTES, ("refrigerator", "distributed-information"))
         self.assertEqual(len(web.ATLAS_PIN), 40)
-        self.assertEqual(len(web.expected_paths()), 18)
+        self.assertEqual(len(web.expected_paths()), 20)
         self.assertIn("research/data/workspace-shell-data.json", web.expected_paths())
         self.assertIn("experience.css", web.expected_paths())
         self.assertIn("experience.js", web.expected_paths())
         self.assertIn("site.js", web.expected_paths())
+        self.assertIn("atlas-workspace.css", web.expected_paths())
+        self.assertIn("atlas-workspace.js", web.expected_paths())
         self.assertNotIn("learn/refrigerator/facilitator.html", web.expected_paths())
         self.assertNotIn("learn/refrigerator/pilot-lab.html", web.expected_paths())
 
@@ -44,6 +46,16 @@ class UnifiedWebsiteTests(unittest.TestCase):
             self.assertIn(b'href="/experience.css"', published)
             self.assertIn(b'src="/experience.js"', published)
             self.assertIn(b'class="pa-learner"', published)
+
+    def test_atlas_presentation_preserves_source_shell_and_uses_first_party_assets(self) -> None:
+        original = b'<!doctype html><html><head><title>Atlas</title></head><body><main id="main-content"></main><script type="module" src="./app.js"></script></body></html>'
+        generated = web.add_navigation(original, "atlas")
+        self.assertIn(b'<body class="pa-research">', generated)
+        self.assertIn(b'<link rel="stylesheet" href="/atlas-workspace.css">', generated)
+        self.assertIn(b'<script defer src="/atlas-workspace.js"></script>', generated)
+        self.assertIn(b'<script type="module" src="./app.js"></script>', generated)
+        self.assertNotIn(b'<script defer src="/experience.js"></script>', generated)
+        self.assertIn(b'<nav id="pa-global-nav"', generated)
 
     def test_navigation_rejects_unexpected_structure_and_route(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown navigation"):

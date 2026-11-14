@@ -85,3 +85,27 @@ The derivation UI uses **native MathML** with spoken-label equivalents, a plain-
 The `test_one_website_math.mjs` suite compares rendered formula quantities with the actual deterministic thermal and queue adapters for default, stable, and overloaded scenarios; it also checks the independent homepage previews and MathML structure. The one-website workflow runs Node syntax checks, these numeric regressions, existing Python site constraints, a fully pinned Atlas build, sealed static package verification, and a downloadable site artifact.
 
 No credentials, persistence, third-party requests, source mutation, status promotion, or live Atlas synchronization are introduced.
+
+## Atlas Evidence Studio — evidence-led workspace redesign
+
+The Atlas research page at `/research/` is now a dedicated **Evidence Studio**, combining an editorial reading language (warm paper, restrained terracotta, precise serif typography) with the practical workspace ergonomics of Google Antigravity (searchable routes, a primary reading pane, and a contextual inspector). This is an original design, not a reproduction of either company's assets or trademarked interface.
+
+Design research:
+- Anthropic Claude Design: https://www.anthropic.com/news/claude-design-anthropic-labs — consistent product system, iterative visual work.
+- Antigravity features: https://antigravity.google/docs/features — command search and split contextual surfaces.
+- Antigravity side panels: https://antigravity.google/docs/side-panel/ — context alongside the primary work area.
+
+### Working interactions
+
+- Research views retain their **original 13 route identities**, canonical text, exact entry order, warnings, and read-only export download.
+- A searchable left index supports `/` or `Ctrl/Cmd + K` to focus filtering. Press `Enter` to open the first visible view; `Escape` clears the query. Search is only over labels of existing verified routes; it is **not full corpus search**.
+- The Context inspector explains the current *view kind* and links to related existing routes. The separate Integrity tab describes the original export's verified local identity. The UI never creates a review decision, reconstructs provenance, or claims independent human verification.
+- Focus reading hides secondary panes without losing the active source route. An inspector toggle keeps the page useful at narrower widths.
+- A new five-card **accepted research trail** is rendered on the overview only *after* the source-owned Atlas runtime reports a fully verified export. The cards preserve original order and use the accepted route labels directly, with an explicit warning that the sequence is not a causal dependency graph.
+- The source-owned Atlas `app.js` remains the sole authority for SHA-256 and byte-length verification, route fail-closed behavior, original renderers, export bytes, decisions and state.
+
+### Safeguards and implementation boundary
+
+This redesign lives entirely in `software/one_website/atlas-workspace.css` and `atlas-workspace.js`, plus deterministic build injection into the sealed static product. **No file in `Rhodan-lab/Atlas` is changed.** The original generated `research/app.js`, `research/styles.css`, and `research/data/*` remain byte-for-byte accepted exports. Enhancements are not activated until the existing runtime indicates `.runtime-card.ready`. They are inert on package verification failure. No external API fetch, local storage, cookie, analytics, canonical mutation, search index sync, or source status change is added.
+
+Automated regressions cover known research-route grouping, search normalization, read-only interaction constraints, injected asset identity, accessibility semantics and mobile/forced-color/reduced-motion fallbacks. The Vercel build still needs a pinned Atlas checkout and the original integrity checks to pass.
