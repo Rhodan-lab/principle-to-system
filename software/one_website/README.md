@@ -109,3 +109,37 @@ Design research:
 This redesign lives entirely in `software/one_website/atlas-workspace.css` and `atlas-workspace.js`, plus deterministic build injection into the sealed static product. **No file in `Rhodan-lab/Atlas` is changed.** The original generated `research/app.js`, `research/styles.css`, and `research/data/*` remain byte-for-byte accepted exports. Enhancements are not activated until the existing runtime indicates `.runtime-card.ready`. They are inert on package verification failure. No external API fetch, local storage, cookie, analytics, canonical mutation, search index sync, or source status change is added.
 
 Automated regressions cover known research-route grouping, search normalization, read-only interaction constraints, injected asset identity, accessibility semantics and mobile/forced-color/reduced-motion fallbacks. The Vercel build still needs a pinned Atlas checkout and the original integrity checks to pass.
+
+## Root-wide experience system, edition III (November 2026)
+
+This release is a **structural redesign across the entire unified website**, not another Atlas-only visual patch. It preserves the independently verified canonical sources and reworks the website's navigation and task surfaces.
+
+### Design rationale and original interpretation
+
+- [Anthropic's published brand guidance](https://github.com/anthropics/skills/blob/main/skills/brand-guidelines/SKILL.md): warm paper backgrounds, dark text, quiet separators and restrained coral accents; adapted into an **original** interface, not a copy of Anthropic's product or brand assets.
+- [Google Antigravity's Knowledge Work layout](https://antigravity.google/blog/antigravity-for-knowledge-work): low-noise tasks, navigation and outputs-first contextual workspace, adapted to learning and evidence inspection.
+- [Google Antigravity's side panel](https://antigravity.google/docs/side-panel): research context should be discoverable without obscuring the primary work surface. The existing Atlas contextual inspector is retained and restyled.
+- Research content and source authority are separate from design; no styled element indicates a certification or higher review level that the accepted source does not contain.
+
+### What is different on every route
+
+1. **Global masthead:** One predictable navigation system across the home, both Principia routes, and Atlas. Product branding, current-page state and a single first-party search/jump dialog replace the previous inconsistent navigation, including the old floating bottom pill.
+2. **Keyboard navigation:** Click **Jump**, press **Alt+G** anywhere, or use **Ctrl/Cmd+K** on Home / Principia. Atlas reserves its own Ctrl/Cmd+K shortcut for filtering its 13 accepted workspace views. Search is **only over authored first-party destinations**, not a fabricated corpus search.
+3. **Principia learning routes:** The existing five-step reasoning navigation is moved into a real left investigation rail, the current lesson remains the central reading document, and the active prediction/simulation stays in the third pane where desktop width permits. Responsive breakpoints restore readable, non-overlapping stacked layout on tablets and phones.
+4. **Research Atlas:** Retains the 13 exact accepted views, five accepted entries, contextual inspector and verified export. It shares the same masthead, colors, product identity and navigation as the rest of the site.
+5. **Home / Discover:** Entirely new editorial systems atlas and navigable scientific diagram, three full destinations, accessible Model Studio (preserving its real calculations), a simple five-step method and an evidence boundary page section.
+6. **Mathematical integrity:** No changes to the source simulation adapters, data, pinned knowledge export, source commit, prediction-before-model gate or comparison logic. MathML explanations remain attached to the live model steps.
+
+### Asset and privacy contract
+
+- The new root-wide files are **universe.css** and **universe.js**. They are first-party static assets included in the deterministic website manifest; no new dependency or external font is required.
+- The builder does not rewrite any of the source-owned route content or Atlas JSON data. The extra UI is only the verified website's presentation layer.
+- No user account, analytics, cookies, third-party requests, persistent preferences or canonical write capability is introduced.
+- The generated website remains explicitly a pinned read-only research preview—not a new release of either canonical project.
+
+### Quality gates
+
+- Python manifest/injection tests assert that the shared CSS, JS, current-page semantics and source-owned apps are present.
+- Node tests check keyword navigation, stable route identities, site-wide source boundary markers, UI feature contracts and the unchanged thermal/queue model preview.
+- All three experiences and static data files are HTTP smoke-tested through a local server after the deterministic cross-repository build.
+- Existing Atlas integrity checks, scientific model regressions, Vercel build, and repository status checks remain required.
