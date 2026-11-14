@@ -86,11 +86,11 @@ const topics=[
     "check": {
       "question": "A tank starts with 100 L, captures 60 L, serves 90 L and has no overflow. What remains?",
       "choices": [
+        "250 L",
         "70 L",
-        "160 L",
-        "250 L"
+        "160 L"
       ],
-      "answer": 0,
+      "answer": 1,
       "explanation": "100 + 60 − 90 = 70 liters. All volume terms use the same units and time interval."
     },
     "links": [
@@ -135,11 +135,11 @@ const topics=[
     "check": {
       "question": "Which expression estimates energy delivered by a steady 3 kW source during two hours?",
       "choices": [
-        "6 kWh",
         "1.5 kWh",
-        "6 kW"
+        "6 kW",
+        "6 kWh"
       ],
-      "answer": 0,
+      "answer": 2,
       "explanation": "Energy equals average power multiplied by duration: 3 kW × 2 h = 6 kWh."
     },
     "links": [
@@ -233,11 +233,11 @@ const topics=[
     "check": {
       "question": "A program conserves energy in every internal test. What can you conclude?",
       "choices": [
+        "The scenario will happen exactly in real weather",
         "Its implementation matches its stated accounting rules",
-        "The hardware is electrically safe",
-        "The scenario will happen exactly in real weather"
+        "The hardware is electrically safe"
       ],
-      "answer": 0,
+      "answer": 1,
       "explanation": "Conservation tests support implementation verification, not external validation or hardware certification."
     },
     "links": [
@@ -282,11 +282,11 @@ const topics=[
     "check": {
       "question": "Why can immediate automatic retries make an overloaded service worse?",
       "choices": [
-        "Retries raise the offered work the service must process",
         "Retries increase server capacity automatically",
-        "The queue stores unlimited requests"
+        "The queue stores unlimited requests",
+        "Retries raise the offered work the service must process"
       ],
-      "answer": 0,
+      "answer": 2,
       "explanation": "A retry is another request. It raises offered load while service capacity may be unchanged."
     },
     "links": [
@@ -380,11 +380,11 @@ const topics=[
     "check": {
       "question": "With 64 W entering through walls and 18 W internal load, what does 95 W of active cooling initially do?",
       "choices": [
+        "Forces an immediate 13°C temperature drop",
         "Produces a net 13 W removal from the cabinet",
-        "Creates 95 W of energy",
-        "Forces an immediate 13°C temperature drop"
+        "Creates 95 W of energy"
       ],
-      "answer": 0,
+      "answer": 1,
       "explanation": "64 + 18 − 95 = −13 W. The sign indicates energy leaves the cabinet initially; it is not a temperature change."
     },
     "links": [
@@ -429,11 +429,11 @@ const topics=[
     "check": {
       "question": "At 7.5 external requests/s with 50% one-pass retries, what is the offered rate?",
       "choices": [
-        "11.25 requests/s",
         "7.5 requests/s",
-        "15 requests/s"
+        "15 requests/s",
+        "11.25 requests/s"
       ],
-      "answer": 0,
+      "answer": 2,
       "explanation": "Multiply 7.5 by 1 + 0.5 to count the original arrivals and the additional attempts."
     },
     "links": [
@@ -527,11 +527,11 @@ const topics=[
     "check": {
       "question": "What does 2 kW of output sustained for one hour deliver?",
       "choices": [
+        "0.5 kWh",
         "2 kWh",
-        "2 kW/h",
-        "0.5 kWh"
+        "2 kW/h"
       ],
-      "answer": 0,
+      "answer": 1,
       "explanation": "Energy is power integrated through time: 2 kW × 1 h = 2 kWh."
     },
     "links": [
@@ -576,11 +576,11 @@ const topics=[
     "check": {
       "question": "What does a numerical model passing its own conservation check establish?",
       "choices": [
-        "Its internal accounting is consistent",
         "All important real-world effects were included",
-        "There is no uncertainty"
+        "There is no uncertainty",
+        "Its internal accounting is consistent"
       ],
-      "answer": 0,
+      "answer": 2,
       "explanation": "Internal consistency is useful verification, but physical validity and uncertain conditions require independent evidence."
     },
     "links": [
@@ -674,11 +674,11 @@ const topics=[
     "check": {
       "question": "Which metric directly expresses loss of critical electricity service?",
       "choices": [
+        "Battery purchase price",
         "Unserved critical energy (kWh)",
-        "Total PV nameplate power (kW)",
-        "Battery purchase price"
+        "Total PV nameplate power (kW)"
       ],
-      "answer": 0,
+      "answer": 1,
       "explanation": "Unserved critical energy accumulates the gap between required and supplied service over time."
     },
     "links": [
@@ -723,11 +723,11 @@ const topics=[
     "check": {
       "question": "What does the exact commit of a research export establish?",
       "choices": [
-        "Which source revision was packaged",
         "That every contained claim is true",
-        "That a human has approved all future changes"
+        "That a human has approved all future changes",
+        "Which source revision was packaged"
       ],
-      "answer": 0,
+      "answer": 2,
       "explanation": "The commit fixes artifact identity. Evidence evaluation and human authority remain separate processes."
     },
     "links": [
