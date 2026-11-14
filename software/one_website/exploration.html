@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf9f6">
+<meta name="exploration-id" content="__EXPLORATION_ID__">
+<title>__EXPLORATION_TITLE__ · Principia & Atlas</title>
+<meta name="description" content="An interactive, educational, website-only systems laboratory using a transparent, bounded scenario model.">
+<link rel="stylesheet" href="/universe.css">
+<link rel="stylesheet" href="/exploration.css">
+<script defer src="/universe.js"></script>
+<script defer src="/exploration-models.js"></script>
+<script defer src="/exploration.js"></script>
+</head>
+<body class="pa-exploration">
+<a href="#lab-main" class="lab-skip">Skip to investigation</a>
+<nav id="pa-global-nav" aria-label="Unified Principia and Atlas navigation">
+  <a class="pa-nav-brand" href="/" aria-label="Principia and Atlas home"><span class="pa-brand-mark" aria-hidden="true">∴</span><span class="pa-brand-wordmark">Principia <span>&amp;</span> Atlas</span></a>
+  <span class="pa-nav-product">The systems observatory</span>
+  <div class="pa-nav-links">
+    <a class="pa-nav-link" data-pa-area="home" href="/">Discover</a>
+    <a class="pa-nav-link" data-pa-area="explore" href="/explore/">All laboratories</a>
+    <a class="pa-nav-link" data-pa-area="atlas" href="/research/">Research Atlas</a>
+  </div>
+  <div class="pa-nav-actions"><button class="pa-nav-command" type="button" aria-label="Open website navigation search">⌕ Jump <kbd>Alt G</kbd></button><span class="pa-nav-status">Conceptual model</span></div>
+</nav>
+<main id="lab-main">
+  <div class="lab-crumb"><a href="/explore/">All laboratories</a><span aria-hidden="true">/</span><span id="lab-crumb-name">__EXPLORATION_TITLE__</span><span class="lab-crumb-tail">INDEPENDENT EXPLORATION / NOT PRODUCT ALPHA</span></div>
+  <header class="lab-hero">
+    <div>
+      <p class="lab-eyebrow" id="lab-eyebrow">SYSTEMS / CONCEPTUAL EXPLORATION</p>
+      <h1 id="lab-title">__EXPLORATION_TITLE__<span class="lab-title-dot">.</span></h1>
+      <p class="lab-deck" id="lab-deck">Explore the hidden behavior of a bounded system through an explicitly synthetic experiment.</p>
+      <div class="lab-tags"><span class="lab-tag">Mathematical reasoning</span><span class="lab-tag">Fully interactive</span><span class="lab-tag">No account, no tracking</span></div>
+    </div>
+    <div class="lab-glyph" aria-hidden="true">
+      <span class="lab-glyph-tag">SYSTEM / __EXPLORATION_ID__</span>
+      <svg viewBox="0 0 340 250"><circle cx="170" cy="125" r="85" fill="none" stroke="#b3baab" stroke-width="1"/><circle cx="170" cy="125" r="59" fill="none" stroke="#b07e64" stroke-dasharray="5 8"/><path d="M170 22V227M52 125H288M107 62L231 188M231 62L107 188" stroke="#b6bcae" opacity=".65"/><circle cx="170" cy="125" r="24" fill="#c68a68"/><circle cx="85" cy="125" r="6" fill="#688d70"/><circle cx="255" cy="125" r="6" fill="#688d70"/><circle cx="170" cy="40" r="6" fill="#688d70"/></svg>
+      <strong id="lab-glyph-label">CONSERVATION / BALANCE</strong>
+    </div>
+  </header>
+  <div class="lab-workspace">
+    <aside class="lab-index">
+      <p class="lab-small">THE INVESTIGATION</p>
+      <strong>Your field guide</strong>
+      <nav aria-label="Investigation sections">
+        <a href="#lab-observe"><span>01</span> Observe</a>
+        <a href="#lab-equation"><span>02</span> Understand</a>
+        <a href="#lab-controls"><span>03</span> Experiment</a>
+        <a href="#lab-result"><span>04</span> Interpret</a>
+        <a href="#lab-boundary"><span>05</span> Limits</a>
+      </nav>
+      <p class="lab-index-note">Choose any section. Change the variables, form a prediction, and see what this simplified model actually implies.</p>
+      <a class="lab-index-return" href="/explore/">← All laboratories</a>
+    </aside>
+    <article class="lab-document">
+      <section id="lab-observe" class="lab-reading-block">
+        <p class="lab-small">01 / OBSERVATION</p>
+        <h2 id="lab-question">What changes when the system is stressed?</h2>
+        <p id="lab-intro"></p>
+        <div class="lab-insight"><span aria-hidden="true">✳</span><p id="lab-hypothesis"></p></div>
+      </section>
+      <section id="lab-equation" class="lab-reading-block">
+        <p class="lab-small">02 / THE MATHEMATICAL STRUCTURE</p>
+        <h2>Trace the <em>balance.</em></h2>
+        <p>System models become useful when every flow, store, boundary, and simplifying assumption can be inspected.</p>
+        <div class="lab-equation"><span>THE GOVERNING BALANCE</span><code id="lab-formula"></code><p id="lab-formula-explain"></p></div>
+        <details class="lab-details" open><summary>What the model includes</summary><p id="lab-mode"></p></details>
+      </section>
+      <section id="lab-result" class="lab-reading-block lab-result-section" aria-labelledby="lab-result-heading">
+        <div class="lab-result-head"><div><p class="lab-small">04 / INTERPRET THE EXPERIMENT</p><h2 id="lab-result-heading">The model <em>responds.</em></h2></div><span class="lab-result-state" id="lab-state">NOT YET RUN</span></div>
+        <p id="lab-result-intro">Choose a scenario, make a prediction, then press Run experiment. The numerical results remain hidden until you run it.</p>
+        <div class="lab-output" id="lab-output" hidden>
+          <div class="lab-metrics">
+            <div class="lab-metric-primary"><span id="lab-primary-label">Demand served</span><strong id="lab-primary"></strong></div>
+            <div><span id="lab-secondary-label">Unmet</span><strong id="lab-secondary"></strong></div>
+            <div><span id="lab-tertiary-label">Overflow</span><strong id="lab-tertiary"></strong></div>
+          </div>
+          <div class="lab-chart-card">
+            <div class="lab-chart-head"><span id="lab-chart-title">Stored capacity over time</span><span>SYNTHETIC / DISCRETE STEPS</span></div>
+            <svg viewBox="0 0 720 270" id="lab-chart" role="img" aria-labelledby="lab-chart-access-title lab-chart-access-desc">
+              <title id="lab-chart-access-title">Model state over time</title><desc id="lab-chart-access-desc">Run an experiment to reveal modeled values.</desc>
+            </svg>
+            <p id="lab-chart-note"></p>
+          </div>
+          <p class="lab-feedback" id="lab-feedback" aria-live="polite"></p>
+          <details class="lab-details"><summary>Inspect each time step as a table</summary><div class="lab-table-wrap" tabindex="0" role="region" aria-label="Complete numerical model output"><table><caption class="sr-only">One row per modeled time step</caption><thead><tr><th scope="col">Step</th><th scope="col" id="lab-input-head">Input</th><th scope="col">Captured</th><th scope="col">Served</th><th scope="col">End storage</th><th scope="col">Overflow / curtailed</th><th scope="col">Unmet</th></tr></thead><tbody id="lab-table-body"></tbody></table></div></details>
+        </div>
+      </section>
+      <section class="lab-reading-block" id="lab-boundary">
+        <p class="lab-small">05 / SCIENTIFIC BOUNDARIES</p>
+        <h2>What this model <em>cannot tell you.</em></h2>
+        <p id="lab-risks"></p>
+        <div class="lab-source"><span>SOURCE OF THE CONCEPT</span><a id="lab-source" href="https://github.com/Rhodan-lab/principle-to-system" rel="noopener noreferrer">Read the reviewed Principia source document ↗</a><p>The source's reviewed document and this newly developed website simulation are different artifacts. The simulation does not inherit review or installation approval.</p></div>
+      </section>
+    </article>
+    <aside class="lab-console" aria-label="Experimental controls">
+      <div class="lab-console-head"><p>03 / THE EXPERIMENT WORKBENCH</p><h2>Change the <em>conditions.</em></h2><span>All results are hypothetical</span></div>
+      <form id="lab-form">
+        <div class="lab-console-controls" id="lab-controls"></div>
+        <fieldset class="lab-predict" id="lab-prediction-group"><legend id="lab-prediction-legend">Predict before running</legend><p>There is no penalty for being wrong. Explain your reasoning after the model responds.</p><div id="lab-prediction-options"></div></fieldset>
+        <button class="lab-run" type="submit">Run experiment <span aria-hidden="true">↗</span></button>
+        <p class="lab-status" id="lab-status" aria-live="polite">Choose a prediction to reveal the numerical outcome.</p>
+      </form>
+      <div class="lab-compare">
+        <p class="lab-small">COMPARE YOUR TWO SCENARIOS</p>
+        <p>Save a model run, change an input, and investigate its effect on the same metric.</p>
+        <div class="lab-compare-buttons"><button type="button" id="lab-save" disabled>Save as baseline</button><button type="button" id="lab-clear" disabled>Clear baseline</button></div>
+        <div id="lab-comparison" hidden><p id="lab-comparison-label"></p><div class="lab-compare-grid"><div><span>Baseline</span><strong id="lab-before"></strong></div><div><span>New run</span><strong id="lab-after"></strong></div><div><span>Difference</span><strong id="lab-difference"></strong></div></div></div>
+      </div>
+    </aside>
+  </div>
+  <footer class="lab-footer"><a href="/explore/">All laboratories ↗</a><span>Principia &amp; Atlas · Experimental website edition</span><a href="/research/">Research Atlas ↗</a></footer>
+</main>
+</body></html>
