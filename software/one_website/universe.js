@@ -159,6 +159,38 @@
       const brief=hero.querySelector(".hero-brief>strong");
       if(brief)brief.textContent="Your working method";
     }
+    const related=main.querySelector(".stats");
+    if(related&&!main.querySelector(".pa-next-labs")){
+      const section=document.createElement("section");
+      section.className="pa-next-labs";
+      section.setAttribute("aria-label","Continue into other scientific laboratories");
+      const head=document.createElement("div");
+      head.className="pa-next-labs-heading";
+      const overline=document.createElement("span");
+      overline.textContent="FURTHER / EXPLORATION";
+      const h=document.createElement("h2");
+      h.textContent="The next question is yours.";
+      const all=document.createElement("a");
+      all.href="/explore/";all.textContent="Browse all four laboratories ↗";
+      head.append(overline,h,all);section.append(head);
+      const grid=document.createElement("div");grid.className="pa-next-labs-grid";
+      const suggested=[
+        {href:"/explore/rainwater/",tag:"WATER · NEW CONCEPTUAL LAB",title:"Where does the rain go?",desc:"A bounded tank, changing storms and everyday demand."},
+        {href:"/explore/microgrid/",tag:"ENERGY · NEW CONCEPTUAL LAB",title:"What if sunlight fades?",desc:"Solar generation, limited storage and critical loads."},
+        {href:location.pathname.includes("refrigerator")?"/learn/distributed-information/":"/learn/refrigerator/",
+          tag:"ANOTHER PRODUCT ALPHA JOURNEY",title:location.pathname.includes("refrigerator")?"When do retries fail?":"Where does heat flow?",
+          desc:"A full five-step learning investigation."}
+      ];
+      for(const item of suggested){
+        const card=document.createElement("a");card.className="pa-next-lab";card.href=item.href;
+        const kicker=document.createElement("span");kicker.className="pa-next-lab-kicker";kicker.textContent=item.tag;
+        const title=document.createElement("strong");title.textContent=item.title;
+        const desc=document.createElement("span");desc.className="pa-next-lab-desc";desc.textContent=item.desc;
+        const arrow=document.createElement("span");arrow.className="pa-next-lab-arrow";arrow.textContent="Open investigation ↗";
+        card.append(kicker,title,desc,arrow);grid.append(card);
+      }
+      section.append(grid);related.after(section);
+    }
     const note=document.querySelector("#note");
     if(note)note.setAttribute("aria-label","In-tab working explanation for this lesson");
     const nav=steps.querySelector('nav[aria-label="Learner journey"]');
