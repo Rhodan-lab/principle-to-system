@@ -29,6 +29,39 @@
     if(text!==undefined)el.textContent=text;
     node.append(el);return el;
   }
+  const concepts={
+    rainwater:{
+      title:"Why does a full tank still fail in a drought?",
+      description:"A finite store can overflow during storms and run empty before the next rain. The result depends on the sequence of events, not just total rainfall.",
+      links:[["water","Rainfall and time"],["stocks","Stocks and flows"],["conservation","Conservation"],["units","Why units matter"]]
+    },
+    microgrid:{
+      title:"Why can enough daily energy still leave a load unserved?",
+      description:"The timing of production and demand matters. Battery reserve and conversion losses mean energy generated is not automatically energy available to critical loads.",
+      links:[["solar","Solar and batteries"],["resilience","Resilience versus efficiency"],["units","Power and energy"],["conservation","Energy balance"]]
+    }
+  };
+  function interpret(id,result,values){
+    if(!result||!values||result.id!==id)throw new TypeError("Matching model result required");
+    if(id==="rainwater"){
+      return [
+        "Capture: the selected eight-day rain pattern yields "+fmt(result.capturedTotal,1)+" L into the modeled tank from "+fmt(values.area,0)+" m² at a "+fmt(100*values.runoff,0)+"% collection fraction.",
+        "Conservation: "+fmt(result.capturedTotal,1)+" L captured = "+fmt(result.servedTotal,1)+" L supplied + "+fmt(result.overflowTotal,1)+" L overflow + "+fmt(result.stored,1)+" L remaining (starting empty). The "+fmt(values.capacity,0)+" L capacity caps what can be saved.",
+        "Demand: "+fmt(result.demandTotal,1)+" L was requested across "+result.steps+" days, and "+fmt(result.unmetTotal,1)+" L went unmet. That makes the modeled supply fraction "+fmt(result.primary,1)+"%. Event timing matters.",
+        "Boundary: this ledger does not simulate loss, contamination, installation safety or real rainfall. It answers a hypothetical volume question only."
+      ];
+    }
+    if(id==="microgrid"){
+      const losses=result.chargeLoss+result.dischargeLoss;
+      return [
+        "Generation: the selected twelve-hour sunlight profile yields "+fmt(result.capturedTotal,2)+" kWh of simplified PV energy. Hourly production depends on irradiance × "+fmt(values.area,0)+" m² × "+fmt(100*values.efficiency,0)+"% efficiency.",
+        "Battery: stored energy starts at "+fmt(result.initialStored,2)+" kWh, ends at "+fmt(result.stored,2)+" kWh and cannot fall below the modeled "+fmt(result.reserve,2)+" kWh reserve. Total modeled charge and discharge losses are "+fmt(losses,2)+" kWh.",
+        "Service: out of "+fmt(result.demandTotal,2)+" kWh critical demand, "+fmt(result.servedTotal,2)+" kWh was delivered and "+fmt(result.unmetTotal,2)+" kWh was not. Solar energy not used or stored is "+fmt(result.overflowTotal,2)+" kWh; serving "+fmt(result.primary,1)+"% of this scenario does not guarantee real backup reliability.",
+        "Boundary: this is an energy ledger, not a voltage, inverter, protection, transient-control or electrical installation model."
+      ];
+    }
+    throw new RangeError("Unknown explanation topic");
+  }
   function mount(){
     const meta=document.querySelector('meta[name="exploration-id"]');
     if(!meta||!globalThis.PrincipiaExplorationModels)return;
@@ -52,6 +85,16 @@
     $("lab-source").href=config.source;
     $("lab-source").textContent=config.sourceLabel+" ↗";
     $("lab-glyph-label").textContent=config.id==="rainwater"?"CAPTURE / STORAGE / OVERFLOW":"SUNLIGHT / BATTERY / LOAD";
+    const related=concepts[config.id];
+    $("lab-theory-title").textContent=related.title;
+    $("lab-theory-description").textContent=related.description;
+    $("lab-understand-link").href="/knowledge/#"+related.links[0][0];
+    const theoryLinks=$("lab-theory-links");
+    for(const [slug,label] of related.links){
+      const a=document.createElement("a");a.href="/knowledge/#"+slug;a.textContent=label+" ↗";
+      theoryLinks.append(a);
+    }
+    $("lab-explain-knowledge-link").href="/knowledge/#"+related.links[0][0];
     $("lab-prediction-legend").textContent=config.hypothesis;
 
     function create(tag,cls,text){
@@ -102,7 +145,7 @@
       state.prediction=null;
       choices.querySelectorAll('input[type="radio"]').forEach(r=>r.checked=false);
       $("lab-prediction-group").removeAttribute("aria-invalid");
-      $("lab-output").hidden=true;$("lab-state").textContent="SCENARIO CHANGED";
+      $("lab-output").hidden=true;$("lab-explain-result").hidden=true;$("lab-state").textContent="SCENARIO CHANGED";
       $("lab-result-intro").textContent="The inputs changed. Make a new prediction, then run the model again.";
       $("lab-status").textContent="Inputs updated. Select a prediction to run the changed scenario.";
       $("lab-save").disabled=true;
@@ -192,6 +235,11 @@
         $("lab-tertiary").textContent=fmt(result.tertiary,1)+" "+result.tertiaryUnit;
         $("lab-chart-title").textContent=result.chartLabel;
         draw(result);table(result);
+        const steps=$("lab-explanation-steps");steps.replaceChildren();
+        for(const sentence of interpret(config.id,result,values())){
+          const li=document.createElement("li");li.textContent=sentence;steps.append(li);
+        }
+        $("lab-explain-result").hidden=false;
         $("lab-feedback").textContent=prediction===result.prediction
           ?"Your prediction matches this simplified model. Now inspect its conditions and limits."
           :"Your prediction differs from this simplified model. Inspect the time steps to discover where the mismatch begins.";
@@ -218,5 +266,5 @@
       $("lab-status").textContent="Baseline cleared. You may save a new run.";
     });
   }
-  return {fmt,plotPath,mount};
+  return {fmt,plotPath,interpret,mount};
 });
