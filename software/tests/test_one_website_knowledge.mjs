@@ -21,6 +21,8 @@ test("knowledge library has 15 original connected chapters with substantial expl
   for(const t of atlas.topics){
     assert.ok(domains.has(t.domain));
     assert.equal(t.sections.length,4,t.id);
+    assert.equal(t.expedition.length,3,t.id);
+    assert.ok(t.expedition.every(scene=>scene.title.length>15&&scene.text.length>180),t.id);
     assert.ok(t.sections.every(s=>s.text.length>180&&s.heading.length>8&&s.thought.length>15),t.id);
     assert.ok(t.lead.length>100);
     assert.ok(t.formula.length>12);
@@ -35,7 +37,8 @@ test("knowledge library has 15 original connected chapters with substantial expl
     assert.ok(t.check.question.length>25);
     assert.ok(t.check.explanation.length>40);
   }
-  assert.ok(atlas.topics.reduce((n,t)=>n+t.sections.map(s=>s.text).join(" ").split(" ").length,0)>3200);
+  const words=atlas.topics.reduce((n,t)=>n+(t.sections.map(s=>s.text).join(" ")+" "+t.expedition.map(e=>e.text).join(" ")).split(/\s+/).length,0);
+  assert.ok(words>4000,"The Knowledge Atlas should contain substantive learning material");
 });
 
 test("knowledge search supports broad queries, exact topics, domains, empty results",()=>{
@@ -92,7 +95,7 @@ test("every actual simulator run can explain its numbers, not a decorative outco
 test("knowledge page is a complete original reading and retrieval workspace",()=>{
   const html=file("knowledge.html");
   for(const id of ["knowledge-main","knowledge-article","knowledge-search","knowledge-filters","knowledge-topics",
-    "knowledge-check-form","knowledge-check-options","knowledge-notes","knowledge-copy-notes","knowledge-links",
+    "knowledge-check-form","knowledge-check-options","knowledge-notes","knowledge-copy-notes","knowledge-links","knowledge-scenario-cards",
     "knowledge-lab","knowledge-source","knowledge-focus","knowledge-sections"]){
     assert.match(html,new RegExp('id="'+id+'"'));
   }
