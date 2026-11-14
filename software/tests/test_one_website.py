@@ -53,8 +53,8 @@ class UnifiedWebsiteTests(unittest.TestCase):
 
     def test_source_is_bounded_and_public_home_mentions_authority(self) -> None:
         homepage = (ROOT / "software/one_website/index.html").read_text()
-        self.assertIn("Two distinct authorities", homepage)
-        self.assertIn("read-only research preview", homepage)
+        self.assertIn("Two authorities.", homepage)
+        self.assertIn("pinned, read-only fixture", homepage)
         self.assertIn("/learn/refrigerator/", homepage)
         self.assertIn("/learn/distributed-information/", homepage)
         self.assertIn("/research/", homepage)
