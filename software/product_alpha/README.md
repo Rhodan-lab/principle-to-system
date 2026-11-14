@@ -37,6 +37,16 @@ Route configuration or a model adapter owns:
 - model limitations;
 - route-specific evaluation rubric.
 
+## Counterfactual Lab (in-tab experiments)
+
+Within the **Model** step of either route, predict and run the initial scenario, then choose **Save current run as baseline**. Change an input, make a fresh prediction, and run again to reveal a side-by-side, accessible comparison of the two simulated outcomes. Comparing only one changed input makes the model's sensitivity easier to interpret; when several controls change, the interface explicitly warns that their individual effects cannot be isolated.
+
+- Refrigerator compares final cabinet temperature and modeled temperature change.
+- Distributed information compares offered utilization, final backlog, and estimated rejected work.
+- Changing parameters or predictions invalidates the current run but preserves an explicit baseline.
+- Baselines remain in the current tab's memory and can be cleared at any time. No persistence, upload, analytics, third route, or live Atlas integration is introduced.
+- A model comparison is **not** an empirical experiment or evidence that a real system will behave the same way.
+
 ## Model-adapter boundary
 
 The local `model-adapters.js` registry implements:
