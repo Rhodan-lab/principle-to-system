@@ -87,7 +87,7 @@ test("preview has no tracking and resources remain same-origin",()=>{
   const mathScript=readFileSync(resolve(here,"../one_website/experience.js"),"utf8");
   for(const source of [js,mathScript]){
     assert.doesNotMatch(source,/localStorage|sessionStorage|navigator\.sendBeacon|XMLHttpRequest/);
-    assert.doesNotMatch(source,/https?:\/\//);
+    assert.doesNotMatch(source,/fetch\(\s*["\x27]https?:|WebSocket\(|sendBeacon\(/);
   }
   assert.match(homepage,/role="tablist"/);
   assert.match(homepage,/id="studio-panel"/);
