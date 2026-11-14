@@ -276,3 +276,27 @@ body.pa-home a:focus-visible,body.pa-home button:focus-visible,body.pa-home inpu
 @media(max-width:1150px){.pa3-more-card{grid-template-columns:130px minmax(0,1fr)}}
 @media(max-width:850px){.pa3-more-heading{align-items:start;flex-direction:column;gap:1rem}.pa3-more-grid{grid-template-columns:1fr}}
 @media(max-width:510px){.pa3-more-card{grid-template-columns:88px minmax(0,1fr);min-height:220px}.pa3-more-symbol{font-size:5rem}.pa3-more-card>div:last-child{padding:1.1rem}.pa3-more-card h4{font-size:1.9rem}.pa3-more-heading h3{font-size:2.5rem}}
+
+
+/* The bridge between interacting with systems and understanding them. */
+.pa3-knowledge{background:#faf9f5;border-top:1px solid #e6e3da;border-bottom:1px solid #e2ded4}
+.pa3-knowledge-intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.7fr);gap:clamp(2rem,7vw,9rem);align-items:end;margin-bottom:clamp(2rem,4vw,4.5rem)}
+.pa3-knowledge-intro h2{font:400 clamp(3.7rem,6vw,7.5rem)/.99 Georgia,serif;letter-spacing:-.06em;margin:1.2rem 0 0;max-width:13ch}
+.pa3-knowledge-intro h2 em,.pa3-knowledge-grid h3 em{color:#91a08c}
+.pa3-knowledge-intro-copy>p{font-size:clamp(.98rem,1.1vw,1.12rem);line-height:1.88;color:#737970;margin:0 0 2rem}
+.pa3-knowledge-intro-copy>a{display:inline-flex;align-items:center;gap:2rem;padding:.9rem 1.1rem;background:#333c33;color:#fff!important;text-decoration:none;font-size:.82rem;font-weight:780;border-radius:7px}
+.pa3-knowledge-intro-copy>a:hover{background:#506b53}
+.pa3-knowledge-intro-copy>span{display:block;font:.62rem/1.6 ui-monospace,monospace;color:#969c8f;margin-top:1rem}
+.pa3-knowledge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+.pa3-knowledge-grid>a{min-width:0;display:flex;flex-direction:column;min-height:245px;padding:clamp(1.25rem,2vw,2.1rem);background:#f3f1eb;border:1px solid #e1dfd5;text-decoration:none;transition:background-color .16s,transform .16s,border-color .16s}
+.pa3-knowledge-grid>a:hover{background:#e9ede4;border-color:#c5cfc1;transform:translateY(-2px)}
+.pa3-knowledge-grid>a>span{font:.61rem ui-monospace,monospace;letter-spacing:.1em;color:#ad775c}
+.pa3-knowledge-grid h3{font:400 clamp(1.7rem,2.25vw,2.65rem)/1.11 Georgia,serif;letter-spacing:-.047em;max-width:16ch;margin:1.15rem 0 .8rem}
+.pa3-knowledge-grid p{font:.83rem/1.75 system-ui,sans-serif;color:#788176;max-width:40ch;flex:1;margin:0 0 1.6rem}
+.pa3-knowledge-grid strong{display:flex;justify-content:space-between;border-top:1px solid #d9ded4;padding-top:.85rem;font-size:.72rem;color:#476a4d}
+.pa3-knowledge-footer{display:flex;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;align-items:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #e2e1d9}
+.pa3-knowledge-footer>span{font:.62rem ui-monospace,monospace;letter-spacing:.07em;color:#9a9f90}
+.pa3-knowledge-footer>a{text-decoration:none;border-bottom:1px solid #849f87;font-size:.78rem;font-weight:770;color:#4d6b55;padding-bottom:.4rem}
+@media(max-width:1020px){.pa3-knowledge-intro{grid-template-columns:1fr;gap:1.5rem}.pa3-knowledge-intro h2{font-size:clamp(3.6rem,8vw,6rem)}.pa3-knowledge-intro-copy{max-width:750px}.pa3-knowledge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:570px){.pa3-knowledge-grid{grid-template-columns:1fr}.pa3-knowledge-grid>a{min-height:0}.pa3-knowledge-intro h2{font-size:3.5rem}.pa3-knowledge-grid h3{font-size:2.25rem}}
+@media(prefers-reduced-motion:reduce){.pa3-knowledge-grid>a{transition:none}}
