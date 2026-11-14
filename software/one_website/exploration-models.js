@@ -142,7 +142,7 @@
     return {
       id:"microgrid",rows,stored,capturedTotal:pvTotal,servedTotal,unmetTotal,overflowTotal:curtailedTotal,
       demandTotal:v.load*sunlight.length,coverage:servedTotal/(v.load*sunlight.length),
-      prediction:unmetTotal<1e-9?0:1,balanceError,batteryDelta,
+      prediction:unmetTotal<1e-9?0:1,balanceError,batteryDelta,chargeLoss,dischargeLoss,initialStored:v.capacity*.5,reserve,
       headline:"Critical demand served",primary:100*servedTotal/(v.load*sunlight.length),primaryUnit:"%",
       secondaryLabel:"Unserved critical energy",secondary:unmetTotal,secondaryUnit:"kWh",
       tertiaryLabel:"Curtailed solar energy",tertiary:curtailedTotal,tertiaryUnit:"kWh",
