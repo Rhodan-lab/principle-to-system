@@ -157,6 +157,37 @@
     frame.className="pa-lab-frame";
     frame.setAttribute("aria-label","Three-pane learning workspace");
     steps.before(frame);frame.append(steps,workspace);
+    if(!main.querySelector(".pa-knowledge-prelude")){
+      const isThermal=location.pathname.includes("refrigerator");
+      const guide=document.createElement("section");
+      guide.className="pa-knowledge-prelude";
+      guide.setAttribute("aria-label","Learn the scientific explanations behind this experiment");
+      const heading=document.createElement("div");
+      const marker=document.createElement("p");
+      marker.textContent="UNDERSTAND / BEFORE OR AFTER EXPERIMENTING";
+      const title=document.createElement("h2");title.textContent="The ideas behind this investigation.";
+      const intro=document.createElement("p");intro.textContent="Every numerical outcome needs a conceptual explanation. Explore the foundations freely, then return and test your understanding in the live model.";
+      heading.append(marker,title,intro);
+      const links=document.createElement("div");links.className="pa-knowledge-prelude-links";
+      const chapters=isThermal?[
+        ["heat","Heat is a transfer, not a substance","Why moving heat out of a cabinet warms the surroundings"],
+        ["conservation","Follow every joule","Account for energy crossing the chosen system boundary"],
+        ["systems","Choose the right boundary","Distinguish the cabinet, appliance and whole room"]
+      ]:[
+        ["queue","Why retries become pressure","See how added attempts push service beyond capacity"],
+        ["feedback","The loop behind the failure","Learn how a response can amplify overload"],
+        ["capacity","The bottleneck is the story","Separate arrival rates, service rates and bounded queues"]
+      ];
+      for(const [id,name,summary]of chapters){
+        const card=document.createElement("a");card.href="/knowledge/#"+id;
+        const label=document.createElement("span");label.textContent="CONCEPTUAL FOUNDATION / "+id.toUpperCase();
+        const title=document.createElement("strong");title.textContent=name;
+        const description=document.createElement("small");description.textContent=summary;
+        card.append(label,title,description);
+        links.append(card);
+      }
+      guide.append(heading,links);frame.before(guide);
+    }
     const heading=steps.querySelector(".journey-head strong");
     if(heading)heading.textContent="Field guide";
     const hero=main.querySelector(".hero");
