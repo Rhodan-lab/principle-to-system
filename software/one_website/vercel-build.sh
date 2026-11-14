@@ -15,6 +15,7 @@ if [[ "$ACTUAL" != "$PIN" ]]; then
   echo "Atlas checkout does not match exact source pin" >&2
   exit 1
 fi
+python3 -m pip install --disable-pip-version-check -r "$ATLAS_TEMP/repo/tools/foundation-validator/requirements.txt"
 cd "$REPO_ROOT"
 python3 software/one_website/build.py build --atlas-repo "$ATLAS_TEMP/repo" --output "$REPO_ROOT/dist"
 python3 software/one_website/build.py verify --output "$REPO_ROOT/dist"
