@@ -141,6 +141,7 @@
       const tbody=$("lab-table-body");tbody.replaceChildren();
       const isWater=result.id==="rainwater";
       $("lab-input-head").textContent=isWater?"Rain (mm)":"Irradiance (W/m²)";
+      $("lab-captured-head").textContent=isWater?"Captured (L)":"PV generated (kWh)";
       for(const row of result.rows){
         const tr=create("tr");
         const cells=[
@@ -213,6 +214,7 @@
     });
     $("lab-clear").addEventListener("click",()=>{
       state.baseline=null;$("lab-clear").disabled=true;$("lab-comparison").hidden=true;
+      $("lab-save").disabled=!state.current;
       $("lab-status").textContent="Baseline cleared. You may save a new run.";
     });
   }
