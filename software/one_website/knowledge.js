@@ -135,6 +135,13 @@
         question.append(fragment("span","","THINK ABOUT IT"),fragment("p","",s.thought));
         section.append(question);sections.append(section);
       });
+      const scenario=$("knowledge-scenario-cards");scenario.replaceChildren();
+      item.expedition.forEach((scene,index)=>{
+        const part=fragment("div","knowledge-scenario-part");
+        part.append(fragment("span","knowledge-small","THOUGHT EXPERIMENT / "+String(index+1).padStart(2,"0")),
+          fragment("h5","",scene.title),fragment("p","",scene.text));
+        scenario.append(part);
+      });
       $("knowledge-formula").textContent=item.formula;
       $("knowledge-example").textContent=item.example;
       $("knowledge-mistake").textContent=item.misconception;
