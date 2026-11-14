@@ -741,7 +741,7 @@ const topics=[
 ];
 const byId=Object.fromEntries(topics.map(topic=>[topic.id,topic]));
 const domains=[...new Set(topics.map(t=>t.domain))];
-const normalize=s=>String(s??"").normalize("NFKD").toLowerCase().trim().replace(/\\s+/g," ");
+const normalize=s=>String(s??"").normalize("NFKD").toLowerCase().trim().replace(/\s+/g," ");
 function search(query,domain="All"){const q=normalize(query);return topics.filter(t=>(domain==="All"||t.domain===domain)&&normalize(t.title+" "+t.question+" "+t.lead+" "+t.domain+" "+t.sections.map(s=>s.heading).join(" ")).includes(q))}
 function resolve(id){return Object.hasOwn(byId,id)?byId[id]:null}
 function linkTo(id){return "/knowledge/#"+encodeURIComponent(id)}
