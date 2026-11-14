@@ -1,10 +1,10 @@
 name: Validate Unified Principia Atlas Website
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "software/one_website/**"
-      - "software/product_alpha/**"
       - "software/principia_atlas/suite.py"
       - "software/tests/test_one_website.py"
       - "vercel.json"
@@ -12,7 +12,6 @@ on:
   push:
     paths:
       - "software/one_website/**"
-      - "software/product_alpha/**"
       - "software/principia_atlas/suite.py"
       - "software/tests/test_one_website.py"
       - "vercel.json"
