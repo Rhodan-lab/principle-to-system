@@ -108,8 +108,12 @@ def add_navigation(raw: bytes, active: str) -> bytes:
         '<nav id="pa-global-nav" aria-label="Unified Principia and Atlas navigation">'
         + "".join(links) + "</nav>"
     )
-    source = source.replace("</head>", GLOBAL_NAV_STYLE + "</head>", 1)
-    source = source.replace("<body>", "<body>" + navigation, 1)
+    assets = '<link rel="stylesheet" href="/experience.css">'
+    if active != "atlas":
+        assets += '<script defer src="/experience.js"></script>'
+    source = source.replace("</head>", GLOBAL_NAV_STYLE + assets + "</head>", 1)
+    body_class = "pa-research" if active == "atlas" else "pa-learner"
+    source = source.replace("<body>", f'<body class="{body_class}">' + navigation, 1)
     return source.encode("utf-8")
 
 
@@ -126,7 +130,7 @@ def write_asset(target: Path, relative: str, content: bytes, files: list[dict[st
 
 
 def expected_paths() -> set[str]:
-    paths = {"index.html", "styles.css", "robots.txt"}
+    paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "robots.txt"}
     for route in ROUTES:
         paths.update((
             f"learn/{route}/index.html",
@@ -270,7 +274,8 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
                 raise ValueError("Home template token missing or duplicated")
             home = home.replace(needle, value)
         write_asset(stage, "index.html", home.encode("utf-8"), files)
-        write_asset(stage, "styles.css", (HERE / "styles.css").read_bytes(), files)
+        for asset in ("styles.css", "site.js", "experience.css", "experience.js"):
+            write_asset(stage, asset, (HERE / asset).read_bytes(), files)
         write_asset(stage, "robots.txt", b"User-agent: *\nDisallow: /\n", files)
         files.sort(key=lambda x: x["path"])
         unsigned = {
