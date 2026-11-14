@@ -42,6 +42,7 @@ GLOBAL_NAV_STYLE = ""
 NAV_ITEMS = (
     ("/", "Home", "home"),
     ("/explore/", "All labs", "explore"),
+    ("/knowledge/", "Knowledge", "knowledge"),
     ("/learn/refrigerator/", "Refrigerator", "refrigerator"),
     ("/learn/distributed-information/", "Information", "distributed-information"),
     ("/explore/rainwater/", "Rainwater", "rainwater"),
@@ -132,6 +133,7 @@ def write_asset(target: Path, relative: str, content: bytes, files: list[dict[st
 def expected_paths() -> set[str]:
     paths = {"index.html", "styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "exploration-models.js", "exploration.js", "exploration.css", "robots.txt", "explore/index.html"}
     paths.update(f"explore/{route}/index.html" for route in EXPLORATIONS)
+    paths.update({"knowledge/index.html", "knowledge.css", "knowledge.js", "knowledge-content.js"})
     for route in ROUTES:
         paths.update((
             f"learn/{route}/index.html",
@@ -225,6 +227,14 @@ def verify(output: Path) -> dict[str, object]:
     library_html = (output / "explore/index.html").read_text(encoding="utf-8")
     if any(f'/explore/{route}/' not in library_html for route in EXPLORATIONS):
         raise ValueError("Exploration library missing a scenario")
+    knowledge = (output / "knowledge/index.html").read_text(encoding="utf-8")
+    if ('id="knowledge-article"' not in knowledge or
+            'src="/knowledge-content.js"' not in knowledge or
+            'src="/knowledge.js"' not in knowledge):
+        raise ValueError("Knowledge Atlas must retain its accessible reader and teaching content")
+    for asset in ("knowledge.css", "knowledge.js", "knowledge-content.js"):
+        if asset not in declared:
+            raise ValueError("Knowledge Atlas signed asset missing")
     research_html = (output / "research/index.html").read_text(encoding="utf-8")
     if 'aria-current="page">Atlas research</a>' not in research_html:
         raise ValueError("Research navigation missing")
@@ -286,6 +296,7 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
             home = home.replace(needle, value)
         write_asset(stage, "index.html", home.encode("utf-8"), files)
         write_asset(stage, "explore/index.html", (HERE / "explore-library.html").read_bytes(), files)
+        write_asset(stage, "knowledge/index.html", (HERE / "knowledge.html").read_bytes(), files)
         lab_template = (HERE / "exploration.html").read_text(encoding="utf-8")
         for exploration, label in (("rainwater", "The rainwater buffer"), ("microgrid", "The solar microgrid")):
             page = lab_template
@@ -297,7 +308,7 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
             if "__EXPLORATION_" in page:
                 raise ValueError("Unresolved exploration template token")
             write_asset(stage, f"explore/{exploration}/index.html", page.encode("utf-8"), files)
-        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "exploration-models.js", "exploration.js", "exploration.css"):
+        for asset in ("styles.css", "site.js", "experience.css", "experience.js", "atlas-workspace.css", "atlas-workspace.js", "universe.css", "universe.js", "exploration-models.js", "exploration.js", "exploration.css", "knowledge.css", "knowledge.js", "knowledge-content.js"):
             write_asset(stage, asset, (HERE / asset).read_bytes(), files)
         write_asset(stage, "robots.txt", b"User-agent: *\nDisallow: /\n", files)
         files.sort(key=lambda x: x["path"])
