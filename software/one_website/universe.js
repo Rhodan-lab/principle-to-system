@@ -16,7 +16,10 @@
   const paths=[
     {href:"/",title:"Discover",description:"Return to the knowledge observatory",group:"Explore"},
     {href:"/learn/refrigerator/",title:"Thermal laboratory",description:"Heat, energy balance and counterfactual models",group:"Experiments"},
+    {href:"/explore/",title:"All laboratories",description:"Browse four interactive scientific subjects",group:"Explore"},
     {href:"/learn/distributed-information/",title:"Distributed systems",description:"Queues, overload and retry dynamics",group:"Experiments"},
+    {href:"/explore/rainwater/",title:"Rainwater storage",description:"Non-potable capture, storage, demand and overflow",group:"Experiments"},
+    {href:"/explore/microgrid/",title:"Solar microgrid",description:"Solar power, battery capacity, reserve and critical load",group:"Experiments"},
     {href:"/research/",title:"Research Atlas",description:"Accepted evidence, revisions, provenance and review boundaries",group:"Evidence"},
     {href:"/research/#overview",title:"Atlas overview",description:"Accepted workspace identity and source boundary",group:"Evidence"},
     {href:"/learn/refrigerator/#model",title:"Thermal model",description:"Predict and experiment with the heat-balance model",group:"Experiments"},
@@ -33,6 +36,7 @@
   }
   function currentArea(pathname){
     if(pathname.startsWith("/research"))return"atlas";
+    if(pathname.startsWith("/explore"))return"explore";
     if(pathname.startsWith("/learn/refrigerator"))return"refrigerator";
     if(pathname.startsWith("/learn/distributed-information"))return"distributed-information";
     return"home";
