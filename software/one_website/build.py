@@ -300,8 +300,14 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
 
 def build(principia_repo: Path, atlas_repo: Path, output: Path) -> dict[str, object]:
     principia_repo, atlas_repo = principia_repo.resolve(), atlas_repo.resolve()
-    output = Path(os.path.abspath(os.fspath(output.expanduser())))
-    if output in (principia_repo, atlas_repo) or atlas_repo in output.parents:
+    output = output.expanduser().resolve()
+    if (
+        output in (principia_repo, atlas_repo)
+        or output in principia_repo.parents
+        or output in atlas_repo.parents
+        or atlas_repo in output.parents
+        or (principia_repo in output.parents and output != principia_repo / "dist")
+    ):
         raise ValueError("Output may not overwrite a source checkout")
     if output.is_symlink():
         raise ValueError("Output must not be a symlink")
