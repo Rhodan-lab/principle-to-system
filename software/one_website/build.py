@@ -126,7 +126,7 @@ def write_asset(target: Path, relative: str, content: bytes, files: list[dict[st
 
 
 def expected_paths() -> set[str]:
-    paths = {"index.html", "styles.css", "site-robots.txt"}
+    paths = {"index.html", "styles.css", "robots.txt"}
     for route in ROUTES:
         paths.update((
             f"learn/{route}/index.html",
@@ -271,7 +271,7 @@ def prepare(principia_repo: Path, atlas_repo: Path, stage: Path) -> dict[str, ob
             home = home.replace(needle, value)
         write_asset(stage, "index.html", home.encode("utf-8"), files)
         write_asset(stage, "styles.css", (HERE / "styles.css").read_bytes(), files)
-        write_asset(stage, "site-robots.txt", b"# See /robots.txt configured by the hosting provider.\n", files)
+        write_asset(stage, "robots.txt", b"User-agent: *\nDisallow: /\n", files)
         files.sort(key=lambda x: x["path"])
         unsigned = {
             "contract": CONTRACT,
