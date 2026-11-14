@@ -197,3 +197,41 @@ The static inventory and SHA-256 manifest include all new pages and assets. The 
 ### Scope and limitations
 
 This expansion makes **four genuinely runnable laboratories**, not a claim that all Principia science modules have been turned into interactive lessons. Further science topics would require explicit models, content review and tests; placeholders or inert cards are not counted.
+
+## Knowledge Atlas — a full explanation-first learning layer
+
+The website's fifth destination, **\`/knowledge/\`**, unlocks a curated **15-chapter explanatory atlas**, grounded in source documents from the existing reviewed Principia repository. It addresses the major limitation of a simulation-only website: learners need to understand the causal story, formal quantity, assumptions, and evidence behind a number.
+
+The Knowledge Atlas is written as an **original educational synthesis**, with clear attribution links to the relevant repository documents. It is **not a replacement for, or promotion of, the source owners' review decisions**. The underlying Atlas accepted research export and its distinct authority are not altered.
+
+### What is actually provided
+
+- **15 cross-linked chapters** organized by field: systems and boundaries, conservation, units, stocks/flows, models, feedback, thresholds, heat, retries and queues, rainwater, solar batteries, uncertainty, causality, resilience and evidentiary provenance.
+- Each chapter has an investigative question, *four substantial explanation sections*, a mathematical lens, a numerically worked example, a misconception to challenge, and a *three-part, scenario-based thought experiment*. The content works from fundamentals toward model assumptions and what evidence would change a conclusion.
+- Each chapter ends with a multiple-choice conceptual retrieval question whose correct choice is not revealed until the learner submits an answer. The options rotate deterministically to avoid a single correct-option pattern. Explanations describe why an option is correct or why the initial reasoning requires revision.
+- A personal **"Explain it in your own words"** notebook is available on each chapter, kept only in the active tab's JavaScript memory; there are no accounts, cookies, analytics or saved cross-visit progress. Learners may copy their written explanation through the browser clipboard's explicit user action, with a manual fallback.
+- Search, domain filters, source attribution links, a focus-reading option, chapter progress **within the current tab only**, suggested conceptual connections and links to the related experimental laboratory.
+- The home page now features six entry chapters and links to the complete library. The four-lab catalog includes a knowledge bridge. Both original Product Alpha learning journeys gain linked background explanations.
+- Both newer conceptual labs now have an explicit theory bridge and a **computed numerical interpretation** following prediction and simulation. It explains the actual water-volume or energy ledger, initial and final storage, constraints, and the conditional nature of the output.
+
+### Educational design principles
+
+These interaction choices reflect established principles that support conceptual organization, retrieval practice, explanatory elaboration, worked examples, and connecting words with visuals:
+
+- National Research Council, *How Students Learn* (2005): https://www.nationalacademies.org/read/10126/chapter/2
+- Weinstein, Madan and Sumeracki (2018), *Teaching the science of learning*: https://pmc.ncbi.nlm.nih.gov/articles/PMC5780548/
+- National Academies, *How People Learn II* (2018), knowledge integration: https://www.nationalacademies.org/read/24783/chapter/7
+
+These are **influences on teaching design**, not scientific validation of every new teaching passage.
+
+### Build, integrity and source boundaries
+
+The static build packages \`knowledge/index.html\`, \`knowledge-content.js\`, \`knowledge.js\`, \`knowledge.css\` alongside the original 4 simulations and the untouched accepted Atlas research export.
+
+- \`knowledge-content.js\` contains a constrained, explicit concept graph and educational content; it is not a live GitHub search, generated research verdict, AI answer generator or claim of completeness.
+- Source citations point to exact known paths under the Principia repository; none are dynamically rewritten or imported from a user-controlled URL.
+- The standalone knowledge chapter runtime uses text nodes for user-visible fields instead of \`innerHTML\`; no arbitrary markup execution or untrusted network data is introduced.
+- The Vercel \`/knowledge/\` rewrite, CSS and scripts are included in the website's SHA-256-sealed static asset inventory. The manifest's **Product Alpha ROUTES remain two**, and the original website-only rainwater/microgrid experiments retain their independent status.
+- New tests check all 15 chapters and their 45 scenario narratives, semantic links, varied answer choices, source limits, mathematical interpretations, immutable asset list, runtime syntax, and HTTP accessibility.
+
+**Non-goal:** publishing the whole 800-file repository as canonical, independently reviewed web lessons. The 15 chapters are a curated entrance into it, not a claim that all scientific material is complete or universally correct.
