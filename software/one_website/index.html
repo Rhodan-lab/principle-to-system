@@ -1,170 +1,214 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f4ef">
-  <meta name="description" content="Principia & Atlas: explore the invisible structures of physical and computational systems, then investigate their evidence.">
-  <title>Principia & Atlas — An atlas of how things work</title>
-  <link rel="stylesheet" href="/styles.css">
-  <script defer src="/site.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf9f6">
+<meta name="description" content="Principia & Atlas — a free, evidence-aware exploration of physics, computational systems, and the knowledge behind them.">
+<title>Principia & Atlas — Explore the structures beneath everything</title>
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/universe.css">
+<script defer src="/site.js"></script>
+<script defer src="/universe.js"></script>
 </head>
-<body>
-<a class="skip-link" href="#main">Skip to content</a>
-<div class="site-layout">
-  <aside class="rail" aria-label="Primary navigation">
-    <a href="/" class="rail-logo" aria-label="Principia and Atlas, homepage">
-      <span class="logo-monogram" aria-hidden="true">P<span class="monogram-plus">+</span>A</span>
-      <span class="logo-wordmark"><strong>Principia <em>&</em> Atlas</strong><small>THE SYSTEMS OBSERVATORY</small></span>
-    </a>
-    <p class="rail-overline">YOUR EXPLORATION</p>
-    <nav class="rail-links" aria-label="Sections">
-      <a class="active" href="#main"><span class="nav-number">01</span><span>Discover</span><span class="nav-icon" aria-hidden="true">↗</span></a>
-      <a href="#explore"><span class="nav-number">02</span><span>Expeditions</span><span class="nav-icon" aria-hidden="true">↗</span></a>
-      <a href="#studio"><span class="nav-number">03</span><span>Model studio</span><span class="nav-icon" aria-hidden="true">↗</span></a>
-      <a href="#method"><span class="nav-number">04</span><span>How it works</span><span class="nav-icon" aria-hidden="true">↗</span></a>
-      <a href="/research/"><span class="nav-number">05</span><span>Research Atlas</span><span class="nav-icon" aria-hidden="true">↗</span></a>
-    </nav>
-    <div class="rail-bottom">
-      <div class="rail-caption"><span class="status-led" aria-hidden="true"></span><span>Independent sources<br>One navigable universe</span></div>
-      <p>V 02 / RESEARCH PREVIEW<br>NO ACCOUNT REQUIRED</p>
-    </div>
-  </aside>
-
-  <div class="main-column" id="main">
-    <div class="top-strip"><span><span class="tiny-star" aria-hidden="true">✳</span> A FIELD GUIDE TO HIDDEN STRUCTURES</span><span>OBSERVE / EXPERIMENT / UNDERSTAND</span><a href="/research/">Evidence index <span aria-hidden="true">↗</span></a></div>
-    <main>
-      <section class="hero">
-        <div class="hero-content">
-          <p class="eyebrow"><span class="tag-square" aria-hidden="true"></span> THE WORLD IS NOT MADE OF THINGS ALONE</p>
-          <h1>Look closer.<br><em>Find the</em><br>system<span class="gold-period">.</span></h1>
-          <p class="hero-description">A strange temperature. A failing service. A contested claim. Every visible result has an invisible mechanism. Explore it, change its variables, and discover what the evidence actually supports.</p>
-          <div class="hero-actions">
-            <a class="action-primary" href="#explore">Begin exploring <span aria-hidden="true">↗</span></a>
-            <a class="action-secondary" href="#studio">Try a live model <span aria-hidden="true">↓</span></a>
-          </div>
-          <div class="hero-foot"><span>01 / OBSERVE</span><span>02 / MODEL</span><span>03 / QUESTION</span><span>04 / VERIFY</span></div>
-        </div>
-        <div class="hero-instrument" role="img" aria-label="Abstract scientific system diagram: four linked nodes orbiting a structured field, representing cause, effect, model, and evidence">
-          <div class="instrument-grid" aria-hidden="true"></div>
-          <div class="instrument-top"><span>FIG. 001</span><span>MODEL / OBSERVATION</span></div>
-          <svg class="instrument-svg" viewBox="0 0 520 560" aria-hidden="true">
-            <defs>
-              <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b0d2b8"/><stop offset=".52" stop-color="#f0ddb4"/><stop offset="1" stop-color="#86a68d"/></linearGradient>
-              <radialGradient id="coreLight"><stop stop-color="#e8f1d9"/><stop offset="1" stop-color="#1b503f"/></radialGradient>
-            </defs>
-            <circle cx="260" cy="268" r="203" fill="none" stroke="#668d7b" stroke-opacity=".38"/>
-            <circle cx="260" cy="268" r="163" fill="none" stroke="#a9c0a7" stroke-opacity=".30" stroke-dasharray="3 9"/>
-            <circle cx="260" cy="268" r="112" fill="none" stroke="#d5dcba" stroke-opacity=".24"/>
-            <circle cx="260" cy="268" r="53" fill="url(#coreLight)" stroke="#cfddaa" stroke-opacity=".8"/>
-            <path d="M260 42V498 M34 268H486 M100 108L420 428 M420 108L100 428" stroke="#d2d9bf" stroke-opacity=".14"/>
-            <path class="orbit-path" d="M96 150C157 74 320 67 407 157S447 364 341 423S114 424 77 288S96 150 96 150" fill="none" stroke="url(#orbit)" stroke-width="2.5"/>
-            <path d="M127 334 Q245 210 393 197" fill="none" stroke="#e7d6a9" stroke-dasharray="5 8" stroke-opacity=".75"/>
-            <circle cx="96" cy="150" r="7" fill="#d4b98a"/><circle cx="407" cy="157" r="7" fill="#a8ca9d"/>
-            <circle cx="341" cy="423" r="7" fill="#d4b98a"/><circle cx="77" cy="288" r="7" fill="#a8ca9d"/>
-            <circle cx="260" cy="268" r="7" fill="#173d32"/>
-          </svg>
-          <span class="orbit-label label-a"><small>001 / THE INPUT</small><strong>Cause</strong></span>
-          <span class="orbit-label label-b"><small>002 / THE CHANGE</small><strong>Effect</strong></span>
-          <span class="orbit-label label-c"><small>003 / THE MECHANISM</small><strong>Model</strong></span>
-          <span class="orbit-label label-d"><small>004 / THE REFERENCE</small><strong>Evidence</strong></span>
-          <div class="instrument-core"><span>THE INVISIBLE</span><strong>∴</strong><span>MADE VISIBLE</span></div>
-          <div class="instrument-bottom"><span>CURIOSITY IS A METHOD</span><span>◦ ◦ ◦</span></div>
-        </div>
-      </section>
-
-      <section class="intro-band" aria-label="What you can explore">
-        <div><span>02</span><p>INTERACTIVE INVESTIGATIONS<br><strong>Two working systems</strong></p></div>
-        <div><span>05</span><p>STAGES PER EXPLORATION<br><strong>Reason before the answer</strong></p></div>
-        <div><span>01</span><p>RESEARCH WORKSPACE<br><strong>Accepted exact revisions</strong></p></div>
-      </section>
-
-      <section class="section-heading" id="explore">
-        <p class="eyebrow">CHAPTER 01 / CHOOSE AN EXPEDITION</p>
-        <div class="section-heading-grid"><h2>Follow the <em>question,</em><br>not the curriculum.</h2><p>Start wherever curiosity takes you. The same five-step method works whether you are studying heat, software, or the limits of an explanation.</p></div>
-      </section>
-      <div class="expedition-grid">
-        <a href="/learn/refrigerator/" class="expedition expedition-thermal">
-          <div class="expedition-top"><span>01 / PHYSICAL SYSTEM</span><span class="circle-arrow" aria-hidden="true">↗</span></div>
-          <div class="expedition-art" aria-hidden="true">
-            <div class="heat-chamber"><span class="heat-core"></span><span class="heat-ring heat-ring-1"></span><span class="heat-ring heat-ring-2"></span><span class="heat-ring heat-ring-3"></span></div>
-            <span class="diagram-label heat-a">AMBIENT T</span><span class="diagram-label heat-b">ENERGY FLOW</span>
-            <span class="diagram-axis"></span><span class="art-id">FIG. 02 — THERMAL BALANCE</span>
-          </div>
-          <div class="expedition-copy"><span class="card-counter">LABORATORY / A</span><h3>Can cold<br>be <em>created?</em></h3><p>Follow the flow of heat, switch off cooling, and discover why changing one number can change an entire system.</p><span class="expedition-link">Enter thermal laboratory <span aria-hidden="true">→</span></span></div>
-        </a>
-        <a href="/learn/distributed-information/" class="expedition expedition-computation">
-          <div class="expedition-top"><span>02 / COMPUTATIONAL SYSTEM</span><span class="circle-arrow" aria-hidden="true">↗</span></div>
-          <div class="expedition-art queue-art" aria-hidden="true">
-            <div class="queue-signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <div class="queue-equation">λ <span>→</span> μ</div><span class="diagram-label queue-a">ARRIVAL RATE</span><span class="diagram-label queue-b">CAPACITY</span><span class="art-id">FIG. 03 — RETRY DYNAMICS</span>
-          </div>
-          <div class="expedition-copy"><span class="card-counter">LABORATORY / B</span><h3>When more<br>means <em>less.</em></h3><p>Watch the pressure of retries build against service capacity. Examine when a queue becomes unstable and what changes.</p><span class="expedition-link">Enter systems laboratory <span aria-hidden="true">→</span></span></div>
-        </a>
-        <a href="/research/" class="expedition expedition-evidence">
-          <div class="expedition-top"><span>03 / RESEARCH WORKSPACE</span><span class="circle-arrow" aria-hidden="true">↗</span></div>
-          <div class="expedition-art evidence-art" aria-hidden="true">
-            <div class="research-sheet sheet-1"></div><div class="research-sheet sheet-2"></div>
-            <div class="research-sheet sheet-3"><span>EXACT REVISION</span><strong>r.__ATLAS_REVISION__</strong><i></i><i></i><i></i><small>TRACE / PROVENANCE</small></div>
-            <span class="art-id">FIG. 04 — EVIDENCE IDENTITY</span>
-          </div>
-          <div class="expedition-copy"><span class="card-counter">THE ATLAS / C</span><h3>What makes<br>a claim <em>hold?</em></h3><p>Inspect pinned research, trace exact revisions, and distinguish a model from the evidence that supports it.</p><span class="expedition-link">Open research Atlas <span aria-hidden="true">→</span></span></div>
-        </a>
-      </div>
-
-      <section class="studio" id="studio" aria-labelledby="studio-title">
-        <div class="studio-head">
-          <div><p class="eyebrow">CHAPTER 02 / THE MODEL STUDIO</p><h2 id="studio-title">Move a variable.<br><em>Change a world.</em></h2></div>
-          <p>Try a simplified, transparent calculation here, then enter the full laboratory to predict first, run the model, and compare experiments.</p>
-        </div>
-        <div class="studio-shell">
-          <div class="studio-side">
-            <p class="studio-small">CHOOSE A LENS</p>
-            <div class="studio-tabs" role="tablist" aria-label="Model preview">
-              <button type="button" role="tab" aria-selected="true" aria-controls="studio-panel" tabindex="0" data-lens="thermal"><span>01</span> Heat & energy <span aria-hidden="true">↗</span></button>
-              <button type="button" role="tab" aria-selected="false" aria-controls="studio-panel" tabindex="-1" data-lens="queue"><span>02</span> Requests & queues <span aria-hidden="true">↗</span></button>
-              <button type="button" role="tab" aria-selected="false" aria-controls="studio-panel" tabindex="-1" data-lens="evidence"><span>03</span> Claims & evidence <span aria-hidden="true">↗</span></button>
-            </div>
-            <div class="studio-footnote"><span class="studio-spark" aria-hidden="true">✳</span><p>These previews are hypothetical, deterministic calculations—not real-world measurements or live evidence.</p></div>
-          </div>
-          <section class="studio-panel" id="studio-panel" role="tabpanel" aria-label="Model preview" tabindex="0">
-            <div class="studio-panel-top"><span id="lens-tag">EXPERIMENT / 01</span><span id="lens-field">THERMAL EQUILIBRIUM</span></div>
-            <h3 id="lens-title">What if the refrigerator loses cooling?</h3>
-            <p id="lens-explanation">Increase or decrease cooling power. The instantaneous net heat flow changes even when the room stays at the same temperature.</p>
-            <div class="studio-math" id="lens-math" aria-label="Preview formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>P</mi><mtext>net</mtext></msub><mo>=</mo><mi>UA</mi><mo>(</mo><msub><mi>T</mi><mtext>room</mtext></msub><mo>−</mo><msub><mi>T</mi><mn>0</mn></msub><mo>)</mo><mo>+</mo><msub><mi>P</mi><mtext>load</mtext></msub><mo>−</mo><msub><mi>P</mi><mtext>cool</mtext></msub></mrow></math></div>
-            <div class="studio-controls" id="studio-controls">
-              <div class="slider-meta"><label for="studio-input" id="lens-slider-label">Cooling power</label><output for="studio-input" id="lens-slider-value">95 W</output></div>
-              <input id="studio-input" type="range" min="40" max="180" step="5" value="95" aria-describedby="lens-slider-help">
-              <p id="lens-slider-help">Hypothetical scenario · room 28 °C · cabinet 8 °C · UA 3.2 W/K · internal load 18 W</p>
-            </div>
-            <div class="studio-result" role="status" aria-live="polite" aria-atomic="true">
-              <div><span id="lens-result-label">Initial net heat flow</span><strong id="lens-result-value">−13.00 W</strong></div>
-              <div><span id="lens-secondary-label">Constant-parameter equilibrium</span><strong id="lens-secondary-value">3.94 °C</strong></div>
-            </div>
-            <div class="studio-footer"><p id="lens-caveat">This instantaneous balance is not a prediction of a real refrigerator. Enter the investigation to see a trajectory and its limitations.</p><a id="lens-action" class="studio-link" href="/learn/refrigerator/">Investigate the full system <span aria-hidden="true">↗</span></a></div>
-          </section>
-        </div>
-      </section>
-
-      <section class="method" id="method">
-        <div class="method-intro"><p class="eyebrow">CHAPTER 03 / THE INVESTIGATION METHOD</p><h2>Not a quiz.<br><em>A way of seeing.</em></h2><p>A five-step expedition turns observation into reasoning. You can freely navigate every step; the simulation asks you to predict before you see its result.</p><a href="/learn/refrigerator/" class="section-link">Start an investigation <span aria-hidden="true">↗</span></a></div>
-        <ol class="method-steps">
-          <li><span>01</span><div><strong>Observe</strong><p>Notice what is happening and what remains hidden.</p></div><span class="method-mark" aria-hidden="true">○</span></li>
-          <li><span>02</span><div><strong>Map</strong><p>Draw a boundary around the system and locate the flows.</p></div><span class="method-mark" aria-hidden="true">↗</span></li>
-          <li><span>03</span><div><strong>Model</strong><p>Choose variables, predict, and reveal what the model implies.</p></div><span class="method-mark" aria-hidden="true">∴</span></li>
-          <li><span>04</span><div><strong>Diagnose</strong><p>Separate failure modes from the symptoms they create.</p></div><span class="method-mark" aria-hidden="true">⌁</span></li>
-          <li><span>05</span><div><strong>Redesign</strong><p>Improve the system without hiding its trade-offs.</p></div><span class="method-mark" aria-hidden="true">✳</span></li>
-        </ol>
-      </section>
-
-      <section class="trust" id="trust">
-        <div class="trust-intro"><p class="eyebrow">CHAPTER 04 / KNOWLEDGE IS NOT A SHORTCUT</p><h2>One destination.<br><em>Two authorities.</em></h2></div>
-        <div class="trust-main"><p>Principia owns the learning experiences and models. Atlas owns its accepted evidence, exact-revision identity, and review metadata. A connected interface does not make one project's claim automatically authoritative in the other.</p><div class="trust-ledger"><div><span>PRINCIPIA</span><strong>Learn & experiment</strong><small>Simulations / explanations / redesigns</small></div><span class="ledger-divider">≠</span><div><span>ATLAS</span><strong>Inspect & qualify</strong><small>Revisions / provenance / uncertainty</small></div></div><p class="trust-small">The research workspace is a pinned, read-only fixture. No continuous Atlas sync, human verification claim, external model calls, user accounts, or learner tracking has been added.</p><a class="trust-link" href="/research/">Inspect the research boundary <span aria-hidden="true">↗</span></a></div>
-      </section>
-      <section class="provenance" aria-label="Build source identity"><div><span>PRINCIPIA REVISION</span><code>__PRINCIPIA_COMMIT__</code></div><div><span>ATLAS REVISION</span><code>__ATLAS_COMMIT__</code></div><div><span>ACCEPTED WORKSPACE</span><code>__ATLAS_WORKSPACE__</code></div></section>
-    </main>
-    <footer class="page-footer"><div><span class="footer-symbol">∴</span><span>PRINCIPIA & ATLAS<br><small>THE SYSTEMS OBSERVATORY</small></span></div><p>Curiosity deserves an explanation you can examine.</p><a href="https://github.com/Rhodan-lab/principle-to-system" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a></footer>
+<body class="pa-home">
+<a class="skip-link" href="#discover">Skip to discovery</a>
+<nav id="pa-global-nav" aria-label="Unified Principia and Atlas navigation">
+  <a class="pa-nav-brand" href="/" aria-label="Principia and Atlas home">
+    <span class="pa-brand-mark" aria-hidden="true">∴</span>
+    <span class="pa-brand-wordmark">Principia <span>&amp;</span> Atlas</span>
+  </a>
+  <span class="pa-nav-product">A living systems atlas</span>
+  <div class="pa-nav-links">
+    <a class="pa-nav-link" data-pa-area="home" href="/" aria-current="page">Discover</a>
+    <a class="pa-nav-link" data-pa-area="refrigerator" href="/learn/refrigerator/">Refrigerator</a>
+    <a class="pa-nav-link" data-pa-area="distributed-information" href="/learn/distributed-information/">Information</a>
+    <a class="pa-nav-link" data-pa-area="atlas" href="/research/">Atlas research</a>
   </div>
-</div>
+  <div class="pa-nav-actions">
+    <button class="pa-nav-command" type="button" aria-label="Open website navigation search">⌕ Jump <kbd>Alt G</kbd></button>
+    <span class="pa-nav-status">Read-only knowledge</span>
+  </div>
+</nav>
+
+<main>
+  <section class="pa3-hero" id="discover" aria-labelledby="pa3-hero-title">
+    <div class="pa3-hero-copy">
+      <p class="pa3-overline"><span aria-hidden="true">✳</span> THE PRINCIPIA & ATLAS PROJECT / EDITION III</p>
+      <h1 id="pa3-hero-title">The world is<br>more than <em>what<br>you can see.</em></h1>
+      <p class="pa3-hero-description">A refrigerator. A failing network. A scientific claim. Each is the visible edge of a deeper structure. Come closer. Change the variables. Follow the evidence.</p>
+      <div class="pa3-hero-actions">
+        <a class="pa3-button pa3-button-primary" href="#explore">Choose an investigation <span aria-hidden="true">↗</span></a>
+        <a class="pa3-button pa3-button-text" href="#studio">Try a working model <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="pa3-hero-proof">
+        <span><b>02</b> Real interactive journeys</span>
+        <span><b>05</b> Reasoning stages each</span>
+        <span><b>01</b> Pinned evidence workspace</span>
+      </div>
+    </div>
+    <div class="pa3-hero-art" aria-label="An abstract map of three connected domains: energy, computation and evidence">
+      <div class="pa3-art-top"><span>THE STRUCTURE ATLAS</span><span>FIGURE / 001</span></div>
+      <svg class="pa3-structure-svg" viewBox="0 0 680 660" role="img" aria-label="Three intersecting circles and paths for physics, computational systems and research evidence">
+        <defs>
+          <linearGradient id="pa3-ring" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#ddba90"/><stop offset=".52" stop-color="#889c80"/><stop offset="1" stop-color="#c9d7bf"/>
+          </linearGradient>
+          <radialGradient id="pa3-core">
+            <stop stop-color="#fff7e9"/><stop offset=".6" stop-color="#dbd5c1"/><stop offset="1" stop-color="#acb89f"/>
+          </radialGradient>
+        </defs>
+        <circle cx="342" cy="324" r="240" stroke="#b9b4a4" stroke-opacity=".38" fill="none"/>
+        <circle cx="342" cy="324" r="180" stroke="#a6af9e" stroke-opacity=".55" fill="none" stroke-dasharray="2 9"/>
+        <circle cx="342" cy="324" r="110" stroke="url(#pa3-ring)" stroke-opacity=".8" fill="none" stroke-width="1.5"/>
+        <path d="M342 58V597M73 324H611M153 134L530 512M530 134L153 512" stroke="#b4b4a7" stroke-opacity=".3" fill="none"/>
+        <path d="M190 182C257 45 458 145 493 258S481 490 338 507S155 437 142 323S190 182 190 182" stroke="#b77358" stroke-width="2.2" fill="none"/>
+        <path d="M190 182L493 258L338 507L142 323L190 182" stroke="#718c75" fill="none" stroke-dasharray="5 8"/>
+        <circle cx="342" cy="324" r="45" fill="url(#pa3-core)"/>
+        <circle cx="190" cy="182" r="8" fill="#bd7559"/>
+        <circle cx="493" cy="258" r="8" fill="#687e68"/>
+        <circle cx="338" cy="507" r="8" fill="#bd7559"/>
+        <circle cx="142" cy="323" r="8" fill="#687e68"/>
+        <circle cx="342" cy="324" r="4" fill="#3e4d40"/>
+      </svg>
+      <a class="pa3-art-node pa3-art-energy" href="/learn/refrigerator/"><span>01 / PHYSICAL</span><strong>Energy</strong><small>follow the heat ↗</small></a>
+      <a class="pa3-art-node pa3-art-compute" href="/learn/distributed-information/"><span>02 / COMPUTATIONAL</span><strong>Feedback</strong><small>trace the overload ↗</small></a>
+      <a class="pa3-art-node pa3-art-evidence" href="/research/"><span>03 / EVIDENCE</span><strong>Provenance</strong><small>inspect the claim ↗</small></a>
+      <span class="pa3-art-center" aria-hidden="true">∴</span>
+      <div class="pa3-art-bottom"><span>OBSERVE — MODEL — CHALLENGE — CONNECT</span><span>NOT TO SCALE</span></div>
+    </div>
+  </section>
+
+  <div class="pa3-section-index pa3-shell" aria-label="Explore this homepage">
+    <span>EXPLORE THE FIELD GUIDE</span>
+    <div><a href="#explore" aria-current="location">01 / Expeditions</a><a href="#studio">02 / Model studio</a><a href="#method">03 / The method</a><a href="#evidence-boundary">04 / Evidence boundary</a></div>
+  </div>
+
+  <section class="pa3-section pa3-expeditions pa3-shell" id="explore" aria-labelledby="pa3-exp-title">
+    <div class="pa3-section-head">
+      <p class="pa3-overline">01 — A QUESTION IS A DOORWAY</p>
+      <div class="pa3-section-intro">
+        <h2 id="pa3-exp-title">Three worlds.<br><em>One way of thinking.</em></h2>
+        <p>There is no fixed order or prerequisite gate. Each destination is a real working environment, with models to investigate or source evidence to inspect.</p>
+      </div>
+    </div>
+    <div class="pa3-expedition-grid">
+      <a class="pa3-case pa3-case-thermal" href="/learn/refrigerator/">
+        <div class="pa3-case-header"><span>CASE STUDY / 001</span><span>PHYSICAL SYSTEMS <span aria-hidden="true">↗</span></span></div>
+        <div class="pa3-case-diagram" aria-hidden="true">
+          <svg viewBox="0 0 440 260"><circle cx="214" cy="129" r="89" fill="none" stroke="#aab7a6" stroke-width="1.7"/><circle cx="214" cy="129" r="65" fill="none" stroke="#92a48f" stroke-dasharray="3 8"/><circle cx="214" cy="129" r="44" fill="none" stroke="#c17c5e" stroke-width="2.5"/><circle cx="214" cy="129" r="17" fill="#c17c5e" opacity=".8"/><path d="M57 129H371M214 20V238" stroke="#aebca8" stroke-opacity=".65"/><path d="M92 77C134 37 293 40 338 88" fill="none" stroke="#64866e" stroke-width="2"/><path d="M329 81l10 8-13 3" fill="none" stroke="#64866e" stroke-width="2"/></svg>
+          <span class="pa3-diagram-caption">Q / ENERGY TRANSFER</span>
+        </div>
+        <div class="pa3-case-body"><p class="pa3-case-type">THERMODYNAMICS · INTERACTIVE LAB</p><h3>Why does a refrigerator <em>warm a room?</em></h3><p>Trace energy and test cooling, load and insulation in a deterministic simulation.</p><span class="pa3-case-link">Enter investigation <span aria-hidden="true">↗</span></span></div>
+      </a>
+      <a class="pa3-case pa3-case-queue" href="/learn/distributed-information/">
+        <div class="pa3-case-header"><span>CASE STUDY / 002</span><span>COMPUTATIONAL SYSTEMS <span aria-hidden="true">↗</span></span></div>
+        <div class="pa3-case-diagram" aria-hidden="true">
+          <div class="pa3-queue-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="pa3-queue-display">λ <b>→</b> μ</span><span class="pa3-diagram-caption">REQUEST RATE / CAPACITY</span>
+        </div>
+        <div class="pa3-case-body"><p class="pa3-case-type">DISTRIBUTED SYSTEMS · INTERACTIVE LAB</p><h3>When does trying again <em>make things worse?</em></h3><p>Discover how retries, processing capacity and finite queues shape overload.</p><span class="pa3-case-link">Enter investigation <span aria-hidden="true">↗</span></span></div>
+      </a>
+      <a class="pa3-case pa3-case-atlas" href="/research/">
+        <div class="pa3-case-header"><span>RESEARCH DESK / 003</span><span>KNOWLEDGE SYSTEMS <span aria-hidden="true">↗</span></span></div>
+        <div class="pa3-case-diagram" aria-hidden="true">
+          <div class="pa3-evidence-sheet pa3-evidence-sheet-back"></div>
+          <div class="pa3-evidence-sheet pa3-evidence-sheet-front"><span>WORKSPACE REVISION</span><strong>r.__ATLAS_REVISION__</strong><i></i><i></i><i></i><small>EXACT IDENTITY / VERIFIED BYTES</small></div>
+          <span class="pa3-diagram-caption">THE RECORD / PROVENANCE</span>
+        </div>
+        <div class="pa3-case-body"><p class="pa3-case-type">ATLAS · READ-ONLY RESEARCH</p><h3>What would make a claim <em>worth trusting?</em></h3><p>Review accepted decisions, provenance, open questions and explicit uncertainty.</p><span class="pa3-case-link">Inspect research Atlas <span aria-hidden="true">↗</span></span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="pa3-section pa3-studio" id="studio" aria-labelledby="studio-title">
+    <div class="pa3-shell">
+      <div class="pa3-section-head">
+        <p class="pa3-overline">02 — INVESTIGATE / DON'T JUST READ</p>
+        <div class="pa3-section-intro">
+          <h2 id="studio-title">The laboratory is <em>open.</em></h2>
+          <p>Move one variable. See one consequence. These small, disclosed calculations are previews of the richer, prediction-gated investigations—not measurements or live Atlas data.</p>
+        </div>
+      </div>
+      <div class="pa3-studio-frame">
+        <div class="pa3-studio-index">
+          <div class="pa3-studio-index-top"><span>MODEL INDEX</span><strong>Choose a system</strong></div>
+          <div class="studio-tabs" role="tablist" aria-label="Model preview">
+            <button type="button" role="tab" aria-selected="true" aria-controls="studio-panel" tabindex="0" data-lens="thermal"><span>01</span><span>Heat &amp; energy</span><span aria-hidden="true">↗</span></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="studio-panel" tabindex="-1" data-lens="queue"><span>02</span><span>Requests &amp; queues</span><span aria-hidden="true">↗</span></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="studio-panel" tabindex="-1" data-lens="evidence"><span>03</span><span>Claims &amp; evidence</span><span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="pa3-studio-aside"><span aria-hidden="true">✳</span><p>Models are useful when their assumptions are visible. Change the inputs; then inspect the full explanation.</p></div>
+        </div>
+        <section class="studio-panel" id="studio-panel" role="tabpanel" aria-label="Model preview" tabindex="0">
+          <div class="studio-panel-top"><span id="lens-tag">EXPERIMENT / 01</span><span id="lens-field">THERMAL EQUILIBRIUM</span></div>
+          <h3 id="lens-title">What if the refrigerator loses cooling?</h3>
+          <p id="lens-explanation">Increase or decrease cooling power to see how the balance shifts.</p>
+          <div class="studio-math" id="lens-math" aria-label="Preview formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+              <mrow><msub><mi>P</mi><mtext>net</mtext></msub><mo>=</mo><mi>U</mi><mi>A</mi><mo>(</mo><msub><mi>T</mi><mtext>room</mtext></msub><mo>−</mo><msub><mi>T</mi><mn>0</mn></msub><mo>)</mo><mo>+</mo><msub><mi>P</mi><mtext>load</mtext></msub><mo>−</mo><msub><mi>P</mi><mtext>cool</mtext></msub></mrow>
+            </math>
+          </div>
+          <div class="studio-controls" id="studio-controls">
+            <div class="slider-meta"><label for="studio-input" id="lens-slider-label">Cooling power</label><output for="studio-input" id="lens-slider-value">95 W</output></div>
+            <input id="studio-input" type="range" min="40" max="180" step="5" value="95" aria-describedby="lens-slider-help">
+            <p id="lens-slider-help">Hypothetical example · room 28 °C · cabinet 8 °C · conductance 3.2 W/K · internal load 18 W</p>
+          </div>
+          <div class="studio-result" role="status" aria-live="polite" aria-atomic="true">
+            <div><span id="lens-result-label">Initial net heat flow</span><strong id="lens-result-value">−13.00 W</strong></div>
+            <div><span id="lens-secondary-label">Equilibrium under fixed conditions</span><strong id="lens-secondary-value">3.94 °C</strong></div>
+          </div>
+          <div class="studio-footer">
+            <p id="lens-caveat">This is a simplified prediction, not a measured appliance temperature.</p>
+            <a class="studio-link" id="lens-action" href="/learn/refrigerator/">Investigate thermal systems <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="pa3-section pa3-method pa3-shell" id="method" aria-labelledby="pa3-method-title">
+    <div class="pa3-section-head">
+      <p class="pa3-overline">03 — LEARN TO THINK IN SYSTEMS</p>
+      <div class="pa3-section-intro">
+        <h2 id="pa3-method-title">A method, <em>not a syllabus.</em></h2>
+        <p>Five connected modes of thinking; none is a mandatory gateway. Move freely, take local notes, and test assumptions with working simulations.</p>
+      </div>
+    </div>
+    <ol class="pa3-method-track">
+      <li><span class="pa3-method-num">01</span><strong>Observe</strong><p>Begin with a real surprise.</p></li>
+      <li><span class="pa3-method-num">02</span><strong>Map</strong><p>Name the boundary and flows.</p></li>
+      <li><span class="pa3-method-num">03</span><strong>Model</strong><p>Predict, then experiment.</p></li>
+      <li><span class="pa3-method-num">04</span><strong>Diagnose</strong><p>Explain the failure.</p></li>
+      <li><span class="pa3-method-num">05</span><strong>Redesign</strong><p>Change the constraints.</p></li>
+    </ol>
+    <div class="pa3-method-action"><a href="/learn/refrigerator/">Begin the five-step investigation <span aria-hidden="true">↗</span></a><p>No account, uploads or required progression</p></div>
+  </section>
+
+  <section class="pa3-evidence" id="evidence-boundary" aria-labelledby="pa3-evidence-title">
+    <div class="pa3-shell pa3-evidence-inner">
+      <div class="pa3-evidence-intro">
+        <p class="pa3-overline">04 — THE RESPONSIBILITY OF KNOWING</p>
+        <h2 id="pa3-evidence-title">A model is not<br>the <em>world.</em></h2>
+      </div>
+      <div class="pa3-evidence-copy">
+        <p>Principia is the learning and simulation layer. Atlas is a separate, evidence-aware research workspace. Putting them on one website does not promote a claim, resolve an uncertainty, or transfer approval between them.</p>
+        <div class="pa3-boundary"><div><b>PRINCIPIA</b><strong>Understand the mechanism</strong><span>Investigations · deterministic models · reflection</span></div><div><b>ATLAS</b><strong>Inspect the record</strong><span>Exact revision · provenance · unresolved questions</span></div></div>
+        <p class="pa3-legal">The published research is a pinned, read-only fixture, not a live knowledge database or independent human verification.</p>
+        <a class="pa3-evidence-link" href="/research/">Examine the evidence boundary <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+  <div class="pa3-build-info pa3-shell" aria-label="Pinned source identity">
+    <div><span>PRINCIPIA / COMMIT</span><code>__PRINCIPIA_COMMIT__</code></div>
+    <div><span>ATLAS / COMMIT</span><code>__ATLAS_COMMIT__</code></div>
+    <div><span>ACCEPTED WORKSPACE</span><code>__ATLAS_WORKSPACE__</code></div>
+  </div>
+</main>
+<footer class="pa3-footer"><div class="pa3-shell">
+  <a class="pa3-footer-brand" href="/">∴ <span>Principia &amp; Atlas</span></a>
+  <p>Explore rigorously. Be curious about what the model cannot tell you.</p>
+  <a href="https://github.com/Rhodan-lab/principle-to-system" rel="noopener noreferrer">Source repository ↗</a>
+</div></footer>
 </body>
 </html>
