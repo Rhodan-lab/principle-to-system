@@ -45,7 +45,10 @@ body.pa-learner,body.pa-research{padding-bottom:2rem!important}
   font:500 1.06rem/1 var(--pa3-serif);letter-spacing:-.045em;
   white-space:nowrap;display:block;
 }
-#pa-global-nav .pa-brand-wordmark span{color:var(--pa3-coral)}
+#pa-global-nav .pa-brand-wordmark{width:auto!important;height:auto!important;display:inline!important;
+ border:0!important;background:transparent!important;border-radius:0!important}
+#pa-global-nav .pa-brand-wordmark span{color:var(--pa3-coral);width:auto!important;height:auto!important;
+ display:inline!important;border:0!important;background:transparent!important;border-radius:0!important}
 #pa-global-nav .pa-nav-product{
   border-left:1px solid var(--pa3-line);margin-left:.3rem;padding-left:.8rem;
   white-space:nowrap;color:var(--pa3-muted);font:.69rem var(--pa3-ui);
