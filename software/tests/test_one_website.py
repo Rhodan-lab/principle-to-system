@@ -49,9 +49,7 @@ class UnifiedWebsiteTests(unittest.TestCase):
             self.assertEqual(len(re.findall(rb"<script>", published)), 1)
             self.assertIn(b'aria-label="Unified Principia and Atlas navigation"', published)
             self.assertIn(b'href="/research/"', published)
-            marker = 'aria-current="page">' + (
-                "Refrigerator" if route == "refrigerator" else "Information"
-            ) + "</a>"
+            marker = 'aria-current="page">Laboratories</a>'
             self.assertIn(marker.encode(), published)
             self.assertNotIn(b"//cdn.", published)
             self.assertIn(b'href="/experience.css"', published)
