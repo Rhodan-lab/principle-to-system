@@ -57,7 +57,7 @@
     body.dataset.paArea=area;
     const links=[...navigation.querySelectorAll(".pa-nav-link")];
     links.forEach(link=>{
-      const active=link.dataset.paArea===area;
+      const active=link.dataset.paArea===area||(link.dataset.paArea==="explore"&&(area==="refrigerator"||area==="distributed-information"));
       if(active)link.setAttribute("aria-current","page");
       else link.removeAttribute("aria-current");
     });
@@ -264,7 +264,7 @@
     }
   }
   function enhanceHome(){
-    const sectionNav=document.querySelector(".pa-section-index");
+    const sectionNav=document.querySelector(".pa3-section-index");
     if(!sectionNav)return;
     const anchors=[...sectionNav.querySelectorAll('a[href^="#"]')];
     if(typeof IntersectionObserver!=="function")return;
