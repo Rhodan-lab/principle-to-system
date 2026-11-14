@@ -20,7 +20,7 @@ class UnifiedWebsiteTests(unittest.TestCase):
     def test_route_contract_and_expected_files(self) -> None:
         self.assertEqual(web.ROUTES, ("refrigerator", "distributed-information"))
         self.assertEqual(len(web.ATLAS_PIN), 40)
-        self.assertEqual(len(web.expected_paths()), 28)
+        self.assertEqual(len(web.expected_paths()), 32)
         self.assertIn("research/data/workspace-shell-data.json", web.expected_paths())
         self.assertIn("experience.css", web.expected_paths())
         self.assertIn("experience.js", web.expected_paths())
@@ -29,6 +29,8 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn("atlas-workspace.js", web.expected_paths())
         self.assertIn("universe.css", web.expected_paths())
         self.assertIn("universe.js", web.expected_paths())
+        for asset in ("knowledge/index.html", "knowledge.css", "knowledge.js", "knowledge-content.js"):
+            self.assertIn(asset, web.expected_paths())
         self.assertEqual(web.EXPLORATIONS, ("rainwater", "microgrid"))
         for topic in web.EXPLORATIONS:
             self.assertIn(f"explore/{topic}/index.html", web.expected_paths())
@@ -83,6 +85,17 @@ class UnifiedWebsiteTests(unittest.TestCase):
         for route in web.EXPLORATIONS:
             self.assertIn(f'href="/explore/{route}/"', library)
 
+    def test_knowledge_atlas_is_complete_and_safe(self) -> None:
+        page = (ROOT / "software/one_website/knowledge.html").read_text()
+        self.assertIn('id="knowledge-article"', page)
+        self.assertIn('id="knowledge-check-form"', page)
+        self.assertIn('src="/knowledge-content.js"', page)
+        self.assertIn('src="/knowledge.js"', page)
+        self.assertIn('href="/knowledge.css"', page)
+        self.assertIn("original teaching syntheses", page)
+        config = json.loads((ROOT / "vercel.json").read_text())
+        self.assertTrue(any(r["source"] == "/knowledge/" for r in config["rewrites"]))
+
     def test_navigation_rejects_unexpected_structure_and_route(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unknown navigation"):
             web.add_navigation(b"<body></body>", "unknown")
@@ -99,6 +112,9 @@ class UnifiedWebsiteTests(unittest.TestCase):
         self.assertIn("/explore/", homepage)
         self.assertIn("/explore/rainwater/", homepage)
         self.assertIn("/explore/microgrid/", homepage)
+        self.assertIn('href="/knowledge/"', homepage)
+        self.assertIn('id="knowledge-chapters"', homepage)
+        self.assertIn("Connected knowledge chapters", homepage)
         self.assertIn("04</b> Interactive laboratories", homepage)
         self.assertNotIn("localStorage", homepage)
         self.assertNotIn("sessionStorage", homepage)
