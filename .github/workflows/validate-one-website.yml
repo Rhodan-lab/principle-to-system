@@ -7,6 +7,7 @@ on:
       - "software/one_website/**"
       - "software/principia_atlas/suite.py"
       - "software/tests/test_one_website.py"
+      - "software/tests/test_one_website_math.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
   push:
@@ -14,6 +15,7 @@ on:
       - "software/one_website/**"
       - "software/principia_atlas/suite.py"
       - "software/tests/test_one_website.py"
+      - "software/tests/test_one_website_math.mjs"
       - "vercel.json"
       - ".github/workflows/validate-one-website.yml"
 permissions:
@@ -50,6 +52,12 @@ jobs:
       - name: Unit-test static website contracts
         working-directory: principle-to-system
         run: python3 -m unittest discover -s software/tests -p 'test_one_website.py' -v
+      - name: Validate accessible mathematics and interactive preview
+        working-directory: principle-to-system
+        run: |
+          node --check software/one_website/site.js
+          node --check software/one_website/experience.js
+          node --test software/tests/test_one_website_math.mjs
       - name: Build unified static website
         working-directory: principle-to-system
         run: python3 software/one_website/build.py build --atlas-repo ../Atlas --output dist

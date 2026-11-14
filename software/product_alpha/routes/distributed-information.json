@@ -37,7 +37,7 @@
     "adapter": "queue-delay-fluid-v1",
     "activity_title": "Interactive queue model",
     "run_label": "Run model",
-    "equation": "λ_offered = λ_external(1 + p_retry); ρ = λ_offered / μ; dB/dt = max(0, λ_offered - μ)",
+    "equation": "λ_eff = λ_ext(1 + p_retry); ρ = λ_eff/μ; B(t) = min(K, max(0, (λ_eff − μ)t)); R(t) = max(0, (λ_eff − μ)t − K)",
     "prediction": {
       "legend": "Before running the model, predict the service response.",
       "error": "Choose a queue-response prediction before running the model.",
@@ -140,7 +140,10 @@
     "limitations": [
       "The model treats rates as averages and does not simulate burst distributions or several dependent queues.",
       "The mean-delay relation is shown only below capacity and depends on its stated queueing assumptions.",
-      "Synthetic results do not predict a specific website, API, network, or school service."
+      "Synthetic results do not predict a specific website, API, network, or school service.",
+      "The fluid backlog calculation starts with an empty queue and uses constant average arrival and service rates.",
+      "The retry fraction represents one additional attempt for a fraction of external arrivals, not recursive retries.",
+      "The optional M/M/1 mean time in system is a separate steady-state approximation, valid only below capacity."
     ]
   },
   "challenge": {
