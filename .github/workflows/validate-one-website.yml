@@ -1,0 +1,71 @@
+name: Validate Unified Principia Atlas Website
+
+on:
+  pull_request:
+    paths:
+      - "software/one_website/**"
+      - "software/product_alpha/**"
+      - "software/principia_atlas/suite.py"
+      - "software/tests/test_one_website.py"
+      - "vercel.json"
+      - ".github/workflows/validate-one-website.yml"
+  push:
+    paths:
+      - "software/one_website/**"
+      - "software/product_alpha/**"
+      - "software/principia_atlas/suite.py"
+      - "software/tests/test_one_website.py"
+      - "vercel.json"
+      - ".github/workflows/validate-one-website.yml"
+permissions:
+  contents: read
+
+jobs:
+  static-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out Principia
+        uses: actions/checkout@v4
+        with:
+          path: principle-to-system
+          persist-credentials: false
+      - name: Check out exact Atlas source
+        uses: actions/checkout@v4
+        with:
+          repository: Rhodan-lab/Atlas
+          ref: 750933883996cc0759cfa40931db6cd262b13b07
+          path: Atlas
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate exact source pins
+        working-directory: principle-to-system
+        run: |
+          test "$(tr -d '\r\n' < software/one_website/atlas-commit.txt)" = "$(git -C ../Atlas rev-parse HEAD)"
+      - name: Unit-test static website contracts
+        working-directory: principle-to-system
+        run: python3 -m unittest discover -s software/tests -p 'test_one_website.py' -v
+      - name: Build unified static website
+        working-directory: principle-to-system
+        run: python3 software/one_website/build.py build --atlas-repo ../Atlas --output dist
+      - name: Verify immutable static assets
+        working-directory: principle-to-system
+        run: python3 software/one_website/build.py verify --output dist
+      - name: Ensure all three experiences were packaged
+        working-directory: principle-to-system
+        run: |
+          test -f dist/learn/refrigerator/data/refrigerator.json
+          test -f dist/learn/distributed-information/data/distributed-information.json
+          test -f dist/research/data/workspace-shell-data.json
+          test ! -e dist/learn/refrigerator/facilitator.html
+          test ! -e dist/learn/refrigerator/pilot-lab.html
+      - name: Upload preview site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: principia-atlas-static-site
+          path: principle-to-system/dist/
+          if-no-files-found: error
+          retention-days: 7
