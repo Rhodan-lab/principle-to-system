@@ -31,7 +31,48 @@
     formatValue(model,id,value){return formatParameter(parameterDefinition(model,id),value)},
     draw(model,result,svg,description){const w=640,h=250,pad=38,duration=result.values.observation_seconds,capacity=result.values.queue_capacity_requests,max=Math.max(1,capacity),x=seconds=>pad+seconds/duration*(w-pad*2),y=backlog=>h-pad-backlog/max*(h-pad*2),path=result.points.map((point,index)=>`${index?"L":"M"}${x(point.s).toFixed(1)},${y(point.b).toFixed(1)}`).join(" ");svg.innerHTML=`<title id="chartTitle">${esc(model.chart.title)}</title><desc id="chartDescription">${esc(description)}</desc><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${h-pad}" stroke="#a6afa9"/><line x1="${pad}" y1="${y(capacity)}" x2="${w-pad}" y2="${y(capacity)}" stroke="#8a4a14" stroke-dasharray="7 7"/><path d="${path}" fill="none" stroke="#1d5b45" stroke-width="5"/><text x="${pad}" y="${h-10}">0 s</text><text x="${w-pad-50}" y="${h-10}">${duration} s</text><text x="8" y="${pad}">${capacity} req</text><text x="8" y="${h-pad}">0 req</text>`}
   };
+
+  // These are local deterministic model snapshots, not empirical measurements.
+  function experimentMetric(id,label,unit,precision,value){
+    if(!Number.isFinite(value))throw new Error("Experiment metric must be finite: "+id);
+    return {id,label,unit,precision,value};
+  }
+  function captureExperiment(model,result){
+    if(!result||!result.values)throw new Error("A completed model result is required.");
+    const values=validateByParameters(model,result.values);
+    let metrics;
+    if(model.adapter==="thermal-cabinet-v1"){
+      if(!Array.isArray(result.points)||result.points.length<2)throw new Error("Thermal result is incomplete.");
+      const first=result.points[0].t,last=result.points.at(-1).t;
+      metrics=[
+        experimentMetric("final-temperature","Final cabinet temperature","°C",1,last),
+        experimentMetric("temperature-change","Temperature change","°C",1,last-first)
+      ];
+    }else if(model.adapter==="queue-delay-fluid-v1"){
+      metrics=[
+        experimentMetric("utilization","Offered utilization","%",1,result.utilization*100),
+        experimentMetric("backlog","Final queued requests","requests",1,result.backlog),
+        experimentMetric("rejected","Estimated rejected work","requests",1,result.rejected)
+      ];
+    }else throw new Error("Unsupported experiment adapter: "+model.adapter);
+    return {adapter:model.adapter,values:{...values},metrics};
+  }
+  function compareExperiments(baseline,current){
+    if(!baseline||!current||baseline.adapter!==current.adapter)throw new Error("Cannot compare different model adapters.");
+    const keys=Object.keys(baseline.values);
+    if(keys.length!==Object.keys(current.values).length||keys.some(key=>!Object.hasOwn(current.values,key)))
+      throw new Error("Cannot compare incompatible parameter sets.");
+    const changed=keys.filter(key=>baseline.values[key]!==current.values[key]);
+    if(baseline.metrics.length!==current.metrics.length)throw new Error("Cannot compare incompatible metrics.");
+    const metrics=baseline.metrics.map((previous,index)=>{
+      const next=current.metrics[index];
+      if(!next||previous.id!==next.id||previous.unit!==next.unit||previous.precision!==next.precision)
+        throw new Error("Cannot compare incompatible metric definitions.");
+      return {...previous,baseline:previous.value,current:next.value,delta:next.value-previous.value};
+    });
+    return {changed,metrics};
+  }
   const adapters={"thermal-cabinet-v1":thermal,"queue-delay-fluid-v1":queue};
   function getAdapter(id){const adapter=adapters[id];if(!adapter)throw new Error(`Unsupported model adapter: ${id}`);return adapter}
-  return{getAdapter,displayedTrend,thermalResultSummary,validateByParameters,formatParameter};
+  return{getAdapter,displayedTrend,thermalResultSummary,validateByParameters,formatParameter,captureExperiment,compareExperiments};
 });
