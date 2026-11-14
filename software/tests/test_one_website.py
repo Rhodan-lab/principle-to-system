@@ -43,7 +43,7 @@ class UnifiedWebsiteTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unknown navigation"):
             web.add_navigation(b"<body></body>", "unknown")
         with self.assertRaisesRegex(ValueError, "Expected one head"):
-            web.add_navigation(b"<head></head><body></body>", "atlas")
+            web.add_navigation(b"<head><body></body>", "atlas")
 
     def test_source_is_bounded_and_public_home_mentions_authority(self) -> None:
         homepage = (ROOT / "software/one_website/index.html").read_text()
